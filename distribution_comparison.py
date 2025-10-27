@@ -62,100 +62,7 @@ MAX_BATCH_SIZE = 512  # Upper limit to prevent edge cases
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1) #utilization for computational intensive tasks (BOW, n-gram)
 LEXICAL_CHUNK_SIZE = 1000 #bundle size per cpu
 
-# =============================================================================
-# UTILITY FUNCTIONS
-# =============================================================================
 
-def mean_pooling(model_output, attention_mask):
-    """Apply mean pooling to model output."""
-    token_embeddings = model_output[0]
-    input_mask_expanded = (
-        attention_mask.unsqueeze(-1)
-        .expand(token_embeddings.size())
-        .float()
-    )
-    sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
-    sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-    return sum_embeddings / sum_mask
-
-
-def generate_ngrams(text: str, n: int, tokenizer) -> Set[tuple]:
-    """Generate n-grams from text."""
-    tokens = tokenizer.tokenize(text)
-    if len(tokens) < n:
-        return set()
-    ngrams = zip(*[tokens[i:] for i in range(n)])
-    return set(ngrams)
-
-
-def calculate_ngram_jaccard_similarity(
-    text1: str, text2: str, n: int, tokenizer
-) -> float:
-    """Calculate Jaccard similarity for n-grams. |A ∩ B| / |A ∪ B|"""
-    ngrams1 = generate_ngrams(text1, n, tokenizer)
-    ngrams2 = generate_ngrams(text2, n, tokenizer)
-    
-    if not ngrams1 and not ngrams2:
-        return 1.0
-    if not ngrams1 or not ngrams2:
-        return 0.0
-    
-    intersection = ngrams1.intersection(ngrams2)
-    union = ngrams1.union(ngrams2)
-    return len(intersection) / len(union)
-
-
-def calculate_ngram_coverage(
-    text_a: str, text_b: str, n: int, tokenizer
-) -> float:
-    """
-    Calculate asymmetric n-gram coverage of text_a by text_b.
-    
-    Metric: |N-grams(A) ∩ N-grams(B)| / |N-grams(A)|
-    Answers: "What fraction of text A's n-grams are in text B?"
-    """
-    ngrams_a = generate_ngrams(text_a, n, tokenizer)
-    ngrams_b = generate_ngrams(text_b, n, tokenizer)
-    
-    # If text_a has no n-grams, it is vacuously 100% covered.
-    if not ngrams_a:
-        return 1.0
-    
-    # If text_b has no n-grams (but text_a does), coverage is 0.
-    if not ngrams_b:
-        return 0.0
-    
-    intersection = ngrams_a.intersection(ngrams_b)
-    
-    # Return the ratio of the intersection to the size of the *first* set
-    return len(intersection) / len(ngrams_a)
-
-
-def calculate_bow_cosine_similarity(text1: str, text2: str, tokenizer) -> float:
-    """Calculate bag-of-words cosine similarity."""
-    tokens1 = tokenizer.tokenize(text1)
-    tokens2 = tokenizer.tokenize(text2)
-    
-    if not tokens1 and not tokens2:
-        return 1.0
-    if not tokens1 or not tokens2:
-        return 0.0
-    
-    bow1 = Counter(tokens1)
-    bow2 = Counter(tokens2)
-    all_tokens = set(bow1.keys()).union(set(bow2.keys()))
-    
-    v1 = [bow1.get(token, 0) for token in all_tokens]
-    v2 = [bow2.get(token, 0) for token in all_tokens]
-    
-    dot_product = sum(v1[i] * v2[i] for i in range(len(v1)))
-    magnitude1 = math.sqrt(sum(count**2 for count in v1))
-    magnitude2 = math.sqrt(sum(count**2 for count in v2))
-    
-    if magnitude1 == 0 or magnitude2 == 0:
-        return 0.0
-    
-    return dot_product / (magnitude1 * magnitude2)
 
 
 # =============================================================================
@@ -347,7 +254,7 @@ def get_text_embeddings(
             texts,
             padding=True,
             truncation=True,
-            max_length=max_len,  # <-- ADD THIS
+            max_length=max_len,  
             return_tensors='pt'
         )
         encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
