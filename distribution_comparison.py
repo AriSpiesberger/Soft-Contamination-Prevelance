@@ -320,14 +320,20 @@ def load_and_embed_background_data(
 
 
 def get_text_token_counts(
-    texts: List[str], labels: List[str], tokenizer
+    texts: List[str], labels: List[str], tokenizer, model
 ) -> Dict[str, int]:
-    """Calculate token counts for texts of interest."""
+    """Calculate token counts for texts of interest (respecting max_length)."""
     print("Calculating token counts for texts of interest...")
+    max_len = getattr(model.config, 'max_position_embeddings', 10000)
     return {
-        labels[i]: len(tokenizer.tokenize(text))
+        labels[i]: len(tokenizer.tokenize(
+            text,
+            truncation=True,
+            max_length=max_len
+        ))
         for i, text in enumerate(texts)
     }
+
 
 
 def get_text_embeddings(
@@ -335,11 +341,13 @@ def get_text_embeddings(
 ) -> torch.Tensor:
     """Compute embeddings for texts of interest."""
     print("Computing embeddings for texts of interest...")
+    max_len = getattr(model.config, 'max_position_embeddings', 10000)
     with torch.no_grad():
         encoded_input = tokenizer(
             texts,
             padding=True,
             truncation=True,
+            max_length=max_len,  # <-- ADD THIS
             return_tensors='pt'
         )
         encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
