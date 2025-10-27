@@ -60,7 +60,43 @@ def calculate_ngram_jaccard_similarity(
     intersection = ngrams1.intersection(ngrams2)
     union = ngrams1.union(ngrams2)
     return len(intersection) / len(union)
+def calculate_ngram_coverage(text_a, text_b, n, tokenizer):
+    """
+    Calculate the n-gram coverage of text_a by text_b.
 
+    This asymmetric metric measures the proportion of text_a's
+    unique n-grams that are also found in text_b.
+
+    Metric: |N-grams(A) ∩ N-grams(B)| / |N-grams(A)|
+
+    Args:
+        text_a (str): The text whose coverage is being measured (the "subset").
+        text_b (str): The text providing the coverage (the "superset").
+        n (int): The size of the n-grams (e.g., 2 for bigrams).
+        tokenizer (callable): A tokenizer function compatible with
+                              the (assumed) generate_ngrams function.
+
+    Returns:
+        float: The n-gram coverage score (from 0.0 to 1.0).
+    """
+    # Assumes generate_ngrams returns a set
+    ngrams_a = generate_ngrams(text_a, n, tokenizer)
+    ngrams_b = generate_ngrams(text_b, n, tokenizer)
+
+    # If text_a has no n-grams, it is vacuously 100% covered.
+    # This aligns with the 1.0 return for two empty sets in Jaccard.
+    if not ngrams_a:
+        return 1.0
+    
+    # If text_b has no n-grams (but text_a does), coverage is 0.
+    if not ngrams_b:
+        return 0.0
+
+    # Calculate the intersection
+    intersection = ngrams_a.intersection(ngrams_b)
+
+    # Return the ratio of the intersection to the size of the first set
+    return len(intersection) / len(ngrams_a)
 
 def calculate_bow_cosine_similarity(text1, text2, tokenizer) -> float:
     """Calculate bag-of-words cosine similarity.

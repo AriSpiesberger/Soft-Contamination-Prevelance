@@ -7,6 +7,11 @@ This script compares two semantically similar texts against a background corpus
 to determine if they are truly duplicates from a distributional perspective.
 
 Uses GPU vectorization for semantic scores and CPU parallelization for lexical scores.
+
+Changes include:
+- Added asymmetric n-gram coverage metric (Coverage = |A ∩ B| / |A|)
+- Integrated coverage metric into parallel lexical analysis pipeline
+- Added pairwise asymmetric scores and percentile rankings to final report
 """
 
 import os
@@ -24,11 +29,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import percentileofscore
 from tqdm import tqdm
-from utils import utilities 
+
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel
-
+from utils.utilities import * 
 
 # =============================================================================
 # CONFIGURATION
@@ -46,7 +51,7 @@ TEXT_2 = """How would a typical person answer each of the following questions ab
 TEXTS_OF_INTEREST = [TEXT_1, TEXT_2]
 TEXT_LABELS = ["Duplicate", "original"] #plotting, labeling
 
-BACKGROUND_FILE = "random_paragraphs.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
+BACKGROUND_FILE = r"data/random_paragraphs.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
 OUTPUT_DIR = "duplicate_comparison" #our dir here
 MODEL_NAME = 'Qwen/Qwen3-Embedding-0.6B' 
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
@@ -86,7 +91,7 @@ def generate_ngrams(text: str, n: int, tokenizer) -> Set[tuple]:
 def calculate_ngram_jaccard_similarity(
     text1: str, text2: str, n: int, tokenizer
 ) -> float:
-    """Calculate Jaccard similarity for n-grams."""
+    """Calculate Jaccard similarity for n-grams. |A ∩ B| / |A ∪ B|"""
     ngrams1 = generate_ngrams(text1, n, tokenizer)
     ngrams2 = generate_ngrams(text2, n, tokenizer)
     
@@ -98,6 +103,32 @@ def calculate_ngram_jaccard_similarity(
     intersection = ngrams1.intersection(ngrams2)
     union = ngrams1.union(ngrams2)
     return len(intersection) / len(union)
+
+
+def calculate_ngram_coverage(
+    text_a: str, text_b: str, n: int, tokenizer
+) -> float:
+    """
+    Calculate asymmetric n-gram coverage of text_a by text_b.
+    
+    Metric: |N-grams(A) ∩ N-grams(B)| / |N-grams(A)|
+    Answers: "What fraction of text A's n-grams are in text B?"
+    """
+    ngrams_a = generate_ngrams(text_a, n, tokenizer)
+    ngrams_b = generate_ngrams(text_b, n, tokenizer)
+    
+    # If text_a has no n-grams, it is vacuously 100% covered.
+    if not ngrams_a:
+        return 1.0
+    
+    # If text_b has no n-grams (but text_a does), coverage is 0.
+    if not ngrams_b:
+        return 0.0
+    
+    intersection = ngrams_a.intersection(ngrams_b)
+    
+    # Return the ratio of the intersection to the size of the *first* set
+    return len(intersection) / len(ngrams_a)
 
 
 def calculate_bow_cosine_similarity(text1: str, text2: str, tokenizer) -> float:
@@ -171,9 +202,9 @@ def create_dynamic_batches(items_with_counts: List[tuple], target_tokens: int, m
         
         # If adding this item would exceed our budget, yield current batch
         if current_batch and (
-            potential_memory_cost > target_tokens or           # VRAM constraint
-            scaled_attention_cost > target_tokens * 2 or       # Compute constraint (more lenient)
-            len(current_batch) >= max_batch_size               # Safety limit
+            potential_memory_cost > target_tokens or          # VRAM constraint
+            scaled_attention_cost > target_tokens * 2 or      # Compute constraint (more lenient)
+            len(current_batch) >= max_batch_size              # Safety limit
         ):
             yield [(text, idx) for _, text, idx in current_batch]
             current_batch = []
@@ -248,7 +279,7 @@ def load_and_embed_background_data(
                 batch_texts = [text for text, _ in batch_data]
                 batch_indices = [idx for _, idx in batch_data]
                 max_len = getattr(model.config, 'max_position_embeddings', 10000)
-                print(max_len)
+                # print(max_len) # Removed verbose print
                 encoded_input = tokenizer(
                     batch_texts, 
                     padding=True, 
@@ -381,7 +412,10 @@ def process_lexical_chunk(
             "unigram": [],
             "bigram": [],
             "trigram": [],
-            "bow_cosine": []
+            "bow_cosine": [],
+            "unigram_coverage": [],
+            "bigram_coverage": [],
+            "trigram_coverage": []
         }
         for label in TEXT_LABELS
     }
@@ -392,6 +426,7 @@ def process_lexical_chunk(
         for i, text in enumerate(worker_text_list):
             label = TEXT_LABELS[i]
             
+            # --- Jaccard Similarity (Symmetric) ---
             chunk_results[label]["unigram"].append(
                 calculate_ngram_jaccard_similarity(text, bg_text, 1, worker_tokenizer)
             )
@@ -403,6 +438,18 @@ def process_lexical_chunk(
             )
             chunk_results[label]["bow_cosine"].append(
                 calculate_bow_cosine_similarity(text, bg_text, worker_tokenizer)
+            )
+            
+            # --- N-gram Coverage (Asymmetric) ---
+            # Calculates Coverage(text, bg_text) -> |text ∩ bg_text| / |text|
+            chunk_results[label]["unigram_coverage"].append(
+                calculate_ngram_coverage(text, bg_text, 1, worker_tokenizer)
+            )
+            chunk_results[label]["bigram_coverage"].append(
+                calculate_ngram_coverage(text, bg_text, 2, worker_tokenizer)
+            )
+            chunk_results[label]["trigram_coverage"].append(
+                calculate_ngram_coverage(text, bg_text, 3, worker_tokenizer)
             )
     
     return chunk_results
@@ -427,7 +474,10 @@ def compute_all_lexical_scores(
             "unigram": [],
             "bigram": [],
             "trigram": [],
-            "bow_cosine": []
+            "bow_cosine": [],
+            "unigram_coverage": [],
+            "bigram_coverage": [],
+            "trigram_coverage": []
         }
         for label in TEXT_LABELS
     }
@@ -462,6 +512,16 @@ def compute_all_lexical_scores(
                 all_lexical_dists[label]["bow_cosine"].extend(
                     chunk_results[label]["bow_cosine"]
                 )
+                # --- Aggregate Coverage ---
+                all_lexical_dists[label]["unigram_coverage"].extend(
+                    chunk_results[label]["unigram_coverage"]
+                )
+                all_lexical_dists[label]["bigram_coverage"].extend(
+                    chunk_results[label]["bigram_coverage"]
+                )
+                all_lexical_dists[label]["trigram_coverage"].extend(
+                    chunk_results[label]["trigram_coverage"]
+                )
     
     print("Lexical score computation complete.")
     return all_lexical_dists
@@ -484,7 +544,7 @@ def plot_comparison_distributions(
     try:
         df = pd.DataFrame({
             'score': text_a_scores + text_b_scores,
-            'text': ['Text A'] * len(text_a_scores) + ['Text B'] * len(text_b_scores)
+            'text': [TEXT_LABELS[0]] * len(text_a_scores) + [TEXT_LABELS[1]] * len(text_b_scores)
         })
         
         plt.figure(figsize=(14, 8))
@@ -505,11 +565,11 @@ def plot_comparison_distributions(
             color='red',
             linestyle='--',
             linewidth=2,
-            label=f'Text A vs Text B: {direct_similarity:.4f}'
+            label=f'{TEXT_LABELS[0]} vs {TEXT_LABELS[1]}: {direct_similarity:.4f}'
         )
         
         plt.title(
-            'Semantic Similarity: Text A and Text B vs Background Corpus',
+            f'Semantic Similarity: {TEXT_LABELS[0]} and {TEXT_LABELS[1]} vs Background Corpus',
             fontsize=16,
             fontweight='bold'
         )
@@ -559,7 +619,9 @@ def plot_bivariate_distribution(
         data_max = np.max(all_x_data)
         data_range = data_max - data_min
         padding = data_range * 0.05
-        new_xlim = (data_min - padding, data_max + padding)
+        # Ensure padding is reasonable, avoid negative lims if data_min is low
+        new_xlim = (max(data_min - padding, -0.05), min(data_max + padding, 1.05))
+
         
         # Create 2D KDE plot
         g = sns.jointplot(
@@ -582,7 +644,7 @@ def plot_bivariate_distribution(
         )
         
         # Truncate text for title
-        text_preview = text[:100] + "..." if len(text) > 100 else text
+        text_preview = text[:100].replace('\n', ' ') + "..." if len(text) > 100 else text.replace('\n', ' ')
         g.fig.suptitle(
             f'Bivariate Distribution: {label} vs Background\n"{text_preview}"',
             fontsize=14,
@@ -664,7 +726,7 @@ def main():
     text_token_counts = get_text_token_counts(TEXTS_OF_INTEREST, TEXT_LABELS, tokenizer)
     
     # Calculate direct pairwise similarity
-    print("\nCalculating direct similarity between Text A and Text B...")
+    print(f"\nCalculating direct similarity between {TEXT_LABELS[0]} and {TEXT_LABELS[1]}...")
     direct_similarity = F.cosine_similarity(
         text_embeddings[0],
         text_embeddings[1],
@@ -718,68 +780,105 @@ def main():
     print("STATISTICAL ANALYSIS")
     print("=" * 80)
     
-    print(f"\nDirect Comparison: Text A vs Text B")
-    print(f"  Token Count A: {text_token_counts[TEXT_LABELS[0]]}")
-    print(f"  Token Count B: {text_token_counts[TEXT_LABELS[1]]}")
+    label_a = TEXT_LABELS[0]
+    label_b = TEXT_LABELS[1]
+    text_a = TEXTS_OF_INTEREST[0] # Duplicate
+    text_b = TEXTS_OF_INTEREST[1] # original
+    
+    print(f"\nDirect Comparison: {label_a} vs {label_b}")
+    print(f"  Token Count {label_a}: {text_token_counts[label_a]}")
+    print(f"  Token Count {label_b}: {text_token_counts[label_b]}")
     print(f"  Semantic Similarity: {direct_similarity:.6f}")
     
-    # Calculate lexical similarities
+    # Calculate lexical similarities (Symmetric)
+    print("\n  --- Symmetric Lexical Scores ---")
     score_uni = calculate_ngram_jaccard_similarity(
-        TEXTS_OF_INTEREST[0], TEXTS_OF_INTEREST[1], 1, tokenizer
+        text_a, text_b, 1, tokenizer
     )
     score_bi = calculate_ngram_jaccard_similarity(
-        TEXTS_OF_INTEREST[0], TEXTS_OF_INTEREST[1], 2, tokenizer
+        text_a, text_b, 2, tokenizer
     )
     score_tri = calculate_ngram_jaccard_similarity(
-        TEXTS_OF_INTEREST[0], TEXTS_OF_INTEREST[1], 3, tokenizer
+        text_a, text_b, 3, tokenizer
     )
     score_bow = calculate_bow_cosine_similarity(
-        TEXTS_OF_INTEREST[0], TEXTS_OF_INTEREST[1], tokenizer
+        text_a, text_b, tokenizer
     )
     
     print(f"  Unigram Jaccard: {score_uni:.6f}")
     print(f"  Bigram Jaccard: {score_bi:.6f}")
     print(f"  Trigram Jaccard: {score_tri:.6f}")
     print(f"  BoW Cosine: {score_bow:.6f}")
+
+    # Calculate lexical coverage (Asymmetric)
+    print(f"\n  --- Asymmetric Coverage ({label_a} by {label_b}) ---")
+    score_uni_a_by_b = calculate_ngram_coverage(text_a, text_b, 1, tokenizer)
+    score_bi_a_by_b = calculate_ngram_coverage(text_a, text_b, 2, tokenizer)
+    score_tri_a_by_b = calculate_ngram_coverage(text_a, text_b, 3, tokenizer)
+    print(f"  Unigram Cov ({label_a} by {label_b}): {score_uni_a_by_b:.6f}  (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_a}\"|)")
+    print(f"  Bigram Cov ({label_a} by {label_b}): {score_bi_a_by_b:.6f}")
+    print(f"  Trigram Cov ({label_a} by {label_b}): {score_tri_a_by_b:.6f}")
+
+    print(f"\n  --- Asymmetric Coverage ({label_b} by {label_a}) ---")
+    score_uni_b_by_a = calculate_ngram_coverage(text_b, text_a, 1, tokenizer)
+    score_bi_b_by_a = calculate_ngram_coverage(text_b, text_a, 2, tokenizer)
+    score_tri_b_by_a = calculate_ngram_coverage(text_b, text_a, 3, tokenizer)
+    print(f"  Unigram Cov ({label_b} by {label_a}): {score_uni_b_by_a:.6f}  (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_b}\"|)")
+    print(f"  Bigram Cov ({label_b} by {label_a}): {score_bi_b_by_a:.6f}")
+    print(f"  Trigram Cov ({label_b} by {label_a}): {score_tri_b_by_a:.6f}")
     
     # Percentile rankings for Text A's view
-    print(f"\nPercentile Rankings (from Text A's perspective):")
+    print(f"\nPercentile Rankings (from {label_a}'s perspective vs Background):")
     print(f"  Semantic: {percentileofscore(semantic_distributions[0], direct_similarity):.2f}th percentile")
-    print(f"  Unigram: {percentileofscore(lexical_distributions[TEXT_LABELS[0]]['unigram'], score_uni):.2f}th percentile")
-    print(f"  Bigram: {percentileofscore(lexical_distributions[TEXT_LABELS[0]]['bigram'], score_bi):.2f}th percentile")
-    print(f"  Trigram: {percentileofscore(lexical_distributions[TEXT_LABELS[0]]['trigram'], score_tri):.2f}th percentile")
-    print(f"  BoW Cosine: {percentileofscore(lexical_distributions[TEXT_LABELS[0]]['bow_cosine'], score_bow):.2f}th percentile")
+    print(f"  Unigram Jaccard: {percentileofscore(lexical_distributions[label_a]['unigram'], score_uni):.2f}th percentile")
+    print(f"  Bigram Jaccard: {percentileofscore(lexical_distributions[label_a]['bigram'], score_bi):.2f}th percentile")
+    print(f"  Trigram Jaccard: {percentileofscore(lexical_distributions[label_a]['trigram'], score_tri):.2f}th percentile")
+    print(f"  BoW Cosine: {percentileofscore(lexical_distributions[label_a]['bow_cosine'], score_bow):.2f}th percentile")
+    print(f"  Unigram Coverage (of {label_a}): {percentileofscore(lexical_distributions[label_a]['unigram_coverage'], score_uni_a_by_b):.2f}th percentile")
+    print(f"  Bigram Coverage (of {label_a}): {percentileofscore(lexical_distributions[label_a]['bigram_coverage'], score_bi_a_by_b):.2f}th percentile")
+    print(f"  Trigram Coverage (of {label_a}): {percentileofscore(lexical_distributions[label_a]['trigram_coverage'], score_tri_a_by_b):.2f}th percentile")
+
     
     # Percentile rankings for Text B's view
-    print(f"\nPercentile Rankings (from Text B's perspective):")
+    print(f"\nPercentile Rankings (from {label_b}'s perspective vs Background):")
     print(f"  Semantic: {percentileofscore(semantic_distributions[1], direct_similarity):.2f}th percentile")
-    print(f"  Unigram: {percentileofscore(lexical_distributions[TEXT_LABELS[1]]['unigram'], score_uni):.2f}th percentile")
-    print(f"  Bigram: {percentileofscore(lexical_distributions[TEXT_LABELS[1]]['bigram'], score_bi):.2f}th percentile")
-    print(f"  Trigram: {percentileofscore(lexical_distributions[TEXT_LABELS[1]]['trigram'], score_tri):.2f}th percentile")
-    print(f"  BoW Cosine: {percentileofscore(lexical_distributions[TEXT_LABELS[1]]['bow_cosine'], score_bow):.2f}th percentile")
+    print(f"  Unigram Jaccard: {percentileofscore(lexical_distributions[label_b]['unigram'], score_uni):.2f}th percentile")
+    print(f"  Bigram Jaccard: {percentileofscore(lexical_distributions[label_b]['bigram'], score_bi):.2f}th percentile")
+    print(f"  Trigram Jaccard: {percentileofscore(lexical_distributions[label_b]['trigram'], score_tri):.2f}th percentile")
+    print(f"  BoW Cosine: {percentileofscore(lexical_distributions[label_b]['bow_cosine'], score_bow):.2f}th percentile")
+    print(f"  Unigram Coverage (of {label_b}): {percentileofscore(lexical_distributions[label_b]['unigram_coverage'], score_uni_b_by_a):.2f}th percentile")
+    print(f"  Bigram Coverage (of {label_b}): {percentileofscore(lexical_distributions[label_b]['bigram_coverage'], score_bi_b_by_a):.2f}th percentile")
+    print(f"  Trigram Coverage (of {label_b}): {percentileofscore(lexical_distributions[label_b]['trigram_coverage'], score_tri_b_by_a):.2f}th percentile")
+
     
     # Save detailed results
     results = {
         "text_a": {
-            "label": TEXT_LABELS[0],
-            "text": TEXTS_OF_INTEREST[0],
-            "token_count": text_token_counts[TEXT_LABELS[0]],
+            "label": label_a,
+            "text": text_a,
+            "token_count": text_token_counts[label_a],
             "semantic_distribution": semantic_distributions[0],
-            "lexical_distributions": lexical_distributions[TEXT_LABELS[0]]
+            "lexical_distributions": lexical_distributions[label_a]
         },
         "text_b": {
-            "label": TEXT_LABELS[1],
-            "text": TEXTS_OF_INTEREST[1],
-            "token_count": text_token_counts[TEXT_LABELS[1]],
+            "label": label_b,
+            "text": text_b,
+            "token_count": text_token_counts[label_b],
             "semantic_distribution": semantic_distributions[1],
-            "lexical_distributions": lexical_distributions[TEXT_LABELS[1]]
+            "lexical_distributions": lexical_distributions[label_b]
         },
         "pairwise_comparison": {
             "semantic_similarity": direct_similarity,
             "unigram_jaccard": score_uni,
             "bigram_jaccard": score_bi,
             "trigram_jaccard": score_tri,
-            "bow_cosine": score_bow
+            "bow_cosine": score_bow,
+            f"unigram_coverage_{label_a}_by_{label_b}": score_uni_a_by_b,
+            f"bigram_coverage_{label_a}_by_{label_b}": score_bi_a_by_b,
+            f"trigram_coverage_{label_a}_by_{label_b}": score_tri_a_by_b,
+            f"unigram_coverage_{label_b}_by_{label_a}": score_uni_b_by_a,
+            f"bigram_coverage_{label_b}_by_{label_a}": score_bi_b_by_a,
+            f"trigram_coverage_{label_b}_by_{label_a}": score_tri_b_by_a,
         },
         "background_corpus": {
             "file": BACKGROUND_FILE,
