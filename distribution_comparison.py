@@ -57,7 +57,7 @@ MODEL_NAME = 'Qwen/Qwen3-Embedding-0.6B'
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
 
 # Acceleration parameters
-TARGET_TOKENS_PER_BATCH = 8000  # Total tokens to process per batch (B * L)
+TARGET_TOKENS_PER_BATCH = 4000  # Total tokens to process per batch (B * L)
 MAX_BATCH_SIZE = 512  # Upper limit to prevent edge cases
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1) #utilization for computational intensive tasks (BOW, n-gram)
 LEXICAL_CHUNK_SIZE = 1000 #bundle size per cpu
@@ -108,7 +108,6 @@ def create_dynamic_batches(items_with_counts: List[tuple], target_tokens: int, m
     
     if current_batch:
         yield [(text, idx) for _, text, idx in current_batch]
-
 def load_and_embed_background_data(
     filepath: str, 
     tokenizer, 
@@ -118,103 +117,104 @@ def load_and_embed_background_data(
     max_tokens: int = float('inf')
 ) -> List[Dict[str, Any]]:
     """
+    (Robust Streaming Version)
     Load background paragraphs from JSONL file, FILTER BY TOKEN RANGE,
     and compute/cache embeddings for items missing them.
     
-    This function UPDATES the original file (e.g., BACKGROUND_FILE)
-    with any new token counts or embeddings it computes.
+    This function uses a multi-pass, streaming approach to avoid
+    loading the entire file into memory, ensuring stability and
+    memory efficiency.
     
     It returns a list filtered by min_tokens/max_tokens for the current run.
     """
     if not os.path.exists(filepath):
         print(f"Error: Background file not found: {filepath}", file=sys.stderr)
         sys.exit(1)
-    
-    all_data_from_file = [] # Holds *all* data for rewrite
-    filtered_background_data = [] # Holds *filtered* data for return
-    to_embed_info = []   # Holds items that need embedding
-    
-    needs_rewrite = False # Flag to track if file update is needed
-    total_lines_scanned = 0
-    total_lines_filtered_out = 0
-    
+
     print(f"Loading and filtering background data from {filepath}...")
     print(f"Applying token filter for this run: {min_tokens} <= tokens <= {max_tokens}")
     
+    # --- Pass 1: Scan, Filter, and Collect Tasks ---
+    print("--- Pass 1: Scanning file, collecting tasks ---")
+    
+    to_embed_tasks = [] # List of (token_count, text, line_index)
+    tasks_need_token_count = {} # {line_index: text}
+    
+    filtered_data_indices = set() # Set of line_indices for our run
+    lines_to_rewrite = set() # All lines that need any update
+    
+    total_lines_scanned = 0
+    total_lines_filtered_out = 0
+    
     with open(filepath, 'r', encoding='utf-8') as f:
-        for i, line in enumerate(tqdm(f, desc="Scanning background file")):
+        for i, line in enumerate(tqdm(f, desc="Pass 1: Scanning")):
             total_lines_scanned += 1
             try:
                 data = json.loads(line)
-                
-                # --- Token Count Calculation ---
+                text = data['text']
                 token_count = data.get('token_count')
+                
+                # 1. Check for token count
                 if token_count is None:
-                    token_count = len(tokenizer.tokenize(data['text']))
-                    data['token_count'] = token_count
-                    needs_rewrite = True # Need to save the new token count
+                    tasks_need_token_count[i] = text
+                    lines_to_rewrite.add(i)
+                    # We'll compute this in a moment
                 
-                # Add to the master list for potential rewrite
-                all_data_from_file.append(data)
-                
-                # --- Filtering Logic for this Run ---
-                if not (min_tokens <= token_count <= max_tokens):
-                    total_lines_filtered_out += 1
-                    continue # Skip this item for the *current analysis*
-                
-                # If we are here, the data is within the token range
-                # Add it to the list we will return and use
-                filtered_background_data.append(data)
-                
-                # Check if this model's embedding is present
+                # 2. Check for embedding
                 if EMBEDDER_KEY not in data:
-                    needs_rewrite = True # Need to save the new embedding
-                    # Get the index from the *master* list
-                    original_index = len(all_data_from_file) - 1
-                    to_embed_info.append((token_count, data['text'], original_index))
-                
-            except json.JSONDecodeError:
-                print(f"Skipping malformed JSON at line {i+1}")
+                    lines_to_rewrite.add(i)
+                    # We need token_count to batch properly
+                    if token_count is None:
+                        # Compute it now if we don't have it
+                        token_count = len(tokenizer.tokenize(text))
+                        data['token_count'] = token_count # For the next check
+                    
+                    to_embed_tasks.append((token_count, text, i))
+
+                # 3. Check filter logic for this run
+                if token_count is not None: # We must have token_count to filter
+                    if min_tokens <= token_count <= max_tokens:
+                        filtered_data_indices.add(i)
+                    else:
+                        total_lines_filtered_out += 1
+                        
+            except Exception as e:
+                print(f"Skipping malformed line {i}: {e}", file=sys.stderr)
     
     print(f"Scan complete. Scanned {total_lines_scanned:,} lines.")
     print(f"Filtered out {total_lines_filtered_out:,} lines (outside token range).")
-    print(f"Using {len(filtered_background_data):,} lines for this analysis.")
-    
-    if not filtered_background_data and total_lines_scanned > 0:
-        print(f"Warning: No data loaded from {filepath} after filtering.", file=sys.stderr)
-        print("Continuing with no background data, but this is unusual.")
-        # We don't exit here, because we might still need to rewrite the file
+    print(f"Using {len(filtered_data_indices):,} lines for this analysis.")
+
+    # --- Pre-computation: Token Counts ---
+    new_token_counts = {} # {line_index: count}
+    if tasks_need_token_count:
+        print(f"Computing {len(tasks_need_token_count):,} missing token counts...")
+        for i, text in tqdm(tasks_need_token_count.items(), desc="Tokenizing"):
+            new_token_counts[i] = len(tokenizer.tokenize(text))
+
+    # --- Pass 2: Compute Embeddings (if needed) ---
+    new_embeddings_map = {} # {line_index: embedding_list}
+    if to_embed_tasks:
+        print(f"--- Pass 2: Computing {len(to_embed_tasks):,} embeddings ---")
         
-    # --- Start Embedding (if anything is missing) ---
-    if to_embed_info:
-        print(f"Found {len(to_embed_info)} paragraphs missing required embeddings (within range).")
-        print("Computing and caching embeddings...")
+        to_embed_tasks.sort(key=lambda x: x[0]) # Sort by token_count
+        batches = list(create_dynamic_batches(to_embed_tasks, TARGET_TOKENS_PER_BATCH, MAX_BATCH_SIZE))
         
-        # Sort by token length for efficient batching
-        to_embed_info.sort(key=lambda x: x[0])
-        
-        # Create dynamic batches based on token budget
-        batches = list(create_dynamic_batches(
-            to_embed_info,
-            TARGET_TOKENS_PER_BATCH,
-            MAX_BATCH_SIZE
-        ))
-        
-        if not batches and to_embed_info: 
-             batches = [[(text, idx) for _, text, idx in to_embed_info]]
+        if not batches and to_embed_tasks: 
+            batches = [[(text, idx) for _, text, idx in to_embed_tasks]]
 
         if not batches:
              print("No batches to embed.")
         else:
             print(f"Created {len(batches)} dynamic batches.")
             print(f"   Batch sizes range: {min(len(b) for b in batches)} to {max(len(b) for b in batches)}")
-        
+
         with torch.no_grad():
             for batch_data in tqdm(batches, desc="Embedding batches"):
                 batch_texts = [text for text, _ in batch_data]
-                batch_indices = [idx for _, idx in batch_data]
-                max_len = getattr(model.config, 'max_position_embeddings', 1024)
+                batch_indices = [idx for _, idx in batch_data] # These are the original line indices
                 
+                max_len = getattr(model.config, 'max_position_embeddings', 1024)
                 encoded_input = tokenizer(
                     batch_texts, 
                     padding=True, 
@@ -233,30 +233,97 @@ def load_and_embed_background_data(
                 cpu_embeddings = batch_embeddings.cpu().numpy().tolist()
                 
                 for j, original_index in enumerate(batch_indices):
-                    # 'original_index' is the index in the *master* 'all_data_from_file' list
-                    all_data_from_file[original_index][EMBEDDER_KEY] = cpu_embeddings[j]
-        
-        print("Embedding complete. Caching results to disk...")
+                    new_embeddings_map[original_index] = cpu_embeddings[j]
+                    
+        print("Embedding computation complete.")
+    else:
+        print("--- Pass 2: Skipped (No embeddings to compute) ---")
+
+    # --- Pass 3: Stream-Write New File and Filter for Return ---
+    needs_rewrite = bool(lines_to_rewrite)
+    filtered_background_data = [] # This is the final list to return
     
-    # --- Rewrite the file if needed ---
     if needs_rewrite:
-        print(f"Updating {filepath} with new token counts/embeddings...")
+        print(f"--- Pass 3: Streaming new file to disk and filtering ---")
         temp_filepath = filepath + ".tmp"
+        lines_written = 0
         try:
-            with open(temp_filepath, 'w', encoding='utf-8') as f_out:
-                for data in all_data_from_file:
-                    f_out.write(json.dumps(data) + '\n')
-            shutil.move(temp_filepath, filepath)
-            print(f"Successfully updated {filepath}")
+            with open(filepath, 'r', encoding='utf-8') as f_in, \
+                 open(temp_filepath, 'w', encoding='utf-8') as f_out:
+                
+                for i, line in enumerate(tqdm(f_in, desc="Writing new file", total=total_lines_scanned)):
+                    try:
+                        data = json.loads(line)
+                        
+                        # Update token_count if it was missing
+                        if i in new_token_counts:
+                            data['token_count'] = new_token_counts[i]
+                        
+                        # Update embedding if it was missing
+                        if i in new_embeddings_map:
+                            
+                            data[EMBEDDER_KEY] = new_embeddings_map[i]
+                        
+                        # Write the (potentially updated) line to the new file
+                        f_out.write(json.dumps(data) + '\n')
+                        lines_written += 1
+                        
+                        # Now, check if this line belongs in our return list
+                        if i in filtered_data_indices:
+                            # Add the *fully updated* data object
+                            filtered_background_data.append(data)
+                            
+                    except Exception as e:
+                        print(f"Error processing line {i} during write: {e}", file=sys.stderr)
+            
+            # Verify write
+            if lines_written != total_lines_scanned:
+                raise ValueError(f"Incomplete write: {lines_written:,} lines, expected {total_lines_scanned:,}")
+            
+            print(f"✓ Temp file verified: {lines_written:,} lines")
+            
+            # Atomic replace with retry
+            print("Attempting to replace original file...")
+            max_retries = 5
+            for attempt in range(max_retries):
+                try:
+                    os.replace(temp_filepath, filepath)
+                    print(f"✓ Successfully updated {filepath}")
+                    break
+                except (PermissionError, OSError) as e:
+                    if attempt < max_retries - 1:
+                        print(f"  File locked, retrying in 3 seconds... ({attempt + 1}/{max_retries})")
+                        time.sleep(3)
+                    else:
+                        print(f"\n{'='*60}", file=sys.stderr)
+                        print(f"FILE LOCK ERROR (after {max_retries} attempts)", file=sys.stderr)
+                        print(f"✓ Good news: Temp file is COMPLETE ({lines_written:,} lines)", file=sys.stderr)
+                        print(f"✓ All embeddings are safely saved in: {temp_filepath}", file=sys.stderr)
+                        print(f"TO FIX: 1. Close file locks. 2. Manually rename .tmp file.", file=sys.stderr)
+                        print(f"{'='*60}\n", file=sys.stderr)
+                        sys.exit(1)
+                        
         except Exception as e:
-            print(f"Error writing file: {e}", file=sys.stderr)
+            print(f"CRITICAL ERROR DURING FILE UPDATE: {e}", file=sys.stderr)
             if os.path.exists(temp_filepath):
                 os.remove(temp_filepath)
             sys.exit(1)
+            
     else:
-        print("No file update needed. All required data was already cached.")
-        
+        print("--- Pass 3: Skipped (No file update needed) ---")
+        # File is already up to date, just build the filtered list from Pass 1
+        # We need to re-read to get the embeddings
+        print("Reading cached data for filtered list...")
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for i, line in enumerate(tqdm(f, desc="Reading cache", total=total_lines_scanned)):
+                if i in filtered_data_indices:
+                    try:
+                        filtered_background_data.append(json.loads(line))
+                    except Exception as e:
+                        print(f"Skipping line {i}: {e}")
+
     return filtered_background_data
+
 
 def get_text_token_counts(
     texts: List[str], labels: List[str], tokenizer
@@ -356,60 +423,46 @@ def initialize_worker_lexical(text_list: List[str]):
     worker_tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     worker_text_list = text_list
 
-
 def process_lexical_chunk(
     bg_chunk: List[Dict[str, Any]]
 ) -> Dict[str, Dict[str, List[float]]]:
     """
     Process a chunk of background data on a single CPU core.
+    Calculates trigram and quadgram Jaccard similarities.
     """
     global worker_tokenizer, worker_text_list
-    
+
     chunk_results = {
         label: {
-            "unigram": [],
-            "bigram": [],
-            "trigram": [],
-            "bow_cosine": [],
-            "unigram_coverage": [],
-            "bigram_coverage": [],
-            "trigram_coverage": []
+            "trigram_jaccard": [], # MODIFIED: Only trigram
+            "quadgram_jaccard": [], # MODIFIED: Added quadgram
         }
         for label in TEXT_LABELS
     }
-    
+
     for bg_entry in bg_chunk:
-        bg_text = bg_entry['text']
-        
-        for i, text in enumerate(worker_text_list):
-            label = TEXT_LABELS[i]
-            
-            # --- Jaccard Similarity (Symmetric) ---
-            chunk_results[label]["unigram"].append(
-                calculate_ngram_jaccard_similarity(text, bg_text, 1, worker_tokenizer)
-            )
-            chunk_results[label]["bigram"].append(
-                calculate_ngram_jaccard_similarity(text, bg_text, 2, worker_tokenizer)
-            )
-            chunk_results[label]["trigram"].append(
-                calculate_ngram_jaccard_similarity(text, bg_text, 3, worker_tokenizer)
-            )
-            chunk_results[label]["bow_cosine"].append(
-                calculate_bow_cosine_similarity(text, bg_text, worker_tokenizer)
-            )
-            
-            # --- N-gram Coverage (Asymmetric) ---
-            # Calculates Coverage(text, bg_text) -> |text ∩ bg_text| / |text|
-            chunk_results[label]["unigram_coverage"].append(
-                calculate_ngram_coverage(text, bg_text, 1, worker_tokenizer)
-            )
-            chunk_results[label]["bigram_coverage"].append(
-                calculate_ngram_coverage(text, bg_text, 2, worker_tokenizer)
-            )
-            chunk_results[label]["trigram_coverage"].append(
-                calculate_ngram_coverage(text, bg_text, 3, worker_tokenizer)
-            )
-    
+        try:
+            bg_text = bg_entry['text']
+
+            for i, text in enumerate(worker_text_list):
+                label = TEXT_LABELS[i]
+
+                # --- MODIFIED: Calculate only n=3 and n=4 Jaccard ---
+                chunk_results[label]["trigram_jaccard"].append(
+                    calculate_ngram_jaccard_similarity(text, bg_text, 3, worker_tokenizer)
+                )
+                chunk_results[label]["quadgram_jaccard"].append(
+                    calculate_ngram_jaccard_similarity(text, bg_text, 4, worker_tokenizer) # Added n=4
+                )
+                # --- END MODIFICATION ---
+
+        except Exception as e:
+            print(f"Error in lexical worker {os.getpid()} processing entry: {bg_entry.get('id', 'Unknown')}. Error: {e}", file=sys.stderr)
+            # Add NaNs or default values to maintain list lengths if needed, or just skip
+            for label in TEXT_LABELS:
+                 chunk_results[label]["trigram_jaccard"].append(float('nan'))
+                 chunk_results[label]["quadgram_jaccard"].append(float('nan'))
+
     return chunk_results
 
 
@@ -423,67 +476,56 @@ def compute_all_lexical_scores(
     background_data: List[Dict[str, Any]]
 ) -> Dict[str, Dict[str, List[float]]]:
     """
-    Orchestrate parallel computation of all lexical scores.
+    Orchestrate parallel computation of all lexical scores (trigram & quadgram Jaccard).
     """
     print(f"Computing lexical scores (parallelized across {NUM_WORKERS} workers)...")
-    
+
+    # --- MODIFIED: Updated dictionary structure ---
     all_lexical_dists = {
         label: {
-            "unigram": [],
-            "bigram": [],
-            "trigram": [],
-            "bow_cosine": [],
-            "unigram_coverage": [],
-            "bigram_coverage": [],
-            "trigram_coverage": []
+            "trigram_jaccard": [],
+            "quadgram_jaccard": [],
         }
         for label in TEXT_LABELS
     }
-    
-    num_chunks = math.ceil(len(background_data) / LEXICAL_CHUNK_SIZE)
-    if num_chunks == 0:
+    # --- END MODIFICATION ---
+
+    if not background_data:
         print("No background data to process for lexical scores.")
         return all_lexical_dists
+
+    num_chunks = math.ceil(len(background_data) / LEXICAL_CHUNK_SIZE)
 
     with multiprocessing.Pool(
         processes=NUM_WORKERS,
         initializer=initialize_worker_lexical,
         initargs=(TEXTS_OF_INTEREST,)
     ) as pool:
-        
+
         data_chunks = generate_bg_chunks(background_data, LEXICAL_CHUNK_SIZE)
-        
+
         pbar = tqdm(
             pool.imap_unordered(process_lexical_chunk, data_chunks),
             total=num_chunks,
             desc="Processing lexical chunks"
         )
-        
+
+        # --- MODIFIED: Update aggregation loop ---
         for chunk_results in pbar:
             for label in TEXT_LABELS:
-                all_lexical_dists[label]["unigram"].extend(
-                    chunk_results[label]["unigram"]
+                all_lexical_dists[label]["trigram_jaccard"].extend(
+                    chunk_results[label]["trigram_jaccard"]
                 )
-                all_lexical_dists[label]["bigram"].extend(
-                    chunk_results[label]["bigram"]
+                all_lexical_dists[label]["quadgram_jaccard"].extend(
+                    chunk_results[label]["quadgram_jaccard"]
                 )
-                all_lexical_dists[label]["trigram"].extend(
-                    chunk_results[label]["trigram"]
-                )
-                all_lexical_dists[label]["bow_cosine"].extend(
-                    chunk_results[label]["bow_cosine"]
-                )
-                # --- Aggregate Coverage ---
-                all_lexical_dists[label]["unigram_coverage"].extend(
-                    chunk_results[label]["unigram_coverage"]
-                )
-                all_lexical_dists[label]["bigram_coverage"].extend(
-                    chunk_results[label]["bigram_coverage"]
-                )
-                all_lexical_dists[label]["trigram_coverage"].extend(
-                    chunk_results[label]["trigram_coverage"]
-                )
-    
+        # --- END MODIFICATION ---
+
+    # Optional: Clean NaNs if they were added during error handling
+    # for label in TEXT_LABELS:
+    #     for metric in all_lexical_dists[label]:
+    #         all_lexical_dists[label][metric] = [s for s in all_lexical_dists[label][metric] if not math.isnan(s)]
+
     print("Lexical score computation complete.")
     return all_lexical_dists
 
@@ -649,6 +691,54 @@ def plot_bivariate_distribution(
     except Exception as e:
         print(f"Error generating bivariate plot for {label}: {e}", file=sys.stderr)
 
+def plot_lexical_histogram(
+    scores: List[float],
+    text_label: str,
+    ngram_size: int,
+    output_dir: str
+):
+    """
+    Plots a histogram of n-gram Jaccard scores with a logarithmic y-axis.
+    """
+    print(f"Generating {ngram_size}-gram Jaccard histogram for {text_label}...")
+
+    # Filter out NaNs
+    valid_scores = [s for s in scores if not math.isnan(s)]
+
+    if not valid_scores:
+        print(f"Skipping {ngram_size}-gram histogram: No valid scores available.", file=sys.stderr)
+        return
+
+    try:
+        plt.figure(figsize=(12, 7))
+        plt.hist(valid_scores, bins=50, color='skyblue', edgecolor='black', alpha=0.7, log=True)
+
+        plt.title(f'{ngram_size}-gram Jaccard Similarity Distribution: {text_label} vs Background', fontsize=16, fontweight='bold')
+        plt.xlabel(f'{ngram_size}-gram Jaccard Similarity', fontsize=13)
+        plt.ylabel('Count (Log Scale)', fontsize=13)
+        plt.grid(axis='y', linestyle='--', alpha=0.6)
+        plt.xlim(0, 1.0) # Jaccard scores are between 0 and 1
+
+        # Add mean/median lines if desired
+        mean_score = np.mean(valid_scores)
+        median_score = np.median(valid_scores)
+        plt.axvline(mean_score, color='red', linestyle='dashed', linewidth=1.5, label=f'Mean: {mean_score:.3f}')
+        plt.axvline(median_score, color='green', linestyle='dashed', linewidth=1.5, label=f'Median: {median_score:.3f}')
+        plt.legend()
+
+
+        plt.tight_layout()
+        plot_filename = os.path.join(output_dir, f"{text_label}_{ngram_size}gram_jaccard_histogram.png")
+        plt.savefig(plot_filename, dpi=300)
+        plt.close()
+
+        print(f"Saved {ngram_size}-gram histogram to: {plot_filename}")
+
+    except Exception as e:
+        print(f"Error generating {ngram_size}-gram histogram for {text_label}: {e}", file=sys.stderr)
+        # Attempt to close plot if it's still open
+        try: plt.close()
+        except: pass
 
 
 
@@ -659,7 +749,6 @@ def plot_bivariate_distribution(
 # =============================================================================
 # MAIN EXECUTION
 # =============================================================================
-
 def main():
     """
     Main execution function.
@@ -668,15 +757,14 @@ def main():
     print("SEMANTIC DUPLICATE COMPARISON ANALYSIS")
     print("=" * 80)
     print()
-    
+
     # Setup
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    # --- MODIFIED: Use float16 only on CUDA ---
     use_fp16 = device == "cuda"
     torch_dtype = torch.float16 if use_fp16 else torch.float32
     print(f"Using device: {device} (FP16: {use_fp16})\n")
-    
+
     # Load model
     try:
         print(f"Loading model: {MODEL_NAME}...")
@@ -691,55 +779,61 @@ def main():
     except Exception as e:
         print(f"Error loading model: {e}", file=sys.stderr)
         return
-    
+
     # --- START: Modified data loading ---
     # Define filter range
-    MIN_TOKEN_LIMIT = 10  
+    MIN_TOKEN_LIMIT = 10
     MAX_TOKEN_LIMIT = 200 # Using the 200 from your last file
-    
+
     # Load, filter, and embed background data simultaneously
-    # The returned 'background_data' is ALREADY filtered.
     background_data = load_and_embed_background_data(
-        BACKGROUND_FILE, 
-        tokenizer, 
-        model, 
+        BACKGROUND_FILE,
+        tokenizer,
+        model,
         device,
         min_tokens=MIN_TOKEN_LIMIT,
         max_tokens=MAX_TOKEN_LIMIT
     )
-    
-    # Check if filtering left anything
+
+    # Check if filtering left anything usable
     if not background_data:
-        print(f"Error: No background data remaining after filtering (range {MIN_TOKEN_LIMIT}-{MAX_TOKEN_LIMIT} tokens).", file=sys.stderr)
-        print("Please check your BACKGROUND_FILE or adjust the token limits.", file=sys.stderr)
+        print(f"Error: No background data available after loading/filtering (range {MIN_TOKEN_LIMIT}-{MAX_TOKEN_LIMIT} tokens). Cannot proceed.", file=sys.stderr)
         return
-        
+
     print(f"Successfully prepared {len(background_data):,} paragraphs for analysis.\n")
     # --- END: Modified data loading ---
-    
-    
+
+
     # Embed texts of interest
     text_embeddings = get_text_embeddings(TEXTS_OF_INTEREST, tokenizer, model, device)
     text_token_counts = get_text_token_counts(TEXTS_OF_INTEREST, TEXT_LABELS, tokenizer)
-    
+
     # Calculate direct pairwise similarity
     print(f"\nCalculating direct similarity between {TEXT_LABELS[0]} and {TEXT_LABELS[1]}...")
-    # --- MODIFIED: Ensure comparison is done in float32 for stability ---
     direct_similarity = F.cosine_similarity(
         text_embeddings[0].to(torch.float32), # Cast to float32
         text_embeddings[1].to(torch.float32), # Cast to float32
         dim=0
     ).item()
     print(f"Direct semantic similarity: {direct_similarity:.6f}\n")
-    
+
     # Compute semantic distributions
     semantic_distributions = compute_all_semantic_scores(
         text_embeddings, background_data, device
     )
-    
-    # Compute lexical distributions
+    if not semantic_distributions or not any(semantic_distributions):
+         print("Warning: Semantic distributions are empty. Skipping plots and percentile stats.", file=sys.stderr)
+         semantic_distributions = [[], []] # Ensure it's a list of two empty lists
+
+
+    # Compute lexical distributions (Now only trigram/quadgram Jaccard)
     lexical_distributions = compute_all_lexical_scores(background_data)
-    
+    if not lexical_distributions or not any(v for d in lexical_distributions.values() for v in d.values()):
+        print("Warning: Lexical distributions are empty. Skipping plots and percentile stats.", file=sys.stderr)
+        # Ensure structure exists even if empty
+        lexical_distributions = { label: {"trigram_jaccard": [], "quadgram_jaccard": []} for label in TEXT_LABELS }
+
+
     # Generate visualizations
     print("\nGenerating visualizations...")
     plot_comparison_distributions(
@@ -748,166 +842,149 @@ def main():
         direct_similarity,
         OUTPUT_DIR
     )
-    
     plot_bivariate_distribution(
-        TEXT_LABELS[0],
-        TEXTS_OF_INTEREST[0],
-        background_data,
-        semantic_distributions[0],
-        text_token_counts[TEXT_LABELS[0]],
-        TEXT_LABELS[1],
-        text_token_counts[TEXT_LABELS[1]],
-        direct_similarity,
+        TEXT_LABELS[0], TEXTS_OF_INTEREST[0], background_data, semantic_distributions[0],
+        text_token_counts[TEXT_LABELS[0]], TEXT_LABELS[1], text_token_counts[TEXT_LABELS[1]],
+        direct_similarity, OUTPUT_DIR
+    )
+    plot_bivariate_distribution(
+        TEXT_LABELS[1], TEXTS_OF_INTEREST[1], background_data, semantic_distributions[1],
+        text_token_counts[TEXT_LABELS[1]], TEXT_LABELS[0], text_token_counts[TEXT_LABELS[0]],
+        direct_similarity, OUTPUT_DIR
+    )
+
+    # --- START: Call new histogram plots ---
+    # Plot histograms for the first text (e.g., "Duplicate") vs Background
+    plot_lexical_histogram(
+        lexical_distributions[TEXT_LABELS[0]]['trigram_jaccard'],
+        TEXT_LABELS[0], # Label for the text being compared
+        3, # n-gram size
         OUTPUT_DIR
     )
-    
-    plot_bivariate_distribution(
-        TEXT_LABELS[1],
-        TEXTS_OF_INTEREST[1],
-        background_data,
-        semantic_distributions[1],
-        text_token_counts[TEXT_LABELS[1]],
-        TEXT_LABELS[0],
-        text_token_counts[TEXT_LABELS[0]],
-        direct_similarity,
+    plot_lexical_histogram(
+        lexical_distributions[TEXT_LABELS[0]]['quadgram_jaccard'],
+        TEXT_LABELS[0], # Label for the text being compared
+        4, # n-gram size
         OUTPUT_DIR
     )
-    
+    # Plot histograms for the second text (e.g., "original") vs Background
+    plot_lexical_histogram(
+        lexical_distributions[TEXT_LABELS[1]]['trigram_jaccard'],
+        TEXT_LABELS[1], # Label for the text being compared
+        3, # n-gram size
+        OUTPUT_DIR
+    )
+    plot_lexical_histogram(
+        lexical_distributions[TEXT_LABELS[1]]['quadgram_jaccard'],
+        TEXT_LABELS[1], # Label for the text being compared
+        4, # n-gram size
+        OUTPUT_DIR
+    )
+    # --- END: Call new histogram plots ---
+
+
     # Calculate and report statistics
     print("\n" + "=" * 80)
     print("STATISTICAL ANALYSIS")
     print("=" * 80)
-    
+
     label_a = TEXT_LABELS[0]
     label_b = TEXT_LABELS[1]
-    text_a = TEXTS_OF_INTEREST[0] # Duplicate
-    text_b = TEXTS_OF_INTEREST[1] # original
-    
+    text_a = TEXTS_OF_INTEREST[0]
+    text_b = TEXTS_OF_INTEREST[1]
+
     print(f"\nDirect Comparison: {label_a} vs {label_b}")
     print(f"   Token Count {label_a}: {text_token_counts[label_a]}")
     print(f"   Token Count {label_b}: {text_token_counts[label_b]}")
     print(f"   Semantic Similarity: {direct_similarity:.6f}")
-    
-    # Calculate lexical similarities (Symmetric)
+
+    # --- MODIFIED: Calculate only trigram/quadgram Jaccard ---
     print("\n   --- Symmetric Lexical Scores ---")
-    score_uni = calculate_ngram_jaccard_similarity(
-        text_a, text_b, 1, tokenizer
-    )
-    score_bi = calculate_ngram_jaccard_similarity(
-        text_a, text_b, 2, tokenizer
-    )
     score_tri = calculate_ngram_jaccard_similarity(
         text_a, text_b, 3, tokenizer
     )
-    score_bow = calculate_bow_cosine_similarity(
-        text_a, text_b, tokenizer
+    score_quad = calculate_ngram_jaccard_similarity( # Added quadgram
+        text_a, text_b, 4, tokenizer
     )
-    
-    print(f"   Unigram Jaccard: {score_uni:.6f}")
-    print(f"   Bigram Jaccard: {score_bi:.6f}")
     print(f"   Trigram Jaccard: {score_tri:.6f}")
-    print(f"   BoW Cosine: {score_bow:.6f}")
+    print(f"   Quadgram Jaccard: {score_quad:.6f}") # Added quadgram
+    # --- END MODIFICATION ---
 
-    # Calculate lexical coverage (Asymmetric)
-    print(f"\n   --- Asymmetric Coverage ({label_a} by {label_b}) ---")
-    score_uni_a_by_b = calculate_ngram_coverage(text_a, text_b, 1, tokenizer)
-    score_bi_a_by_b = calculate_ngram_coverage(text_a, text_b, 2, tokenizer)
-    score_tri_a_by_b = calculate_ngram_coverage(text_a, text_b, 3, tokenizer)
-    print(f"   Unigram Cov ({label_a} by {label_b}): {score_uni_a_by_b:.6f}   (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_a}\"|)")
-    print(f"   Bigram Cov ({label_a} by {label_b}): {score_bi_a_by_b:.6f}")
-    print(f"   Trigram Cov ({label_a} by {label_b}): {score_tri_a_by_b:.6f}")
-
-    print(f"\n   --- Asymmetric Coverage ({label_b} by {label_a}) ---")
-    score_uni_b_by_a = calculate_ngram_coverage(text_b, text_a, 1, tokenizer)
-    score_bi_b_by_a = calculate_ngram_coverage(text_b, text_a, 2, tokenizer)
-    score_tri_b_by_a = calculate_ngram_coverage(text_b, text_a, 3, tokenizer)
-    print(f"   Unigram Cov ({label_b} by {label_a}): {score_uni_b_by_a:.6f}   (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_b}\"|)")
-    print(f"   Bigram Cov ({label_b} by {label_a}): {score_bi_b_by_a:.6f}")
-    print(f"   Trigram Cov ({label_b} by {label_a}): {score_tri_b_by_a:.6f}")
-    
     # Helper for safe percentile calculation
     def safe_percentile(scores: List[float], value: float) -> float:
-        if not scores:
-            return 0.0
-        return percentileofscore(scores, value)
+        # Filter NaNs before calculating percentile
+        valid_scores = [s for s in scores if not math.isnan(s)]
+        if not valid_scores or math.isnan(value):
+            return 0.0 # Or np.nan, or however you want to handle insufficient data
+        # Use 'strict' for percentile (value must be > score to count)
+        return percentileofscore(valid_scores, value, kind='strict')
 
-    # Percentile rankings for Text A's view
+
+    # --- MODIFIED: Percentile rankings ---
     print(f"\nPercentile Rankings (from {label_a}'s perspective vs Background):")
     print(f"   Semantic: {safe_percentile(semantic_distributions[0], direct_similarity):.2f}th percentile")
-    print(f"   Unigram Jaccard: {safe_percentile(lexical_distributions[label_a]['unigram'], score_uni):.2f}th percentile")
-    print(f"   Bigram Jaccard: {safe_percentile(lexical_distributions[label_a]['bigram'], score_bi):.2f}th percentile")
-    print(f"   Trigram Jaccard: {safe_percentile(lexical_distributions[label_a]['trigram'], score_tri):.2f}th percentile")
-    print(f"   BoW Cosine: {safe_percentile(lexical_distributions[label_a]['bow_cosine'], score_bow):.2f}th percentile")
-    print(f"   Unigram Coverage (of {label_a}): {safe_percentile(lexical_distributions[label_a]['unigram_coverage'], score_uni_a_by_b):.2f}th percentile")
-    print(f"   Bigram Coverage (of {label_a}): {safe_percentile(lexical_distributions[label_a]['bigram_coverage'], score_bi_a_by_b):.2f}th percentile")
-    print(f"   Trigram Coverage (of {label_a}): {safe_percentile(lexical_distributions[label_a]['trigram_coverage'], score_tri_a_by_b):.2f}th percentile")
+    print(f"   Trigram Jaccard: {safe_percentile(lexical_distributions[label_a]['trigram_jaccard'], score_tri):.2f}th percentile")
+    print(f"   Quadgram Jaccard: {safe_percentile(lexical_distributions[label_a]['quadgram_jaccard'], score_quad):.2f}th percentile") # Added quadgram
 
-    
-    # Percentile rankings for Text B's view
     print(f"\nPercentile Rankings (from {label_b}'s perspective vs Background):")
     print(f"   Semantic: {safe_percentile(semantic_distributions[1], direct_similarity):.2f}th percentile")
-    print(f"   Unigram Jaccard: {safe_percentile(lexical_distributions[label_b]['unigram'], score_uni):.2f}th percentile")
-    print(f"   Bigram Jaccard: {safe_percentile(lexical_distributions[label_b]['bigram'], score_bi):.2f}th percentile")
-    print(f"   Trigram Jaccard: {safe_percentile(lexical_distributions[label_b]['trigram'], score_tri):.2f}th percentile")
-    print(f"   BoW Cosine: {safe_percentile(lexical_distributions[label_b]['bow_cosine'], score_bow):.2f}th percentile")
-    print(f"   Unigram Coverage (of {label_b}): {safe_percentile(lexical_distributions[label_b]['unigram_coverage'], score_uni_b_by_a):.2f}th percentile")
-    print(f"   Bigram Coverage (of {label_b}): {safe_percentile(lexical_distributions[label_b]['bigram_coverage'], score_bi_b_by_a):.2f}th percentile")
-    print(f"   Trtam Coverage (of {label_b}): {safe_percentile(lexical_distributions[label_b]['trigram_coverage'], score_tri_b_by_a):.2f}th percentile")
+    print(f"   Trigram Jaccard: {safe_percentile(lexical_distributions[label_b]['trigram_jaccard'], score_tri):.2f}th percentile")
+    print(f"   Quadgram Jaccard: {safe_percentile(lexical_distributions[label_b]['quadgram_jaccard'], score_quad):.2f}th percentile") # Added quadgram
+    # --- END MODIFICATION ---
 
-    
-    # Save detailed results
+
+    # --- MODIFIED: Save detailed results ---
     results = {
         "text_a": {
             "label": label_a,
             "text": text_a,
             "token_count": text_token_counts[label_a],
-            "semantic_distribution": semantic_distributions[0],
-            "lexical_distributions": lexical_distributions[label_a]
+            # Store only valid scores (filter NaNs)
+            "semantic_distribution": [s for s in semantic_distributions[0] if not math.isnan(s)],
+            "lexical_distributions": {k: [s for s in v if not math.isnan(s)] for k, v in lexical_distributions[label_a].items()}
         },
         "text_b": {
             "label": label_b,
             "text": text_b,
             "token_count": text_token_counts[label_b],
-            "semantic_distribution": semantic_distributions[1],
-            "lexical_distributions": lexical_distributions[label_b]
+            "semantic_distribution": [s for s in semantic_distributions[1] if not math.isnan(s)],
+             "lexical_distributions": {k: [s for s in v if not math.isnan(s)] for k, v in lexical_distributions[label_b].items()}
         },
         "pairwise_comparison": {
             "semantic_similarity": direct_similarity,
-            "unigram_jaccard": score_uni,
-            "bigram_jaccard": score_bi,
             "trigram_jaccard": score_tri,
-            "bow_cosine": score_bow,
-            f"unigram_coverage_{label_a}_by_{label_b}": score_uni_a_by_b,
-            f"bigram_coverage_{label_a}_by_{label_b}": score_bi_a_by_b,
-            f"trigram_coverage_{label_a}_by_{label_b}": score_tri_a_by_b,
-            f"unigram_coverage_{label_b}_by_{label_a}": score_uni_b_by_a,
-            f"bigram_coverage_{label_b}_by_{label_a}": score_bi_b_by_a,
-            f"trigram_coverage_{label_b}_by_{label_a}": score_tri_b_by_a,
+            "quadgram_jaccard": score_quad, # Added quadgram
         },
         "background_corpus": {
             "file": BACKGROUND_FILE,
-            "num_paragraphs_used": len(background_data),
+            "num_paragraphs_used": len(background_data), # This already reflects filtering
             "token_limit_min": MIN_TOKEN_LIMIT,
             "token_limit_max": MAX_TOKEN_LIMIT
         },
         "model": MODEL_NAME
     }
-    
+    # --- END MODIFICATION ---
+
     results_file = os.path.join(OUTPUT_DIR, "comparison_results.json")
     with open(results_file, 'w', encoding='utf-8') as f:
         # A simple numpy-safe encoder
         class NpEncoder(json.JSONEncoder):
             def default(self, obj):
-                if isinstance(obj, (np.integer, np.int64)):
+                if isinstance(obj, (np.integer, np.int_)): # Corrected type
                     return int(obj)
-                if isinstance(obj, (np.floating, np.float32, np.float64)):
+                if isinstance(obj, (np.floating, np.float_)): # Corrected type
                     return float(obj)
                 if isinstance(obj, np.ndarray):
                     return obj.tolist()
+                if isinstance(obj, (torch.Tensor)): # Handle potential tensors
+                    return obj.tolist()
+                if math.isnan(obj): # Handle NaNs explicitly if needed
+                    return None # Represent NaN as null in JSON
                 return super(NpEncoder, self).default(obj)
-        
-        json.dump(results, f, indent=2, cls=NpEncoder)
-    
+
+        # allow_nan=False ensures JSON standard compliance (no literal NaN/Infinity)
+        json.dump(results, f, indent=2, cls=NpEncoder, allow_nan=False)
+
     print(f"\n\nDetailed results saved to: {results_file}")
     print("\n" + "=" * 80)
     print("ANALYSIS COMPLETE")

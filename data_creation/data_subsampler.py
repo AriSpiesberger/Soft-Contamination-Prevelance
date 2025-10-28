@@ -23,7 +23,7 @@ PARAGRAPH_SAMPLE_SIZE = 100_000
 MIN_SENTENCE_TOKEN_LEN = 10  # Replaces MIN_SENTENCE_LEN
 MAX_SENTENCE_TOKEN_LEN = 256 # <-- NEW: Added max for sentences
 MIN_PARAGRAPH_TOKEN_LEN = 50 # Replaces MIN_PARAGRAPH_LEN
-MAX_PARAGRAPH_TOKEN_LEN = 512 # <-- NEW: Added max for paragraphs
+MAX_PARAGRAPH_TOKEN_LEN = 300 # <-- NEW: Added max for paragraphs
 
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1)
 CHUNK_SIZE = 1000
@@ -246,12 +246,12 @@ def main():
 
     # Save results
     print(f"\nSaving sentences to {OUTPUT_SENTENCES_FILE}...")
-    with open(OUTPUT_SENTENCES_FILE, 'w', encoding='utf-8') as f:
+    with open(os.path.join(DATA_DIR,OUTPUT_SENTENCES_FILE), 'w', encoding='utf-8') as f:
         for entry in sentence_sampler.get_sample():
             f.write(json.dumps(entry) + '\n')
             
     print(f"Saving paragraphs to {OUTPUT_PARAGRAPHS_FILE}...")
-    with open(OUTPUT_PARAGRAPHS_FILE, 'w', encoding='utf-8') as f:
+    with open(os.path.join(DATA_DIR,OUTPUT_PARAGRAPHS_FILE), 'w', encoding='utf-8') as f:
         for entry in paragraph_sampler.get_sample():
             f.write(json.dumps(entry) + '\n')
 
