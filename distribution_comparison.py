@@ -12,6 +12,8 @@ Changes include:
 - Added asymmetric n-gram coverage metric (Coverage = |A ∩ B| / |A|)
 - Integrated coverage metric into parallel lexical analysis pipeline
 - Added pairwise asymmetric scores and percentile rankings to final report
+- MODIFIED: Updated batching cost function to N log N scaling.
+- MODIFIED: Moved GPU-side computations to float16.
 """
 
 import os
@@ -33,18 +35,16 @@ from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel
-from utils.utilities import * 
+
+#our utils
+from utils.utilities import *
 
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
 
 # The two semantic duplicates to compare
-TEXT_1 = """An electrical device has been designed so that a power failure will occur only if both a green cable and a yellow cable make contact with the power source simultaneously. If only one cable connects to the power source, no power failure happens. According to the device's specifications, the green cable is intended to connect to the power source during normal operation, whereas the yellow cable should stay positioned elsewhere in the system. On a particular occasion, both the green cable and the yellow cable simultaneously contact the power source, resulting in a power failure.
-Did the green cable cause the power failure?
-Options:
-Yes
-No"""
+TEXT_1 =  """A system has two toggles, blue and green with multiple settings. The system is arranged in a way such that if both the blue and green are both at there max settings at the same time, then it will fail. The system does not fail if only one of blue or green are at max settings. In our set up, the designers decided that the blue toggle should be at max, and the green setting should be at some other useful setting. Today, both the blue and the green toggles are at max. The system fails. Did the blue toggle cause the system failure?"""
 
 TEXT_2 = """How would a typical person answer each of the following questions about causation? A machine is set up in such a way that it will short circuit if both the black wire and the red wire touch the battery at the same time. The machine will not short circuit if just one of these wires touches the battery. The black wire is designated as the one that is supposed to touch the battery, while the red wire is supposed to remain in some other part of the machine. One day, the black wire and the red wire both end up touching the battery at the same time. There is a short circuit. Did the black wire cause the short circuit? Options: - Yes - No"""
 
@@ -53,11 +53,11 @@ TEXT_LABELS = ["Duplicate", "original"] #plotting, labeling
 
 BACKGROUND_FILE = r"data/random_paragraphs.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
 OUTPUT_DIR = "duplicate_comparison" #our dir here
-MODEL_NAME = 'Qwen/Qwen3-Embedding-0.6B' 
+MODEL_NAME = 'Qwen/Qwen3-Embedding-0.6B'
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
 
 # Acceleration parameters
-TARGET_TOKENS_PER_BATCH = 8000  # Total tokens to process per batch
+TARGET_TOKENS_PER_BATCH = 8000  # Total tokens to process per batch (B * L)
 MAX_BATCH_SIZE = 512  # Upper limit to prevent edge cases
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1) #utilization for computational intensive tasks (BOW, n-gram)
 LEXICAL_CHUNK_SIZE = 1000 #bundle size per cpu
@@ -71,127 +71,155 @@ LEXICAL_CHUNK_SIZE = 1000 #bundle size per cpu
 
 def create_dynamic_batches(items_with_counts: List[tuple], target_tokens: int, max_batch_size: int):
     """
-    Creates batches based on token count AND attention complexity to maximize GPU utilization.
-    
-    Accounts for O(n²) attention cost - longer sequences are exponentially more expensive.
-    
-    Args:
-        items_with_counts: List of (token_count, text, original_index) tuples
-        target_tokens: Target total tokens per batch (linear cost baseline)
-        max_batch_size: Maximum number of items in a single batch
-    
-    Yields:
-        List of (text, original_index) tuples for each batch
+    Creates batches with N log N attention cost limits.
     """
     current_batch = []
     
     for token_count, text, original_idx in items_with_counts:
-        # Calculate what the max tokens would be if we add this item
-        # (all items in batch get padded to the longest)
-        potential_max_tokens = max(
-            max([tc for tc, _, _ in current_batch], default=0),
-            token_count
-        )
-        
-        # Linear memory cost (VRAM usage)
-        potential_memory_cost = potential_max_tokens * (len(current_batch) + 1)
-        
-        # Quadratic attention cost (compute time)
-        # For a batch of size B with sequence length L:
-        # Total ops ≈ B × L² (simplified, ignoring model dimension constant)
-        potential_attention_cost = (len(current_batch) + 1) * (potential_max_tokens ** 2)
-        
-        # We use a weighted combination:
-        # - Memory cost limits VRAM (hard constraint)
-        # - Attention cost limits throughput (soft constraint, but matters for speed)
-        # Scale attention cost down so both constraints are comparable
-        scaled_attention_cost = potential_attention_cost / potential_max_tokens
-        
-        # If adding this item would exceed our budget, yield current batch
-        if current_batch and (
-            potential_memory_cost > target_tokens or          # VRAM constraint
-            scaled_attention_cost > target_tokens * 2 or      # Compute constraint (more lenient)
-            len(current_batch) >= max_batch_size              # Safety limit
-        ):
-            yield [(text, idx) for _, text, idx in current_batch]
-            current_batch = []
+        if current_batch:
+            # Max tokens after padding
+            potential_max_len = max(
+                max([tc for tc, _, _ in current_batch]),
+                token_count
+            )
+            potential_batch_size = len(current_batch) + 1
+            
+            # --- MODIFIED: N log N cost function ---
+            # N log N memory cost model (B * L log L)
+            # This is a common cost for efficient attention mechanisms
+            safe_max_len = max(2, potential_max_len) # Avoid log(0) or log(1)
+            attention_memory_cost = potential_batch_size * (safe_max_len * math.log(safe_max_len, 2))
+            
+            # --- MODIFIED: N log N budget ---
+            # Adjust the threshold to also be N log N, based on the target_tokens budget
+            # This scales the budget down from quadratic to N log N
+            safe_target_tokens = max(2, target_tokens)
+            # The B*L budget (target_tokens) is scaled by log(B*L)
+            # This is a heuristic to relate the B*(L log L) cost to the B*L budget
+            max_allowed_attention_cost = (safe_target_tokens * math.log(safe_target_tokens, 2)) / 4 # Conservative factor
+            # --- End modification ---
+            
+            if (attention_memory_cost > max_allowed_attention_cost or 
+                potential_batch_size >= max_batch_size):
+                yield [(text, idx) for _, text, idx in current_batch]
+                current_batch = []
         
         current_batch.append((token_count, text, original_idx))
     
-    # Yield remaining items
     if current_batch:
         yield [(text, idx) for _, text, idx in current_batch]
 
-
 def load_and_embed_background_data(
-    filepath: str, tokenizer, model, device: str
+    filepath: str, 
+    tokenizer, 
+    model, 
+    device: str,
+    min_tokens: int = 0,
+    max_tokens: int = float('inf')
 ) -> List[Dict[str, Any]]:
     """
-    Load background paragraphs from JSONL file and compute embeddings if needed.
+    Load background paragraphs from JSONL file, FILTER BY TOKEN RANGE,
+    and compute/cache embeddings for items missing them.
+    
+    This function UPDATES the original file (e.g., BACKGROUND_FILE)
+    with any new token counts or embeddings it computes.
+    
+    It returns a list filtered by min_tokens/max_tokens for the current run.
     """
     if not os.path.exists(filepath):
         print(f"Error: Background file not found: {filepath}", file=sys.stderr)
         sys.exit(1)
     
-    background_data = []
-    to_embed_info = []
-    needs_rewrite = False
+    all_data_from_file = [] # Holds *all* data for rewrite
+    filtered_background_data = [] # Holds *filtered* data for return
+    to_embed_info = []   # Holds items that need embedding
     
-    print(f"Loading background data from {filepath}...")
+    needs_rewrite = False # Flag to track if file update is needed
+    total_lines_scanned = 0
+    total_lines_filtered_out = 0
+    
+    print(f"Loading and filtering background data from {filepath}...")
+    print(f"Applying token filter for this run: {min_tokens} <= tokens <= {max_tokens}")
+    
     with open(filepath, 'r', encoding='utf-8') as f:
         for i, line in enumerate(tqdm(f, desc="Scanning background file")):
+            total_lines_scanned += 1
             try:
                 data = json.loads(line)
                 
-                # Calculate token count if not present
+                # --- Token Count Calculation ---
                 token_count = data.get('token_count')
                 if token_count is None:
                     token_count = len(tokenizer.tokenize(data['text']))
+                    data['token_count'] = token_count
+                    needs_rewrite = True # Need to save the new token count
                 
-                data['token_count'] = token_count
-                background_data.append(data)
+                # Add to the master list for potential rewrite
+                all_data_from_file.append(data)
                 
+                # --- Filtering Logic for this Run ---
+                if not (min_tokens <= token_count <= max_tokens):
+                    total_lines_filtered_out += 1
+                    continue # Skip this item for the *current analysis*
+                
+                # If we are here, the data is within the token range
+                # Add it to the list we will return and use
+                filtered_background_data.append(data)
+                
+                # Check if this model's embedding is present
                 if EMBEDDER_KEY not in data:
-                    needs_rewrite = True
-                    to_embed_info.append((token_count, data['text'], i))
-                    
+                    needs_rewrite = True # Need to save the new embedding
+                    # Get the index from the *master* list
+                    original_index = len(all_data_from_file) - 1
+                    to_embed_info.append((token_count, data['text'], original_index))
+                
             except json.JSONDecodeError:
                 print(f"Skipping malformed JSON at line {i+1}")
     
-    if not background_data:
-        print(f"Error: No data loaded from {filepath}", file=sys.stderr)
-        sys.exit(1)
+    print(f"Scan complete. Scanned {total_lines_scanned:,} lines.")
+    print(f"Filtered out {total_lines_filtered_out:,} lines (outside token range).")
+    print(f"Using {len(filtered_background_data):,} lines for this analysis.")
     
-    if needs_rewrite:
-        print(f"Found {len(to_embed_info)} paragraphs missing embeddings.")
+    if not filtered_background_data and total_lines_scanned > 0:
+        print(f"Warning: No data loaded from {filepath} after filtering.", file=sys.stderr)
+        print("Continuing with no background data, but this is unusual.")
+        # We don't exit here, because we might still need to rewrite the file
+        
+    # --- Start Embedding (if anything is missing) ---
+    if to_embed_info:
+        print(f"Found {len(to_embed_info)} paragraphs missing required embeddings (within range).")
+        print("Computing and caching embeddings...")
         
         # Sort by token length for efficient batching
-        print("Sorting by token length for optimal batching...")
         to_embed_info.sort(key=lambda x: x[0])
         
         # Create dynamic batches based on token budget
-        print(f"Creating dynamic batches (target: {TARGET_TOKENS_PER_BATCH} tokens/batch)...")
         batches = list(create_dynamic_batches(
             to_embed_info,
             TARGET_TOKENS_PER_BATCH,
             MAX_BATCH_SIZE
         ))
         
-        print(f"Created {len(batches)} dynamic batches.")
-        print(f"  Batch sizes range: {min(len(b) for b in batches)} to {max(len(b) for b in batches)}")
+        if not batches and to_embed_info: 
+             batches = [[(text, idx) for _, text, idx in to_embed_info]]
+
+        if not batches:
+             print("No batches to embed.")
+        else:
+            print(f"Created {len(batches)} dynamic batches.")
+            print(f"   Batch sizes range: {min(len(b) for b in batches)} to {max(len(b) for b in batches)}")
         
-        print("Computing embeddings with dynamic batching...")
         with torch.no_grad():
             for batch_data in tqdm(batches, desc="Embedding batches"):
                 batch_texts = [text for text, _ in batch_data]
                 batch_indices = [idx for _, idx in batch_data]
-                max_len = getattr(model.config, 'max_position_embeddings', 10000)
-                # print(max_len) # Removed verbose print
+                max_len = getattr(model.config, 'max_position_embeddings', 1024)
+                
                 encoded_input = tokenizer(
                     batch_texts, 
                     padding=True, 
                     truncation=True, 
-                    max_length=max_len,  # <-- ADD THIS
+                    max_length=max_len,
                     return_tensors='pt'
                 )
                 encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
@@ -204,14 +232,19 @@ def load_and_embed_background_data(
                 
                 cpu_embeddings = batch_embeddings.cpu().numpy().tolist()
                 
-                for j, original_idx in enumerate(batch_indices):
-                    background_data[original_idx][EMBEDDER_KEY] = cpu_embeddings[j]
+                for j, original_index in enumerate(batch_indices):
+                    # 'original_index' is the index in the *master* 'all_data_from_file' list
+                    all_data_from_file[original_index][EMBEDDER_KEY] = cpu_embeddings[j]
         
-        print("Embedding complete. Updating background file...")
+        print("Embedding complete. Caching results to disk...")
+    
+    # --- Rewrite the file if needed ---
+    if needs_rewrite:
+        print(f"Updating {filepath} with new token counts/embeddings...")
         temp_filepath = filepath + ".tmp"
         try:
             with open(temp_filepath, 'w', encoding='utf-8') as f_out:
-                for data in background_data:
+                for data in all_data_from_file:
                     f_out.write(json.dumps(data) + '\n')
             shutil.move(temp_filepath, filepath)
             print(f"Successfully updated {filepath}")
@@ -221,17 +254,18 @@ def load_and_embed_background_data(
                 os.remove(temp_filepath)
             sys.exit(1)
     else:
-        print("All background paragraphs already have embeddings.")
-    
-    return background_data
-
+        print("No file update needed. All required data was already cached.")
+        
+    return filtered_background_data
 
 def get_text_token_counts(
-    texts: List[str], labels: List[str], tokenizer, model
+    texts: List[str], labels: List[str], tokenizer
 ) -> Dict[str, int]:
     """Calculate token counts for texts of interest (respecting max_length)."""
     print("Calculating token counts for texts of interest...")
-    max_len = getattr(model.config, 'max_position_embeddings', 10000)
+    # This should ideally use model.config.max_position_embeddings
+    # We pass the model to main, but not here. Using a safe default.
+    max_len = 8192 
     return {
         labels[i]: len(tokenizer.tokenize(
             text,
@@ -247,8 +281,8 @@ def get_text_embeddings(
     texts: List[str], tokenizer, model, device: str
 ) -> torch.Tensor:
     """Compute embeddings for texts of interest."""
-    print("Computing embeddings for texts of interest...")
-    max_len = getattr(model.config, 'max_position_embeddings', 10000)
+    print("Computing embeddings for texts of interest (in float16)...")
+    max_len = getattr(model.config, 'max_position_embeddings', 8192)
     with torch.no_grad():
         encoded_input = tokenizer(
             texts,
@@ -259,6 +293,7 @@ def get_text_embeddings(
         )
         encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
         model_output = model(**encoded_input)
+        # Embeddings will be float16 since model is float16
         embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
     print("Done.")
     return embeddings
@@ -274,29 +309,37 @@ def compute_all_semantic_scores(
     device: str
 ) -> List[List[float]]:
     """
-    Compute all N*M semantic scores via single matrix multiplication.
+    Compute all N*M semantic scores via single matrix multiplication in float16.
     """
-    print("Computing all semantic scores (vectorized)...")
+    print("Computing all semantic scores (vectorized in float16)...")
     
-    # Extract background embeddings
+    # Extract background embeddings (which are Python floats)
     bg_vectors = [entry[EMBEDDER_KEY] for entry in background_data]
-    bg_embeddings_gpu = torch.tensor(bg_vectors, dtype=torch.float32, device=device)
+    
+    # --- MODIFIED: Cast background embeddings to float16 ---
+    bg_embeddings_gpu = torch.tensor(bg_vectors, dtype=torch.float16, device=device)
+    
+    # --- START: ADDED FIX ---
+    # Explicitly cast text_embeddings to float16 to match.
+    # This undoes any up-casting that mean_pooling might have done.
+    text_embeddings_gpu = text_embeddings.to(dtype=torch.float16, device=device)
+    # --- END: ADDED FIX ---
     
     # Normalize both matrices
-    text_norm = F.normalize(text_embeddings, p=2, dim=1)
+    text_norm = F.normalize(text_embeddings_gpu, p=2, dim=1) # Use the new _gpu var
     bg_norm = F.normalize(bg_embeddings_gpu, p=2, dim=1)
     
     # Single matrix multiplication: (N, D) @ (D, M) -> (N, M)
-    print("Performing matrix multiplication on GPU...")
+    print("Performing matrix multiplication on GPU (float16)...")
     all_sim_scores = torch.matmul(text_norm, bg_norm.T)
     
     # Move results to CPU
     print("Moving results to CPU...")
+    # .tolist() converts np.float16 -> python float
     all_sim_scores_cpu = all_sim_scores.cpu().numpy().tolist()
     
     print("Semantic score computation complete.")
     return all_sim_scores_cpu
-
 
 # =============================================================================
 # LEXICAL SIMILARITY (CPU PARALLELIZED)
@@ -398,7 +441,10 @@ def compute_all_lexical_scores(
     }
     
     num_chunks = math.ceil(len(background_data) / LEXICAL_CHUNK_SIZE)
-    
+    if num_chunks == 0:
+        print("No background data to process for lexical scores.")
+        return all_lexical_dists
+
     with multiprocessing.Pool(
         processes=NUM_WORKERS,
         initializer=initialize_worker_lexical,
@@ -523,6 +569,10 @@ def plot_bivariate_distribution(
     try:
         bg_token_counts = [max(1, d.get('token_count', 1)) for d in background_data]
         
+        if not bg_token_counts or not semantic_scores:
+             print(f"Skipping bivariate plot for {label}: no background data.")
+             return
+
         df = pd.DataFrame({
             "semantic_score": semantic_scores,
             "token_count": bg_token_counts
@@ -600,6 +650,12 @@ def plot_bivariate_distribution(
         print(f"Error generating bivariate plot for {label}: {e}", file=sys.stderr)
 
 
+
+
+
+# =============================================================================
+# MAIN EXECUTION
+# =============================================================================
 # =============================================================================
 # MAIN EXECUTION
 # =============================================================================
@@ -616,13 +672,19 @@ def main():
     # Setup
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Using device: {device}\n")
+    # --- MODIFIED: Use float16 only on CUDA ---
+    use_fp16 = device == "cuda"
+    torch_dtype = torch.float16 if use_fp16 else torch.float32
+    print(f"Using device: {device} (FP16: {use_fp16})\n")
     
     # Load model
     try:
         print(f"Loading model: {MODEL_NAME}...")
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        model = AutoModel.from_pretrained(MODEL_NAME)
+        model = AutoModel.from_pretrained(
+            MODEL_NAME,
+            torch_dtype=torch_dtype # Load model in specified dtype
+        )
         model.to(device)
         model.eval()
         print("Model loaded successfully.\n")
@@ -630,11 +692,31 @@ def main():
         print(f"Error loading model: {e}", file=sys.stderr)
         return
     
-    # Load background data
+    # --- START: Modified data loading ---
+    # Define filter range
+    MIN_TOKEN_LIMIT = 10  
+    MAX_TOKEN_LIMIT = 200 # Using the 200 from your last file
+    
+    # Load, filter, and embed background data simultaneously
+    # The returned 'background_data' is ALREADY filtered.
     background_data = load_and_embed_background_data(
-        BACKGROUND_FILE, tokenizer, model, device
+        BACKGROUND_FILE, 
+        tokenizer, 
+        model, 
+        device,
+        min_tokens=MIN_TOKEN_LIMIT,
+        max_tokens=MAX_TOKEN_LIMIT
     )
-    print(f"Loaded {len(background_data):,} background paragraphs.\n")
+    
+    # Check if filtering left anything
+    if not background_data:
+        print(f"Error: No background data remaining after filtering (range {MIN_TOKEN_LIMIT}-{MAX_TOKEN_LIMIT} tokens).", file=sys.stderr)
+        print("Please check your BACKGROUND_FILE or adjust the token limits.", file=sys.stderr)
+        return
+        
+    print(f"Successfully prepared {len(background_data):,} paragraphs for analysis.\n")
+    # --- END: Modified data loading ---
+    
     
     # Embed texts of interest
     text_embeddings = get_text_embeddings(TEXTS_OF_INTEREST, tokenizer, model, device)
@@ -642,9 +724,10 @@ def main():
     
     # Calculate direct pairwise similarity
     print(f"\nCalculating direct similarity between {TEXT_LABELS[0]} and {TEXT_LABELS[1]}...")
+    # --- MODIFIED: Ensure comparison is done in float32 for stability ---
     direct_similarity = F.cosine_similarity(
-        text_embeddings[0],
-        text_embeddings[1],
+        text_embeddings[0].to(torch.float32), # Cast to float32
+        text_embeddings[1].to(torch.float32), # Cast to float32
         dim=0
     ).item()
     print(f"Direct semantic similarity: {direct_similarity:.6f}\n")
@@ -701,12 +784,12 @@ def main():
     text_b = TEXTS_OF_INTEREST[1] # original
     
     print(f"\nDirect Comparison: {label_a} vs {label_b}")
-    print(f"  Token Count {label_a}: {text_token_counts[label_a]}")
-    print(f"  Token Count {label_b}: {text_token_counts[label_b]}")
-    print(f"  Semantic Similarity: {direct_similarity:.6f}")
+    print(f"   Token Count {label_a}: {text_token_counts[label_a]}")
+    print(f"   Token Count {label_b}: {text_token_counts[label_b]}")
+    print(f"   Semantic Similarity: {direct_similarity:.6f}")
     
     # Calculate lexical similarities (Symmetric)
-    print("\n  --- Symmetric Lexical Scores ---")
+    print("\n   --- Symmetric Lexical Scores ---")
     score_uni = calculate_ngram_jaccard_similarity(
         text_a, text_b, 1, tokenizer
     )
@@ -720,50 +803,56 @@ def main():
         text_a, text_b, tokenizer
     )
     
-    print(f"  Unigram Jaccard: {score_uni:.6f}")
-    print(f"  Bigram Jaccard: {score_bi:.6f}")
-    print(f"  Trigram Jaccard: {score_tri:.6f}")
-    print(f"  BoW Cosine: {score_bow:.6f}")
+    print(f"   Unigram Jaccard: {score_uni:.6f}")
+    print(f"   Bigram Jaccard: {score_bi:.6f}")
+    print(f"   Trigram Jaccard: {score_tri:.6f}")
+    print(f"   BoW Cosine: {score_bow:.6f}")
 
     # Calculate lexical coverage (Asymmetric)
-    print(f"\n  --- Asymmetric Coverage ({label_a} by {label_b}) ---")
+    print(f"\n   --- Asymmetric Coverage ({label_a} by {label_b}) ---")
     score_uni_a_by_b = calculate_ngram_coverage(text_a, text_b, 1, tokenizer)
     score_bi_a_by_b = calculate_ngram_coverage(text_a, text_b, 2, tokenizer)
     score_tri_a_by_b = calculate_ngram_coverage(text_a, text_b, 3, tokenizer)
-    print(f"  Unigram Cov ({label_a} by {label_b}): {score_uni_a_by_b:.6f}  (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_a}\"|)")
-    print(f"  Bigram Cov ({label_a} by {label_b}): {score_bi_a_by_b:.6f}")
-    print(f"  Trigram Cov ({label_a} by {label_b}): {score_tri_a_by_b:.6f}")
+    print(f"   Unigram Cov ({label_a} by {label_b}): {score_uni_a_by_b:.6f}   (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_a}\"|)")
+    print(f"   Bigram Cov ({label_a} by {label_b}): {score_bi_a_by_b:.6f}")
+    print(f"   Trigram Cov ({label_a} by {label_b}): {score_tri_a_by_b:.6f}")
 
-    print(f"\n  --- Asymmetric Coverage ({label_b} by {label_a}) ---")
+    print(f"\n   --- Asymmetric Coverage ({label_b} by {label_a}) ---")
     score_uni_b_by_a = calculate_ngram_coverage(text_b, text_a, 1, tokenizer)
     score_bi_b_by_a = calculate_ngram_coverage(text_b, text_a, 2, tokenizer)
     score_tri_b_by_a = calculate_ngram_coverage(text_b, text_a, 3, tokenizer)
-    print(f"  Unigram Cov ({label_b} by {label_a}): {score_uni_b_by_a:.6f}  (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_b}\"|)")
-    print(f"  Bigram Cov ({label_b} by {label_a}): {score_bi_b_by_a:.6f}")
-    print(f"  Trigram Cov ({label_b} by {label_a}): {score_tri_b_by_a:.6f}")
+    print(f"   Unigram Cov ({label_b} by {label_a}): {score_uni_b_by_a:.6f}   (|\"{label_a}\" ∩ \"{label_b}\"| / |\"{label_b}\"|)")
+    print(f"   Bigram Cov ({label_b} by {label_a}): {score_bi_b_by_a:.6f}")
+    print(f"   Trigram Cov ({label_b} by {label_a}): {score_tri_b_by_a:.6f}")
     
+    # Helper for safe percentile calculation
+    def safe_percentile(scores: List[float], value: float) -> float:
+        if not scores:
+            return 0.0
+        return percentileofscore(scores, value)
+
     # Percentile rankings for Text A's view
     print(f"\nPercentile Rankings (from {label_a}'s perspective vs Background):")
-    print(f"  Semantic: {percentileofscore(semantic_distributions[0], direct_similarity):.2f}th percentile")
-    print(f"  Unigram Jaccard: {percentileofscore(lexical_distributions[label_a]['unigram'], score_uni):.2f}th percentile")
-    print(f"  Bigram Jaccard: {percentileofscore(lexical_distributions[label_a]['bigram'], score_bi):.2f}th percentile")
-    print(f"  Trigram Jaccard: {percentileofscore(lexical_distributions[label_a]['trigram'], score_tri):.2f}th percentile")
-    print(f"  BoW Cosine: {percentileofscore(lexical_distributions[label_a]['bow_cosine'], score_bow):.2f}th percentile")
-    print(f"  Unigram Coverage (of {label_a}): {percentileofscore(lexical_distributions[label_a]['unigram_coverage'], score_uni_a_by_b):.2f}th percentile")
-    print(f"  Bigram Coverage (of {label_a}): {percentileofscore(lexical_distributions[label_a]['bigram_coverage'], score_bi_a_by_b):.2f}th percentile")
-    print(f"  Trigram Coverage (of {label_a}): {percentileofscore(lexical_distributions[label_a]['trigram_coverage'], score_tri_a_by_b):.2f}th percentile")
+    print(f"   Semantic: {safe_percentile(semantic_distributions[0], direct_similarity):.2f}th percentile")
+    print(f"   Unigram Jaccard: {safe_percentile(lexical_distributions[label_a]['unigram'], score_uni):.2f}th percentile")
+    print(f"   Bigram Jaccard: {safe_percentile(lexical_distributions[label_a]['bigram'], score_bi):.2f}th percentile")
+    print(f"   Trigram Jaccard: {safe_percentile(lexical_distributions[label_a]['trigram'], score_tri):.2f}th percentile")
+    print(f"   BoW Cosine: {safe_percentile(lexical_distributions[label_a]['bow_cosine'], score_bow):.2f}th percentile")
+    print(f"   Unigram Coverage (of {label_a}): {safe_percentile(lexical_distributions[label_a]['unigram_coverage'], score_uni_a_by_b):.2f}th percentile")
+    print(f"   Bigram Coverage (of {label_a}): {safe_percentile(lexical_distributions[label_a]['bigram_coverage'], score_bi_a_by_b):.2f}th percentile")
+    print(f"   Trigram Coverage (of {label_a}): {safe_percentile(lexical_distributions[label_a]['trigram_coverage'], score_tri_a_by_b):.2f}th percentile")
 
     
     # Percentile rankings for Text B's view
     print(f"\nPercentile Rankings (from {label_b}'s perspective vs Background):")
-    print(f"  Semantic: {percentileofscore(semantic_distributions[1], direct_similarity):.2f}th percentile")
-    print(f"  Unigram Jaccard: {percentileofscore(lexical_distributions[label_b]['unigram'], score_uni):.2f}th percentile")
-    print(f"  Bigram Jaccard: {percentileofscore(lexical_distributions[label_b]['bigram'], score_bi):.2f}th percentile")
-    print(f"  Trigram Jaccard: {percentileofscore(lexical_distributions[label_b]['trigram'], score_tri):.2f}th percentile")
-    print(f"  BoW Cosine: {percentileofscore(lexical_distributions[label_b]['bow_cosine'], score_bow):.2f}th percentile")
-    print(f"  Unigram Coverage (of {label_b}): {percentileofscore(lexical_distributions[label_b]['unigram_coverage'], score_uni_b_by_a):.2f}th percentile")
-    print(f"  Bigram Coverage (of {label_b}): {percentileofscore(lexical_distributions[label_b]['bigram_coverage'], score_bi_b_by_a):.2f}th percentile")
-    print(f"  Trigram Coverage (of {label_b}): {percentileofscore(lexical_distributions[label_b]['trigram_coverage'], score_tri_b_by_a):.2f}th percentile")
+    print(f"   Semantic: {safe_percentile(semantic_distributions[1], direct_similarity):.2f}th percentile")
+    print(f"   Unigram Jaccard: {safe_percentile(lexical_distributions[label_b]['unigram'], score_uni):.2f}th percentile")
+    print(f"   Bigram Jaccard: {safe_percentile(lexical_distributions[label_b]['bigram'], score_bi):.2f}th percentile")
+    print(f"   Trigram Jaccard: {safe_percentile(lexical_distributions[label_b]['trigram'], score_tri):.2f}th percentile")
+    print(f"   BoW Cosine: {safe_percentile(lexical_distributions[label_b]['bow_cosine'], score_bow):.2f}th percentile")
+    print(f"   Unigram Coverage (of {label_b}): {safe_percentile(lexical_distributions[label_b]['unigram_coverage'], score_uni_b_by_a):.2f}th percentile")
+    print(f"   Bigram Coverage (of {label_b}): {safe_percentile(lexical_distributions[label_b]['bigram_coverage'], score_bi_b_by_a):.2f}th percentile")
+    print(f"   Trtam Coverage (of {label_b}): {safe_percentile(lexical_distributions[label_b]['trigram_coverage'], score_tri_b_by_a):.2f}th percentile")
 
     
     # Save detailed results
@@ -797,14 +886,27 @@ def main():
         },
         "background_corpus": {
             "file": BACKGROUND_FILE,
-            "num_paragraphs": len(background_data)
+            "num_paragraphs_used": len(background_data),
+            "token_limit_min": MIN_TOKEN_LIMIT,
+            "token_limit_max": MAX_TOKEN_LIMIT
         },
         "model": MODEL_NAME
     }
     
     results_file = os.path.join(OUTPUT_DIR, "comparison_results.json")
     with open(results_file, 'w', encoding='utf-8') as f:
-        json.dump(results, f, indent=2)
+        # A simple numpy-safe encoder
+        class NpEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, (np.integer, np.int64)):
+                    return int(obj)
+                if isinstance(obj, (np.floating, np.float32, np.float64)):
+                    return float(obj)
+                if isinstance(obj, np.ndarray):
+                    return obj.tolist()
+                return super(NpEncoder, self).default(obj)
+        
+        json.dump(results, f, indent=2, cls=NpEncoder)
     
     print(f"\n\nDetailed results saved to: {results_file}")
     print("\n" + "=" * 80)

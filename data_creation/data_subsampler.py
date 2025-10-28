@@ -15,12 +15,15 @@ from tqdm import tqdm
 from transformers import AutoTokenizer
 
 # --- Configuration ---
-DATA_DIR = r"C:\Users\arisp\Documents\Research\SDTD\OLMO_MIX_subsample"
+DATA_DIR = r"C:\Users\arisp\Documents\Research\SDTD_Main\data"
 SENTENCE_SAMPLE_SIZE = 100_000
 PARAGRAPH_SAMPLE_SIZE = 100_000
 
-MIN_SENTENCE_LEN = 20
-MIN_PARAGRAPH_LEN = 100  # Consider lowering this if needed
+# --- MODIFIED: Switched to token-based filtering ---
+MIN_SENTENCE_TOKEN_LEN = 10  # Replaces MIN_SENTENCE_LEN
+MAX_SENTENCE_TOKEN_LEN = 256 # <-- NEW: Added max for sentences
+MIN_PARAGRAPH_TOKEN_LEN = 50 # Replaces MIN_PARAGRAPH_LEN
+MAX_PARAGRAPH_TOKEN_LEN = 512 # <-- NEW: Added max for paragraphs
 
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1)
 CHUNK_SIZE = 1000
@@ -28,7 +31,6 @@ CHUNK_SIZE = 1000
 TOKENIZER_NAME = "allenai/OLMo-7B"
 OUTPUT_SENTENCES_FILE = "random_sentences.jsonl"
 OUTPUT_PARAGRAPHS_FILE = "random_paragraphs.jsonl"
-
 # --- Globals for worker processes ---
 worker_tokenizer = None
 
@@ -95,13 +97,19 @@ def process_line_chunk(chunk):
             
             for p in paragraphs:
                 p_clean = p.strip()
-                if len(p_clean) < MIN_PARAGRAPH_LEN:
+                if not p_clean:
                     continue
                 
-                # Process paragraph
+                # --- MODIFIED: Calculate token size *before* filtering ---
                 p_token_size = len(
                     worker_tokenizer.encode(p_clean, add_special_tokens=False)
                 )
+                
+                # --- MODIFIED: New token-based filter ---
+                if not (MIN_PARAGRAPH_TOKEN_LEN <= p_token_size <= MAX_PARAGRAPH_TOKEN_LEN):
+                    continue
+                
+                # Process paragraph (we already have the token size)
                 p_id = hashlib.sha256(p_clean.encode('utf-8')).hexdigest()
                 p_data = {
                     "id": p_id,
@@ -111,16 +119,22 @@ def process_line_chunk(chunk):
                 }
                 local_paragraphs.append(p_data)
 
-                # Process sentences within paragraph
+                # Process sentences within the valid paragraph
                 sentences = nltk.sent_tokenize(p_clean)
                 for s in sentences:
                     s_clean = s.strip()
-                    if len(s_clean) < MIN_SENTENCE_LEN:
+                    if not s_clean:
                         continue
                     
+                    # --- MODIFIED: Calculate token size *before* filtering ---
                     s_token_size = len(
                         worker_tokenizer.encode(s_clean, add_special_tokens=False)
                     )
+
+                    # --- MODIFIED: New token-based filter ---
+                    if not (MIN_SENTENCE_TOKEN_LEN <= s_token_size <= MAX_SENTENCE_TOKEN_LEN):
+                        continue
+                    
                     s_id = hashlib.sha256(s_clean.encode('utf-8')).hexdigest()
                     s_data = {
                         "id": s_id,
@@ -136,7 +150,6 @@ def process_line_chunk(chunk):
             print(f"Error in worker {os.getpid()}: {e}", file=sys.stderr)
 
     return local_sentences, local_paragraphs
-
 
 class ReservoirSampler:
     """
