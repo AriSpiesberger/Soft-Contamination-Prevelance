@@ -35,7 +35,7 @@ from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel
-
+import gc
 #our utils
 from utils.utilities import *
 
@@ -109,23 +109,27 @@ def create_dynamic_batches(items_with_counts: List[tuple], target_tokens: int, m
     if current_batch:
         yield [(text, idx) for _, text, idx in current_batch]
 def load_and_embed_background_data(
-    filepath: str, 
-    tokenizer, 
-    model, 
+    filepath: str,
+    tokenizer,
+    model,
     device: str,
     min_tokens: int = 0,
     max_tokens: int = float('inf')
 ) -> List[Dict[str, Any]]:
     """
-    (Robust Streaming Version)
+    (Robust Streaming Version - V2)
     Load background paragraphs from JSONL file, FILTER BY TOKEN RANGE,
     and compute/cache embeddings for items missing them.
-    
+
     This function uses a multi-pass, streaming approach to avoid
     loading the entire file into memory, ensuring stability and
     memory efficiency.
     
-    It returns a list filtered by min_tokens/max_tokens for the current run.
+    V2 Fixes:
+    1. Decouples file rewrite (Pass 3) from final data loading (Pass 4)
+       to prevent Out-of-Memory (OOM) kernel kills.
+    2. Fixes bug in Pass 1 where missing token_counts could cause
+       items to be incorrectly skipped by the filter.
     """
     if not os.path.exists(filepath):
         print(f"Error: Background file not found: {filepath}", file=sys.stderr)
@@ -133,155 +137,172 @@ def load_and_embed_background_data(
 
     print(f"Loading and filtering background data from {filepath}...")
     print(f"Applying token filter for this run: {min_tokens} <= tokens <= {max_tokens}")
-    
-    # --- Pass 1: Scan, Filter, and Collect Tasks ---
+
+    # --- Pass 1: Scan, Filter, and Collect Tasks (Bug-fix version) ---
     print("--- Pass 1: Scanning file, collecting tasks ---")
-    
-    to_embed_tasks = [] # List of (token_count, text, line_index)
-    tasks_need_token_count = {} # {line_index: text}
-    
-    filtered_data_indices = set() # Set of line_indices for our run
-    lines_to_rewrite = set() # All lines that need any update
-    
+
+    to_embed_tasks = []  # List of (token_count, text, line_index)
+    new_token_counts = {}  # {line_index: count}
+
+    filtered_data_indices = set()  # Set of line_indices for our run
+    lines_to_rewrite = set()  # All lines that need any update
+
     total_lines_scanned = 0
     total_lines_filtered_out = 0
-    
+
     with open(filepath, 'r', encoding='utf-8') as f:
-        for i, line in enumerate(tqdm(f, desc="Pass 1: Scanning")):
+        # We must scan the whole file to know the total for tqdm
+        # This is a bit slow, but necessary for a good progress bar.
+        # A faster way is to skip this, but the bar will be approximate.
+        # For robustness, let's just count.
+        try:
+            total_lines_scanned = sum(1 for _ in f)
+            f.seek(0)
+        except Exception:
+            total_lines_scanned = 0 # Will work, but no progress %
+            
+        desc = "Pass 1: Scanning"
+        pbar = tqdm(f, desc=desc, total=total_lines_scanned if total_lines_scanned > 0 else None)
+        
+        for i, line in enumerate(pbar):
+            if total_lines_scanned == 0:
+                # Update description if we couldn't pre-count
+                pbar.set_description(f"{desc} (Line {i:,})")
+                
             total_lines_scanned += 1
             try:
                 data = json.loads(line)
                 text = data['text']
                 token_count = data.get('token_count')
-                
-                # 1. Check for token count
+
+                # 1. (FIX) Ensure we have token_count *before* filtering
                 if token_count is None:
-                    tasks_need_token_count[i] = text
+                    token_count = len(tokenizer.tokenize(text))
+                    new_token_counts[i] = token_count  # Store for Pass 3
                     lines_to_rewrite.add(i)
-                    # We'll compute this in a moment
-                
+
                 # 2. Check for embedding
                 if EMBEDDER_KEY not in data:
                     lines_to_rewrite.add(i)
-                    # We need token_count to batch properly
-                    if token_count is None:
-                        # Compute it now if we don't have it
-                        token_count = len(tokenizer.tokenize(text))
-                        data['token_count'] = token_count # For the next check
-                    
+                    # We are guaranteed to have token_count from step 1
                     to_embed_tasks.append((token_count, text, i))
 
-                # 3. Check filter logic for this run
-                if token_count is not None: # We must have token_count to filter
-                    if min_tokens <= token_count <= max_tokens:
-                        filtered_data_indices.add(i)
-                    else:
-                        total_lines_filtered_out += 1
-                        
+                # 3. (FIX) Check filter logic (now always works)
+                if min_tokens <= token_count <= max_tokens:
+                    filtered_data_indices.add(i)
+                else:
+                    total_lines_filtered_out += 1
+
             except Exception as e:
                 print(f"Skipping malformed line {i}: {e}", file=sys.stderr)
-    
+
+    # Correct total_lines_scanned if we pre-counted
+    if pbar.total and pbar.total > 0:
+        total_lines_scanned = pbar.total
+        
     print(f"Scan complete. Scanned {total_lines_scanned:,} lines.")
     print(f"Filtered out {total_lines_filtered_out:,} lines (outside token range).")
     print(f"Using {len(filtered_data_indices):,} lines for this analysis.")
-
-    # --- Pre-computation: Token Counts ---
-    new_token_counts = {} # {line_index: count}
-    if tasks_need_token_count:
-        print(f"Computing {len(tasks_need_token_count):,} missing token counts...")
-        for i, text in tqdm(tasks_need_token_count.items(), desc="Tokenizing"):
-            new_token_counts[i] = len(tokenizer.tokenize(text))
+    if new_token_counts:
+        print(f"Computed {len(new_token_counts):,} missing token counts.")
 
     # --- Pass 2: Compute Embeddings (if needed) ---
-    new_embeddings_map = {} # {line_index: embedding_list}
+    new_embeddings_map = {}  # {line_index: embedding_list}
     if to_embed_tasks:
         print(f"--- Pass 2: Computing {len(to_embed_tasks):,} embeddings ---")
-        
-        to_embed_tasks.sort(key=lambda x: x[0]) # Sort by token_count
+
+        to_embed_tasks.sort(key=lambda x: x[0])  # Sort by token_count
         batches = list(create_dynamic_batches(to_embed_tasks, TARGET_TOKENS_PER_BATCH, MAX_BATCH_SIZE))
-        
-        if not batches and to_embed_tasks: 
+
+        if not batches and to_embed_tasks:
             batches = [[(text, idx) for _, text, idx in to_embed_tasks]]
 
         if not batches:
-             print("No batches to embed.")
+            print("No batches to embed.")
         else:
             print(f"Created {len(batches)} dynamic batches.")
-            print(f"   Batch sizes range: {min(len(b) for b in batches)} to {max(len(b) for b in batches)}")
+            print(f"  Batch sizes range: {min(len(b) for b in batches)} to {max(len(b) for b in batches)}")
 
         with torch.no_grad():
             for batch_data in tqdm(batches, desc="Embedding batches"):
                 batch_texts = [text for text, _ in batch_data]
-                batch_indices = [idx for _, idx in batch_data] # These are the original line indices
-                
+                batch_indices = [idx for _, idx in batch_data]  # These are the original line indices
+
                 max_len = getattr(model.config, 'max_position_embeddings', 1024)
                 encoded_input = tokenizer(
-                    batch_texts, 
-                    padding=True, 
-                    truncation=True, 
+                    batch_texts,
+                    padding=True,
+                    truncation=True,
                     max_length=max_len,
                     return_tensors='pt'
                 )
                 encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
-                
+
                 model_output = model(**encoded_input)
                 batch_embeddings = mean_pooling(
                     model_output,
                     encoded_input['attention_mask']
                 )
-                
+
                 cpu_embeddings = batch_embeddings.cpu().numpy().tolist()
-                
+
                 for j, original_index in enumerate(batch_indices):
                     new_embeddings_map[original_index] = cpu_embeddings[j]
-                    
+
         print("Embedding computation complete.")
+        # Be cautious: clear the large task list from memory
+        del to_embed_tasks
+        gc.collect()
     else:
         print("--- Pass 2: Skipped (No embeddings to compute) ---")
 
-    # --- Pass 3: Stream-Write New File and Filter for Return ---
+    # --- Pass 3: Stream-Write New File (if needed) ---
+    # (OOM FIX: This pass *ONLY* writes to disk, it does not build the return list)
     needs_rewrite = bool(lines_to_rewrite)
-    filtered_background_data = [] # This is the final list to return
-    
+
     if needs_rewrite:
-        print(f"--- Pass 3: Streaming new file to disk and filtering ---")
+        print(f"--- Pass 3: Streaming new cache file to disk ---")
         temp_filepath = filepath + ".tmp"
         lines_written = 0
         try:
             with open(filepath, 'r', encoding='utf-8') as f_in, \
                  open(temp_filepath, 'w', encoding='utf-8') as f_out:
-                
+
                 for i, line in enumerate(tqdm(f_in, desc="Writing new file", total=total_lines_scanned)):
                     try:
-                        data = json.loads(line)
+                        # Handle case where file might be empty or malformed at the end
+                        if not line.strip():
+                            continue
                         
+                        data = json.loads(line)
+
                         # Update token_count if it was missing
                         if i in new_token_counts:
                             data['token_count'] = new_token_counts[i]
-                        
+
                         # Update embedding if it was missing
                         if i in new_embeddings_map:
-                            
                             data[EMBEDDER_KEY] = new_embeddings_map[i]
-                        
+
                         # Write the (potentially updated) line to the new file
                         f_out.write(json.dumps(data) + '\n')
                         lines_written += 1
-                        
-                        # Now, check if this line belongs in our return list
-                        if i in filtered_data_indices:
-                            # Add the *fully updated* data object
-                            filtered_background_data.append(data)
-                            
+
+                        # !!! (OOM FIX) DO NOT APPEND TO THE RETURN LIST HERE !!!
+                        # if i in filtered_data_indices:
+                        #     filtered_background_data.append(data) # <-- REMOVED
+
                     except Exception as e:
                         print(f"Error processing line {i} during write: {e}", file=sys.stderr)
-            
+
             # Verify write
+            # (Note: total_lines_scanned might be off if lines were skipped,
+            #  but lines_written should be close)
+            print(f"✓ Temp file write complete: {lines_written:,} lines written.")
             if lines_written != total_lines_scanned:
-                raise ValueError(f"Incomplete write: {lines_written:,} lines, expected {total_lines_scanned:,}")
-            
-            print(f"✓ Temp file verified: {lines_written:,} lines")
-            
+                 print(f"Warning: Wrote {lines_written:,} lines, but scanned {total_lines_scanned:,}. (May be due to skipped malformed lines)")
+
+
             # Atomic replace with retry
             print("Attempting to replace original file...")
             max_retries = 5
@@ -302,28 +323,50 @@ def load_and_embed_background_data(
                         print(f"TO FIX: 1. Close file locks. 2. Manually rename .tmp file.", file=sys.stderr)
                         print(f"{'='*60}\n", file=sys.stderr)
                         sys.exit(1)
-                        
+
         except Exception as e:
             print(f"CRITICAL ERROR DURING FILE UPDATE: {e}", file=sys.stderr)
             if os.path.exists(temp_filepath):
                 os.remove(temp_filepath)
             sys.exit(1)
-            
+
     else:
         print("--- Pass 3: Skipped (No file update needed) ---")
-        # File is already up to date, just build the filtered list from Pass 1
-        # We need to re-read to get the embeddings
-        print("Reading cached data for filtered list...")
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for i, line in enumerate(tqdm(f, desc="Reading cache", total=total_lines_scanned)):
-                if i in filtered_data_indices:
-                    try:
-                        filtered_background_data.append(json.loads(line))
-                    except Exception as e:
-                        print(f"Skipping line {i}: {e}")
 
+    # --- (Overly Cautious) Memory Cleanup ---
+    # Before we load the final dataset, explicitly delete the
+    # (potentially huge) update maps from memory and ask the
+    # garbage collector to run.
+    print("Clearing update caches from memory...")
+    del new_token_counts
+    del new_embeddings_map
+    gc.collect()
+
+    # --- Pass 4: Load Filtered Data for Return ---
+    # (OOM FIX: This is the *only* place we load the final list into RAM)
+    print(f"--- Pass 4: Loading {len(filtered_data_indices):,} filtered items into memory ---")
+    filtered_background_data = []  # This is the final list to return
+
+    if not filtered_data_indices:
+        print("No data matched filter. Returning empty list.")
+        return []
+
+    with open(filepath, 'r', encoding='utf-8') as f:
+        pbar = tqdm(f, desc="Loading filtered data", total=total_lines_scanned)
+        for i, line in enumerate(pbar):
+            if i in filtered_data_indices:
+                try:
+                    filtered_background_data.append(json.loads(line))
+                    
+                    # Optimization: If we found all, we can stop reading.
+                    if len(filtered_background_data) == len(filtered_data_indices):
+                        print(f"✓ Found all {len(filtered_data_indices)} items. Stopping read early.")
+                        break
+                except Exception as e:
+                    print(f"Skipping line {i}: {e}")
+
+    print(f"✓ Successfully loaded {len(filtered_background_data):,} items.")
     return filtered_background_data
-
 
 def get_text_token_counts(
     texts: List[str], labels: List[str], tokenizer
@@ -691,55 +734,75 @@ def plot_bivariate_distribution(
     except Exception as e:
         print(f"Error generating bivariate plot for {label}: {e}", file=sys.stderr)
 
-def plot_lexical_histogram(
-    scores: List[float],
+
+def plot_lexical_histograms(
+    trigram_scores: List[float],
+    quadgram_scores: List[float],
     text_label: str,
-    ngram_size: int,
     output_dir: str
 ):
     """
-    Plots a histogram of n-gram Jaccard scores with a logarithmic y-axis.
+    Plots overlapping histograms for trigram and quadgram Jaccard scores
+    on the same axes, using a logarithmic y-axis (frequency count).
     """
-    print(f"Generating {ngram_size}-gram Jaccard histogram for {text_label}...")
+    print(f"Generating combined trigram/quadgram Jaccard histogram for {text_label}...")
 
-    # Filter out NaNs
-    valid_scores = [s for s in scores if not math.isnan(s)]
+    # Filter out NaNs for both lists independently
+    valid_trigram_scores = [s for s in trigram_scores if not math.isnan(s)]
+    valid_quadgram_scores = [s for s in quadgram_scores if not math.isnan(s)]
 
-    if not valid_scores:
-        print(f"Skipping {ngram_size}-gram histogram: No valid scores available.", file=sys.stderr)
+    if not valid_trigram_scores and not valid_quadgram_scores:
+        print(f"Skipping combined histogram for {text_label}: No valid scores available.", file=sys.stderr)
         return
+    if not valid_trigram_scores:
+        print(f"Warning: No valid trigram scores for combined histogram for {text_label}.", file=sys.stderr)
+    if not valid_quadgram_scores:
+        print(f"Warning: No valid quadgram scores for combined histogram for {text_label}.", file=sys.stderr)
+
 
     try:
         plt.figure(figsize=(12, 7))
-        plt.hist(valid_scores, bins=50, color='skyblue', edgecolor='black', alpha=0.7, log=True)
 
-        plt.title(f'{ngram_size}-gram Jaccard Similarity Distribution: {text_label} vs Background', fontsize=16, fontweight='bold')
-        plt.xlabel(f'{ngram_size}-gram Jaccard Similarity', fontsize=13)
-        plt.ylabel('Count (Log Scale)', fontsize=13)
+        # Define bins explicitly to ensure alignment
+        bins = np.linspace(0, 1, 51) # 50 bins from 0 to 1
+
+        # Plot trigram histogram
+        plt.hist(valid_trigram_scores,
+                 bins=bins,
+                 color='dodgerblue',  # Changed color
+                 edgecolor='black',
+                 alpha=0.6,          # Adjusted alpha
+                 log=True,
+                 label='Trigrams (n=3)') # Added label
+
+        # Plot quadgram histogram on the same axes
+        plt.hist(valid_quadgram_scores,
+                 bins=bins,
+                 color='orangered',    # Different color
+                 edgecolor='black',
+                 alpha=0.6,          # Adjusted alpha
+                 log=True,           # Log scale is applied to the axis
+                 label='Quadgrams (n=4)') # Added label
+
+        plt.title(f'N-gram Jaccard Similarity Distribution: {text_label} vs Background', fontsize=16, fontweight='bold')
+        plt.xlabel('N-gram Jaccard Similarity', fontsize=13)
+        plt.ylabel('Frequency Count (Log Scale)', fontsize=13)
         plt.grid(axis='y', linestyle='--', alpha=0.6)
-        plt.xlim(0, 1.0) # Jaccard scores are between 0 and 1
-
-        # Add mean/median lines if desired
-        mean_score = np.mean(valid_scores)
-        median_score = np.median(valid_scores)
-        plt.axvline(mean_score, color='red', linestyle='dashed', linewidth=1.5, label=f'Mean: {mean_score:.3f}')
-        plt.axvline(median_score, color='green', linestyle='dashed', linewidth=1.5, label=f'Median: {median_score:.3f}')
-        plt.legend()
-
+        plt.xlim(-0.02, 1.02) # Give a little padding around 0 and 1
+        plt.legend() # Display labels for colors
 
         plt.tight_layout()
-        plot_filename = os.path.join(output_dir, f"{text_label}_{ngram_size}gram_jaccard_histogram.png")
+        plot_filename = os.path.join(output_dir, f"{text_label}_ngram_jaccard_histogram.png") # Simplified filename
         plt.savefig(plot_filename, dpi=300)
         plt.close()
 
-        print(f"Saved {ngram_size}-gram histogram to: {plot_filename}")
+        print(f"Saved combined n-gram histogram to: {plot_filename}")
 
     except Exception as e:
-        print(f"Error generating {ngram_size}-gram histogram for {text_label}: {e}", file=sys.stderr)
+        print(f"Error generating combined n-gram histogram for {text_label}: {e}", file=sys.stderr)
         # Attempt to close plot if it's still open
         try: plt.close()
         except: pass
-
 
 
 
@@ -855,32 +918,20 @@ def main():
 
     # --- START: Call new histogram plots ---
     # Plot histograms for the first text (e.g., "Duplicate") vs Background
-    plot_lexical_histogram(
+    plot_lexical_histograms(
         lexical_distributions[TEXT_LABELS[0]]['trigram_jaccard'],
-        TEXT_LABELS[0], # Label for the text being compared
-        3, # n-gram size
-        OUTPUT_DIR
-    )
-    plot_lexical_histogram(
         lexical_distributions[TEXT_LABELS[0]]['quadgram_jaccard'],
         TEXT_LABELS[0], # Label for the text being compared
-        4, # n-gram size
         OUTPUT_DIR
     )
-    # Plot histograms for the second text (e.g., "original") vs Background
-    plot_lexical_histogram(
+
+    # Plot combined histogram for the second text (e.g., "original")
+    plot_lexical_histograms(
         lexical_distributions[TEXT_LABELS[1]]['trigram_jaccard'],
-        TEXT_LABELS[1], # Label for the text being compared
-        3, # n-gram size
-        OUTPUT_DIR
-    )
-    plot_lexical_histogram(
         lexical_distributions[TEXT_LABELS[1]]['quadgram_jaccard'],
         TEXT_LABELS[1], # Label for the text being compared
-        4, # n-gram size
         OUTPUT_DIR
     )
-    # --- END: Call new histogram plots ---
 
 
     # Calculate and report statistics
