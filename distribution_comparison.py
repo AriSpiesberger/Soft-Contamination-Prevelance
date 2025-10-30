@@ -736,14 +736,15 @@ def plot_bivariate_distribution(
 
 
 def plot_lexical_histograms(
-    trigram_scores: List[float],
-    quadgram_scores: List[float],
+    trigram_scores: list[float],
+    quadgram_scores: list[float],
     text_label: str,
     output_dir: str
 ):
     """
     Plots overlapping histograms for trigram and quadgram Jaccard scores
-    on the same axes, using a logarithmic y-axis (frequency count).
+    on the same axes, using a logarithmic y-axis (frequency count)
+    AND a logarithmic x-axis (Jaccard score).
     """
     print(f"Generating combined trigram/quadgram Jaccard histogram for {text_label}...")
 
@@ -751,59 +752,81 @@ def plot_lexical_histograms(
     valid_trigram_scores = [s for s in trigram_scores if not math.isnan(s)]
     valid_quadgram_scores = [s for s in quadgram_scores if not math.isnan(s)]
 
-    if not valid_trigram_scores and not valid_quadgram_scores:
-        print(f"Skipping combined histogram for {text_label}: No valid scores available.", file=sys.stderr)
+    # --- New section for log scale ---
+    # A log scale cannot plot 0. We must filter out 0-values
+    # and plot only the positive scores.
+    trigram_scores_nonzero = [s for s in valid_trigram_scores if s > 0]
+    quadgram_scores_nonzero = [s for s in valid_quadgram_scores if s > 0]
+
+    # Report the number of 0s being omitted from the plot
+    trigram_zeros = len(valid_trigram_scores) - len(trigram_scores_nonzero)
+    quadgram_zeros = len(valid_quadgram_scores) - len(quadgram_scores_nonzero)
+
+    if trigram_zeros > 0:
+        print(f"  Info: Omitted {trigram_zeros:,} zero-value trigram scores from log-log plot.")
+    if quadgram_zeros > 0:
+        print(f"  Info: Omitted {quadgram_zeros:,} zero-value quadgram scores from log-log plot.")
+    # --- End new section ---
+
+
+    if not trigram_scores_nonzero and not quadgram_scores_nonzero:
+        print(f"Skipping combined histogram for {text_label}: No valid non-zero scores available.", file=sys.stderr)
         return
-    if not valid_trigram_scores:
-        print(f"Warning: No valid trigram scores for combined histogram for {text_label}.", file=sys.stderr)
-    if not valid_quadgram_scores:
-        print(f"Warning: No valid quadgram scores for combined histogram for {text_label}.", file=sys.stderr)
+    if not trigram_scores_nonzero:
+        print(f"Warning: No valid non-zero trigram scores for combined histogram for {text_label}.", file=sys.stderr)
+    if not quadgram_scores_nonzero:
+        print(f"Warning: No valid non-zero quadgram scores for combined histogram for {text_label}.", file=sys.stderr)
 
 
     try:
         plt.figure(figsize=(12, 7))
 
-        # Define bins explicitly to ensure alignment
-        bins = np.linspace(0, 1, 51) # 50 bins from 0 to 1
+        # --- CHANGED ---
+        # Define log-spaced bins explicitly. 
+        # We create 51 bin edges (50 bins) from 1e-5 to 1 (10^0).
+        # This stretches the low-value region.
+        bins = np.logspace(-5, 0, 51) 
+        # --- END CHANGED ---
 
-        # Plot trigram histogram
-        plt.hist(valid_trigram_scores,
+        # Plot trigram histogram (using the non-zero list)
+        plt.hist(trigram_scores_nonzero,
                  bins=bins,
-                 color='dodgerblue',  # Changed color
-                 edgecolor='black',
-                 alpha=0.6,          # Adjusted alpha
-                 log=True,
-                 label='Trigrams (n=3)') # Added label
+                 color='dodgerblue',
+                 alpha=0.6,
+                 log=True, # Log y-axis
+                 label='Trigrams (n=3)')
 
-        # Plot quadgram histogram on the same axes
-        plt.hist(valid_quadgram_scores,
+        # Plot quadgram histogram on the same axes (using the non-zero list)
+        plt.hist(quadgram_scores_nonzero,
                  bins=bins,
-                 color='orangered',    # Different color
-                 edgecolor='black',
-                 alpha=0.6,          # Adjusted alpha
-                 log=True,           # Log scale is applied to the axis
-                 label='Quadgrams (n=4)') # Added label
+                 color='orangered',
+                 alpha=0.6,
+                 log=True, # Log y-axis
+                 label='Quadgrams (n=4)')
 
         plt.title(f'N-gram Jaccard Similarity Distribution: {text_label} vs Background', fontsize=16, fontweight='bold')
-        plt.xlabel('N-gram Jaccard Similarity', fontsize=13)
+        plt.xlabel('N-gram Jaccard Similarity (Log Scale)', fontsize=13) # Updated label
         plt.ylabel('Frequency Count (Log Scale)', fontsize=13)
-        plt.grid(axis='y', linestyle='--', alpha=0.6)
-        plt.xlim(-0.02, 1.02) # Give a little padding around 0 and 1
-        plt.legend() # Display labels for colors
+        
+        # --- ADDED ---
+        plt.xscale('log') # Set the x-axis to a logarithmic scale
+        plt.xlim(1e-5, 1.0) # Set x-limits to match the bins
+        # --- END ADDED ---
+        
+        plt.legend() 
 
         plt.tight_layout()
-        plot_filename = os.path.join(output_dir, f"{text_label}_ngram_jaccard_histogram.png") # Simplified filename
+        plot_filename = os.path.join(output_dir, f"{text_label}_ngram_jaccard_log_histogram.png") # Added 'log' to name
         plt.savefig(plot_filename, dpi=300)
         plt.close()
 
-        print(f"Saved combined n-gram histogram to: {plot_filename}")
+        print(f"Saved combined n-gram log-histogram to: {plot_filename}")
 
     except Exception as e:
-        print(f"Error generating combined n-gram histogram for {text_label}: {e}", file=sys.stderr)
+        print(f"Error generating combined n-gram log-histogram for {text_label}: {e}", file=sys.stderr)
         # Attempt to close plot if it's still open
         try: plt.close()
         except: pass
-
 
 
 # =============================================================================
