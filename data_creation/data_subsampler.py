@@ -23,12 +23,12 @@ PARAGRAPH_SAMPLE_SIZE = 100_000
 MIN_SENTENCE_TOKEN_LEN = 10  # Replaces MIN_SENTENCE_LEN
 MAX_SENTENCE_TOKEN_LEN = 256 # <-- NEW: Added max for sentences
 MIN_PARAGRAPH_TOKEN_LEN = 50 # Replaces MIN_PARAGRAPH_LEN
-MAX_PARAGRAPH_TOKEN_LEN = 300 # <-- NEW: Added max for paragraphs
+MAX_PARAGRAPH_TOKEN_LEN = 1000 # <-- NEW: Added max for paragraphs
 
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1)
 CHUNK_SIZE = 1000
 
-TOKENIZER_NAME = "allenai/OLMo-7B"
+TOKENIZER_NAME = "Qwen/Qwen3-0.6B" # <-- THIS IS THE CHANGED LINE
 OUTPUT_SENTENCES_FILE = "random_sentences.jsonl"
 OUTPUT_PARAGRAPHS_FILE = "random_paragraphs.jsonl"
 # --- Globals for worker processes ---
