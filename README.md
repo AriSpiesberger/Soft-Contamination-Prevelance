@@ -12,7 +12,7 @@ New scripts have been added to `musr_dataset_scripts/` that enable story regener
 - Regenerates stories from existing logic trees with `temperature=1.0`
 - Demonstrates that the same logic trees produce **different wording** but **identical facts**
 - Takes the first 10 samples from `murder_mystery.json` and creates new story text
-- Outputs: `murder_mystery_regenerated_first10.json`
+- Outputs: `murder_mystery_regenerated_first{num_samples}.json`
 
 **Key Insight**: By using the same underlying logic trees but with temperature sampling, we can generate multiple story variations that preserve semantic content while varying linguistic expression.
 
@@ -31,8 +31,8 @@ OPENAI_API_KEY=your_key python regenerate_from_trees.py
 This will:
 - Load the first 10 samples from `murder_mystery.json`
 - Regenerate story text using the same logic trees
-- Save results to `murder_mystery_regenerated_first10.json`
-- Display cost estimates (~$0.02-0.05 per sample)
+- Save results to `murder_mystery_regenerated_first{num_samples}.json`
+- Cost estimates are wrong, OG MuSR is from 2 years ago and it was generated on vanilla `gpt-4`. So generating the sem dupes is kinda exensive ([see](https://platform.openai.com/docs/pricing#:~:text=%2460.00-,gpt%2D4%2D32k,-%2460.00) here, about 30-60$ input, 60-120$ output)
 
 
 #### Export to CSV
@@ -45,8 +45,8 @@ Creates a spreadsheet-friendly CSV file with side-by-side story comparisons.
 ### Dataset Files
 
 New files in `datasets/`:
-- `murder_mystery_regenerated_first10.json` - Regenerated stories with metadata
-- `murder_mystery_comparison_first10.csv` - CSV export for analysis
+- `murder_mystery_regenerated_first{num_samples}.json` - Regenerated stories with metadata
+- `murder_mystery_regenerated_first{num_samples}.csv` - CSV export for analysis
 
 ### Original MuSR Documentation
 

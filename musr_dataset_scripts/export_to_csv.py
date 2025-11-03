@@ -24,7 +24,7 @@ from pathlib import Path
 def main():
     from src.utils.paths import OUTPUT_FOLDER
     
-    input_file = OUTPUT_FOLDER / 'murder_mystery_regenerated_first5_v3.json'
+    input_file = OUTPUT_FOLDER / 'murder_mystery_regenerated_first{num_samples}'
     output_file = OUTPUT_FOLDER / 'murder_mystery_comparison.csv'
     
     if not input_file.exists():

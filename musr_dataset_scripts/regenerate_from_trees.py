@@ -122,7 +122,7 @@ def main():
     
     # Load the original dataset
     input_file = OUTPUT_FOLDER / 'murder_mystery.json'
-    output_file = OUTPUT_FOLDER / 'murder_mystery_regenerated_first5_v3.json'
+    output_file = OUTPUT_FOLDER / f'murder_mystery_regenerated_first{num_samples}.json'
     
     print(f"Loading original dataset from: {input_file}")
     with open(input_file, 'r', encoding='utf-8') as f:
