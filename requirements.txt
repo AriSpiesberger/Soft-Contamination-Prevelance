@@ -26,3 +26,10 @@ transformers==4.34.0
 typing_extensions==4.8.0
 urllib3==2.0.7
 yarl==1.9.2
+
+# Additional dependencies for semantic similarity analysis
+torch>=2.0.0
+pandas>=2.0.0
+scipy>=1.10.0
+matplotlib>=3.7.0
+seaborn>=0.12.0

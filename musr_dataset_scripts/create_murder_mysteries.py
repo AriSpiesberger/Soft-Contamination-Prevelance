@@ -123,7 +123,7 @@ example_descriptions = [example1_description, example2_description, example3_des
 
 def main():
     # CACHE
-    cache.enable()
+    cache.disable()  # Disable Redis caching - not needed for single sample generation
 
     # PARAMS (if not with a comment, look at the Murder Mystery dataset class for more info.)
 
@@ -145,6 +145,7 @@ def main():
     total_cost = 0
 
     # Models we foudn helpful to use.  In our finalized dataset, we only used gpt4.
+    # NOTE: temperature=1.0 gives creative variety (different story text with same facts each run)
     gpt35 = OpenAIModel(engine='gpt-3.5-turbo', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=1500, num_samples=1, prompt_cost=0.0015/1000, completion_cost=0.002/1000)
     gpt16k35 = OpenAIModel(engine='gpt-3.5-turbo-16k', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.003/1000, completion_cost=0.004/1000)
     gpt4 = OpenAIModel(engine='gpt-4', api_max_attempts=30, api_endpoint='chat', temperature=1.0, top_p=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.03/1000, completion_cost=0.06/1000)
