@@ -1,0 +1,16 @@
+[project]
+name = "sdtd"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "datasets>=4.4.1",
+    "litellm[caching]>=1.79.3",
+    "matplotlib>=3.10.7",
+    "polars>=1.35.2",
+    "python-dotenv>=1.2.1",
+    "pyyaml>=6.0",
+    "scipy>=1.16.3",
+    "typer>=0.20.0",
+]

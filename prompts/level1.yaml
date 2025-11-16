@@ -1,0 +1,305 @@
+# Level 1: Linguistic Paraphrases
+#
+# Goal: Generate semantic duplicates that DISRUPT n-gram and bag-of-words metrics
+# while preserving exact meaning (Type C duplicates - low overlap, same meaning).
+#
+# CRITICAL REQUIREMENTS:
+# - Preserve ALL numerical values exactly
+# - Preserve mathematical operations and relationships
+# - Maintain bidirectional entailment (A→B and B→A)
+# - Target: STS score ≥4.0, BERTScore F1 >0.85
+# - Avoid: semantic drift, negation errors, scope ambiguity
+#
+# MODELS (via OpenRouter):
+# - openrouter/anthropic/claude-sonnet-4.5: High quality, strong semantic preservation
+# - openrouter/anthropic/claude-haiku-4.5: Faster/cheaper, good for simpler transformations
+# - openrouter/openai/gpt-5.1: Different model family for diversity (temperature=1.0 only)
+# - Alternative: openrouter/openai/gpt-5-mini (cheaper, good quality)
+# - Can be overridden via CLI: --model <model_name>
+#
+# NOTE: Use "openrouter/" prefix to route through OpenRouter API
+# See docs/MODELS.md for details on model selection
+
+gsm8k:
+  lexical_maximalist:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      Rewrite this math word problem using completely different vocabulary while preserving the exact meaning.
+
+      INSTRUCTIONS:
+      - Replace as many words as possible with synonyms or alternative expressions
+      - Keep the sentence structure mostly similar
+      - PRESERVE all numbers, mathematical operations, and quantitative relationships EXACTLY
+      - The problem must have the identical solution and answer
+      - OUTPUT ONLY THE REWRITTEN PROBLEM - no preamble, no labels like "Rewritten problem:", just the problem text itself
+
+      EXAMPLES OF GOOD TRANSFORMATIONS:
+      - "sold clips to" → "distributed clips to" or "provided clips to"
+      - "earns $12 an hour" → "receives $12 per hour" or "makes $12 hourly"
+      - "How many" → "What quantity of" or "What is the total number of"
+      - "twice as many" → "double the amount" or "two times the quantity"
+
+      WHAT NOT TO CHANGE:
+      - Numerical values (48, $12, 50 minutes must stay exactly the same)
+      - Mathematical relationships (half, twice, total, difference, etc. - meaning must be preserved)
+      - The fundamental problem structure
+
+      Original problem: {question}
+
+  syntactic_restructuring:
+    model: "openrouter/anthropic/claude-haiku-4.5"
+    temperature: 0.7
+    user: |
+      Completely reorganize the grammatical structure of this math word problem while preserving exact meaning.
+
+      INSTRUCTIONS:
+      - Change sentence structure: use passive voice, reorder clauses, split or merge sentences
+      - Reorganize how information is presented
+      - PRESERVE all numbers, names, and mathematical operations EXACTLY
+      - The problem must have the identical solution and answer
+      - OUTPUT ONLY THE RESTRUCTURED PROBLEM - no preamble, no headers like "# Restructured Problem", just the problem text
+
+      EXAMPLES OF GOOD TRANSFORMATIONS:
+      - "Natalia sold clips to 48 friends" → "48 friends received clips from Natalia" (voice change)
+      - "She sold half as many clips in May" → "In May, the quantity of clips she sold was half" (clause reorder)
+      - "If X, then Y. How many Z?" → "Given that X, determine Z when Y" (restructure)
+
+      WHAT NOT TO CHANGE:
+      - Numerical values
+      - Names of people/objects
+      - Mathematical operations or relationships
+
+      Original problem: {question}
+
+  abstractive_paraphrase:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      Rewrite this math word problem from scratch as if explaining it to someone in a completely different way.
+
+      INSTRUCTIONS:
+      - Imagine you're re-explaining the same problem using entirely different phrasing
+      - Use different vocabulary AND different sentence structures
+      - Think of alternative ways to describe the same scenario
+      - PRESERVE all numbers and mathematical relationships EXACTLY
+      - The problem must lead to the identical answer
+      - OUTPUT ONLY THE PROBLEM TEXT - no preamble, no labels, just the rewritten problem
+
+      GOOD PARAPHRASE CHARACTERISTICS:
+      - Low word overlap with original (target <30% shared words)
+      - Same mathematical operations and quantities
+      - Same difficulty level
+      - Same solution approach
+
+      EXAMPLES:
+      - "Weng earns $12 an hour for babysitting" → "Weng's babysitting compensation is $12 per hour"
+      - "Yesterday, she just did 50 minutes" → "She provided babysitting services for a duration of 50 minutes yesterday"
+      - "How much did she earn?" → "What was her total compensation?" or "Calculate her earnings"
+
+      WHAT MUST STAY EXACTLY THE SAME:
+      - All numerical values (amounts, quantities, measurements)
+      - Mathematical operations (addition, multiplication, division, etc.)
+      - The answer to the problem
+
+      Original problem: {question}
+
+  compositional:
+    model: "openrouter/openai/gpt-5.1"
+    temperature: 1.0
+    user: |
+      Transform this math word problem by combining multiple paraphrase techniques to create maximum lexical variation while preserving exact semantic content.
+
+      INSTRUCTIONS:
+      - Apply MULTIPLE transformations: change vocabulary + restructure sentences + adjust formality
+      - Create the lowest possible word overlap with the original (target <25% shared words)
+      - Use sophisticated vocabulary where appropriate
+      - Reorganize information presentation
+      - CRITICALLY: All numbers, operations, and the answer must remain EXACTLY the same
+      - OUTPUT ONLY THE PROBLEM TEXT - no labels, no preambles like "Maximally transformed problem:", just the transformed problem
+
+      TRANSFORMATION TECHNIQUES TO COMBINE:
+      1. Vocabulary: Replace words with synonyms, use alternative expressions
+      2. Structure: Reorder clauses, change voice, adjust sentence boundaries
+      3. Formality: Make language more formal/technical or more casual (your choice)
+      4. Phrasing: Find completely different ways to express the same concepts
+
+      EXAMPLES OF AGGRESSIVE TRANSFORMATION:
+      - "How many clips did Natalia sell altogether?"
+        → "Determine the total quantity of clips that were distributed by Natalia"
+        → "Calculate Natalia's cumulative clip sales"
+
+      - "Betty has only half of the money she needs"
+        → "Betty's current funds represent 50% of the required amount"
+        → "Betty possesses merely half the necessary financial resources"
+
+      ABSOLUTE REQUIREMENTS:
+      - Every number must appear exactly as in the original
+      - Mathematical operations must be preserved (e.g., "half" = "50%" = "divided by 2")
+      - The problem must have the identical solution
+      - Someone solving this problem would get the same answer
+
+      Original problem: {question}
+
+codeforces:
+  lexical_maximalist:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      Rewrite this programming problem description using different vocabulary while preserving exact technical meaning.
+
+      INSTRUCTIONS:
+      - Replace descriptive words with synonyms and alternative expressions
+      - PRESERVE all technical terms, data structures, and algorithmic concepts
+      - PRESERVE all numerical constraints (time limits, array sizes, etc.) EXACTLY
+      - Keep input/output specifications identical
+      - The problem must require the same solution algorithm
+      - OUTPUT ONLY THE REWRITTEN DESCRIPTION - no preamble, no labels, just the problem text
+
+      EXAMPLES OF GOOD TRANSFORMATIONS:
+      - "given an array" → "provided with an array" or "you are given an array"
+      - "find the maximum" → "determine the maximum" or "identify the largest"
+      - "output the result" → "print the answer" or "display the solution"
+      - "for each test case" → "in every test case" or "per test scenario"
+
+      WHAT NOT TO CHANGE:
+      - Technical terminology (array, tree, graph, sort, etc.)
+      - Numerical constraints (N ≤ 10^5, time limit 2 seconds)
+      - Input/output format specifications
+      - The algorithm or data structure required
+
+      Original problem description: {description}
+
+  syntactic_restructuring:
+    model: "openrouter/anthropic/claude-haiku-4.5"
+    temperature: 0.7
+    user: |
+      Reorganize the grammatical structure of this programming problem description while preserving exact technical meaning.
+
+      INSTRUCTIONS:
+      - Completely restructure sentences: change voice, reorder clauses, split or merge
+      - Reorganize how problem requirements are presented
+      - PRESERVE all technical specifications, constraints, and requirements EXACTLY
+      - The problem must require the identical solution
+      - OUTPUT ONLY THE RESTRUCTURED DESCRIPTION - no preamble, no headers, just the problem text
+
+      EXAMPLES:
+      - "You are given N integers" → "N integers are provided to you"
+      - "Find the sum and output it" → "Output the sum that you find"
+      - "For each query, process the array" → "Process the array for every query"
+
+      WHAT MUST STAY IDENTICAL:
+      - All numerical constraints
+      - Input/output format
+      - Technical requirements
+      - Algorithm/data structure needed
+
+      Original problem description: {description}
+
+  abstractive_paraphrase:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      Rewrite this programming problem from scratch, explaining the same computational task in a completely different way.
+
+      INSTRUCTIONS:
+      - Re-explain the problem as if describing it to a colleague differently
+      - Use different vocabulary AND different sentence structures
+      - PRESERVE all technical specifications, constraints, and requirements EXACTLY
+      - The problem must have the same solution approach and complexity
+      - OUTPUT ONLY THE REWRITTEN DESCRIPTION - no preamble, no labels, just the problem text
+
+      GOOD PARAPHRASE CHARACTERISTICS:
+      - Low word overlap with original (<30% shared content words)
+      - Same algorithmic requirements
+      - Same input/output specifications
+      - Same time/space complexity constraints
+
+      ABSOLUTE REQUIREMENTS:
+      - All numerical constraints identical (array sizes, limits, etc.)
+      - Input/output format must match exactly
+      - Same algorithm/data structure required
+      - Same problem difficulty
+
+      Original problem description: {description}
+
+allenai:
+  lexical_maximalist:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      Rewrite this educational text using completely different vocabulary while preserving exact educational content.
+
+      INSTRUCTIONS:
+      - Replace as many words as possible with synonyms and alternative expressions
+      - Keep the sentence structure mostly similar
+      - PRESERVE all factual information, concepts, and explanations EXACTLY
+      - Maintain the same educational level and clarity
+      - OUTPUT ONLY THE REWRITTEN TEXT - no preamble, no labels, just the educational content
+
+      EXAMPLES:
+      - "understand" → "comprehend" or "grasp"
+      - "important" → "significant" or "crucial"
+      - "for example" → "for instance" or "as an illustration"
+      - "students learn" → "learners acquire" or "pupils discover"
+
+      WHAT NOT TO CHANGE:
+      - Factual content (definitions, facts, relationships)
+      - Technical or domain-specific terminology (when essential)
+      - Educational objectives
+      - Difficulty level
+
+      Original text: {text}
+
+  abstractive_paraphrase:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      Rewrite this educational content from scratch, explaining the same concepts in a completely different way.
+
+      INSTRUCTIONS:
+      - Re-explain the educational content as if teaching it with entirely different phrasing
+      - Use different vocabulary AND different sentence structures
+      - Think of alternative ways to convey the same information
+      - PRESERVE all factual content and educational objectives EXACTLY
+      - OUTPUT ONLY THE REWRITTEN TEXT - no preamble, no labels, just the educational content
+
+      GOOD PARAPHRASE CHARACTERISTICS:
+      - Low word overlap with original (<30% shared content words)
+      - Same educational concepts and facts
+      - Same learning level (grade school, high school, etc.)
+      - Same level of detail and accuracy
+
+      WHAT MUST STAY THE SAME:
+      - All factual information
+      - Educational concepts being taught
+      - Level of difficulty
+      - Accuracy of explanations
+
+      Original educational text: {text}
+
+  register_shift:
+    model: "openrouter/openai/gpt-5.1"
+    temperature: 1.0
+    user: |
+      Rewrite this educational text with a significantly different level of formality while preserving exact content.
+
+      INSTRUCTIONS:
+      - Dramatically change the language register (make it more formal/academic OR more casual/conversational)
+      - Adjust vocabulary complexity appropriately
+      - PRESERVE all factual information and educational content EXACTLY
+      - Choose the direction that creates maximum lexical difference from the original
+      - OUTPUT ONLY THE REWRITTEN TEXT - no preamble, no labels, just the educational content
+
+      FORMALITY TRANSFORMATIONS:
+      - Casual → Formal: "kids" → "students", "get" → "acquire", "show" → "demonstrate"
+      - Formal → Casual: "comprehend" → "understand", "utilize" → "use", "demonstrate" → "show"
+      - Technical → Plain: "photosynthesis" → "how plants make food" (if appropriate for level)
+
+      REQUIREMENTS:
+      - All facts must remain accurate
+      - Educational content must be preserved
+      - Choose formality level that maximizes word differences
+      - Maintain clarity appropriate for the target audience
+
+      Original educational text: {text}
