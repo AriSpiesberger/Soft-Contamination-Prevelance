@@ -2230,6 +2230,7 @@ dependencies = [
     { name = "polars" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
+    { name = "requests" },
     { name = "scipy" },
     { name = "typer" },
 ]
@@ -2242,6 +2243,7 @@ requires-dist = [
     { name = "polars", specifier = ">=1.35.2" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "pyyaml", specifier = ">=6.0" },
+    { name = "requests", specifier = ">=2.32.0" },
     { name = "scipy", specifier = ">=1.16.3" },
     { name = "typer", specifier = ">=0.20.0" },
 ]

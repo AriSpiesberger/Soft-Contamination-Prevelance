@@ -1,0 +1,531 @@
+# Level 2: Structural/Parameter Duplicates
+#
+# Goal: Generate semantic duplicates that share IDENTICAL problem structure
+# but differ in surface parameters (numbers, objects, names, domain).
+#
+# Key characteristics:
+# - Same solution algorithm required
+# - Same difficulty level
+# - Higher n-gram overlap than Level 1 (30-80% acceptable)
+# - Moderate semantic similarity (0.70-0.90)
+# - Template/structure must be preserved exactly
+#
+# MODELS (via OpenRouter):
+# - openrouter/anthropic/claude-sonnet-4.5: High precision for structure preservation
+# - Lower temperatures than Level 1 (0.5-0.8) for accuracy
+#
+# See docs/LEVEL2_METHODOLOGY.md for design rationale
+
+gsm8k:
+  number_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.5
+    user: |
+      You are generating a STRUCTURAL DUPLICATE of a math word problem by changing numerical values.
+
+      TASK: Change ALL numerical values while keeping the problem structure IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. The new problem must use the EXACT SAME solution algorithm
+      2. The new problem must have the SAME difficulty level
+      3. ALL numbers must change (no exceptions)
+      4. Mathematical operations must be PRESERVED exactly (e.g., "half" stays "half", "twice" stays "twice")
+      5. The problem structure (template) must be IDENTICAL
+
+      WHAT TO CHANGE:
+      - All specific numbers (quantities, prices, durations, percentages, etc.)
+      - You can either:
+        Option A: Scale all numbers proportionally (multiply all by same factor)
+        Option B: Use different but similar-magnitude values
+      - Preserve number types (integer→integer, decimal→decimal)
+
+      WHAT NOT TO CHANGE:
+      - Mathematical operations (addition, multiplication, division, subtraction)
+      - Proportional relationships ("half" must stay "half", not become "third")
+      - Problem type (proportional reasoning, algebra, geometry, etc.)
+      - Number of steps in solution
+      - Objects, names, or scenario (keep "apples", "Natalia", "April", etc.)
+      - Difficulty level
+
+      MAGNITUDE GUIDELINES:
+      SAFE:
+      - 48 → 36 or 60 (similar mental math)
+      - $12 → $15 or $18 (similar currency amounts)
+      - 50 minutes → 40 or 30 minutes (similar durations)
+
+      AVOID:
+      - 48 → 4800 (changes magnitude significantly)
+      - $12 → $0.12 (too different)
+      - 50 → π (introduces irrationals)
+
+      EXAMPLES:
+
+      Original: "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Number substitution variant 1 (different values):
+      "Natalia sold clips to 36 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Number substitution variant 2 (proportional scaling × 2):
+      "Natalia sold clips to 96 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Original: "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+
+      Number substitution variant:
+      "Weng earns $15 an hour for babysitting. Yesterday, she just did 40 minutes of babysitting. How much did she earn?"
+
+      VALIDATION CHECKLIST:
+      □ Someone solving your problem would use the EXACT SAME algorithm
+      □ The difficulty is IDENTICAL (similar mental math, similar concepts)
+      □ EVERY number has changed from the original
+      □ Mathematical relationships are preserved ("half" is still "half")
+      □ Objects, names, and scenario are UNCHANGED
+
+      Original problem: {question}
+
+      Generate ONE number substitution variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no labels, no explanation, just the problem.
+
+  object_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.6
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by replacing objects and names.
+
+      TASK: Replace objects and people's names while keeping the problem structure IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. Stay within the SAME conceptual domain (everyday items → everyday items)
+      2. ALL numbers must stay EXACTLY the same (no exceptions!)
+      3. Mathematical operations must be PRESERVED
+      4. Problem structure must be IDENTICAL
+      5. Difficulty must be UNCHANGED
+
+      WHAT TO CHANGE:
+      - Object names: apples → oranges, clips → stickers, books → notebooks
+      - People's names: Natalia → Maria, John → David, Betty → Sarah
+      - Locations (if any): park → playground, store → shop
+      - Keep substitutions SIMPLE and FAMILIAR (grade-school level)
+
+      WHAT NOT TO CHANGE:
+      - ANY numbers (48 stays 48, $12 stays $12, 50 minutes stays 50 minutes)
+      - Mathematical operations (half, twice, sum, difference, product, etc.)
+      - Proportional relationships
+      - Units (dollars, hours, minutes, meters, etc.)
+      - Problem type or structure
+      - Difficulty level
+
+      DOMAIN PRESERVATION RULES:
+
+      GOOD (domain-preserving, use these):
+      - apples → oranges, bananas, pears (all common fruits)
+      - clips → stickers, stamps, cards (all small collectibles)
+      - dogs → cats, rabbits (all common pets)
+      - books → magazines, notebooks (all reading/writing materials)
+      - friends → classmates, teammates (all social groups)
+      - babysitting → tutoring, lawn mowing (all common youth jobs)
+      - car → bicycle, bus (all common transportation)
+
+      BAD (cross-domain, AVOID):
+      - apples → electrons (everyday → physics)
+      - books → molecules (common → chemistry)
+      - friends → atoms (social → physics)
+      - babysitting → quantum mechanics research (common → specialized)
+
+      EXAMPLES:
+
+      Original: "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Object substitution variant:
+      "Maria sold stickers to 48 of her classmates in April, and then she sold half as many stickers in May. How many stickers did Maria sell altogether in April and May?"
+
+      Changes: Natalia→Maria, clips→stickers, friends→classmates
+      Preserved: 48, half, April/May, problem structure, "sell", "altogether"
+
+      Original: "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+
+      Object substitution variant:
+      "David earns $12 an hour for tutoring. Yesterday, he just did 50 minutes of tutoring. How much did he earn?"
+
+      Changes: Weng→David, she→he, babysitting→tutoring
+      Preserved: $12, an hour, 50 minutes, Yesterday, earn
+
+      VALIDATION CHECKLIST:
+      □ ALL numbers are IDENTICAL to original (not even 1 number changed)
+      □ New objects/names are in SAME domain (familiar, everyday)
+      □ Same solution algorithm applies
+      □ Same difficulty level
+      □ All mathematical operations preserved
+
+      Original problem: {question}
+
+      Generate ONE domain-preserving object substitution variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation.
+
+  domain_transfer:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by transferring the problem to a different domain/context.
+
+      TASK: Change the narrative context/domain while keeping mathematical structure IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. Mathematical structure must be EXACTLY the same
+      2. ALL numbers must be PRESERVED exactly (no changes!)
+      3. Solution algorithm must be IDENTICAL
+      4. Difficulty should be similar (acknowledge if domain requires specialized knowledge)
+      5. Mathematical operations must be PRESERVED
+
+      WHAT TO CHANGE:
+      - Problem domain/context: shopping → physics, geometry → real-world, sports → finance
+      - Objects appropriate to new domain
+      - Scenario/narrative setting
+      - Units (if appropriate): dollars → kilograms, items → distance, etc.
+
+      WHAT NOT TO CHANGE:
+      - The actual numbers (48 stays 48, 12 stays 12, etc.)
+      - Mathematical operations (half, twice, sum, average, etc.)
+      - Proportional relationships
+      - Number of solution steps
+      - Core mathematical structure
+
+      DOMAIN TRANSFER EXAMPLES:
+
+      Shopping → Physics:
+      "If 3 apples cost $6, how much do 5 apples cost?"
+      → "If 3 books have mass 6 kg, what is the mass of 5 books?"
+      (Domain: commerce → physics, Units: dollars → kilograms, preserved: 3, 6, 5, proportional reasoning)
+
+      Personal Sales → Library Services:
+      "Natalia sold clips to 48 friends in April, then half as many in May"
+      → "The library lent books to 48 students in April, then half as many in May"
+      (Domain: personal sales → institutional service, preserved: 48, half, problem structure)
+
+      Transportation → Biology:
+      "A car travels 60 miles per hour for 2 hours"
+      → "A bird flies 60 kilometers per hour for 2 hours"
+      (Domain: vehicles → animals, Units: miles → kilometers, preserved: 60, 2, rate×time structure)
+
+      FULL EXAMPLE:
+
+      Original: "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Domain transfer variant (personal sales → library services):
+      "The library lent books to 48 students in April, and then lent half as many books in May. How many books did the library lend altogether in April and May?"
+
+      Domain change: Personal commerce → Institutional services
+      Preserved: 48, half, April/May, mathematical structure (sum of full amount + half amount)
+      Changed: selling clips → lending books, Natalia/friends → library/students
+
+      VALIDATION CHECKLIST:
+      □ Same mathematical structure (proportional reasoning, algebra, geometry type)
+      □ Same solution method (same algorithm, same steps)
+      □ ALL numbers are IDENTICAL
+      □ Domain is clearly different from original
+      □ Difficulty is similar (flag if specialized knowledge introduced)
+
+      Original problem: {question}
+
+      Generate ONE domain transfer variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem.
+
+  compositional:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      You are generating a STRUCTURAL DUPLICATE using MULTIPLE parameter changes simultaneously.
+
+      TASK: Apply 2-3 transformations at once while preserving problem structure EXACTLY.
+
+      TRANSFORMATION TECHNIQUES TO COMBINE (choose 2-3):
+      1. Change numbers (scale proportionally OR use different similar-magnitude values)
+      2. Change objects/entities (domain-preserving or cross-domain)
+      3. Change names/identifiers
+      4. Change domain/context (if feasible)
+      5. Change units (with appropriate conversion)
+
+      CRITICAL REQUIREMENTS:
+      1. Mathematical structure must remain IDENTICAL
+      2. Solution algorithm must be the SAME
+      3. If changing numbers, preserve proportional relationships exactly
+      4. Difficulty must be EQUIVALENT
+      5. Mathematical operations must be PRESERVED
+
+      WHAT TO CHANGE (apply 2-3 of these):
+      - Numbers: 48→36, $12→$15, 50→40 (similar magnitude)
+      - Objects: clips→stickers, apples→oranges, books→magazines
+      - Names: Natalia→Maria, John→David
+      - Domain: shopping→physics, personal→institutional
+      - Time periods: April/May→September/October, Monday/Tuesday→Week1/Week2
+
+      WHAT NOT TO CHANGE:
+      - Mathematical operations (half, twice, sum, etc.)
+      - Proportional relationships (if "half" in original, must be "half" in variant)
+      - Problem type/structure
+      - Number of solution steps
+      - Difficulty level
+
+      EXAMPLES:
+
+      Original: "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Compositional variant 1 (numbers + objects + names):
+      "Sarah distributed stickers to 36 of her classmates in April, and then she distributed half as many stickers in May. How many stickers did Sarah distribute altogether in April and May?"
+
+      Transformations applied:
+      - Number: 48 → 36
+      - Object: clips → stickers, friends → classmates
+      - Name: Natalia → Sarah
+      Preserved: "half as many", April/May, "altogether", mathematical structure
+
+      Compositional variant 2 (numbers + objects + domain + time):
+      "The bookstore sold novels to 60 customers in September, and then sold half as many novels in October. How many novels did the bookstore sell altogether in September and October?"
+
+      Transformations applied:
+      - Number: 48 → 60
+      - Object: clips → novels, friends → customers
+      - Domain: personal sales → business sales
+      - Time: April/May → September/October
+      Preserved: "half as many", "altogether", sum structure
+
+      Original: "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+
+      Compositional variant (numbers + objects + name):
+      "David earns $15 an hour for tutoring. Yesterday, he just did 40 minutes of tutoring. How much did he earn?"
+
+      Transformations applied:
+      - Numbers: $12 → $15, 50 → 40
+      - Object: babysitting → tutoring
+      - Name: Weng → David, she → he
+      Preserved: "per hour", Yesterday, rate×time structure, "earn"
+
+      VALIDATION CHECKLIST:
+      □ Same solution algorithm applies (EXACT same steps)
+      □ Proportional relationships preserved (if "half", still "half"; if ratio 3:6, still same ratio)
+      □ 2-3 transformation types applied
+      □ Difficulty is equivalent
+      □ Maximum surface-level change while structure identical
+      □ Mathematical operations unchanged
+
+      Original problem: {question}
+
+      Generate ONE compositional variant applying 2-3 transformations. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem.
+
+codeforces:
+  number_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.4
+    user: |
+      You are generating a STRUCTURAL DUPLICATE of a competitive programming problem by changing numerical constraints.
+
+      TASK: Change numerical constraints while keeping the problem structure IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. Algorithm/data structure requirements must be IDENTICAL
+      2. Time/space complexity must be IDENTICAL
+      3. Input/output format structure must be PRESERVED
+      4. Technical terminology must NOT change
+      5. Problem difficulty must be IDENTICAL
+      6. Constraint feasibility must be maintained
+
+      WHAT TO CHANGE:
+      - Array/list size bounds (N): keep in same complexity class
+      - Value range bounds: keep in same magnitude order
+      - Specific numeric examples in sample input/output
+      - Time limits (keep format, may adjust slightly if constraints change)
+
+      WHAT NOT TO CHANGE:
+      - Technical terms (array, graph, tree, sort, binary search, DP, etc.)
+      - Algorithm type required (if greedy, stays greedy; if DP, stays DP)
+      - Input/output format structure
+      - Complexity class (O(n), O(n log n), O(n²), etc. must stay same)
+      - Memory limit format
+      - Problem category/type
+
+      CONSTRAINT PRESERVATION RULES:
+
+      SAFE changes (same complexity class):
+      - N ≤ 10^5 → N ≤ 5×10^4 or N ≤ 2×10^5 (stays O(10^5) class)
+      - Values ≤ 10^9 → Values ≤ 5×10^8 or ≤ 2×10^9 (same order)
+      - Time limit: 1 second → 1 second or 2 seconds (if constraints adjusted)
+
+      AVOID (changes complexity class):
+      - N ≤ 10^5 → N ≤ 10^9 (changes from 10^5 to 10^9 class, may break O(n²) solutions)
+      - Values ≤ 10^9 → Values ≤ 10^18 (may require different data type)
+
+      FEASIBILITY CHECK:
+      - Algorithm with complexity O(n log n) + N ≤ 10^5 → ~10^7 ops → feasible in 1-2 seconds ✓
+      - Algorithm with complexity O(n²) + N ≤ 10^5 → ~10^10 ops → NOT feasible ✗
+
+      EXAMPLE:
+
+      Original: "Given an array of N integers (1 ≤ N ≤ 10^5), find the maximum element. Values: -10^9 ≤ A[i] ≤ 10^9. Time limit: 1 second. Memory limit: 256 MB."
+
+      Number substitution variant:
+      "Given an array of N integers (1 ≤ N ≤ 5×10^4), find the maximum element. Values: -5×10^8 ≤ A[i] ≤ 5×10^8. Time limit: 1 second. Memory limit: 256 MB."
+
+      Changes:
+      - N bound: 10^5 → 5×10^4 (same O(10^5) class)
+      - Value range: 10^9 → 5×10^8 (same order of magnitude)
+      Preserved:
+      - "find the maximum element" (algorithm)
+      - O(n) complexity still optimal
+      - "array", "integers" (technical terms)
+      - Input/output format
+      - 1 second time limit (still feasible)
+
+      VALIDATION CHECKLIST:
+      □ Same algorithm category (sort/search/DP/greedy/etc.)
+      □ Same time complexity class
+      □ Same space complexity class
+      □ Constraints remain feasible (solution fits in time/memory limits)
+      □ Technical terminology identical
+      □ Input/output format structure preserved
+
+      Original problem description: {description}
+
+      Generate ONE structural duplicate with modified constraints. OUTPUT ONLY THE PROBLEM DESCRIPTION - no preamble, no labels, just the problem text.
+
+allenai:
+  object_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      You are generating a STRUCTURAL DUPLICATE of educational text by replacing examples and objects.
+
+      TASK: Replace specific examples, objects, and scenarios while preserving educational content and structure.
+
+      CRITICAL REQUIREMENTS:
+      1. Educational concepts must be IDENTICAL
+      2. Learning objectives must be PRESERVED
+      3. Factual information must remain ACCURATE
+      4. Difficulty level must be UNCHANGED
+      5. Stay within same or similar educational domain
+
+      WHAT TO CHANGE:
+      - Specific examples: if teaching fractions using pizza, change to cake/pie/cookies
+      - Character names in story problems: Alice→Bob, Maria→David
+      - Specific scenarios: maintain same concept but different context
+      - Object types: apples→oranges (when teaching counting/math)
+      - Context details: park→playground, classroom→library
+
+      WHAT NOT TO CHANGE:
+      - Core educational concepts (fractions, photosynthesis, Newton's laws, etc.)
+      - Factual information (laws of physics, historical facts, mathematical rules)
+      - Learning level (grade school, high school, college)
+      - Educational structure (introduction → examples → practice)
+      - Key terminology (when essential to concept)
+      - Accuracy of explanations
+
+      DOMAIN PRESERVATION EXAMPLES:
+
+      GOOD (domain-preserving):
+      - Pizza → Cake (both food, both commonly divided)
+      - Apples → Oranges (both fruits, both commonly counted)
+      - Dogs → Cats (both pets, both commonly described)
+      - Classroom → Library (both learning environments)
+      - Teacher → Instructor (both educational roles)
+
+      ACCEPTABLE (related domains):
+      - Coins → Bills (both money, teaching same financial concept)
+      - Trees → Flowers (both plants, teaching same biology concept)
+      - Soccer → Basketball (both sports, teaching same physics concept)
+
+      AVOID (cross-domain with different knowledge):
+      - Pizza slices → Quantum states (everyday → advanced physics)
+      - Apples → Molecules (counting → chemistry)
+      - Classroom → Laboratory (changes expertise level if concept-dependent)
+
+      EXAMPLES:
+
+      Original: "Let's learn fractions using pizza. If you have 1 pizza and cut it into 4 equal slices, each slice is 1/4 of the pizza. If you eat 2 slices, you've eaten 2/4 or 1/2 of the pizza."
+
+      Object substitution variant:
+      "Let's learn fractions using a cake. If you have 1 cake and cut it into 4 equal slices, each slice is 1/4 of the cake. If you eat 2 slices, you've eaten 2/4 or 1/2 of the cake."
+
+      Changes: pizza → cake (throughout)
+      Preserved: Concept of fractions (1/4, 2/4, 1/2), structure, numbers, educational goal
+
+      Original: "Photosynthesis is how plants make food. Plants use sunlight, water, and carbon dioxide to produce glucose and oxygen. For example, a tree in your backyard performs photosynthesis during the day."
+
+      Object substitution variant:
+      "Photosynthesis is how plants make food. Plants use sunlight, water, and carbon dioxide to produce glucose and oxygen. For example, a garden flower performs photosynthesis during the day."
+
+      Changes: "tree in your backyard" → "garden flower"
+      Preserved: Definition of photosynthesis, scientific accuracy, process description, educational level
+
+      VALIDATION CHECKLIST:
+      □ Educational value is IDENTICAL
+      □ Concepts taught are the SAME
+      □ Difficulty level is UNCHANGED
+      □ Factual accuracy is maintained (100%)
+      □ Learning objectives are preserved
+      □ Examples support same concepts in new context
+
+      Original educational text: {text}
+
+      Generate ONE domain-preserving object substitution variant. OUTPUT ONLY THE TEXT - no preamble, no explanation, just the educational content.
+
+  domain_transfer:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by transferring educational content to a different pedagogical domain/context.
+
+      TASK: Change the teaching context or application domain while preserving the core educational concept.
+
+      CRITICAL REQUIREMENTS:
+      1. Core concept being taught must be IDENTICAL
+      2. Learning objective must be PRESERVED
+      3. Factual accuracy must be maintained (100%)
+      4. Difficulty level should be similar (may vary slightly with context)
+      5. Educational structure must be preserved
+
+      WHAT TO CHANGE:
+      - Application domain: math in shopping → math in science, grammar in stories → grammar in letters
+      - Teaching context: classroom example → real-world application
+      - Subject area examples: teaching rates using cars → teaching rates using running
+      - Cultural context: if appropriate and neutral
+
+      WHAT NOT TO CHANGE:
+      - The educational concept itself (if teaching fractions, still teaching fractions)
+      - Factual accuracy
+      - Learning level (elementary stays elementary)
+      - Core terminology (when essential)
+      - Pedagogical structure
+
+      DOMAIN TRANSFER EXAMPLES:
+
+      Math concept, shopping → science context:
+      "If 3 apples cost $6, find the unit price."
+      → "If 3 batteries power a device for 6 hours total, find the hours per battery."
+      (Concept: unit rate / division, Domain: commerce → science)
+
+      Grammar concept, story context → letter context:
+      "In a story, use adjectives to describe characters: 'The brave knight fought the fierce dragon.'"
+      → "In a letter, use adjectives to describe experiences: 'I had a wonderful time at the beautiful beach.'"
+      (Concept: adjective usage, Domain: fiction → correspondence)
+
+      Science concept, classroom demo → real-world:
+      "In this experiment, we'll observe how a ball bounces on different surfaces in the lab."
+      → "At home, you can observe how a ball bounces on different surfaces like carpet, concrete, and grass."
+      (Concept: surface friction / energy, Domain: lab → home)
+
+      FULL EXAMPLE:
+
+      Original: "Fractions represent parts of a whole. When sharing 8 cookies equally among 4 friends, each friend gets 8÷4 = 2 cookies, which is 2/8 or 1/4 of the total for each friend."
+
+      Domain transfer variant (sharing food → distributing time):
+      "Fractions represent parts of a whole. When dividing 8 hours of study time equally among 4 subjects, each subject gets 8÷4 = 2 hours, which is 2/8 or 1/4 of the total time for each subject."
+
+      Domain change: Food sharing → Time management
+      Preserved: Fraction concept (parts of whole), division (8÷4), equivalent fractions (2/8 = 1/4), numbers (8, 4, 2)
+      Changed: cookies → hours, friends → subjects, sharing → dividing
+
+      VALIDATION CHECKLIST:
+      □ Same educational concept being taught
+      □ Factual accuracy maintained
+      □ Learning objective identical
+      □ Domain is different but concept transfers naturally
+      □ Difficulty similar (acknowledge if new domain requires background knowledge)
+
+      Original educational text: {text}
+
+      Generate ONE domain transfer variant. OUTPUT ONLY THE TEXT - no preamble, no explanation, just the educational content.
