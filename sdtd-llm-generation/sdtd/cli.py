@@ -290,6 +290,94 @@ def info() -> None:
         typer.echo(f"  {status} prompts/level{level}.yaml")
 
 
+@app.command()
+def plot(
+    input_files: list[Path] = typer.Argument(
+        ...,
+        help="Parquet files to visualize (space-separated)",
+    ),
+    output: Path = typer.Option(
+        "outputs/metrics_plot.png",
+        "--output",
+        "-o",
+        help="Output image file",
+    ),
+    transformations: str = typer.Option(
+        None,
+        "--transformations",
+        "-t",
+        help="Comma-separated list of transformations to include (None = all)",
+    ),
+    subsample: int = typer.Option(
+        100,
+        "--subsample",
+        "-s",
+        help="Max points per transformation to plot",
+    ),
+    kde_levels: int = typer.Option(
+        1,
+        "--kde-levels",
+        "-k",
+        help="Number of KDE contour levels",
+    ),
+) -> None:
+    """Create corner plot visualizing metric distributions.
+
+    Creates a corner plot showing joint distributions of key metrics (bigram overlap,
+    trigram overlap, embedding similarity, ROUGE-L, edit distance) for different
+    semantic duplicate transformations.
+
+    Examples:
+
+        # Plot metrics from a single file
+        uv run python -m sdtd.cli plot outputs/gsm8k_level1.parquet
+
+        # Plot metrics from multiple files
+        uv run python -m sdtd.cli plot outputs/gsm8k_level1.parquet outputs/gsm8k_level2.parquet
+
+        # Plot specific transformations only
+        uv run python -m sdtd.cli plot outputs/gsm8k_level12.parquet \\
+            -t "number_substitution,abstractive_paraphrase" -o plots/comparison.png
+
+        # Adjust subsampling and KDE detail
+        uv run python -m sdtd.cli plot outputs/*.parquet -s 200 -k 5
+    """
+    from sdtd.visualize import create_corner_plot
+
+    # Validate input files
+    valid_files = []
+    for f in input_files:
+        if not f.exists():
+            typer.echo(f"Warning: {f} not found, skipping", err=True)
+        else:
+            valid_files.append(f)
+
+    if not valid_files:
+        typer.echo("Error: No valid input files found", err=True)
+        raise typer.Exit(1)
+
+    # Parse transformations filter
+    transformation_filter = None
+    if transformations:
+        transformation_filter = [t.strip() for t in transformations.split(",")]
+        typer.echo(f"Filtering to transformations: {transformation_filter}")
+
+    # Create plot
+    try:
+        typer.echo(f"Creating corner plot from {len(valid_files)} file(s)...")
+        fig = create_corner_plot(
+            parquet_files=valid_files,
+            transformations=transformation_filter,
+            subsample_size=subsample,
+            output_path=output,
+            kde_levels=kde_levels,
+        )
+        typer.echo(f"✓ Saved plot to {output}")
+    except Exception as e:
+        typer.echo(f"✗ Error creating plot: {e}", err=True)
+        raise typer.Exit(1)
+
+
 def main() -> None:
     """Main entry point."""
     app()
