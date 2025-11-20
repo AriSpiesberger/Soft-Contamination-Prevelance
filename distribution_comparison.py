@@ -14,13 +14,22 @@ Changes include:
 - Added pairwise asymmetric scores and percentile rankings to final report
 - MODIFIED: Updated batching cost function to N log N scaling.
 - MODIFIED: Moved GPU-side computations to float16.
+- FIX: Added trust_remote_code=True for Qwen3 models.
+- FIX: Reverted to torch_dtype to fix custom model initialization error.
+- FIX: Robust NaN handling in plotting to prevent 'Axis limit' errors.
+- FIX: Disabled Tokenizer parallelism to silence fork warnings.
 """
 
 import os
+# FIX: Disable tokenizer parallelism before importing transformers
+# This prevents the "process just got forked" warning spam.
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 import sys
 import json
 import math
 import shutil
+import time
 import multiprocessing
 from collections import Counter
 from typing import List, Set, Dict, Any
@@ -53,7 +62,7 @@ TEXT_LABELS = ["Duplicate", "original"] #plotting, labeling
 
 BACKGROUND_FILE = r"data/random_paragraphs.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
 OUTPUT_DIR = "duplicate_comparison" #our dir here
-MODEL_NAME = 'Qwen/Qwen3-Embedding-0.6B'
+MODEL_NAME = "Qwen/Qwen3-Embedding-8B"
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
 
 # Acceleration parameters
@@ -108,6 +117,7 @@ def create_dynamic_batches(items_with_counts: List[tuple], target_tokens: int, m
     
     if current_batch:
         yield [(text, idx) for _, text, idx in current_batch]
+
 def load_and_embed_background_data(
     filepath: str,
     tokenizer,
@@ -243,6 +253,10 @@ def load_and_embed_background_data(
                     model_output,
                     encoded_input['attention_mask']
                 )
+                
+                # --- MODIFIED: FORCE FP16 ---
+                if device == "cuda":
+                    batch_embeddings = batch_embeddings.to(dtype=torch.float16)
 
                 cpu_embeddings = batch_embeddings.cpu().numpy().tolist()
 
@@ -405,6 +419,11 @@ def get_text_embeddings(
         model_output = model(**encoded_input)
         # Embeddings will be float16 since model is float16
         embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
+        
+        # --- MODIFIED: FORCE FP16 ---
+        if device == "cuda":
+            embeddings = embeddings.to(dtype=torch.float16)
+            
     print("Done.")
     return embeddings
 
@@ -463,7 +482,8 @@ worker_text_list = None
 def initialize_worker_lexical(text_list: List[str]):
     """Initialize tokenizer and texts in worker process."""
     global worker_tokenizer, worker_text_list
-    worker_tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    # FIX: Added trust_remote_code=True to allow loading Qwen3 tokenizer
+    worker_tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
     worker_text_list = text_list
 
 def process_lexical_chunk(
@@ -593,6 +613,13 @@ def plot_comparison_distributions(
             'text': [TEXT_LABELS[0]] * len(text_a_scores) + [TEXT_LABELS[1]] * len(text_b_scores)
         })
         
+        # FIX: Clean NaNs that might crash the plot
+        df = df.replace([np.inf, -np.inf], np.nan).dropna()
+
+        if df.empty:
+             print("Warning: Dataframe is empty after removing NaNs. Skipping comparison plot.")
+             return
+        
         plt.figure(figsize=(14, 8))
         
         sns.kdeplot(
@@ -663,13 +690,20 @@ def plot_bivariate_distribution(
             "token_count": bg_token_counts
         })
         
-        # Determine dynamic x-axis limits
-        all_x_data = semantic_scores + [pairwise_score]
+        # --- FIX: Drop NaNs/Infs to prevent 'Axis limits cannot be NaN' ---
+        df = df.replace([np.inf, -np.inf], np.nan).dropna()
+        
+        if df.empty:
+            print(f"Skipping bivariate plot for {label}: Dataframe empty after dropping NaNs.")
+            return
+        
+        # Determine dynamic x-axis limits based on the CLEANED data
+        all_x_data = df["semantic_score"].tolist() + [pairwise_score]
         data_min = np.min(all_x_data)
         data_max = np.max(all_x_data)
         data_range = data_max - data_min
         padding = data_range * 0.05
-        # Ensure padding is reasonable, avoid negative lims if data_min is low
+        
         new_xlim = (max(data_min - padding, -0.05), min(data_max + padding, 1.05))
 
         
@@ -854,10 +888,15 @@ def main():
     # Load model
     try:
         print(f"Loading model: {MODEL_NAME}...")
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        # FIX: Added trust_remote_code=True
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+        
+        # FIX: Reverted to torch_dtype. The warning is annoying but harmless;
+        # 'dtype' crashes custom models, so we must use the deprecated kwarg.
         model = AutoModel.from_pretrained(
             MODEL_NAME,
-            torch_dtype=torch_dtype # Load model in specified dtype
+            torch_dtype=torch_dtype, 
+            trust_remote_code=True
         )
         model.to(device)
         model.eval()
@@ -869,7 +908,7 @@ def main():
     # --- START: Modified data loading ---
     # Define filter range
     MIN_TOKEN_LIMIT = 10
-    MAX_TOKEN_LIMIT = 200 # Using the 200 from your last file
+    MAX_TOKEN_LIMIT = 2000 # Using the 200 from your last file
 
     # Load, filter, and embed background data simultaneously
     background_data = load_and_embed_background_data(
@@ -896,9 +935,11 @@ def main():
 
     # Calculate direct pairwise similarity
     print(f"\nCalculating direct similarity between {TEXT_LABELS[0]} and {TEXT_LABELS[1]}...")
+    
+    # --- MODIFIED: Removed .to(torch.float32) to ensure FP16 computation ---
     direct_similarity = F.cosine_similarity(
-        text_embeddings[0].to(torch.float32), # Cast to float32
-        text_embeddings[1].to(torch.float32), # Cast to float32
+        text_embeddings[0], 
+        text_embeddings[1], 
         dim=0
     ).item()
     print(f"Direct semantic similarity: {direct_similarity:.6f}\n")
@@ -908,8 +949,8 @@ def main():
         text_embeddings, background_data, device
     )
     if not semantic_distributions or not any(semantic_distributions):
-         print("Warning: Semantic distributions are empty. Skipping plots and percentile stats.", file=sys.stderr)
-         semantic_distributions = [[], []] # Ensure it's a list of two empty lists
+          print("Warning: Semantic distributions are empty. Skipping plots and percentile stats.", file=sys.stderr)
+          semantic_distributions = [[], []] # Ensure it's a list of two empty lists
 
 
     # Compute lexical distributions (Now only trigram/quadgram Jaccard)

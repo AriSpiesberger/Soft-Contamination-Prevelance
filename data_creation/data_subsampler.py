@@ -13,9 +13,10 @@ import hashlib
 import multiprocessing
 from tqdm import tqdm
 from transformers import AutoTokenizer
-
+nltk.download('punkt_tab')
 # --- Configuration ---
-DATA_DIR = r"C:\Users\arisp\Documents\Research\SDTD_Main\data"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DATA_DIR = os.path.join(REPO_ROOT, "data")
 SENTENCE_SAMPLE_SIZE = 100_000
 PARAGRAPH_SAMPLE_SIZE = 100_000
 
@@ -33,6 +34,9 @@ OUTPUT_SENTENCES_FILE = "random_sentences.jsonl"
 OUTPUT_PARAGRAPHS_FILE = "random_paragraphs.jsonl"
 # --- Globals for worker processes ---
 worker_tokenizer = None
+
+# Ensure the shared data directory exists
+os.makedirs(DATA_DIR, exist_ok=True)
 
 
 def setup_nltk():
