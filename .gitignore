@@ -135,6 +135,12 @@ duplicate_comparison/
 
 # Large Data Files
 *.jsonl
+*.json
+*.csv
+
+# Data directories
+data/
+data_creation/dolma3_sample/
 
 # Junk folders
 New folder/

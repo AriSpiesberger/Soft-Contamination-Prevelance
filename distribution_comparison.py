@@ -14,22 +14,14 @@ Changes include:
 - Added pairwise asymmetric scores and percentile rankings to final report
 - MODIFIED: Updated batching cost function to N log N scaling.
 - MODIFIED: Moved GPU-side computations to float16.
-- FIX: Added trust_remote_code=True for Qwen3 models.
-- FIX: Reverted to torch_dtype to fix custom model initialization error.
-- FIX: Robust NaN handling in plotting to prevent 'Axis limit' errors.
-- FIX: Disabled Tokenizer parallelism to silence fork warnings.
 """
 
+import time
 import os
-# FIX: Disable tokenizer parallelism before importing transformers
-# This prevents the "process just got forked" warning spam.
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
 import sys
 import json
 import math
 import shutil
-import time
 import multiprocessing
 from collections import Counter
 from typing import List, Set, Dict, Any
@@ -39,7 +31,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import percentileofscore
-from tqdm import tqdm
+from tqdm import tqdm 
 
 import torch
 import torch.nn.functional as F
@@ -60,9 +52,9 @@ TEXT_2 = """How would a typical person answer each of the following questions ab
 TEXTS_OF_INTEREST = [TEXT_1, TEXT_2]
 TEXT_LABELS = ["Duplicate", "original"] #plotting, labeling
 
-BACKGROUND_FILE = r"data/random_paragraphs.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
+BACKGROUND_FILE = r"C:\Users\arisp\Documents\Research\SDTD_Main\data\full_sample.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
 OUTPUT_DIR = "duplicate_comparison" #our dir here
-MODEL_NAME = "Qwen/Qwen3-Embedding-8B"
+MODEL_NAME = 'Qwen/Qwen3-Embedding-8B'
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
 
 # Acceleration parameters
@@ -118,6 +110,7 @@ def create_dynamic_batches(items_with_counts: List[tuple], target_tokens: int, m
     if current_batch:
         yield [(text, idx) for _, text, idx in current_batch]
 
+
 def load_and_embed_background_data(
     filepath: str,
     tokenizer,
@@ -125,7 +118,7 @@ def load_and_embed_background_data(
     device: str,
     min_tokens: int = 0,
     max_tokens: int = float('inf')
-) -> List[Dict[str, Any]]:
+) -> (List[Dict[str, Any]], List[tuple]):
     """
     (Robust Streaming Version - V2)
     Load background paragraphs from JSONL file, FILTER BY TOKEN RANGE,
@@ -218,6 +211,7 @@ def load_and_embed_background_data(
 
     # --- Pass 2: Compute Embeddings (if needed) ---
     new_embeddings_map = {}  # {line_index: embedding_list}
+    batch_timings = []
     if to_embed_tasks:
         print(f"--- Pass 2: Computing {len(to_embed_tasks):,} embeddings ---")
 
@@ -235,8 +229,12 @@ def load_and_embed_background_data(
 
         with torch.no_grad():
             for batch_data in tqdm(batches, desc="Embedding batches"):
+                
+                # --- ADDED: Start timer ---
+                start_time = time.perf_counter()
+
                 batch_texts = [text for text, _ in batch_data]
-                batch_indices = [idx for _, idx in batch_data]  # These are the original line indices
+                batch_indices = [idx for _, idx in batch_data]
 
                 max_len = getattr(model.config, 'max_position_embeddings', 1024)
                 encoded_input = tokenizer(
@@ -253,12 +251,20 @@ def load_and_embed_background_data(
                     model_output,
                     encoded_input['attention_mask']
                 )
-                
-                # --- MODIFIED: FORCE FP16 ---
-                if device == "cuda":
-                    batch_embeddings = batch_embeddings.to(dtype=torch.float16)
 
                 cpu_embeddings = batch_embeddings.cpu().numpy().tolist()
+
+                # --- ADDED: Stop timer and record data ---
+                end_time =  time.perf_counter() #
+                time_taken = end_time - start_time
+                
+                # Get B (batch_size) and L (max_length)
+                batch_size = encoded_input['input_ids'].shape[0]
+                max_length = encoded_input['input_ids'].shape[1]
+                total_tokens = batch_size * max_length
+                
+                batch_timings.append((batch_size, max_length, total_tokens, time_taken))
+                # --- END: Added section ---
 
                 for j, original_index in enumerate(batch_indices):
                     new_embeddings_map[original_index] = cpu_embeddings[j]
@@ -380,7 +386,7 @@ def load_and_embed_background_data(
                     print(f"Skipping line {i}: {e}")
 
     print(f"✓ Successfully loaded {len(filtered_background_data):,} items.")
-    return filtered_background_data
+    return filtered_background_data, batch_timings
 
 def get_text_token_counts(
     texts: List[str], labels: List[str], tokenizer
@@ -419,11 +425,6 @@ def get_text_embeddings(
         model_output = model(**encoded_input)
         # Embeddings will be float16 since model is float16
         embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
-        
-        # --- MODIFIED: FORCE FP16 ---
-        if device == "cuda":
-            embeddings = embeddings.to(dtype=torch.float16)
-            
     print("Done.")
     return embeddings
 
@@ -482,8 +483,7 @@ worker_text_list = None
 def initialize_worker_lexical(text_list: List[str]):
     """Initialize tokenizer and texts in worker process."""
     global worker_tokenizer, worker_text_list
-    # FIX: Added trust_remote_code=True to allow loading Qwen3 tokenizer
-    worker_tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    worker_tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     worker_text_list = text_list
 
 def process_lexical_chunk(
@@ -596,7 +596,70 @@ def compute_all_lexical_scores(
 # =============================================================================
 # VISUALIZATION
 # =============================================================================
+def plot_embedding_performance(batch_timings: List[tuple], output_dir: str):
+    """
+    Plots embedding performance (time vs. token length/throughput).
+    """
+    print("Generating embedding performance plots...")
+    if not batch_timings:
+        print("No embedding timing data to plot.")
+        return
 
+    try:
+        df = pd.DataFrame(
+            batch_timings,
+            columns=['batch_size', 'max_length', 'total_tokens', 'time_taken_sec']
+        )
+        
+        # Create a figure with two subplots
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
+        
+        # --- Plot 1: Max Length vs. Time ---
+        # (This is what you asked for: token_length vs time)
+        sns.scatterplot(
+            data=df,
+            x='max_length',
+            y='time_taken_sec',
+            hue='batch_size',
+            palette='viridis_r', # Use a different palette
+            alpha=0.7,
+            ax=ax1,
+            s=80 # Make dots a bit larger
+        )
+        ax1.set_title('Embedding Time vs. Max Sequence Length', fontsize=16, fontweight='bold')
+        ax1.set_xlabel('Batch Max Sequence Length (L)', fontsize=13)
+        ax1.set_ylabel('Batch Embed Time (seconds)', fontsize=13)
+        ax1.legend(title='Batch Size (B)')
+        ax1.grid(True, linestyle='--', alpha=0.5)
+        ax1.set_yscale('log') # Time often scales non-linearly
+        ax1.set_xscale('log') # Lengths are also often skewed
+
+        # --- Plot 2: Total Tokens vs. Time (Throughput) ---
+        # (This is also very useful to see)
+        sns.regplot(
+            data=df,
+            x='total_tokens',
+            y='time_taken_sec',
+            ax=ax2,
+            scatter_kws={'alpha': 0.5, 'color': 'dodgerblue'},
+            line_kws={'color': 'red', 'linestyle': '--'}
+        )
+        ax2.set_title('Embedding Time vs. Total Tokens', fontsize=16, fontweight='bold')
+        ax2.set_xlabel('Total Tokens in Batch (B * L)', fontsize=13)
+        ax2.set_ylabel('Batch Embed Time (seconds)', fontsize=13)
+        ax2.grid(True, linestyle='--', alpha=0.5)
+
+        fig.suptitle('Embedding Performance Analysis', fontsize=20, y=1.03)
+        plt.tight_layout()
+        
+        plot_filename = os.path.join(output_dir, "embedding_performance.png")
+        plt.savefig(plot_filename, dpi=300)
+        plt.close(fig)
+        
+        print(f"Saved embedding performance plot to: {plot_filename}")
+
+    except Exception as e:
+        print(f"Error generating embedding performance plot: {e}", file=sys.stderr)
 def plot_comparison_distributions(
     text_a_scores: List[float],
     text_b_scores: List[float],
@@ -612,13 +675,6 @@ def plot_comparison_distributions(
             'score': text_a_scores + text_b_scores,
             'text': [TEXT_LABELS[0]] * len(text_a_scores) + [TEXT_LABELS[1]] * len(text_b_scores)
         })
-        
-        # FIX: Clean NaNs that might crash the plot
-        df = df.replace([np.inf, -np.inf], np.nan).dropna()
-
-        if df.empty:
-             print("Warning: Dataframe is empty after removing NaNs. Skipping comparison plot.")
-             return
         
         plt.figure(figsize=(14, 8))
         
@@ -690,20 +746,13 @@ def plot_bivariate_distribution(
             "token_count": bg_token_counts
         })
         
-        # --- FIX: Drop NaNs/Infs to prevent 'Axis limits cannot be NaN' ---
-        df = df.replace([np.inf, -np.inf], np.nan).dropna()
-        
-        if df.empty:
-            print(f"Skipping bivariate plot for {label}: Dataframe empty after dropping NaNs.")
-            return
-        
-        # Determine dynamic x-axis limits based on the CLEANED data
-        all_x_data = df["semantic_score"].tolist() + [pairwise_score]
+        # Determine dynamic x-axis limits
+        all_x_data = semantic_scores + [pairwise_score]
         data_min = np.min(all_x_data)
         data_max = np.max(all_x_data)
         data_range = data_max - data_min
         padding = data_range * 0.05
-        
+        # Ensure padding is reasonable, avoid negative lims if data_min is low
         new_xlim = (max(data_min - padding, -0.05), min(data_max + padding, 1.05))
 
         
@@ -888,15 +937,10 @@ def main():
     # Load model
     try:
         print(f"Loading model: {MODEL_NAME}...")
-        # FIX: Added trust_remote_code=True
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
-        
-        # FIX: Reverted to torch_dtype. The warning is annoying but harmless;
-        # 'dtype' crashes custom models, so we must use the deprecated kwarg.
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
         model = AutoModel.from_pretrained(
             MODEL_NAME,
-            torch_dtype=torch_dtype, 
-            trust_remote_code=True
+            torch_dtype=torch_dtype # Load model in specified dtype
         )
         model.to(device)
         model.eval()
@@ -908,10 +952,10 @@ def main():
     # --- START: Modified data loading ---
     # Define filter range
     MIN_TOKEN_LIMIT = 10
-    MAX_TOKEN_LIMIT = 2000 # Using the 200 from your last file
+    MAX_TOKEN_LIMIT = 100000000 # Using the 200 from your last file
 
     # Load, filter, and embed background data simultaneously
-    background_data = load_and_embed_background_data(
+    background_data, embedding_timings = load_and_embed_background_data(
         BACKGROUND_FILE,
         tokenizer,
         model,
@@ -924,7 +968,8 @@ def main():
     if not background_data:
         print(f"Error: No background data available after loading/filtering (range {MIN_TOKEN_LIMIT}-{MAX_TOKEN_LIMIT} tokens). Cannot proceed.", file=sys.stderr)
         return
-
+    if embedding_timings:
+        plot_embedding_performance(embedding_timings, OUTPUT_DIR)
     print(f"Successfully prepared {len(background_data):,} paragraphs for analysis.\n")
     # --- END: Modified data loading ---
 
@@ -935,11 +980,9 @@ def main():
 
     # Calculate direct pairwise similarity
     print(f"\nCalculating direct similarity between {TEXT_LABELS[0]} and {TEXT_LABELS[1]}...")
-    
-    # --- MODIFIED: Removed .to(torch.float32) to ensure FP16 computation ---
     direct_similarity = F.cosine_similarity(
-        text_embeddings[0], 
-        text_embeddings[1], 
+        text_embeddings[0].to(torch.float32), # Cast to float32
+        text_embeddings[1].to(torch.float32), # Cast to float32
         dim=0
     ).item()
     print(f"Direct semantic similarity: {direct_similarity:.6f}\n")
@@ -949,8 +992,8 @@ def main():
         text_embeddings, background_data, device
     )
     if not semantic_distributions or not any(semantic_distributions):
-          print("Warning: Semantic distributions are empty. Skipping plots and percentile stats.", file=sys.stderr)
-          semantic_distributions = [[], []] # Ensure it's a list of two empty lists
+         print("Warning: Semantic distributions are empty. Skipping plots and percentile stats.", file=sys.stderr)
+         semantic_distributions = [[], []] # Ensure it's a list of two empty lists
 
 
     # Compute lexical distributions (Now only trigram/quadgram Jaccard)
