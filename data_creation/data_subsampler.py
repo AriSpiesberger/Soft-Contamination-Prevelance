@@ -13,30 +13,26 @@ import hashlib
 import multiprocessing
 from tqdm import tqdm
 from transformers import AutoTokenizer
-nltk.download('punkt_tab')
+
 # --- Configuration ---
-REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-DATA_DIR = os.path.join(REPO_ROOT, "data")
+DATA_DIR = r"C:\Users\arisp\Documents\Research\SDTD\OLMO_MIX_subsample"
 SENTENCE_SAMPLE_SIZE = 100_000
 PARAGRAPH_SAMPLE_SIZE = 100_000
 
 # --- MODIFIED: Switched to token-based filtering ---
-MIN_SENTENCE_TOKEN_LEN = 10  # Replaces MIN_SENTENCE_LEN
-MAX_SENTENCE_TOKEN_LEN = 256 # <-- NEW: Added max for sentences
+MIN_SENTENCE_TOKEN_LEN = 5  # Replaces MIN_SENTENCE_LEN
+MAX_SENTENCE_TOKEN_LEN = 100 # <-- NEW: Added max for sentences
 MIN_PARAGRAPH_TOKEN_LEN = 50 # Replaces MIN_PARAGRAPH_LEN
-MAX_PARAGRAPH_TOKEN_LEN = 1000 # <-- NEW: Added max for paragraphs
+MAX_PARAGRAPH_TOKEN_LEN = 512 # <-- NEW: Added max for paragraphs
 
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1)
 CHUNK_SIZE = 1000
 
 TOKENIZER_NAME = "Qwen/Qwen3-0.6B" # <-- THIS IS THE CHANGED LINE
-OUTPUT_SENTENCES_FILE = "random_sentences.jsonl"
-OUTPUT_PARAGRAPHS_FILE = "random_paragraphs.jsonl"
+OUTPUT_SENTENCES_FILE = r"C:\Users\arisp\Documents\Research\SDTD_Main\data\random_sentences.jsonl"
+OUTPUT_PARAGRAPHS_FILE = r"C:\Users\arisp\Documents\Research\SDTD_Main\data\random_paragraphs.jsonl"
 # --- Globals for worker processes ---
 worker_tokenizer = None
-
-# Ensure the shared data directory exists
-os.makedirs(DATA_DIR, exist_ok=True)
 
 
 def setup_nltk():
@@ -77,8 +73,6 @@ def read_data_chunks(jsonl_files, chunk_size):
     
     if chunk:
         yield chunk
-
-
 def process_line_chunk(chunk):
     """
     Process a chunk of lines in a worker process.
@@ -88,6 +82,9 @@ def process_line_chunk(chunk):
     
     local_sentences = []
     local_paragraphs = []
+    
+    total_filtered_sentence_tokens = 0
+    total_filtered_paragraph_tokens = 0
     
     for line, source_name in chunk:
         try:
@@ -104,40 +101,45 @@ def process_line_chunk(chunk):
                 if not p_clean:
                     continue
                 
-                # --- MODIFIED: Calculate token size *before* filtering ---
+                # --- 1. PROCESS PARAGRAPH ---
                 p_token_size = len(
                     worker_tokenizer.encode(p_clean, add_special_tokens=False)
                 )
                 
-                # --- MODIFIED: New token-based filter ---
-                if not (MIN_PARAGRAPH_TOKEN_LEN <= p_token_size <= MAX_PARAGRAPH_TOKEN_LEN):
-                    continue
+                # Apply paragraph-level filtering
+                if (MIN_PARAGRAPH_TOKEN_LEN <= p_token_size <= MAX_PARAGRAPH_TOKEN_LEN):
+                    # Only add to paragraph list if it passes
+                    total_filtered_paragraph_tokens += p_token_size
+                    
+                    p_id = hashlib.sha256(p_clean.encode('utf-8')).hexdigest()
+                    p_data = {
+                        "id": p_id,
+                        "text": p_clean,
+                        "source": source_name,
+                        "token_size": p_token_size
+                    }
+                    local_paragraphs.append(p_data)
                 
-                # Process paragraph (we already have the token size)
-                p_id = hashlib.sha256(p_clean.encode('utf-8')).hexdigest()
-                p_data = {
-                    "id": p_id,
-                    "text": p_clean,
-                    "source": source_name,
-                    "token_size": p_token_size
-                }
-                local_paragraphs.append(p_data)
-
-                # Process sentences within the valid paragraph
+                # --- 2. PROCESS SENTENCES (Corrected Logic) ---
+                # This now runs *REGARDLESS* of whether the paragraph was saved.
+                # This was the bug: this block was previously nested inside
+                # the paragraph filter's 'if' block.
+                
                 sentences = nltk.sent_tokenize(p_clean)
                 for s in sentences:
                     s_clean = s.strip()
                     if not s_clean:
                         continue
                     
-                    # --- MODIFIED: Calculate token size *before* filtering ---
                     s_token_size = len(
                         worker_tokenizer.encode(s_clean, add_special_tokens=False)
                     )
 
-                    # --- MODIFIED: New token-based filter ---
+                    # Apply sentence-level filtering
                     if not (MIN_SENTENCE_TOKEN_LEN <= s_token_size <= MAX_SENTENCE_TOKEN_LEN):
                         continue
+                    
+                    total_filtered_sentence_tokens += s_token_size
                     
                     s_id = hashlib.sha256(s_clean.encode('utf-8')).hexdigest()
                     s_data = {
@@ -153,7 +155,12 @@ def process_line_chunk(chunk):
         except Exception as e:
             print(f"Error in worker {os.getpid()}: {e}", file=sys.stderr)
 
-    return local_sentences, local_paragraphs
+    return (
+        local_sentences, 
+        local_paragraphs, 
+        total_filtered_sentence_tokens, 
+        total_filtered_paragraph_tokens
+    )
 
 class ReservoirSampler:
     """
@@ -205,6 +212,10 @@ def main():
     # Create reservoir samplers
     sentence_sampler = ReservoirSampler(SENTENCE_SAMPLE_SIZE)
     paragraph_sampler = ReservoirSampler(PARAGRAPH_SAMPLE_SIZE)
+    
+    # --- NEW: Add grand total accumulators ---
+    grand_total_sentence_tokens = 0
+    grand_total_paragraph_tokens = 0
 
     # Create data generator and processing pool
     data_generator = read_data_chunks(jsonl_files, CHUNK_SIZE)
@@ -221,17 +232,28 @@ def main():
             unit="chunk"
         )
         
-        for (local_sentences, local_paragraphs) in pbar:
+        # --- MODIFIED: Unpack 4 values from the worker ---
+        for (
+            local_sentences, 
+            local_paragraphs, 
+            local_s_tokens, 
+            local_p_tokens
+        ) in pbar:
+            
             # Add items to reservoirs
             for s_data in local_sentences:
                 sentence_sampler.add(s_data)
             
             for p_data in local_paragraphs:
                 paragraph_sampler.add(p_data)
+            
+            # --- NEW: Accumulate grand totals ---
+            grand_total_sentence_tokens += local_s_tokens
+            grand_total_paragraph_tokens += local_p_tokens
                 
             pbar.set_postfix_str(
-                f"Sentences: {sentence_sampler.get_count():,}, "
-                f"Paragraphs: {paragraph_sampler.get_count():,}"
+                f"Sents: {sentence_sampler.get_count():,}, "
+                f"Paras: {paragraph_sampler.get_count():,}"
             )
 
     print("\n--- Sampling complete. ---")
@@ -240,6 +262,11 @@ def main():
     print(f"Paragraph sample size: {len(paragraph_sampler.get_sample()):,}")
     print(f"Sentence sample size:  {len(sentence_sampler.get_sample()):,}")
     
+    # --- NEW: Print the grand token totals ---
+    print("\n--- Token Counts (for filtered items) ---")
+    print(f"Total tokens in filtered paragraphs: {grand_total_paragraph_tokens:,}")
+    print(f"Total tokens in filtered sentences:  {grand_total_sentence_tokens:,}")
+
     # Diagnostic: Check the ratio
     if paragraph_sampler.get_count() > 0 and sentence_sampler.get_count() > 0:
         ratio = sentence_sampler.get_count() / paragraph_sampler.get_count()
@@ -250,17 +277,16 @@ def main():
 
     # Save results
     print(f"\nSaving sentences to {OUTPUT_SENTENCES_FILE}...")
-    with open(os.path.join(DATA_DIR,OUTPUT_SENTENCES_FILE), 'w', encoding='utf-8') as f:
+    with open(OUTPUT_SENTENCES_FILE, 'w', encoding='utf-8') as f:
         for entry in sentence_sampler.get_sample():
             f.write(json.dumps(entry) + '\n')
             
     print(f"Saving paragraphs to {OUTPUT_PARAGRAPHS_FILE}...")
-    with open(os.path.join(DATA_DIR,OUTPUT_PARAGRAPHS_FILE), 'w', encoding='utf-8') as f:
+    with open(OUTPUT_PARAGRAPHS_FILE, 'w', encoding='utf-8') as f:
         for entry in paragraph_sampler.get_sample():
             f.write(json.dumps(entry) + '\n')
 
     print("--- Done. ---")
-
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
