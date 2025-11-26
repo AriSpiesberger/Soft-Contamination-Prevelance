@@ -37,6 +37,7 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel
 import gc
+import tiktoken
 #our utils
 from utils.utilities import *
 
@@ -52,7 +53,7 @@ TEXT_2 = """How would a typical person answer each of the following questions ab
 TEXTS_OF_INTEREST = [TEXT_1, TEXT_2]
 TEXT_LABELS = ["Duplicate", "original"] #plotting, labeling
 
-BACKGROUND_FILE = r"C:\Users\arisp\Documents\Research\SDTD_Main\data\full_sample.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
+BACKGROUND_FILE = r"C:\Users\arisp\Documents\Research\SDTD_Main\data\full_paragraphs.jsonl"  # Using paragraphs, random_sentences.jsonl is other option
 OUTPUT_DIR = "duplicate_comparison" #our dir here
 MODEL_NAME = 'Qwen/Qwen3-Embedding-8B'
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
@@ -153,35 +154,48 @@ def load_and_embed_background_data(
     total_lines_scanned = 0
     total_lines_filtered_out = 0
 
+    # Initialize fast tokenizer for counting (much faster than model tokenizer)
+    fast_tokenizer = None
+    try:
+        fast_tokenizer = tiktoken.get_encoding("cl100k_base")
+    except (ImportError, Exception):
+        pass  # Fall back to model tokenizer if tiktoken not available
+    
+    # Estimate total lines from file size (much faster than counting)
+    try:
+        file_size = os.path.getsize(filepath)
+        # Rough estimate: average ~200 bytes per line (adjust based on your data)
+        estimated_lines = max(1, file_size // 200)
+    except (OSError, Exception):
+        estimated_lines = None
+    
     with open(filepath, 'r', encoding='utf-8') as f:
-        # We must scan the whole file to know the total for tqdm
-        # This is a bit slow, but necessary for a good progress bar.
-        # A faster way is to skip this, but the bar will be approximate.
-        # For robustness, let's just count.
-        try:
-            total_lines_scanned = sum(1 for _ in f)
-            f.seek(0)
-        except Exception:
-            total_lines_scanned = 0 # Will work, but no progress %
-            
         desc = "Pass 1: Scanning"
-        pbar = tqdm(f, desc=desc, total=total_lines_scanned if total_lines_scanned > 0 else None)
+        pbar = tqdm(f, desc=desc, total=estimated_lines, unit="lines")
         
         for i, line in enumerate(pbar):
-            if total_lines_scanned == 0:
-                # Update description if we couldn't pre-count
-                pbar.set_description(f"{desc} (Line {i:,})")
-                
             total_lines_scanned += 1
             try:
                 data = json.loads(line)
                 text = data['text']
-                token_count = data.get('token_count')
+                # Check for token_count first, then token_size (from process_full_sample.py)
+                token_count = data.get('token_count') or data.get('token_size')
 
                 # 1. (FIX) Ensure we have token_count *before* filtering
+                # Only compute if both token_count and token_size are missing
+                # Use fast tiktoken if available, otherwise fall back to model tokenizer
                 if token_count is None:
-                    token_count = len(tokenizer.tokenize(text))
+                    if fast_tokenizer:
+                        # Fast path: use tiktoken for approximate count
+                        token_count = len(fast_tokenizer.encode(text))
+                    else:
+                        # Fallback: use model tokenizer (slower)
+                        token_count = len(tokenizer.tokenize(text))
                     new_token_counts[i] = token_count  # Store for Pass 3
+                    lines_to_rewrite.add(i)
+                elif data.get('token_count') is None and data.get('token_size') is not None:
+                    # If we have token_size but not token_count, update the field name
+                    # This ensures consistency - we'll write it as token_count in Pass 3
                     lines_to_rewrite.add(i)
 
                 # 2. Check for embedding
@@ -199,10 +213,6 @@ def load_and_embed_background_data(
             except Exception as e:
                 print(f"Skipping malformed line {i}: {e}", file=sys.stderr)
 
-    # Correct total_lines_scanned if we pre-counted
-    if pbar.total and pbar.total > 0:
-        total_lines_scanned = pbar.total
-        
     print(f"Scan complete. Scanned {total_lines_scanned:,} lines.")
     print(f"Filtered out {total_lines_filtered_out:,} lines (outside token range).")
     print(f"Using {len(filtered_data_indices):,} lines for this analysis.")
@@ -296,9 +306,14 @@ def load_and_embed_background_data(
                         
                         data = json.loads(line)
 
-                        # Update token_count if it was missing
+                        # Update token_count if it was missing or if we need to convert token_size
                         if i in new_token_counts:
                             data['token_count'] = new_token_counts[i]
+                        elif data.get('token_count') is None and data.get('token_size') is not None:
+                            # Convert token_size to token_count for consistency
+                            data['token_count'] = data['token_size']
+                            # Optionally remove token_size to avoid duplication
+                            # data.pop('token_size', None)
 
                         # Update embedding if it was missing
                         if i in new_embeddings_map:
