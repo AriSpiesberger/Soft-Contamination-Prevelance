@@ -10,15 +10,17 @@ def mean_pooling(model_output, attention_mask):
         attention_mask: array of 1's and 0's to denote active tokens versus padded tokens
         
     Returns:
-        Mean pooled model embeddings without padded tokens"""
+        Mean pooled model embeddings without padded tokens
+    OPTIMIZED: Preserves dtype and uses more efficient operations"""
     token_embeddings = model_output[0]
+    # OPTIMIZED: Keep same dtype as token_embeddings (float16 if model is float16)
     input_mask_expanded = (
         attention_mask.unsqueeze(-1)
         .expand(token_embeddings.size())
-        .float()
+        .to(dtype=token_embeddings.dtype)  # Match dtype instead of always float
     )
-    sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
-    sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+    sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, dim=1)
+    sum_mask = torch.clamp(input_mask_expanded.sum(dim=1), min=1e-9)
     return sum_embeddings / sum_mask
 
 
