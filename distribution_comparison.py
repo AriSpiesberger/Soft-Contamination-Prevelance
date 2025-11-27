@@ -450,11 +450,11 @@ def main():
 
     # Load Model
     print(f"Loading {MODEL_NAME}...")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code = True)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code = True, padding = 'left')
     if USE_FLASH_ATTENTION == True:
         model = AutoModel.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype, attn_implementation="flash_attention_2" if device=="cuda" else "sdpa", trust_remote_code = True)
     else:
-        model = AutoModel.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype, attn_implementation="sdpa", trust_remote_code = True)
+        model = AutoModel.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype, attn_implementation="eager", trust_remote_code = True)
     model.to(device).eval()
 
     # Load and Sample Background Data
