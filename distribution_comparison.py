@@ -55,14 +55,14 @@ SAMPLE_SIZE = 100_000
 RANDOM_SEED = 42
 
 # --- A100 TUNED SETTINGS ---
-TARGET_TOKENS_PER_BATCH = 120_000
+TARGET_TOKENS_PER_BATCH = 40_000
 MAX_BATCH_SIZE = 512
 NUM_WORKERS = max(1, multiprocessing.cpu_count() - 1)
 LEXICAL_CHUNK_SIZE = 5000
 MAX_SEQ_LENGTH = 384
 SEMANTIC_CHUNK_SIZE = 50_000
-USE_TORCH_COMPILE_POOLING = True
-USE_FLASH_ATTENTION = True
+USE_TORCH_COMPILE_POOLING = False
+USE_FLASH_ATTENTION = False
 
 # =============================================================================
 # COMPILED MEAN POOLING
@@ -196,12 +196,14 @@ def load_and_embed_background_data(filepath, tokenizer, model, device, min_token
     # --- Step 4: Compute Embeddings ---
     if to_embed_tasks:
         print(f"Computing {len(to_embed_tasks):,} embeddings (Sampled Subset Only)...")
-        to_embed_tasks.sort(key=lambda x: x[0]) # Sort by length for efficient dynamic batching
+        to_embed_tasks.sort(key=lambda x: x[0], reverse=True)  # Longest first
 
         batches = list(create_dynamic_batches(to_embed_tasks, TARGET_TOKENS_PER_BATCH, MAX_BATCH_SIZE))
 
         with torch.no_grad():
             for batch_data in tqdm(batches, desc="Embedding batches"):
+                if len(batch_data) < 10:
+                    print(f"Small batch: {len(batch_data)} samples, max_len ~{len(batch_data[0][0].split())}")
                 # FIX: Unpack 2 items (text, idx) instead of 3
                 batch_texts = [text for text, _ in batch_data]
                 batch_indices = [idx for _, idx in batch_data]
@@ -449,7 +451,10 @@ def main():
     # Load Model
     print(f"Loading {MODEL_NAME}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code = True)
-    model = AutoModel.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype, attn_implementation="flash_attention_2" if device=="cuda" else "sdpa", trust_remote_code = True)
+    if USE_FLASH_ATTENTION == True:
+        model = AutoModel.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype, attn_implementation="flash_attention_2" if device=="cuda" else "sdpa", trust_remote_code = True)
+    else:
+        model = AutoModel.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype, attn_implementation="sdpa", trust_remote_code = True)
     model.to(device).eval()
 
     # Load and Sample Background Data
