@@ -49,48 +49,91 @@ def load_metrics_data(parquet_files: list[Path]) -> pl.DataFrame:
 def extract_metrics(
     df: pl.DataFrame,
     metric_extractors: list[tuple[str, callable]] = DEFAULT_METRICS,
-) -> dict[str, dict[str, np.ndarray]]:
+    group_by_dataset: bool = False,
+) -> dict[str, dict[str, np.ndarray]] | dict[str, dict[str, dict[str, np.ndarray]]]:
     """Extract metrics from DataFrame and organize by transformation.
 
     Args:
         df: DataFrame with metrics JSON column
         metric_extractors: List of (metric_name, extractor_function) tuples
+        group_by_dataset: If True, return nested dict {dataset: {transformation: {metric: values}}}
+                         If False, return {transformation: {metric: values}}
 
     Returns:
-        Dictionary: {transformation_key: {metric_name: values_array}}
+        Dictionary: {transformation_key: {metric_name: values_array}} or
+                   {dataset: {transformation_key: {metric_name: values_array}}}
     """
-    # Group by (sd_level, sd_variant, model_used)
-    data_by_transformation = {}
+    if group_by_dataset:
+        # Group by dataset first, then by transformation
+        data_by_dataset = {}
+        
+        for row in df.iter_rows(named=True):
+            dataset = row.get("source_dataset", "unknown")
+            level = row["sd_level"]
+            variant = row["sd_variant"]
+            model = row["model_used"]
+            key = f"L{level} {variant}\n({model.split('/')[-1]})"  # Format: "L1 variant\n(model)"
+            
+            if dataset not in data_by_dataset:
+                data_by_dataset[dataset] = {}
+            
+            if key not in data_by_dataset[dataset]:
+                data_by_dataset[dataset][key] = {name: [] for name, _ in metric_extractors}
+            
+            # Parse metrics JSON
+            metrics = json.loads(row["metrics"])
+            
+            # Extract each metric
+            for metric_name, extractor in metric_extractors:
+                try:
+                    value = extractor(metrics)
+                    data_by_dataset[dataset][key][metric_name].append(value)
+                except (KeyError, IndexError, TypeError) as e:
+                    # Skip missing metrics
+                    continue
+        
+        # Convert lists to numpy arrays
+        for dataset in data_by_dataset:
+            for key in data_by_dataset[dataset]:
+                for metric_name in data_by_dataset[dataset][key]:
+                    data_by_dataset[dataset][key][metric_name] = np.array(
+                        data_by_dataset[dataset][key][metric_name]
+                    )
+        
+        return data_by_dataset
+    else:
+        # Group by (sd_level, sd_variant, model_used) only
+        data_by_transformation = {}
 
-    for row in df.iter_rows(named=True):
-        level = row["sd_level"]
-        variant = row["sd_variant"]
-        model = row["model_used"]
-        key = f"L{level} {variant}\n({model.split('/')[-1]})"  # Format: "L1 variant\n(model)"
+        for row in df.iter_rows(named=True):
+            level = row["sd_level"]
+            variant = row["sd_variant"]
+            model = row["model_used"]
+            key = f"L{level} {variant}\n({model.split('/')[-1]})"  # Format: "L1 variant\n(model)"
 
-        if key not in data_by_transformation:
-            data_by_transformation[key] = {name: [] for name, _ in metric_extractors}
+            if key not in data_by_transformation:
+                data_by_transformation[key] = {name: [] for name, _ in metric_extractors}
 
-        # Parse metrics JSON
-        metrics = json.loads(row["metrics"])
+            # Parse metrics JSON
+            metrics = json.loads(row["metrics"])
 
-        # Extract each metric
-        for metric_name, extractor in metric_extractors:
-            try:
-                value = extractor(metrics)
-                data_by_transformation[key][metric_name].append(value)
-            except (KeyError, IndexError, TypeError) as e:
-                # Skip missing metrics
-                continue
+            # Extract each metric
+            for metric_name, extractor in metric_extractors:
+                try:
+                    value = extractor(metrics)
+                    data_by_transformation[key][metric_name].append(value)
+                except (KeyError, IndexError, TypeError) as e:
+                    # Skip missing metrics
+                    continue
 
-    # Convert lists to numpy arrays
-    for key in data_by_transformation:
-        for metric_name in data_by_transformation[key]:
-            data_by_transformation[key][metric_name] = np.array(
-                data_by_transformation[key][metric_name]
-            )
+        # Convert lists to numpy arrays
+        for key in data_by_transformation:
+            for metric_name in data_by_transformation[key]:
+                data_by_transformation[key][metric_name] = np.array(
+                    data_by_transformation[key][metric_name]
+                )
 
-    return data_by_transformation
+        return data_by_transformation
 
 
 def subsample_data(
@@ -260,80 +303,39 @@ def plot_1d_density(
     ax.set_yticks([])  # Hide y-axis (density magnitude not important)
 
 
-def create_corner_plot(
-    parquet_files: list[Path],
-    metric_extractors: list[tuple[str, callable]] = None,
-    transformations: list[str] = None,
-    subsample_size: int = 100,
-    output_path: Path = None,
+def _create_corner_plot_from_data(
+    data: dict[str, dict[str, np.ndarray]],
+    metric_names: list[str],
+    colors: dict[str, tuple],
+    metric_limits: dict[str, tuple[float, float]],
+    title: str = None,
     figsize: tuple[float, float] = None,
     kde_levels: int = 1,
 ) -> plt.Figure:
-    """Create corner plot showing joint distributions of metrics.
-
+    """Internal helper to create a corner plot from pre-processed data.
+    
     Args:
-        parquet_files: List of parquet files to load
-        metric_extractors: List of (metric_name, extractor_func) tuples (default: key metrics)
-        transformations: List of transformation keys to include (None = all)
-        subsample_size: Max points per transformation to plot
-        output_path: Path to save figure (None = don't save)
-        figsize: Figure size (width, height) - auto-calculated if None
+        data: Data organized by transformation
+        metric_names: List of metric names
+        colors: Color map for transformations
+        metric_limits: Axis limits for each metric
+        title: Plot title (auto-generated if None)
+        figsize: Figure size (auto-calculated if None)
         kde_levels: Number of KDE contour levels
-
+    
     Returns:
         Matplotlib figure
     """
-    # Use default metrics if not provided
-    if metric_extractors is None:
-        metric_extractors = DEFAULT_METRICS
-
-    metric_names = [name for name, _ in metric_extractors]
     n_metrics = len(metric_names)
-
-    # Load and extract data
-    print("Loading data...")
-    df = load_metrics_data(parquet_files)
-    data = extract_metrics(df, metric_extractors)
-
-    # Filter transformations if specified
-    if transformations is not None:
-        data = {k: v for k, v in data.items() if k in transformations}
-
-    if not data:
-        raise ValueError("No data found for specified transformations")
-
-    # Subsample if needed
-    print(f"Subsampling to {subsample_size} points per transformation...")
-    data = subsample_data(data, subsample_size)
-
-    # Assign colors
     transformation_keys = sorted(data.keys())
-    colors = {key: COLORS[i % len(COLORS)] for i, key in enumerate(transformation_keys)}
-
-    # Calculate axis limits for each metric (shared across all plots)
-    metric_limits = {}
-    for metric_name in metric_names:
-        all_values = []
-        for metrics in data.values():
-            all_values.extend(metrics[metric_name])
-
-        if all_values:
-            all_values = np.array(all_values)
-            vmin, vmax = all_values.min(), all_values.max()
-            vrange = vmax - vmin
-            # Add 5% padding
-            metric_limits[metric_name] = (vmin - 0.05 * vrange, vmax + 0.05 * vrange)
-        else:
-            metric_limits[metric_name] = (0, 1)
-
+    
     # Calculate figure size
     if figsize is None:
         # 2.5 inches per metric
         size = 2.5 * n_metrics
         figsize = (size, size)
-
+    
     # Create figure with custom grid
-    print("Creating plot...")
     fig = plt.figure(figsize=figsize)
     gs = GridSpec(
         n_metrics,
@@ -346,7 +348,7 @@ def create_corner_plot(
         bottom=0.10,
         top=0.96,
     )
-
+    
     # Create subplots
     axes = {}
     for i in range(n_metrics):
@@ -355,11 +357,11 @@ def create_corner_plot(
                 # Diagonal: 1D density plots (horizontal)
                 ax = fig.add_subplot(gs[i, j])
                 plot_1d_density(ax, data, metric_names[i], colors)
-
+                
                 # Set x-axis limits to match metric range (horizontal plot)
                 ax.set_xlim(metric_limits[metric_names[i]])
                 ax.set_ylim(bottom=0)  # Density starts at 0
-
+                
                 # Hide tick labels on diagonal, except bottom-right which shows scale
                 if i == n_metrics - 1:
                     # Bottom-right diagonal: show x-axis tick labels for scale
@@ -368,10 +370,10 @@ def create_corner_plot(
                     # Other diagonals: hide tick labels
                     ax.set_xticklabels([])
                 ax.set_yticklabels([])
-
+                
                 # Add metric name as title on diagonal
                 ax.set_title(metric_names[i], fontsize=11, pad=3)
-
+                
             elif i > j:
                 # Lower triangle: 2D scatter + KDE
                 ax = fig.add_subplot(gs[i, j])
@@ -383,11 +385,11 @@ def create_corner_plot(
                     colors,
                     kde_levels=kde_levels,
                 )
-
+                
                 # Set consistent axis limits
                 ax.set_xlim(metric_limits[metric_names[j]])
                 ax.set_ylim(metric_limits[metric_names[i]])
-
+                
                 # Only show labels on edges
                 if i == n_metrics - 1:
                     # Bottom row: show x-axis labels
@@ -396,7 +398,7 @@ def create_corner_plot(
                     # Not bottom row: hide x-axis labels but keep ticks
                     ax.set_xlabel("")
                     ax.set_xticklabels([])
-
+                
                 if j == 0:
                     # Leftmost column: show y-axis labels
                     ax.set_ylabel(metric_names[i], fontsize=11)
@@ -404,46 +406,290 @@ def create_corner_plot(
                     # Not leftmost: hide y-axis labels but keep ticks
                     ax.set_ylabel("")
                     ax.set_yticklabels([])
-
+                
             else:
                 # Upper triangle: hide
                 ax = fig.add_subplot(gs[i, j])
                 ax.axis("off")
-
+            
             axes[(i, j)] = ax
-
+    
     # Add legend in top-right
     handles = [
         plt.Line2D([0], [0], color=colors[k], marker="o", linestyle="-", linewidth=2, markersize=6)
-        for k in transformation_keys
+        for k in transformation_keys if k in colors
     ]
     # Place legend in top-right area, slightly down and left
     legend_ax = axes[(0, n_metrics - 1)]
     legend_ax.legend(
         handles,
-        transformation_keys,
+        [k for k in transformation_keys if k in colors],
         loc="upper right",
         bbox_to_anchor=(0.95, 0.80),  # Move down 20% from top, 5% left from right
         fontsize=11,
         frameon=False,
     )
-
+    
     # Add title
-    fig.suptitle(
-        f"Metrics Corner Plot: {len(transformation_keys)} transformations, "
-        f"{sum(len(m[metric_names[0]]) for m in data.values())} total points",
-        fontsize=13,
-        y=0.995,
-    )
-
-    # Save if requested
-    if output_path:
-        output_path = Path(output_path)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(output_path, dpi=150, bbox_inches="tight")
-        print(f"Saved plot to {output_path}")
-
+    if title is None:
+        title = (
+            f"Metrics Corner Plot: {len(transformation_keys)} transformations, "
+            f"{sum(len(m[metric_names[0]]) for m in data.values())} total points"
+        )
+    fig.suptitle(title, fontsize=13, y=0.995)
+    
     return fig
+
+
+def create_corner_plot(
+    parquet_files: list[Path],
+    metric_extractors: list[tuple[str, callable]] = None,
+    transformations: list[str] = None,
+    subsample_size: int = 100,
+    output_path: Path = None,
+    figsize: tuple[float, float] = None,
+    kde_levels: int = 1,
+    create_per_dataset: bool = False,
+) -> plt.Figure | dict[str, plt.Figure]:
+    """Create corner plot showing joint distributions of metrics.
+
+    Args:
+        parquet_files: List of parquet files to load
+        metric_extractors: List of (metric_name, extractor_func) tuples (default: key metrics)
+        transformations: List of transformation keys to include (None = all)
+        subsample_size: Max points per transformation to plot
+        output_path: Path to save figure (None = don't save). If create_per_dataset=True and
+                     output_path is a directory, saves combined plot as "all_datasets.png" and
+                     individual plots as "{dataset}.png" in that directory.
+        figsize: Figure size (width, height) - auto-calculated if None
+        kde_levels: Number of KDE contour levels
+        create_per_dataset: If True, create separate plots for each dataset in addition to combined
+
+    Returns:
+        Matplotlib figure (if create_per_dataset=False) or dict[str, plt.Figure] (if True)
+    """
+    # Use default metrics if not provided
+    if metric_extractors is None:
+        metric_extractors = DEFAULT_METRICS
+
+    metric_names = [name for name, _ in metric_extractors]
+    n_metrics = len(metric_names)
+
+    # Load and extract data
+    print("Loading data...")
+    df = load_metrics_data(parquet_files)
+    
+    if create_per_dataset:
+        # Extract data grouped by dataset
+        data_by_dataset = extract_metrics(df, metric_extractors, group_by_dataset=True)
+        
+        # Collect all unique transformations across all datasets to assign consistent colors
+        all_transformations = set()
+        for dataset_data in data_by_dataset.values():
+            all_transformations.update(dataset_data.keys())
+        all_transformations = sorted(all_transformations)
+        
+        # Assign colors based on all transformations (consistent across all plots)
+        colors = {key: COLORS[i % len(COLORS)] for i, key in enumerate(all_transformations)}
+        
+        # Filter transformations if specified
+        if transformations is not None:
+            # Filter data first
+            for dataset in list(data_by_dataset.keys()):
+                data_by_dataset[dataset] = {
+                    k: v for k, v in data_by_dataset[dataset].items() if k in transformations
+                }
+                # Remove empty datasets
+                if not data_by_dataset[dataset]:
+                    del data_by_dataset[dataset]
+            
+            # Re-collect transformations after filtering
+            all_transformations = set()
+            for dataset_data in data_by_dataset.values():
+                all_transformations.update(dataset_data.keys())
+            all_transformations = sorted(all_transformations)
+            
+            # Re-assign colors based on filtered transformations
+            colors = {key: COLORS[i % len(COLORS)] for i, key in enumerate(all_transformations)}
+        
+        if not data_by_dataset:
+            raise ValueError("No data found for specified transformations")
+        
+        # Calculate axis limits across ALL datasets (shared across all plots)
+        metric_limits = {}
+        for metric_name in metric_names:
+            all_values = []
+            for dataset_data in data_by_dataset.values():
+                for metrics in dataset_data.values():
+                    if metric_name in metrics:
+                        all_values.extend(metrics[metric_name])
+            
+            if all_values:
+                all_values = np.array(all_values)
+                vmin, vmax = all_values.min(), all_values.max()
+                vrange = vmax - vmin
+                # Add 5% padding
+                metric_limits[metric_name] = (vmin - 0.05 * vrange, vmax + 0.05 * vrange)
+            else:
+                metric_limits[metric_name] = (0, 1)
+        
+        # Subsample each dataset's data
+        print(f"Subsampling to {subsample_size} points per transformation...")
+        for dataset in data_by_dataset:
+            data_by_dataset[dataset] = subsample_data(data_by_dataset[dataset], subsample_size)
+        
+        # Create combined plot (all datasets merged)
+        print("Creating combined plot (all datasets)...")
+        combined_data = {}
+        for dataset_data in data_by_dataset.values():
+            for transformation, metrics in dataset_data.items():
+                if transformation not in combined_data:
+                    combined_data[transformation] = {name: [] for name in metric_names}
+                for metric_name in metric_names:
+                    if metric_name in metrics:
+                        combined_data[transformation][metric_name].extend(metrics[metric_name])
+        
+        # Convert lists to arrays
+        for transformation in combined_data:
+            for metric_name in metric_names:
+                combined_data[transformation][metric_name] = np.array(
+                    combined_data[transformation][metric_name]
+                )
+        
+        # Subsample combined data
+        combined_data = subsample_data(combined_data, subsample_size)
+        
+        combined_title = (
+            f"Metrics Corner Plot (All Datasets): {len(combined_data)} transformations, "
+            f"{sum(len(m[metric_names[0]]) for m in combined_data.values())} total points"
+        )
+        combined_fig = _create_corner_plot_from_data(
+            combined_data,
+            metric_names,
+            colors,
+            metric_limits,
+            title=combined_title,
+            figsize=figsize,
+            kde_levels=kde_levels,
+        )
+        
+        # Create individual plots for each dataset
+        dataset_figures = {}
+        for dataset, dataset_data in data_by_dataset.items():
+            if not dataset_data:
+                continue
+            print(f"Creating plot for dataset: {dataset}...")
+            dataset_title = (
+                f"Metrics Corner Plot ({dataset}): {len(dataset_data)} transformations, "
+                f"{sum(len(m[metric_names[0]]) for m in dataset_data.values())} total points"
+            )
+            dataset_fig = _create_corner_plot_from_data(
+                dataset_data,
+                metric_names,
+                colors,
+                metric_limits,
+                title=dataset_title,
+                figsize=figsize,
+                kde_levels=kde_levels,
+            )
+            dataset_figures[dataset] = dataset_fig
+        
+        # Save plots if requested
+        if output_path:
+            output_path = Path(output_path)
+            output_path_str = str(output_path)
+            
+            # Check if output_path looks like a directory (ends with /) or is an existing directory
+            if output_path.is_dir() or output_path_str.endswith('/') or output_path_str.endswith('\\'):
+                # Directory: save combined as "all_datasets.png" and individual as "{dataset}.png"
+                output_dir = output_path if output_path.is_dir() else Path(output_path_str.rstrip('/\\'))
+                output_dir.mkdir(parents=True, exist_ok=True)
+                
+                combined_path = output_dir / "all_datasets.png"
+                combined_fig.savefig(combined_path, dpi=150, bbox_inches="tight")
+                print(f"Saved combined plot to {combined_path}")
+                
+                for dataset, fig in dataset_figures.items():
+                    dataset_path = output_dir / f"{dataset}.png"
+                    fig.savefig(dataset_path, dpi=150, bbox_inches="tight")
+                    print(f"Saved {dataset} plot to {dataset_path}")
+            else:
+                # Single file: save combined plot to original path, individual plots with dataset suffix
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Save combined plot to the original output path
+                combined_fig.savefig(output_path, dpi=150, bbox_inches="tight")
+                print(f"Saved combined plot to {output_path}")
+                
+                # Save individual plots with dataset suffix
+                base_path = output_path.stem
+                suffix = output_path.suffix
+                parent = output_path.parent
+                for dataset, fig in dataset_figures.items():
+                    dataset_path = parent / f"{base_path}_{dataset}{suffix}"
+                    fig.savefig(dataset_path, dpi=150, bbox_inches="tight")
+                    print(f"Saved {dataset} plot to {dataset_path}")
+        
+        return {"all_datasets": combined_fig, **dataset_figures}
+    else:
+        # Original behavior: single combined plot
+        data = extract_metrics(df, metric_extractors, group_by_dataset=False)
+        
+        # Filter transformations if specified
+        if transformations is not None:
+            data = {k: v for k, v in data.items() if k in transformations}
+        
+        if not data:
+            raise ValueError("No data found for specified transformations")
+        
+        # Subsample if needed
+        print(f"Subsampling to {subsample_size} points per transformation...")
+        data = subsample_data(data, subsample_size)
+        
+        # Assign colors
+        transformation_keys = sorted(data.keys())
+        colors = {key: COLORS[i % len(COLORS)] for i, key in enumerate(transformation_keys)}
+        
+        # Calculate axis limits for each metric (shared across all plots)
+        metric_limits = {}
+        for metric_name in metric_names:
+            all_values = []
+            for metrics in data.values():
+                all_values.extend(metrics[metric_name])
+            
+            if all_values:
+                all_values = np.array(all_values)
+                vmin, vmax = all_values.min(), all_values.max()
+                vrange = vmax - vmin
+                # Add 5% padding
+                metric_limits[metric_name] = (vmin - 0.05 * vrange, vmax + 0.05 * vrange)
+            else:
+                metric_limits[metric_name] = (0, 1)
+        
+        # Create plot
+        print("Creating plot...")
+        title = (
+            f"Metrics Corner Plot: {len(transformation_keys)} transformations, "
+            f"{sum(len(m[metric_names[0]]) for m in data.values())} total points"
+        )
+        fig = _create_corner_plot_from_data(
+            data,
+            metric_names,
+            colors,
+            metric_limits,
+            title=title,
+            figsize=figsize,
+            kde_levels=kde_levels,
+        )
+        
+        # Save if requested
+        if output_path:
+            output_path = Path(output_path)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            fig.savefig(output_path, dpi=150, bbox_inches="tight")
+            print(f"Saved plot to {output_path}")
+        
+        return fig
 
 
 def create_metric_comparison(

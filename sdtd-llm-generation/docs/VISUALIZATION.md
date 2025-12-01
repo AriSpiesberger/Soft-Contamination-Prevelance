@@ -16,6 +16,10 @@ The `plot` command creates **corner plots** (also called pair plots) that visual
 uv run python -m sdtd.cli plot outputs/gsm8k_level12.parquet
 ```
 
+This creates **two types of plots**:
+1. **Combined plot** (`all_datasets.png` or `{output}_all_datasets.png`): All datasets together
+2. **Per-dataset plots** (`{dataset}.png` or `{output}_{dataset}.png`): One plot per dataset
+
 **Multiple files** (combine data from multiple runs):
 ```bash
 uv run python -m sdtd.cli plot outputs/gsm8k_level1.parquet outputs/gsm8k_level2.parquet
@@ -23,12 +27,35 @@ uv run python -m sdtd.cli plot outputs/gsm8k_level1.parquet outputs/gsm8k_level2
 
 **Custom output location**:
 ```bash
+# Single file: creates combined + per-dataset plots with suffixes
 uv run python -m sdtd.cli plot outputs/gsm8k_level12.parquet -o plots/gsm8k_metrics.png
+# Creates: plots/gsm8k_metrics_all_datasets.png, plots/gsm8k_metrics_gsm8k.png, etc.
+
+# Directory: creates named files in directory
+uv run python -m sdtd.cli plot outputs/gsm8k_level12.parquet -o plots/
+# Creates: plots/all_datasets.png, plots/gsm8k.png, plots/codeforces.png, etc.
 ```
+
+## Plot Types
+
+The visualization creates **multiple plots** when data contains multiple datasets:
+
+1. **Combined Plot** (`all_datasets.png`): Shows all datasets together in one plot
+   - Useful for overall comparison across datasets
+   - Shows the union of all individual dataset plots
+
+2. **Per-Dataset Plots** (`{dataset}.png`): One plot for each dataset
+   - Useful for analyzing dataset-specific patterns
+   - Same structure as combined plot, but filtered to one dataset
+
+**Key features**:
+- **Consistent colors**: Same transformation has the same color across all plots
+- **Shared axis limits**: All plots use the same scale for easy comparison
+- **Combined = union**: The combined plot contains all data from individual plots
 
 ## Plot Structure
 
-The corner plot has two types of subplots:
+Each corner plot has two types of subplots:
 
 ### 1. Left Column: 1D Density Plots
 
@@ -111,11 +138,23 @@ uv run python -m sdtd.cli plot outputs/*.parquet
 
 ### `-o, --output` (optional)
 
-Output image file path (default: `outputs/metrics_corner_plot.png`)
+Output image file path or directory (default: `outputs/metrics_plot.png`)
 
 **Supported formats**: PNG, PDF, SVG, JPG
 
+**Output behavior**:
+- **If a file path**: Creates combined plot at that path, plus per-dataset plots with `_{dataset}` suffix
+- **If a directory**: Creates `all_datasets.png` and `{dataset}.png` files in that directory
+
 ```bash
+# Single file: creates multiple files with suffixes
+uv run python -m sdtd.cli plot data.parquet -o plots/metrics.png
+# Creates: plots/metrics_all_datasets.png, plots/metrics_gsm8k.png, plots/metrics_codeforces.png
+
+# Directory: creates named files
+uv run python -m sdtd.cli plot data.parquet -o plots/
+# Creates: plots/all_datasets.png, plots/gsm8k.png, plots/codeforces.png
+
 # PNG (default, good for viewing)
 uv run python -m sdtd.cli plot data.parquet -o plots/metrics.png
 
@@ -125,6 +164,8 @@ uv run python -m sdtd.cli plot data.parquet -o plots/metrics.pdf
 # SVG (vector graphics, good for editing)
 uv run python -m sdtd.cli plot data.parquet -o plots/metrics.svg
 ```
+
+**Note**: All plots use **consistent colors** for transformations (same transformation = same color across all plots) and **shared axis limits** for easy comparison.
 
 ### `-t, --transformations` (optional)
 
@@ -211,14 +252,18 @@ uv run python -m sdtd.cli generate -d gsm8k -l 1 -n 50
 uv run python -m sdtd.cli generate -d codeforces -l 1 -n 50
 uv run python -m sdtd.cli generate -d allenai -l 1 -n 50
 
-# Plot all together
+# Plot all together (creates combined + per-dataset plots)
 uv run python -m sdtd.cli plot outputs/*_level1.parquet -o plots/dataset_comparison.png
+# Creates: dataset_comparison_all_datasets.png, dataset_comparison_gsm8k.png, etc.
 ```
 
 **What to look for**:
+- **Combined plot**: Overall patterns across all datasets
+- **Per-dataset plots**: Dataset-specific behavior and patterns
 - Do transformations behave similarly across datasets?
 - Are there dataset-specific patterns?
 - Which datasets have more variability?
+- **Color consistency**: Same transformation has same color across all plots for easy comparison
 
 ### Analyze Transformation Quality
 
@@ -307,12 +352,22 @@ You can also use the visualization module directly in Python:
 from pathlib import Path
 from sdtd.visualize import create_corner_plot, create_metric_comparison, DEFAULT_METRICS
 
-# Create corner plot with all default metrics
+# Create corner plot with all default metrics (single combined plot)
 fig = create_corner_plot(
     parquet_files=[Path("outputs/gsm8k_level12.parquet")],
     subsample_size=100,
     output_path=Path("plots/corner.png"),
+    create_per_dataset=False,  # Only create combined plot
 )
+
+# Create combined + per-dataset plots (default behavior)
+figures = create_corner_plot(
+    parquet_files=[Path("outputs/gsm8k_level12.parquet")],
+    subsample_size=100,
+    output_path=Path("plots/"),
+    create_per_dataset=True,  # Create both combined and per-dataset plots
+)
+# Returns: {"all_datasets": fig1, "gsm8k": fig2, "codeforces": fig3, ...}
 
 # Create single 2D comparison plot
 from sdtd.visualize import create_metric_comparison
