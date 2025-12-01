@@ -362,17 +362,30 @@ def plot(
         transformation_filter = [t.strip() for t in transformations.split(",")]
         typer.echo(f"Filtering to transformations: {transformation_filter}")
 
-    # Create plot
+    # Create plot(s)
     try:
-        typer.echo(f"Creating corner plot from {len(valid_files)} file(s)...")
-        fig = create_corner_plot(
+        typer.echo(f"Creating corner plot(s) from {len(valid_files)} file(s)...")
+        result = create_corner_plot(
             parquet_files=valid_files,
             transformations=transformation_filter,
             subsample_size=subsample,
             output_path=output,
             kde_levels=kde_levels,
+            create_per_dataset=True,  # Always create both combined and per-dataset plots
         )
-        typer.echo(f"✓ Saved plot to {output}")
+        
+        if isinstance(result, dict):
+            # Multiple plots created
+            typer.echo(f"✓ Created {len(result)} plot(s):")
+            for name, fig in result.items():
+                if name == "all_datasets":
+                    typer.echo(f"  - Combined plot (all datasets)")
+                else:
+                    typer.echo(f"  - Dataset: {name}")
+            typer.echo(f"✓ Saved plots to {output}")
+        else:
+            # Single plot (shouldn't happen with create_per_dataset=True, but handle it)
+            typer.echo(f"✓ Saved plot to {output}")
     except Exception as e:
         typer.echo(f"✗ Error creating plot: {e}", err=True)
         raise typer.Exit(1)
