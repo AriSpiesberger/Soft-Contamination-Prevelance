@@ -48,12 +48,13 @@ REGION = s3_config.region
 # Paths
 LOCAL_CACHE_DIR = Path("/tmp/embedding_runner_cache")
 
-# Tuning - Optimized for H100
-TARGET_TOKENS_PER_BATCH = 400_000 
-MAX_BATCH_SIZE = 512  # Increased for H100 80GB
+# Tuning - MATCH h100_ghostbuster defaults
+# These settings rely on OOM recovery to split oversized batches.
+TARGET_TOKENS_PER_BATCH = 400_000
+MAX_BATCH_SIZE = 512
 MAX_SEQ_LENGTH = 512
-NUM_LOADER_WORKERS = 24  # Increased for better I/O
-PREFETCH_FACTOR = 4  # Increased for better prefetching
+NUM_LOADER_WORKERS = 24
+PREFETCH_FACTOR = 4
 
 if not hasattr(np, 'int'):
     np.int = int
@@ -113,17 +114,19 @@ def upload_file(bucket, key, local_path):
 def setup_model(gpu_id):
     device = f"cuda:{gpu_id}"
     torch.cuda.set_device(device)
-    torch.set_float32_matmul_precision("high")  # H100 optimization
+    torch.set_float32_matmul_precision("high")
     
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, padding_side="right")  # Right padding for efficiency
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, padding_side="right")
     
     model = AutoModel.from_pretrained(
         MODEL_NAME,
-        torch_dtype=torch.bfloat16,
+        dtype=torch.bfloat16,
         attn_implementation="flash_attention_2",
         trust_remote_code=True
     ).to(device).eval()
     return tokenizer, model, device
+
+# Match h100_ghostbuster core embedding behavior -----------------------------
 
 def mean_pooling(token_embeddings, attention_mask):
     """Fused mean pooling - stays in bf16 until final normalization."""
@@ -132,12 +135,14 @@ def mean_pooling(token_embeddings, attention_mask):
     counts = mask.sum(dim=1).clamp(min=1e-9)
     return summed / counts
 
-# =============================================================================
-# PROFILING UTILITIES
-# =============================================================================
+
+# Profiling configuration (kept for parity, disabled by default)
+ENABLE_PROFILING = False
+
+
 class ProfileTimer:
-    """Minimal CUDA-aware profiler for per-batch timing."""
-    def __init__(self, enabled=True):
+    """Minimal CUDA-aware profiler."""
+    def __init__(self, enabled=False):
         self.enabled = enabled
         self.times = {}
 
@@ -154,118 +159,110 @@ class ProfileTimer:
         elapsed = (time.perf_counter() - self.times[name]) * 1000
         return elapsed
 
-def process_batch_iterative(initial_encoded_input, initial_indices, model, block_data, device, profiler=None):
+
+def process_batch_iterative(
+    initial_encoded_input,
+    initial_indices,
+    model,
+    block_data,
+    device,
+    profiler: ProfileTimer,
+):
     """
-    Iterative queue with CUDA stream overlap for efficient processing.
+    Iterative queue with CUDA stream overlap.
+    Double-buffering: prefetch next batch while computing current.
     """
     queue = deque([(initial_encoded_input, initial_indices)])
-    
+
     compute_stream = torch.cuda.Stream()
     transfer_stream = torch.cuda.Stream()
-    
+
+    # Double buffer state
+    prefetched_batch = None
+    prefetched_indices = None
+
     while queue:
         current_encoded, current_indices = queue.popleft()
-        
+
         # --- PREFETCH NEXT (on transfer stream) ---
         if queue:
-            next_encoded, _ = queue[0]
+            next_encoded, next_indices = queue[0]
             with torch.cuda.stream(transfer_stream):
-                # Prefetch next batch to GPU
-                _ = {
+                prefetched_batch = {
                     k: v.to(device, non_blocking=True)
                     for k, v in next_encoded.items()
                 }
-        
+                prefetched_indices = next_indices
+        else:
+            prefetched_batch = None
+            prefetched_indices = None
+
         # --- COMPUTE CURRENT (on compute stream) ---
         try:
             with torch.cuda.stream(compute_stream):
                 # Wait for any prior transfer to complete
                 compute_stream.wait_stream(transfer_stream)
-                
-                transfer_ms = 0
-                inference_ms = 0
-                d2h_ms = 0
-                
-                if profiler:
-                    profiler.start('transfer')
+
+                profiler.start("transfer")
                 batch_gpu = {
                     k: v.to(device, non_blocking=True)
                     for k, v in current_encoded.items()
                 }
-                if profiler:
-                    torch.cuda.synchronize()
-                    transfer_ms = profiler.stop('transfer')
-                
-                if profiler:
-                    profiler.start('inference')
-                with torch.no_grad():
-                    out = model(**batch_gpu)
-                    embeddings = mean_pooling(out[0], batch_gpu['attention_mask'])
-                    embeddings = F.normalize(embeddings, p=2, dim=1)
-                if profiler:
-                    torch.cuda.synchronize()
-                    inference_ms = profiler.stop('inference')
-                
-                if profiler:
-                    profiler.start('d2h')
-                # Stay in bf16 -> float32 on CPU to avoid GPU cast overhead
+                torch.cuda.synchronize()
+                transfer_ms = profiler.stop("transfer")
+
+                profiler.start("inference")
+                out = model(**batch_gpu)
+                embeddings = mean_pooling(out[0], batch_gpu["attention_mask"])
+                embeddings = F.normalize(embeddings, p=2, dim=1)
+                torch.cuda.synchronize()
+                inference_ms = profiler.stop("inference")
+
+                profiler.start("d2h")
                 cpu_embs = embeddings.cpu().float().numpy()
-                if profiler:
-                    d2h_ms = profiler.stop('d2h')
-            
-            # Store numpy arrays directly
+                d2h_ms = profiler.stop("d2h")
+
+            if ENABLE_PROFILING:
+                bs = len(current_indices)
+                print(
+                    f"  [Profile] BS={bs} | Transfer={transfer_ms:.1f}ms | "
+                    f"Inference={inference_ms:.1f}ms | D2H={d2h_ms:.1f}ms"
+                )
+
+            # Store numpy arrays directly (defer .tolist() to write time)
             for local_idx, emb in zip(current_indices, cpu_embs):
                 block_data[local_idx][EMBEDDER_KEY] = emb
-            
+
             del batch_gpu, out, embeddings, cpu_embs
-            
-            # Return timing info if profiling
-            if profiler:
-                return {
-                    'transfer_ms': transfer_ms,
-                    'inference_ms': inference_ms,
-                    'd2h_ms': d2h_ms,
-                    'batch_size': len(current_indices)
-                }
-            return None
-            
+
         except torch.cuda.OutOfMemoryError:
             # Cleanup GPU state
-            try:
-                del batch_gpu
-            except NameError:
-                pass
-            try:
-                del out
-            except NameError:
-                pass
-            try:
-                del embeddings
-            except NameError:
-                pass
-            
+            for var in ["batch_gpu", "out", "embeddings"]:
+                if var in dir():
+                    exec(f"del {var}")
+
             gc.collect()
             torch.cuda.empty_cache()
-            
+
             batch_len = len(current_indices)
             if batch_len <= 1:
-                seq_len = current_encoded['input_ids'].shape[1]
-                print(f"  [OOM] Skipping single doc (seq_len={seq_len})")
+                seq_len = current_encoded["input_ids"].shape[1]
+                print(f"CRITICAL: OOM on single doc (seq_len={seq_len}). Skipping.")
                 continue
-            
+
             # Split and requeue
             mid = batch_len // 2
-            
+
             batch_1 = {k: v[:mid].clone() for k, v in current_encoded.items()}
             indices_1 = current_indices[:mid]
-            
+
             batch_2 = {k: v[mid:].clone() for k, v in current_encoded.items()}
             indices_2 = current_indices[mid:]
-            
+
             # Insert at front for depth-first processing
             queue.appendleft((batch_2, indices_2))
             queue.appendleft((batch_1, indices_1))
-            
+
             print(f"  [OOM Recovery] Split {batch_len} -> {mid} + {batch_len - mid}")
 
 # =============================================================================
@@ -329,13 +326,10 @@ def gpu_worker(rank, queue, errors, progress_queue):
         
     # Create the collator once per worker
     collator = DataCollator(tokenizer, MAX_SEQ_LENGTH)
-    profiler = ProfileTimer(enabled=True)
+    profiler = ProfileTimer(enabled=False)  # DISABLED - profiling syncs kill performance!
     files_processed = 0
     total_docs = 0
     total_batches = 0
-    total_transfer_time = 0.0
-    total_inference_time = 0.0
-    total_d2h_time = 0.0
 
     while not shutdown:
         try:
@@ -390,29 +384,18 @@ def gpu_worker(rank, queue, errors, progress_queue):
 
                 embed_start = time.time()
                 batch_count = 0
-                batch_timings = []
                 
                 with torch.no_grad():  # Wrap entire inference loop
                     for enc, idxs in loader:
-                        timing = process_batch_iterative(enc, idxs, model, data, device, profiler)
+                        process_batch_iterative(enc, idxs, model, data, device, profiler)
                         batch_count += 1
-                        if timing:
-                            batch_timings.append(timing)
-                            total_transfer_time += timing['transfer_ms'] / 1000.0
-                            total_inference_time += timing['inference_ms'] / 1000.0
-                            total_d2h_time += timing['d2h_ms'] / 1000.0
                 
                 embed_time = time.time() - embed_start
                 total_batches += batch_count
                 
-                # Calculate per-batch averages for this file
-                if batch_timings:
-                    avg_transfer = sum(t['transfer_ms'] for t in batch_timings) / len(batch_timings)
-                    avg_inference = sum(t['inference_ms'] for t in batch_timings) / len(batch_timings)
-                    avg_d2h = sum(t['d2h_ms'] for t in batch_timings) / len(batch_timings)
-                    avg_batch_size = sum(t['batch_size'] for t in batch_timings) / len(batch_timings)
-                else:
-                    avg_transfer = avg_inference = avg_d2h = avg_batch_size = 0
+                # No per-batch timing - removed for speed (profiling was killing performance)
+                avg_transfer = avg_inference = avg_d2h = 0
+                avg_batch_size = len(data) / batch_count if batch_count > 0 else 0
 
                 # Save results
                 save_start = time.time()
@@ -448,39 +431,38 @@ def gpu_worker(rank, queue, errors, progress_queue):
                     embed_mb_per_sec = file_size_mb / embed_time if embed_time > 0 else 0
                     total_mb_per_sec = file_size_mb / total_time if total_time > 0 else 0
                     
-                    # Report progress
-                    progress_queue.put({
-                        'rank': rank,
-                        'file': fname,
-                        'docs': len(valid),
-                        'file_size_mb': file_size_mb,
-                        'batches': batch_count,
-                        'download_time': download_time,
-                        'load_time': load_time,
-                        'prep_time': prep_time,
-                        'embed_time': embed_time,
-                        'save_time': save_time,
-                        'upload_time': upload_time,
-                        'total_time': total_time,
-                        'docs_per_sec': docs_per_sec,
-                        'embed_mb_per_sec': embed_mb_per_sec,
-                        'total_mb_per_sec': total_mb_per_sec,
-                        'avg_transfer_ms': avg_transfer,
-                        'avg_inference_ms': avg_inference,
-                        'avg_d2h_ms': avg_d2h,
-                        'avg_batch_size': avg_batch_size
-                    })
+                    # Report progress - handle broken pipe gracefully
+                    try:
+                        progress_queue.put({
+                            'rank': rank,
+                            'file': fname,
+                            'docs': len(valid),
+                            'file_size_mb': file_size_mb,
+                            'batches': batch_count,
+                            'download_time': download_time,
+                            'load_time': load_time,
+                            'prep_time': prep_time,
+                            'embed_time': embed_time,
+                            'save_time': save_time,
+                            'upload_time': upload_time,
+                            'total_time': total_time,
+                            'docs_per_sec': docs_per_sec,
+                            'embed_mb_per_sec': embed_mb_per_sec,
+                            'total_mb_per_sec': total_mb_per_sec,
+                            'avg_transfer_ms': avg_transfer,
+                            'avg_inference_ms': avg_inference,
+                            'avg_d2h_ms': avg_d2h,
+                            'avg_batch_size': avg_batch_size
+                        })
+                    except (BrokenPipeError, OSError, ConnectionError):
+                        # Progress queue broken - main process may have exited, but continue processing
+                        pass
                     
-                    # Detailed breakdown
+                    # Detailed breakdown (profiling disabled for speed)
                     print(f"[GPU {rank}] ✓ {fname} | {file_size_mb:.1f}MB | {len(valid)} docs | "
-                          f"{batch_count} batches")
-                    print(f"  Time: {total_time:.1f}s total | "
-                          f"Embed: {embed_time:.1f}s ({embed_mb_per_sec:.2f} MB/s) | "
-                          f"IO: {download_time:.1f}s↓ + {upload_time:.1f}s↑")
-                    print(f"  Speed: {docs_per_sec:.0f} docs/s | "
-                          f"Transfer: {avg_transfer:.1f}ms | "
-                          f"Inference: {avg_inference:.1f}ms | "
-                          f"D2H: {avg_d2h:.1f}ms | "
+                          f"{batch_count} batches | {total_time:.1f}s total")
+                    print(f"  Embed: {embed_time:.1f}s ({embed_mb_per_sec:.2f} MB/s, {docs_per_sec:.0f} docs/s) | "
+                          f"IO: {download_time:.1f}s↓ + {upload_time:.1f}s↑ | "
                           f"Avg BS: {avg_batch_size:.0f}")
             
             # Cleanup
@@ -491,18 +473,14 @@ def gpu_worker(rank, queue, errors, progress_queue):
         except Exception as e:
             print(f"[GPU {rank}] ✗ Error processing {fname if 'fname' in locals() else 'unknown'}: {e}")
             traceback.print_exc()
-            errors.put((rank, str(e)))
+            try:
+                errors.put((rank, str(e)))
+            except (BrokenPipeError, OSError, ConnectionError):
+                # Error queue broken - continue anyway
+                pass
     
     # Final worker stats
-    if total_batches > 0:
-        avg_transfer = (total_transfer_time / total_batches) * 1000
-        avg_inference = (total_inference_time / total_batches) * 1000
-        avg_d2h = (total_d2h_time / total_batches) * 1000
-        print(f"[GPU {rank}] Worker finished. Processed {files_processed} files, {total_docs:,} total docs, {total_batches} batches")
-        print(f"  └─ Avg per batch: Transfer={avg_transfer:.1f}ms | "
-              f"Inference={avg_inference:.1f}ms | D2H={avg_d2h:.1f}ms")
-    else:
-        print(f"[GPU {rank}] Worker finished. Processed {files_processed} files, {total_docs:,} total docs")
+    print(f"[GPU {rank}] Worker finished. Processed {files_processed} files, {total_docs:,} total docs, {total_batches} batches")
 
 # =============================================================================
 # MAIN
