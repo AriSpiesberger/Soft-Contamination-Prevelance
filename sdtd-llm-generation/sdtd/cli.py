@@ -341,6 +341,121 @@ def info() -> None:
 
 
 @app.command()
+def export_jsonl(
+    input_type: str = typer.Option(
+        ...,
+        "--type",
+        "-t",
+        help="Input type: 'zebralogic' for original dataset, 'parquet' for generated parquet file",
+    ),
+    input_file: Path = typer.Option(
+        None,
+        "--input",
+        "-i",
+        help="Input parquet file (required if type is 'parquet')",
+    ),
+    output_file: Path = typer.Option(
+        ...,
+        "--output",
+        "-o",
+        help="Output JSONL file path",
+    ),
+    template_name: str = typer.Option(
+        None,
+        "--template",
+        help="Template name from jsonl_templates.yaml (default: 'zebralogic_original' for zebralogic, 'zebralogic_generated' for parquet)",
+    ),
+    template_path: Path = typer.Option(
+        "prompts/jsonl_templates.yaml",
+        "--template-path",
+        help="Path to templates YAML file",
+    ),
+    limit: int = typer.Option(
+        None,
+        "--limit",
+        "-n",
+        help="Limit number of items to export (only for zebralogic type)",
+    ),
+    dataset_filter: str = typer.Option(
+        None,
+        "--dataset",
+        "-d",
+        help="Filter by dataset name (only for parquet type, e.g., 'zebralogic')",
+    ),
+) -> None:
+    """Export datasets to JSONL format for OpenAI fine-tuning.
+
+    Converts either the original ZebraLogic dataset or generated parquet files
+    to JSONL format using templates defined in jsonl_templates.yaml.
+
+    Examples:
+
+        # Export original ZebraLogic dataset
+        uv run python -m sdtd export-jsonl -t zebralogic -o zebralogic_train.jsonl
+
+        # Export with limit for testing
+        uv run python -m sdtd export-jsonl -t zebralogic -o test.jsonl -n 10
+
+        # Export generated parquet file
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level12.parquet -o generated.jsonl
+
+        # Export with dataset filter
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/all.parquet -o zebra.jsonl -d zebralogic
+
+        # Use custom template
+        uv run python -m sdtd export-jsonl -t zebralogic -o output.jsonl --template custom_template
+    """
+    from sdtd.export import export_zebralogic_to_jsonl, export_parquet_to_jsonl
+
+    if input_type == "zebralogic":
+        # Export original ZebraLogic dataset
+        if template_name is None:
+            template_name = "zebralogic_original"
+        
+        try:
+            export_zebralogic_to_jsonl(
+                output_file=output_file,
+                template_name=template_name,
+                template_path=template_path,
+                limit=limit,
+            )
+            typer.echo(f"✓ Exported ZebraLogic dataset to {output_file}")
+        except Exception as e:
+            typer.echo(f"✗ Error: {e}", err=True)
+            raise typer.Exit(1)
+
+    elif input_type == "parquet":
+        # Export generated parquet file
+        if input_file is None:
+            typer.echo("Error: --input is required when type is 'parquet'", err=True)
+            raise typer.Exit(1)
+        
+        if not input_file.exists():
+            typer.echo(f"Error: Input file {input_file} not found", err=True)
+            raise typer.Exit(1)
+
+        if template_name is None:
+            template_name = "zebralogic_generated"
+        
+        try:
+            export_parquet_to_jsonl(
+                input_file=input_file,
+                output_file=output_file,
+                template_name=template_name,
+                template_path=template_path,
+                dataset_filter=dataset_filter,
+            )
+            typer.echo(f"✓ Exported parquet file to {output_file}")
+        except Exception as e:
+            typer.echo(f"✗ Error: {e}", err=True)
+            raise typer.Exit(1)
+
+    else:
+        typer.echo(f"Error: Invalid type '{input_type}'. Must be 'zebralogic' or 'parquet'", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
 def plot(
     input_files: list[Path] = typer.Argument(
         ...,

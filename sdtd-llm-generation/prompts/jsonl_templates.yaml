@@ -1,0 +1,126 @@
+# JSONL Export Templates for OpenAI Fine-tuning Format
+#
+# Each template defines system, user, and assistant prompts as Jinja2 templates.
+# Variables available in templates:
+# - For ZebraLogic original: id, size, puzzle, solution (dict with header/rows), created_at
+# - For generated parquet: original_text, sd_text, source_dataset, sd_level, sd_variant, model_used, additional_info (JSON string), etc.
+
+# Shared example puzzle for all ZebraLogic templates
+example_puzzle: |
+  # Example Puzzle 
+
+  There are 3 houses, numbered 1 to 3 from left to right, as seen from across the street. Each house is occupied by a different person. Each house has a unique attribute for each of the following characteristics:
+   - Each person has a unique name: `Peter`, `Eric`, `Arnold`.
+   - Each person has a unique favorite drink: `tea`, `water`, `milk`
+
+  ## Clues for the Example Puzzle
+
+  1. Peter is in the second house.
+
+  2. Arnold is directly left of the one who only drinks water.
+
+  3. The one who only drinks water is directly left of the person who likes milk.
+
+  ## Answer to the Example Puzzle
+
+  {
+      "reasoning": "Given Clue 1, we know Peter is in House 2. According to Clue 2, Arnold is directly left of the one who only drinks water. The person in House 3 cannot be on the left of anyone, so Arnold must be in House 1. Thus, Peter drinks water, and Eric lives in House 3. Then, according to Clue 3, Eric drinks milk. Therefore, Arnold drinks tea.",
+      "solution": {
+          "House 1": {
+              "Name": "Arnold",
+              "Drink": "tea"
+          },
+          "House 2": {
+              "Name": "Peter",
+              "Drink": "water"
+          },
+          "House 3": {
+              "Name": "Eric",
+              "Drink": "milk"
+          }
+      }
+  }
+
+zebralogic_original:
+  # Template for exporting original ZebraLogic test dataset
+  # Uses empty system message and includes example puzzle preamble
+  system: ""
+  
+  user: |
+    {{ example_puzzle }}
+
+    # Puzzle to Solve 
+
+    {{ puzzle }}
+
+    # Instruction
+
+    Now please solve the above puzzle. Present your reasoning and solution in the following json format:
+
+    {
+      "reasoning": "Your step-by-step reasoning process",
+      "solution": {
+        "House 1": {
+          {% for header in solution.header %}
+          {% if header != "House" %}
+          "{{ header }}": "...",
+          {% endif %}
+          {% endfor %}
+        }
+      }
+    }
+
+  assistant: |
+    {
+      "reasoning": "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house.",
+      "solution": {{ formatted_solution }}
+    }
+
+zebralogic_generated:
+  # Template for exporting generated ZebraLogic puzzles from parquet files
+  # Uses empty system message and includes example puzzle preamble
+  system: ""
+  
+  user: |
+    {{ example_puzzle }}
+
+    # Puzzle to Solve 
+
+    {{ sd_text }}
+
+    # Instruction
+
+    Now please solve the above puzzle. Present your reasoning and solution in the following json format:
+
+    {
+      "reasoning": "Your step-by-step reasoning process",
+      "solution": {
+        "House 1": {
+          {% if solution_headers %}
+          {% for header in solution_headers %}
+          "{{ header }}": "...",
+          {% endfor %}
+          {% else %}
+          "Name": "...",
+          "Drink": "...",
+          ...
+          {% endif %}
+        },
+        ...
+      }
+    }
+
+  assistant: |
+    {
+      "reasoning": "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house.",
+      "solution": {{ formatted_solution }}
+    }
+
+openai_chat_format:
+  # Generic OpenAI chat format template (can be used for any dataset)
+  system: |
+    {{ system_prompt }}
+  
+  user: |
+    {{ user_prompt }}
+
