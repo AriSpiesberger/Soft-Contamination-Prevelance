@@ -100,9 +100,9 @@ def generate(
 
 @app.command()
 def dump(
-    input_file: Path = typer.Argument(
+    input_files: list[Path] = typer.Argument(
         ...,
-        help="Path to parquet file to dump",
+        help="Path to parquet file(s) to dump",
     ),
     output_file: Path = typer.Option(
         None,
@@ -110,156 +110,191 @@ def dump(
         "-o",
         help="Output markdown file (default: stdout)",
     ),
-    limit: int = typer.Option(
-        5,
-        "--limit",
+    samples: int = typer.Option(
+        3,
+        "--samples",
         "-n",
-        help="Number of samples to dump per variant",
+        help="Number of samples to show per dataset",
     ),
-    level: int = typer.Option(
+    dataset: str = typer.Option(
         None,
-        "--level",
-        "-l",
-        help="Filter by level (1 or 2)",
-    ),
-    variant: str = typer.Option(
-        None,
-        "--variant",
-        "-v",
-        help="Filter by specific variant name",
+        "--dataset",
+        "-d",
+        help="Filter by specific dataset name",
     ),
 ) -> None:
-    """Dump parquet file samples to readable markdown format.
+    """Create dataset overview with samples and transformations.
+
+    Organized as: dataset > sample > transformations (compact format).
+    Shows dataset descriptions from metadata and all transformations for each sample.
 
     Examples:
 
-        # Dump first 5 samples from each variant to stdout
-        uv run python -m sdtd.cli dump outputs/gsm8k_level1.parquet
+        # Overview with 3 samples per dataset
+        uv run python -m sdtd.cli dump outputs/gsm8k_level12.parquet
 
-        # Dump 3 samples to file
-        uv run python -m sdtd.cli dump outputs/gsm8k_level1.parquet -o review.md -n 3
+        # Multiple files with 5 samples each
+        uv run python -m sdtd.cli dump outputs/*.parquet -n 5 -o overview.md
 
-        # Dump only Level 1, abstractive_paraphrase variant
-        uv run python -m sdtd.cli dump outputs/gsm8k_level12.parquet -l 1 -v abstractive_paraphrase
+        # Filter to specific dataset
+        uv run python -m sdtd.cli dump outputs/*.parquet -d gsm8k -n 2
     """
     import polars as pl
     import json
+    import yaml
     from datetime import datetime
+    from collections import defaultdict
 
-    if not input_file.exists():
-        typer.echo(f"Error: File not found: {input_file}", err=True)
+    # Load dataset metadata
+    metadata_path = Path("datasets_metadata.yaml")
+    if metadata_path.exists():
+        with open(metadata_path) as f:
+            dataset_metadata = yaml.safe_load(f)
+    else:
+        typer.echo("Warning: datasets_metadata.yaml not found, proceeding without metadata", err=True)
+        dataset_metadata = {}
+
+    # Validate and read input files
+    valid_files = []
+    for f in input_files:
+        if not f.exists():
+            typer.echo(f"Warning: {f} not found, skipping", err=True)
+        else:
+            valid_files.append(f)
+
+    if not valid_files:
+        typer.echo("Error: No valid input files found", err=True)
         raise typer.Exit(1)
 
-    # Read parquet
-    try:
-        df = pl.read_parquet(input_file)
-    except Exception as e:
-        typer.echo(f"Error reading parquet: {e}", err=True)
-        raise typer.Exit(1)
+    # Read all parquet files and combine
+    dfs = []
+    for f in valid_files:
+        try:
+            dfs.append(pl.read_parquet(f))
+        except Exception as e:
+            typer.echo(f"Error reading {f}: {e}", err=True)
+            raise typer.Exit(1)
 
-    # Apply filters
-    if level is not None:
-        df = df.filter(pl.col("sd_level") == level)
-    if variant is not None:
-        df = df.filter(pl.col("sd_variant") == variant)
+    df = pl.concat(dfs) if len(dfs) > 1 else dfs[0]
+
+    # Apply dataset filter
+    if dataset is not None:
+        df = df.filter(pl.col("source_dataset") == dataset)
 
     if len(df) == 0:
         typer.echo("No data matches the filters.", err=True)
         raise typer.Exit(1)
 
+    # Organize data: dataset > sample index > transformations
+    # Group by dataset and original text to find all transformations
+    data_by_dataset = defaultdict(lambda: defaultdict(list))
+
+    for row in df.iter_rows(named=True):
+        ds = row["source_dataset"]
+        original = row["original_text"]
+        data_by_dataset[ds][original].append(row)
+
     # Build markdown output
     lines = []
-    lines.append(f"# Semantic Duplicates Sample Review")
-    lines.append(f"")
-    lines.append(f"**Source file**: `{input_file}`  ")
+    lines.append("# Semantic Duplicates Dataset Overview")
+    lines.append("")
     lines.append(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  ")
+    lines.append(f"**Source files**: {', '.join(f'`{f.name}`' for f in valid_files)}  ")
     lines.append(f"**Total records**: {len(df)}  ")
-    lines.append(f"**Filters**: Level={level if level else 'all'}, Variant={variant if variant else 'all'}  ")
-    lines.append(f"")
+    lines.append(f"**Datasets**: {', '.join(sorted(data_by_dataset.keys()))}  ")
+    lines.append("")
 
-    # Get unique combinations of level and variant
-    grouped = df.group_by(["sd_level", "sd_variant"]).agg([pl.len().alias("count")])
+    # Process each dataset
+    for ds_name in sorted(data_by_dataset.keys()):
+        lines.append("---")
+        lines.append("")
+        lines.append(f"## {ds_name.upper()}")
+        lines.append("")
 
-    for group_row in grouped.iter_rows(named=True):
-        group_level = group_row["sd_level"]
-        group_variant = group_row["sd_variant"]
-        count = group_row["count"]
+        # Add dataset description from metadata
+        if ds_name in dataset_metadata:
+            meta = dataset_metadata[ds_name]
+            lines.append(f"**{meta.get('full_name', meta['name'])}**")
+            lines.append("")
+            lines.append(meta.get('description', 'No description available.'))
+            lines.append("")
 
-        lines.append(f"")
-        lines.append(f"## Level {group_level}: {group_variant}")
-        lines.append(f"")
-        lines.append(f"**Total samples**: {count}  ")
-        lines.append(f"**Showing**: {min(limit, count)} samples  ")
-        lines.append(f"")
+            # Add source info
+            if 'source' in meta:
+                src = meta['source']
+                authors = src.get('authors', 'Unknown')
+                year = src.get('year', 'Unknown')
+                lines.append(f"*Source*: {src.get('organization', 'Unknown')} ({year})")
+                if 'paper_url' in src:
+                    lines.append(f" | [Paper]({src['paper_url']})")
+                if 'huggingface' in meta.get('urls', {}):
+                    lines.append(f" | [HuggingFace]({meta['urls']['huggingface']})")
+                lines.append("")
 
-        # Get samples for this group
-        group_df = df.filter(
-            (pl.col("sd_level") == group_level) &
-            (pl.col("sd_variant") == group_variant)
-        ).head(limit)
+            # Add size info
+            if 'size' in meta:
+                size = meta['size']
+                size_str = ", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in size.items() if k != 'avg_tests_per_problem')
+                lines.append(f"*Size*: {size_str}")
+                lines.append("")
 
-        for idx, row in enumerate(group_df.iter_rows(named=True), 1):
-            lines.append(f"### Sample {idx}")
-            lines.append(f"")
+        # Get sample original texts
+        originals = list(data_by_dataset[ds_name].keys())
+        num_samples = min(samples, len(originals))
+        lines.append(f"**Showing {num_samples} of {len(originals)} samples**")
+        lines.append("")
 
-            # Original text
-            lines.append(f"**Original text**:")
-            lines.append(f"```")
-            lines.append(row["original_text"])
-            lines.append(f"```")
-            lines.append(f"")
+        # Show samples with their transformations
+        for sample_idx, original_text in enumerate(originals[:num_samples], 1):
+            transformations = data_by_dataset[ds_name][original_text]
 
-            # SD text
-            lines.append(f"**Generated SD**:")
-            lines.append(f"```")
-            lines.append(row["sd_text"])
-            lines.append(f"```")
-            lines.append(f"")
+            lines.append(f"### Sample {sample_idx}")
+            lines.append("")
 
-            # Metadata
-            lines.append(f"**Metadata**:")
-            lines.append(f"- **Dataset**: {row['source_dataset']}")
-            lines.append(f"- **Model**: {row['model_used']}")
-            lines.append(f"- **Embedding Model**: {row['embedding_model']}")
-            lines.append(f"- **Timestamp**: {row['timestamp']}")
-            lines.append(f"")
+            # Original text (compact)
+            lines.append("**Original:**")
+            lines.append("```")
+            # Truncate very long texts for readability
+            display_text = original_text if len(original_text) <= 500 else original_text[:500] + "..."
+            lines.append(display_text)
+            lines.append("```")
+            lines.append("")
 
-            # Metrics
-            metrics = json.loads(row["metrics"])
-            lines.append(f"**Metrics**:")
-            lines.append(f"")
-            lines.append(f"| Metric | Value |")
-            lines.append(f"|--------|-------|")
-            lines.append(f"| Unigram overlap | {metrics['ngram_overlaps_pct'][0]:.2f}% |")
-            lines.append(f"| Bigram overlap | {metrics['ngram_overlaps_pct'][1]:.2f}% |")
-            lines.append(f"| Trigram overlap | {metrics['ngram_overlaps_pct'][2]:.2f}% |")
-            lines.append(f"| 4-gram overlap | {metrics['ngram_overlaps_pct'][3]:.2f}% |")
-            lines.append(f"| 5-gram overlap | {metrics['ngram_overlaps_pct'][4]:.2f}% |")
-            lines.append(f"| ROUGE-L F-measure | {metrics['rouge_l_f']:.4f} |")
-            lines.append(f"| Edit distance (norm) | {metrics['edit_distance_norm']:.4f} |")
-            lines.append(f"| TF-IDF cosine | {metrics['tfidf_cosine']:.4f} |")
-            lines.append(f"| Jaccard token | {metrics['jaccard_token']:.4f} |")
-            lines.append(f"| Embedding cosine | {metrics['cosine_similarity']:.4f} |")
-            lines.append(f"| Number preservation | {'✓' if metrics['number_preservation'] else '✗'} |")
-            lines.append(f"| Number precision | {metrics['number_precision']:.4f} |")
-            lines.append(f"| Number recall | {metrics['number_recall']:.4f} |")
-            lines.append(f"| Length ratio | {metrics['length_ratio']:.4f} |")
-            lines.append(f"")
+            # Group transformations by level
+            by_level = defaultdict(list)
+            for t in transformations:
+                by_level[t['sd_level']].append(t)
 
-            # Additional info (collapsed)
-            if row.get("additional_info"):
-                additional = json.loads(row["additional_info"])
-                lines.append(f"<details>")
-                lines.append(f"<summary><b>Additional info</b> (click to expand)</summary>")
-                lines.append(f"")
-                lines.append(f"```json")
-                lines.append(json.dumps(additional, indent=2))
-                lines.append(f"```")
-                lines.append(f"</details>")
-                lines.append(f"")
+            # Show transformations organized by level
+            for level in sorted(by_level.keys()):
+                level_transforms = by_level[level]
+                lines.append(f"**Level {level} Transformations ({len(level_transforms)})**:")
+                lines.append("")
 
-            lines.append(f"---")
-            lines.append(f"")
+                for t in level_transforms:
+                    variant = t['sd_variant']
+                    sd_text = t['sd_text']
+                    model = t['model_used']
+
+                    # Parse metrics
+                    metrics = json.loads(t['metrics'])
+                    bigram = metrics['ngram_overlaps_pct'][1]
+                    trigram = metrics['ngram_overlaps_pct'][2]
+                    cosine = metrics['cosine_similarity']
+
+                    lines.append(f"*{variant}* (model: `{model}`)")
+
+                    # Show SD text (compact)
+                    display_sd = sd_text if len(sd_text) <= 400 else sd_text[:400] + "..."
+                    lines.append("```")
+                    lines.append(display_sd)
+                    lines.append("```")
+
+                    # Compact metrics
+                    lines.append(f"↳ Metrics: 2-gram={bigram:.1f}%, 3-gram={trigram:.1f}%, cosine={cosine:.3f}")
+                    lines.append("")
+
+            lines.append("")
 
     # Output
     output_text = "\n".join(lines)
