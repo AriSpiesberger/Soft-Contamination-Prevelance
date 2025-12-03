@@ -9,6 +9,9 @@ This document describes the datasets available in the `datasets/` directory.
 | GSM8K | Math Problems | 8,792 total | 2 parquet | Grade school math word problems |
 | Codeforces | Coding Problems | 1,337 total | 2 parquet | Competitive programming problems |
 | AllenAI MathCoder | Educational Text | Unknown | 1 jsonl | Educational math text content |
+| MBPP | Python Problems | 427 train | HuggingFace | Mostly Basic Python Problems |
+| HumanEval | Code Evaluation | 164 test | HuggingFace | Python code evaluation tasks |
+| PopQA | Question Answering | 14,000 test | HuggingFace | Popular entity question answering |
 
 ## Dataset Details
 
@@ -151,3 +154,60 @@ Educational math text content from the SMolInstruct dataset.
   "id": "book_math.0000.0008_000017"
 }
 ```
+
+---
+
+### 4. MBPP (Google Research)
+
+Mostly Basic Python Problems - a collection of entry-level Python programming problems.
+
+#### Source
+- HuggingFace: `google-research-datasets/mbpp` (sanitized split, train)
+
+#### Columns
+- `task_id` (Int): Unique task identifier
+- `prompt` (String): The problem description
+- `code` (String): Reference solution code
+- `test_imports` (List[String]): Required imports for testing
+- `test_list` (List[String]): List of test cases
+
+#### Purpose
+Entry-level Python programming tasks suitable for paraphrasing and parameter substitution.
+
+---
+
+### 5. HumanEval (OpenAI)
+
+Python code evaluation dataset with function signatures and docstrings.
+
+#### Source
+- HuggingFace: `openai/openai_humaneval` (test split)
+
+#### Columns
+- `task_id` (String): Unique task identifier (e.g., "HumanEval/0")
+- `prompt` (String): Function signature with docstring and examples
+- `canonical_solution` (String): Reference implementation
+- `test` (String): Test code to validate solutions
+- `entry_point` (String): Function name to test
+
+#### Purpose
+Code generation benchmarking with complete function specifications.
+
+---
+
+### 6. PopQA (Popular Question Answering)
+
+Large-scale question answering dataset about popular entities.
+
+#### Source
+- HuggingFace: `lytang/popqa` (test split)
+
+#### Columns
+- `id` (String): Unique question identifier
+- `question` (String): The question being asked
+- `answer` (String): The correct answer
+- `subject` (String): The entity the question is about
+- `property` (String): The property being queried
+
+#### Purpose
+Knowledge-based question answering suitable for entity substitution and paraphrasing.

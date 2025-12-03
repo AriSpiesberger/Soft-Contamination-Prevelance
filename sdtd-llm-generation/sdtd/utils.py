@@ -24,7 +24,7 @@ def format_prompt(template: str, row: dict, dataset_name: str) -> str:
     Args:
         template: Prompt template string with {field} placeholders
         row: Data row dictionary
-        dataset_name: Name of dataset (gsm8k, codeforces, allenai)
+        dataset_name: Name of dataset (gsm8k, codeforces, allenai, mbpp, humaneval, popqa)
 
     Returns:
         Formatted prompt string
@@ -34,6 +34,9 @@ def format_prompt(template: str, row: dict, dataset_name: str) -> str:
         "gsm8k": "question",
         "codeforces": "description",
         "allenai": "text",
+        "mbpp": "prompt",
+        "humaneval": "prompt",
+        "popqa": "question",
     }
 
     field = field_map.get(dataset_name)

@@ -29,6 +29,9 @@ DATASET_TEXT_FIELDS = {
     "gsm8k": "question",
     "codeforces": "description",
     "allenai": "text",
+    "mbpp": "prompt",
+    "humaneval": "prompt",
+    "popqa": "question",
 }
 
 # Embedding model
