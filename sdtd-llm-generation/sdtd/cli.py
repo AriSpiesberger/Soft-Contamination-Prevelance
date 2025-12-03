@@ -253,11 +253,15 @@ def dump(
 
             # Original text (compact)
             lines.append("**Original:**")
-            lines.append("```")
-            # Truncate very long texts for readability
+            # Use more backticks if content contains triple backticks
+            backtick_count = 3
             display_text = original_text if len(original_text) <= 500 else original_text[:500] + "..."
+            if "```" in display_text:
+                backtick_count = 4
+            backticks = "`" * backtick_count
+            lines.append(backticks)
             lines.append(display_text)
-            lines.append("```")
+            lines.append(backticks)
             lines.append("")
 
             # Group transformations by level
@@ -286,9 +290,14 @@ def dump(
 
                     # Show SD text (compact)
                     display_sd = sd_text if len(sd_text) <= 400 else sd_text[:400] + "..."
-                    lines.append("```")
+                    # Use more backticks if content contains triple backticks
+                    sd_backtick_count = 3
+                    if "```" in display_sd:
+                        sd_backtick_count = 4
+                    sd_backticks = "`" * sd_backtick_count
+                    lines.append(sd_backticks)
                     lines.append(display_sd)
-                    lines.append("```")
+                    lines.append(sd_backticks)
 
                     # Compact metrics
                     lines.append(f"↳ Metrics: 2-gram={bigram:.1f}%, 3-gram={trigram:.1f}%, cosine={cosine:.3f}")
