@@ -308,6 +308,72 @@ gsm8k:
 
       Generate ONE compositional variant applying 2-3 transformations. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem.
 
+  fictional_setting:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by placing a math word problem into a fictional or fantastical setting with added narrative details.
+
+      TASK: Transform the problem into a fictional setting (fairytale, fantasy, sci-fi, historical adventure, etc.) while adding colorful but SUPERFLUOUS details that don't affect the mathematics.
+
+      CRITICAL REQUIREMENTS:
+      1. ALL numbers must stay EXACTLY the same
+      2. Mathematical operations and relationships must be PRESERVED exactly
+      3. The problem structure must be IDENTICAL (same algorithm, same steps)
+      4. The ANSWER must be the same
+      5. Add narrative flavor and details that are fun but mathematically irrelevant
+
+      FICTIONAL SETTINGS TO CHOOSE FROM:
+      - Fantasy/Fairytale: wizards, dragons, magical items, enchanted forests, castles, princesses
+      - Sci-Fi/Space: spaceships, aliens, robots, distant planets, space stations, time travel
+      - Historical Adventure: ancient civilizations, explorers, knights, pirates, treasure hunts
+      - Mythological: gods, mythical creatures, legendary heroes, ancient quests
+      - Whimsical: talking animals, living toys, anthropomorphic objects, dreamlands
+
+      WHAT TO CHANGE:
+      - Setting: transform into a fictional world
+      - Characters: everyday people → fictional characters (but keep their actions/roles the same)
+      - Objects: everyday items → thematic equivalents (clips → magical crystals, money → gold coins)
+      - Add superfluous details: weather, character emotions, backstory, setting descriptions
+      - Use vivid, narrative language
+
+      WHAT NOT TO CHANGE:
+      - ALL numbers stay exactly the same (48 stays 48, not "around 50" or "many")
+      - Mathematical relationships (half stays half, twice stays twice)
+      - The core mathematical problem structure
+      - The logical flow of the problem
+
+      EXAMPLES:
+
+      Original: "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Fictional setting variant (Fantasy):
+      "In the enchanted kingdom of Arithmia, the young sorceress Natalia discovered a cache of 48 shimmering crystal clips that could bind magical scrolls. During the Month of Spring Blossoms, she generously traded these mystical clips to 48 of her fellow apprentices at the Tower of Wisdom. When the Month of Summer Dawning arrived, as the twin moons rose over the Emerald Forest, she found herself with fewer clips to share - exactly half as many as before. The ancient texts required her to calculate: across both magical months, how many enchanted clips did Natalia distribute in total?"
+
+      Changes: everyday → fantasy setting, added mystical details, vivid descriptions
+      Preserved: 48, half, April/May timeframe, mathematical structure (48 + 24 = 72)
+
+      Original: "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+
+      Fictional setting variant (Sci-Fi):
+      "On Space Station Omega-7, orbiting the crystalline planet Zephyr, young maintenance technician Weng earned 12 galactic credits per Earth-hour for monitoring the station's precious cargo: sleeping infant Xenomorphs in their bio-stasis pods. The ship's log recorded that yesterday, during a brief meteor shower that painted the viewports with streaks of cosmic dust, she performed exactly 50 standard minutes of this delicate childcare duty. The station's AI needed to compute: how many credits should be transferred to Weng's account?"
+
+      Changes: everyday → sci-fi setting, babysitting → futuristic equivalent, added space details
+      Preserved: $12/hour → 12 credits/hour, 50 minutes, rate × time calculation
+
+      VALIDATION CHECKLIST:
+      □ Setting is clearly fictional/fantastical
+      □ Narrative details added (descriptions, character elements, world-building)
+      □ ALL numbers are EXACTLY the same as original
+      □ Mathematical relationships preserved (proportions, operations)
+      □ Same solution algorithm applies
+      □ Problem reads like a story excerpt, not a plain math problem
+      □ Added details are colorful but don't change the math
+
+      Original problem: {question}
+
+      Generate ONE fictional setting variant. Make it vivid and immersive! OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the transformed problem.
+
 codeforces:
   number_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
@@ -382,6 +448,85 @@ codeforces:
       Original problem description: {description}
 
       Generate ONE structural duplicate with modified constraints. OUTPUT ONLY THE PROBLEM DESCRIPTION - no preamble, no labels, just the problem text.
+
+  fictional_setting:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by placing a competitive programming problem into a fictional narrative setting with added story elements.
+
+      TASK: Transform the technical problem into a narrative within a fictional setting (fantasy quest, sci-fi mission, detective story, historical adventure, etc.) while adding colorful but TECHNICALLY IRRELEVANT story details.
+
+      CRITICAL REQUIREMENTS - THESE MUST NOT CHANGE:
+      1. ALL technical specifications must stay EXACTLY the same (constraints, limits, complexity)
+      2. ALL numbers must stay EXACTLY the same
+      3. The algorithm/data structure requirements must be IDENTICAL
+      4. Input/output format must be PRESERVED exactly
+      5. The SOLUTION must be the same
+
+      WHAT YOU CAN CHANGE:
+      - Abstract the problem into a fictional narrative (sorting arrays → organizing ancient artifacts)
+      - Add a story context and characters (John/Jack → wizard/apprentice, detective/assistant, etc.)
+      - Add narrative details: setting descriptions, character motivations, backstory, atmosphere
+      - Transform technical terms into thematic equivalents (while preserving meaning):
+        * "array" → "sequence of", "collection of", "series of"
+        * "integers" → "numbers", "values", "quantities"
+        * "string" → "sequence of symbols", "text inscription"
+        * "calculate" → "determine", "figure out", "discover"
+      - Use vivid, story-like language
+
+      WHAT MUST NOT CHANGE:
+      - ALL numbers, constraints, and limits (10^5 stays 10^5, not "very large")
+      - Time/memory limits
+      - Input/output format structure
+      - The actual computational problem being asked
+      - Technical feasibility and complexity class
+
+      SETTING OPTIONS:
+      - Fantasy Quest: wizards, magical artifacts, enchanted scrolls, ancient puzzles
+      - Sci-Fi Mission: space exploration, alien signals, robot programming, data decryption
+      - Detective/Mystery: code breaking, pattern analysis, evidence organization
+      - Historical Adventure: ancient manuscripts, treasure maps, archaeological discoveries
+      - Game/Competition: tournament challenges, puzzle championships, strategic games
+
+      EXAMPLES:
+
+      Original: "John gave Jack a very hard problem. He wrote a very big positive integer A0 on a piece of paper. The number is less than 10^200000. In each step, Jack is allowed to put '+' signs in between some of the digits (maybe none) of the current number and calculate the sum of the expression."
+
+      Fictional setting variant (Fantasy Quest):
+      "In the ancient Library of Infinite Numbers, the Grand Wizard John presented his apprentice Jack with a legendary challenge inscribed on a mystical scroll. Upon the enchanted parchment glowed a colossal positive integer A0, its digits stretching across the magical paper - though the scribes noted it contained fewer than 10^200000 runes. The ancient rules of the Number Reduction Ritual permitted Jack, during each mystical iteration, to inscribe sacred '+' symbols between any subset of the glowing digits (potentially leaving some untouched) and channel his magic to compute the resulting sum."
+
+      Changes: John/Jack → Wizard/Apprentice, technical → magical narrative, added fantasy details
+      Preserved: 10^200000, the '+' operation mechanics, "each step" → "each mystical iteration", the computational problem
+
+      Original: "You are given an array of N integers. Find the maximum sum of any contiguous subarray. Constraints: 1 ≤ N ≤ 10^5, -10^9 ≤ array[i] ≤ 10^9."
+
+      Fictional setting variant (Sci-Fi Mission):
+      "Commander, the deep space probe has transmitted a sequence of N sensor readings from the anomaly zone, each representing energy fluctuations measured in standard units. Your mission: identify the continuous segment of this temporal sequence that yields the maximum total energy signature - this could reveal the location of the ancient alien artifact we seek. Mission Parameters: The probe captured between 1 and 10^5 readings in its scan. Each individual sensor measurement ranges from -10^9 to 10^9 units (negative values indicating energy depletion, positive indicating energy surges)."
+
+      Changes: array → sensor readings sequence, technical → mission narrative, added sci-fi context
+      Preserved: N integers, contiguous subarray, 1 ≤ N ≤ 10^5, -10^9 ≤ values ≤ 10^9, maximum sum problem
+
+      NARRATIVE ENHANCEMENT TECHNIQUES:
+      - Add a protagonist/character facing the challenge
+      - Include setting details (location, atmosphere, context)
+      - Provide motivation (why they need to solve this)
+      - Use thematic vocabulary while maintaining technical accuracy
+      - Make it read like an adventure/story excerpt
+
+      VALIDATION CHECKLIST:
+      □ Setting is clearly fictional/narrative
+      □ Story details added (characters, motivation, atmosphere)
+      □ ALL numbers and constraints EXACTLY the same
+      □ Input/output format structure preserved
+      □ Algorithm requirements identical
+      □ Technical complexity unchanged
+      □ Problem reads like a story challenge, not a dry technical spec
+      □ Someone could still implement the exact same solution
+
+      Original problem description: {description}
+
+      Generate ONE fictional setting variant. Make it narrative and immersive while keeping the technical problem exact! OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the transformed problem.
 
 allenai:
   object_substitution:
