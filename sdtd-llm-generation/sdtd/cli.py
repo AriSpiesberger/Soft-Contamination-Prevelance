@@ -18,7 +18,7 @@ def generate(
         ...,
         "--dataset",
         "-d",
-        help="Dataset name: gsm8k, codeforces, allenai, mbpp, humaneval, popqa, or all",
+        help="Dataset name: gsm8k, codeforces, allenai, mbpp, humaneval, popqa, bigbenchhard, zebralogic, agieval, or all",
     ),
     level: str = typer.Option(
         ...,
@@ -328,6 +328,9 @@ def info() -> None:
     typer.echo("  - mbpp: Python programming problems (427 sanitized train items)")
     typer.echo("  - humaneval: Python code evaluation (164 test items)")
     typer.echo("  - popqa: Question answering (14,000 test items)")
+    typer.echo("  - bigbenchhard: Challenging BIG-Bench tasks (6,511 items)")
+    typer.echo("  - zebralogic: Logic grid puzzles (1,000 puzzles)")
+    typer.echo("  - agieval: Human cognition & problem-solving exams (8,062 questions)")
     typer.echo("  - all: Process all datasets")
 
     typer.echo("\nPrompt files:")

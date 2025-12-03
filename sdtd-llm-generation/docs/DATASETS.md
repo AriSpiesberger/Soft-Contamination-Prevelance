@@ -12,6 +12,9 @@ This document describes the datasets available in the `datasets/` directory.
 | MBPP | Python Problems | 427 train | HuggingFace | Mostly Basic Python Problems |
 | HumanEval | Code Evaluation | 164 test | HuggingFace | Python code evaluation tasks |
 | PopQA | Question Answering | 14,000 test | HuggingFace | Popular entity question answering |
+| BigBenchHard | Multi-domain Reasoning | 6,511 items | HuggingFace | 23 challenging BIG-Bench tasks |
+| ZebraLogic | Logic Puzzles | 1,000 puzzles | HuggingFace | Logic grid puzzles (Zebra Puzzles) |
+| AGIEval | Exam Questions | 8,062 questions | HuggingFace | Human cognition & problem-solving exams |
 
 ## Dataset Details
 

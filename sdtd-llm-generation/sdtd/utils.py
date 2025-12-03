@@ -37,6 +37,9 @@ def format_prompt(template: str, row: dict, dataset_name: str) -> str:
         "mbpp": "prompt",
         "humaneval": "prompt",
         "popqa": "question",
+        "bigbenchhard": "input",
+        "zebralogic": "puzzle",
+        "agieval": "question",
     }
 
     field = field_map.get(dataset_name)
