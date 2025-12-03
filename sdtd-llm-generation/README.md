@@ -85,6 +85,9 @@ See `docs/DATASETS.md` for details on available datasets:
 - **MBPP**: Python programming problems (427 train items)
 - **HumanEval**: Python code evaluation (164 test items)
 - **PopQA**: Question answering (14,000 test items)
+- **BigBenchHard**: Challenging BIG-Bench tasks (6,511 items)
+- **ZebraLogic**: Logic grid puzzles (1,000 puzzles)
+- **AGIEval**: Human cognition & problem-solving exams (8,062 questions)
 
 ## Prompts
 

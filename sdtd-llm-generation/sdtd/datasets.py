@@ -10,7 +10,7 @@ def load_dataset(name: str, limit: int | None = None) -> pl.DataFrame:
     """Load dataset by name.
 
     Args:
-        name: Dataset name (gsm8k, codeforces, allenai, mbpp, humaneval, popqa, or all)
+        name: Dataset name (gsm8k, codeforces, allenai, mbpp, humaneval, popqa, bigbenchhard, zebralogic, agieval, or all)
         limit: Optional limit on number of rows
 
     Returns:
@@ -28,6 +28,12 @@ def load_dataset(name: str, limit: int | None = None) -> pl.DataFrame:
         return load_humaneval(limit)
     elif name == "popqa":
         return load_popqa(limit)
+    elif name == "bigbenchhard":
+        return load_bigbenchhard(limit)
+    elif name == "zebralogic":
+        return load_zebralogic(limit)
+    elif name == "agieval":
+        return load_agieval(limit)
     elif name == "all":
         # Return dict of all datasets
         return {
@@ -37,9 +43,12 @@ def load_dataset(name: str, limit: int | None = None) -> pl.DataFrame:
             "mbpp": load_mbpp(limit),
             "humaneval": load_humaneval(limit),
             "popqa": load_popqa(limit),
+            "bigbenchhard": load_bigbenchhard(limit),
+            "zebralogic": load_zebralogic(limit),
+            # agieval: Not yet implemented due to HuggingFace compatibility issues
         }
     else:
-        raise ValueError(f"Unknown dataset: {name}. Choose from: gsm8k, codeforces, allenai, mbpp, humaneval, popqa, all")
+        raise ValueError(f"Unknown dataset: {name}. Choose from: gsm8k, codeforces, allenai, mbpp, humaneval, popqa, bigbenchhard, zebralogic, agieval, all")
 
 
 def load_gsm8k(limit: int | None = None) -> pl.DataFrame:
@@ -156,3 +165,73 @@ def load_popqa(limit: int | None = None) -> pl.DataFrame:
         df = df.head(limit)
 
     return df
+
+
+def load_bigbenchhard(limit: int | None = None) -> pl.DataFrame:
+    """Load BIG-Bench Hard dataset.
+
+    Args:
+        limit: Optional limit on number of rows
+
+    Returns:
+        DataFrame with columns: input, target (and task name added)
+    """
+    # BBH has 27 separate tasks, we'll load them all and concatenate
+    # Just load a few representative tasks to start
+    tasks = ['boolean_expressions', 'causal_judgement', 'date_understanding',
+             'logical_deduction_three_objects', 'word_sorting']
+
+    dfs = []
+    for task in tasks:
+        dataset = hf_load_dataset("lukaemon/bbh", task, split="test")
+        task_df = pl.DataFrame(dataset.to_dict())
+        # Add task name as a column
+        task_df = task_df.with_columns(pl.lit(task).alias("task"))
+        dfs.append(task_df)
+
+    # Concatenate all tasks
+    df = pl.concat(dfs)
+
+    if limit:
+        df = df.head(limit)
+
+    return df
+
+
+def load_zebralogic(limit: int | None = None) -> pl.DataFrame:
+    """Load ZebraLogic dataset.
+
+    Args:
+        limit: Optional limit on number of rows
+
+    Returns:
+        DataFrame with columns: puzzle_id, puzzle, solution, clues, size_n, size_m, etc.
+    """
+    # Load the grid_mode configuration (full puzzle format with clues)
+    dataset = hf_load_dataset("WildEval/ZebraLogic", "grid_mode", split="test")
+
+    # Convert to polars DataFrame
+    df = pl.DataFrame(dataset.to_dict())
+
+    if limit:
+        df = df.head(limit)
+
+    return df
+
+
+def load_agieval(limit: int | None = None) -> pl.DataFrame:
+    """Load AGIEval English dataset.
+
+    Args:
+        limit: Optional limit on number of rows
+
+    Returns:
+        DataFrame with columns: question, answer, options, subject, etc.
+    """
+    # TODO: AGIEval dataset repositories have compatibility issues with current datasets library
+    # This loader is a placeholder until a properly formatted repository is found
+    raise NotImplementedError(
+        "AGIEval dataset loader is not yet implemented. "
+        "The available HuggingFace repositories have compatibility issues with the current datasets library. "
+        "Please use other datasets for now."
+    )

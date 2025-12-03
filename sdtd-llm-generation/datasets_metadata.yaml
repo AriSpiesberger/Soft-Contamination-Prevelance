@@ -194,3 +194,101 @@ popqa:
     question_generation: "Template-based from knowledge tuples"
     features: ["entity popularity scores", "subject", "property", "answer"]
     focus: "Entity-centric questions with popularity analysis"
+
+bigbenchhard:
+  name: "BigBenchHard"
+  full_name: "BIG-Bench Hard"
+  description: "A subset of 23 challenging tasks from the BIG-Bench evaluation suite, specifically selected for being particularly difficult for current language models. These are tasks where prior LM evaluations did not outperform the average human-rater. Tasks include boolean expressions, causal judgment, date understanding, disambiguation QA, formal fallacies, geometric shapes, logical deduction, and more."
+
+  source:
+    organization: "Multiple (BIG-Bench Collaboration / Stanford)"
+    authors: "Mirac Suzgun, Nathan Scales, Nathanael Schärli, Sebastian Gehrmann, Yi Tay, Hyung Won Chung, Aakanksha Chowdhery, Quoc V. Le, Ed H. Chi, Denny Zhou, Jason Wei"
+    year: 2022
+    paper_title: "Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them"
+    paper_url: "https://arxiv.org/abs/2210.09261"
+    arxiv_id: "2210.09261"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/maveriq/bigbenchhard"
+    github: "https://github.com/suzgunmirac/BIG-Bench-Hard"
+    paper: "https://arxiv.org/abs/2210.09261"
+
+  license: "Apache 2.0"
+
+  size:
+    total_examples: 6511
+    num_tasks: 23
+
+  characteristics:
+    domain: "Multi-domain Reasoning"
+    task_type: "Challenging Cognitive Tasks"
+    difficulty: "Hard (beyond current LM capabilities)"
+    tasks: ["boolean_expressions", "causal_judgement", "date_understanding", "disambiguation_qa", "formal_fallacies", "geometric_shapes", "hyperbaton", "logical_deduction", "movie_recommendation", "navigate", "object_counting", "penguins_in_a_table", "reasoning_about_colored_objects", "ruin_names", "salient_translation_error_detection", "snarks", "sports_understanding", "temporal_sequences", "tracking_shuffled_objects", "web_of_lies", "word_sorting"]
+    evaluation_focus: "Chain-of-thought reasoning capabilities"
+
+zebralogic:
+  name: "ZebraLogic"
+  full_name: "ZebraLogic Benchmark"
+  description: "A benchmark of 1,000 logic grid puzzles (Zebra Puzzles) spanning multiple complexity levels. Each puzzle involves N houses with M features, where solvers must deduce unique assignments based on logical clues. Designed to systematically evaluate LLMs' logical reasoning capabilities and reveal the 'curse of complexity' where performance dramatically declines as problem complexity increases."
+
+  source:
+    organization: "Allen Institute for AI (AI2) / University of Washington"
+    authors: "Bill Yuchen Lin, Yichong Xu, Zonglin Yang, Yang Deng, Wenting Zhao, Jena D. Hwang, Xiang Ren, Yejin Choi"
+    year: 2024
+    paper_title: "ZebraLogic: On the Scaling Limits of LLMs for Logical Reasoning"
+    paper_url: "https://arxiv.org/abs/2502.01100"
+    arxiv_id: "2502.01100"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/WildEval/ZebraLogic"
+    leaderboard: "https://huggingface.co/spaces/allenai/ZebraLogic"
+    paper: "https://arxiv.org/abs/2502.01100"
+
+  license: "Apache 2.0"
+
+  size:
+    total_puzzles: 1000
+    puzzles_per_size: 40
+    complexity_levels: 25
+
+  characteristics:
+    domain: "Logical Reasoning"
+    task_type: "Logic Grid Puzzles (Zebra Puzzles)"
+    difficulty: "Varies (N, M ∈ {2, 3, 4, 5, 6})"
+    puzzle_structure: "N houses × M features with logical clues"
+    features: ["systematic complexity scaling", "unique solution constraints"]
+    benchmark_focus: "Scaling limits and curse of complexity in LLM reasoning"
+    best_performance: "Claude 3.5 Sonnet: 33.4% overall, 12.4% on hard puzzles"
+
+agieval:
+  name: "AGIEval"
+  full_name: "AGIEval English"
+  description: "A human-centric benchmark designed to evaluate foundation models on tasks pertinent to human cognition and problem-solving. Derived from 20 official, public, high-standard admission and qualification exams including SAT, LSAT, GRE, GMAT, college entrance exams, law school admission tests, math competitions, lawyer qualification tests, and national civil service exams."
+
+  source:
+    organization: "Microsoft Research"
+    authors: "Wanjun Zhong, Ruixiang Cui, Yiduo Guo, Yaobo Liang, Shuai Lu, Yanlin Wang, Amin Saied, Weizhu Chen, Nan Duan"
+    year: 2023
+    paper_title: "AGIEval: A Human-Centric Benchmark for Evaluating Foundation Models"
+    paper_url: "https://arxiv.org/abs/2304.06364"
+    arxiv_id: "2304.06364"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/lighteval/agi_eval_en"
+    github: "https://github.com/microsoft/AGIEval"
+    paper: "https://arxiv.org/abs/2304.06364"
+
+  license: "MIT"
+
+  size:
+    total_questions: "8,062 (English subset)"
+    num_exam_types: 20
+
+  characteristics:
+    domain: "General Human Cognition & Problem-Solving"
+    task_type: "Standardized Exam Questions"
+    difficulty: "Admission/Qualification Level"
+    exam_types: ["SAT", "LSAT", "GRE", "GMAT", "college_entrance", "law_school_admission", "math_competitions", "civil_service"]
+    question_formats: ["multiple_choice", "free_form"]
+    evaluation_focus: "Human-centric abilities, real-world problem-solving"
+    languages: ["English", "Chinese (in full dataset)"]

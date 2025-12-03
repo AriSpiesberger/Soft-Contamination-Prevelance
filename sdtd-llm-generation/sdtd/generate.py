@@ -32,6 +32,9 @@ DATASET_TEXT_FIELDS = {
     "mbpp": "prompt",
     "humaneval": "prompt",
     "popqa": "question",
+    "bigbenchhard": "input",
+    "zebralogic": "puzzle",
+    "agieval": "question",
 }
 
 # Embedding model
