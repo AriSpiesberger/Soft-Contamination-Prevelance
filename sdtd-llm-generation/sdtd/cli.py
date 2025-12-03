@@ -18,7 +18,7 @@ def generate(
         ...,
         "--dataset",
         "-d",
-        help="Dataset name: gsm8k, codeforces, allenai, or all",
+        help="Dataset name: gsm8k, codeforces, allenai, mbpp, humaneval, popqa, or all",
     ),
     level: str = typer.Option(
         ...,
@@ -281,6 +281,9 @@ def info() -> None:
     typer.echo("  - gsm8k: Math word problems (7,473 train items)")
     typer.echo("  - codeforces: Programming problems (869 train items)")
     typer.echo("  - allenai: Educational text (~unknown items)")
+    typer.echo("  - mbpp: Python programming problems (427 sanitized train items)")
+    typer.echo("  - humaneval: Python code evaluation (164 test items)")
+    typer.echo("  - popqa: Question answering (14,000 test items)")
     typer.echo("  - all: Process all datasets")
 
     typer.echo("\nPrompt files:")

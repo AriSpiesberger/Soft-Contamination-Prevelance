@@ -303,3 +303,252 @@ allenai:
       - Maintain clarity appropriate for the target audience
 
       Original educational text: {text}
+
+mbpp:
+  lexical_maximalist:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      Rewrite this Python programming problem description using different vocabulary while preserving exact technical requirements.
+
+      INSTRUCTIONS:
+      - Replace as many words as possible with synonyms and alternative expressions
+      - Keep the sentence structure mostly similar
+      - PRESERVE all technical specifications, function signatures, and requirements EXACTLY
+      - Maintain the same programming task and difficulty level
+      - OUTPUT ONLY THE REWRITTEN PROBLEM DESCRIPTION - no preamble, no labels, just the problem text
+
+      EXAMPLES OF GOOD TRANSFORMATIONS:
+      - "Write a function" → "Create a function" or "Implement a function"
+      - "that takes" → "which accepts" or "that receives"
+      - "returns" → "gives back" or "outputs"
+      - "a list of" → "an array of" or "a sequence of"
+      - "find the" → "determine the" or "identify the"
+
+      WHAT NOT TO CHANGE:
+      - Function names or signatures (if specified)
+      - Data types and structures (list, tuple, dict, etc.)
+      - Technical operations (sort, filter, sum, etc.)
+      - The core programming task
+      - Input/output specifications
+
+      Original problem: {prompt}
+
+  syntactic_restructuring:
+    model: "openrouter/anthropic/claude-haiku-4.5"
+    temperature: 0.7
+    user: |
+      Completely reorganize the grammatical structure of this Python programming problem while preserving exact technical meaning.
+
+      INSTRUCTIONS:
+      - Change sentence structure: use passive voice, reorder clauses, split or merge sentences
+      - Reorganize how the problem requirements are presented
+      - PRESERVE all technical specifications and requirements EXACTLY
+      - The problem must require the identical solution
+      - OUTPUT ONLY THE RESTRUCTURED PROBLEM - no preamble, no headers, just the problem text
+
+      EXAMPLES:
+      - "Write a function to check if X" → "A function should be written that checks if X"
+      - "The function takes a list and returns a sum" → "Given a list, the function returns the sum"
+      - "Find shared elements between two tuples" → "Between two tuples, find the elements that are shared"
+
+      WHAT MUST STAY IDENTICAL:
+      - All technical requirements
+      - Function behavior specification
+      - Input/output types
+      - The algorithm or approach needed
+
+      Original problem: {prompt}
+
+  abstractive_paraphrase:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      Rewrite this Python programming problem from scratch, explaining the same task in a completely different way.
+
+      INSTRUCTIONS:
+      - Re-explain the programming task as if describing it to a colleague differently
+      - Use different vocabulary AND different sentence structures
+      - Think of alternative ways to describe the same computational problem
+      - PRESERVE all technical requirements and specifications EXACTLY
+      - The problem must require the same solution approach
+      - OUTPUT ONLY THE REWRITTEN PROBLEM - no preamble, no labels, just the problem text
+
+      GOOD PARAPHRASE CHARACTERISTICS:
+      - Low word overlap with original (<30% shared content words)
+      - Same programming task and algorithm
+      - Same input/output specifications
+      - Same difficulty level
+
+      ABSOLUTE REQUIREMENTS:
+      - Technical specifications must be identical
+      - Function behavior must be the same
+      - Input/output types must match
+      - Same problem difficulty
+
+      Original problem: {prompt}
+
+humaneval:
+  lexical_maximalist:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      Rewrite this Python function docstring using different vocabulary while preserving exact technical specifications.
+
+      INSTRUCTIONS:
+      - Replace descriptive words with synonyms and alternative expressions
+      - Keep the overall structure similar
+      - PRESERVE the function signature, type hints, and technical requirements EXACTLY
+      - Maintain the same programming task and examples
+      - OUTPUT ONLY THE REWRITTEN FUNCTION PROMPT - no preamble, no labels, just the function signature and docstring
+
+      EXAMPLES OF GOOD TRANSFORMATIONS:
+      - "Check whether" → "Determine if" or "Verify whether"
+      - "list of numbers" → "sequence of numbers" or "collection of numeric values"
+      - "closer than" → "within" or "less than"
+      - "threshold" → "limit" or "boundary"
+
+      WHAT NOT TO CHANGE:
+      - Function name and signature
+      - Type hints
+      - Parameter names
+      - Example inputs/outputs (must stay identical)
+      - Return type or behavior
+
+      Original function prompt: {prompt}
+
+  syntactic_restructuring:
+    model: "openrouter/anthropic/claude-haiku-4.5"
+    temperature: 0.7
+    user: |
+      Reorganize the grammatical structure of this Python function docstring while preserving exact technical meaning.
+
+      INSTRUCTIONS:
+      - Change sentence structure in the docstring description
+      - Reorganize how the function's behavior is explained
+      - PRESERVE the function signature and all technical specifications EXACTLY
+      - Keep all examples identical
+      - OUTPUT ONLY THE RESTRUCTURED FUNCTION PROMPT - no preamble, no headers, just the function with docstring
+
+      EXAMPLES:
+      - "Check if any two numbers are closer than threshold" → "Determine whether there exist two numbers with distance less than threshold"
+      - "Returns True if condition holds" → "True is returned when the condition is satisfied"
+
+      WHAT MUST STAY IDENTICAL:
+      - Function signature (name, parameters, type hints)
+      - All code examples in docstring
+      - Technical requirements
+      - Return type and behavior
+
+      Original function prompt: {prompt}
+
+  abstractive_paraphrase:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      Rewrite this Python function docstring from scratch, explaining the same task in a completely different way.
+
+      INSTRUCTIONS:
+      - Re-explain the function's purpose using entirely different phrasing
+      - Use different vocabulary AND different sentence structures in the docstring
+      - PRESERVE the function signature and all examples EXACTLY
+      - The function must perform the identical task
+      - OUTPUT ONLY THE REWRITTEN FUNCTION PROMPT - no preamble, no labels, just the function with docstring
+
+      GOOD PARAPHRASE CHARACTERISTICS:
+      - Low word overlap in docstring description (<30% shared content words)
+      - Same function signature (name, parameters, types)
+      - Identical examples and expected outputs
+      - Same computational task
+
+      ABSOLUTE REQUIREMENTS:
+      - Function signature must be unchanged
+      - All docstring examples must be identical
+      - Technical behavior must be the same
+      - Type hints must match
+
+      Original function prompt: {prompt}
+
+popqa:
+  lexical_maximalist:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    user: |
+      Rewrite this question using completely different vocabulary while asking for the same information.
+
+      INSTRUCTIONS:
+      - Replace as many words as possible with synonyms and alternative expressions
+      - Keep the question structure mostly similar
+      - PRESERVE the entity name and the relationship being asked about EXACTLY
+      - The question must have the identical answer
+      - OUTPUT ONLY THE REWRITTEN QUESTION - no preamble, no labels, just the question text
+
+      EXAMPLES OF GOOD TRANSFORMATIONS:
+      - "What is X's occupation?" → "What is X's profession?" or "What does X do for work?"
+      - "Where was X born?" → "What is X's birthplace?" or "In what location was X born?"
+      - "Who directed X?" → "Who was the director of X?" or "Who helmed X?"
+      - "What genre is X?" → "What type of genre does X belong to?" or "What category is X?"
+
+      WHAT NOT TO CHANGE:
+      - The entity name (person, place, thing being asked about)
+      - The fundamental relationship or property being queried
+      - The expected answer
+
+      Original question: {question}
+
+  syntactic_restructuring:
+    model: "openrouter/anthropic/claude-haiku-4.5"
+    temperature: 0.7
+    user: |
+      Completely reorganize the grammatical structure of this question while asking for the same information.
+
+      INSTRUCTIONS:
+      - Change the question structure: use different word order, different question patterns
+      - Reorganize how the query is phrased
+      - PRESERVE the entity name and the information being requested EXACTLY
+      - The question must have the identical answer
+      - OUTPUT ONLY THE RESTRUCTURED QUESTION - no preamble, no headers, just the question text
+
+      EXAMPLES:
+      - "What is Robby Krieger's occupation?" → "Robby Krieger's occupation is what?"
+      - "Who directed The Matrix?" → "The Matrix was directed by whom?"
+      - "Where was Einstein born?" → "Einstein was born where?"
+      - "What genre is jazz?" → "Jazz belongs to what genre?"
+
+      WHAT MUST STAY IDENTICAL:
+      - The entity name
+      - The relationship or property being queried
+      - The expected answer
+
+      Original question: {question}
+
+  abstractive_paraphrase:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.8
+    user: |
+      Rewrite this question from scratch, asking for the same information in a completely different way.
+
+      INSTRUCTIONS:
+      - Think of an entirely different way to ask for this information
+      - Use different vocabulary AND different question structures
+      - PRESERVE the entity name and ensure the answer remains the same
+      - The question must request the identical information
+      - OUTPUT ONLY THE REWRITTEN QUESTION - no preamble, no labels, just the question text
+
+      GOOD PARAPHRASE CHARACTERISTICS:
+      - Low word overlap with original (<30% shared words)
+      - Same entity being asked about
+      - Same relationship or property being queried
+      - Identical expected answer
+
+      EXAMPLES:
+      - "What is Robby Krieger's occupation?" → "What does Robby Krieger do professionally?"
+      - "Where was Einstein born?" → "In which city did Einstein first come into the world?"
+      - "Who directed The Matrix?" → "Which filmmaker was responsible for creating The Matrix?"
+
+      ABSOLUTE REQUIREMENTS:
+      - Entity name must appear in the question
+      - The answer must be exactly the same
+      - The relationship/property being queried must be preserved
+
+      Original question: {question}
