@@ -45,7 +45,7 @@ TEXT_2 = """How would a typical person answer each of the following questions ab
 TEXTS_OF_INTEREST = [TEXT_1, TEXT_2]
 TEXT_LABELS = ["Duplicate", "original"]
 BACKGROUND_FILE = "data/full_paragraphs.jsonl"
-OUTPUT_DIR = "duplicate_comparison_sampled"
+OUTPUT_DIR = "results/duplicate_comparison_sampled"
 
 MODEL_NAME = 'nvidia/llama-embed-nemotron-8b'
 EMBEDDER_KEY = MODEL_NAME.replace('/', '-') + "_vector"
@@ -459,7 +459,7 @@ def main():
 
     # Load and Sample Background Data
     MIN_TOKEN_LIMIT = 10
-    MAX_TOKEN_LIMIT = 300
+    MAX_TOKEN_LIMIT = 1000
     
     background_data = load_and_embed_background_data(
         BACKGROUND_FILE, tokenizer, model, device,

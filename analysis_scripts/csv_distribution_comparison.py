@@ -40,8 +40,8 @@ ORIGINAL_STORY_COLUMN = "original_story"  # Column name for original stories
 REGENERATED_STORY_PREFIX = "regenerated_story_"  # Prefix for regenerated story columns
 
 # Background corpus and model settings (from distribution_comparison.py)
-BACKGROUND_FILE = r"data/random_paragraphs.jsonl"
-OUTPUT_DIR = "csv_comparison_results"
+BACKGROUND_FILE = r"data_creation/random_paragraphs.jsonl"
+OUTPUT_DIR = "results/csv_comparison_results"
 MODEL_NAME = "Qwen/Qwen3-Embedding-8B"
 
 # Token filtering
