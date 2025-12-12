@@ -1026,7 +1026,7 @@ popqa:
 
 zebralogic:
   value_substitution:
-    model: "helicone/claude-4.5-haiku"
+    model: "claude-4.5-haiku"
     temperature: 0.7
     # Two-step prompts used by zebralogic_transforms.py
     step1_plan:
@@ -1086,3 +1086,15 @@ zebralogic:
         4. Keep the puzzle wording identical as much as possible, only make minor syntactic adjustments where necessary to preserve the flow and meaning of the puzzle wording.
         5. Keep the numbering and formatting identical.
         6. Output ONLY the rewritten puzzle text.
+
+  condition_shuffle:
+    # Note: This variant uses non-LLM transformation logic in zebralogic_transforms.py
+    # No prompt needed - it's a deterministic transformation
+    model: "none"
+
+  zebralogic_combined:
+    model: "claude-4.5-haiku"
+    # Note: This variant combines condition_shuffle + value_substitution
+    # It reuses the prompts from value_substitution, so they are not repeated here
+    # The logic is handled in zebralogic_transforms.py which will read from value_substitution
+    user: "Auto-handled by transform function"

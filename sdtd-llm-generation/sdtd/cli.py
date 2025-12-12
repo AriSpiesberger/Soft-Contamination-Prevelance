@@ -24,7 +24,7 @@ def generate(
         ...,
         "--level",
         "-l",
-        help="Levels to generate (comma-separated): 1, 2, or 1,2",
+        help="Levels (e.g. '1', '2') OR specific variants (e.g. 'value_substitution'). Can be comma-separated list like '1,value_substitution'.",
     ),
     output_dir: Path = typer.Option(
         "outputs",
@@ -49,6 +49,12 @@ def generate(
         "--no-checkpoint",
         help="Disable checkpoint/resume functionality (not recommended for large runs)",
     ),
+    input_file: Path = typer.Option(
+        None,
+        "--input",
+        "-i",
+        help="Input parquet file (optional, overrides default dataset loader, mainly for zebralogic)",
+    ),
 ) -> None:
     """Generate semantic duplicates for a dataset.
 
@@ -56,13 +62,21 @@ def generate(
     command and it will continue from where it left off. Errors are logged to
     generation_errors.log in the output directory.
 
+    Selection (--level / -l):
+    - "1": Run all variants in Level 1
+    - "value_substitution": Run specific variant (searches all levels)
+    - "1,condition_shuffle": Run all Level 1 variants AND condition_shuffle
+
     Examples:
 
         # Generate Level 1 SDs for GSM8K (test with 10 items)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10
 
-        # Generate both levels for Codeforces
-        uv run python -m sdtd generate -d codeforces -l 1,2 -n 5
+        # Generate specific variants
+        uv run python -m sdtd generate -d zebralogic -l "value_substitution,condition_shuffle"
+
+        # Generate Level 1 AND specific Level 2 variant
+        uv run python -m sdtd generate -d codeforces -l "1,fictional_setting"
 
         # Override model (uses this for ALL variants)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10 -m gpt-4-turbo
@@ -72,25 +86,23 @@ def generate(
 
         # Disable checkpointing (not recommended for large runs)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10 --no-checkpoint
-    """
-    # Parse levels
-    levels = [int(x.strip()) for x in level.split(",")]
 
-    # Validate levels
-    for lvl in levels:
-        if lvl not in [1, 2]:
-            typer.echo(f"Error: Invalid level {lvl}. Must be 1 or 2.", err=True)
-            raise typer.Exit(1)
+        # Generate SDs for ZebraLogic from a local file
+        uv run python -m sdtd generate -d zebralogic -l 2 -i datasets/my_zebralogic.parquet
+    """
+    # Parse selection
+    selection = [x.strip() for x in level.split(",")]
 
     # Run generation
     try:
         generate_sds(
             dataset,
-            levels,
+            selection,
             output_dir,
             limit,
             model_override=model,
             checkpoint_enabled=not no_checkpoint,
+            input_file=input_file,
         )
         typer.echo("\n✓ Generation complete!")
     except Exception as e:
@@ -571,6 +583,79 @@ def plot(
             typer.echo(f"✓ Saved plot to {output}")
     except Exception as e:
         typer.echo(f"✗ Error creating plot: {e}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
+def generate_reasoning(
+    input_file: Path = typer.Option(
+        ...,
+        "--input",
+        "-i",
+        help="Input parquet file with SDs",
+    ),
+    output_file: Path = typer.Option(
+        ...,
+        "--output",
+        "-o",
+        help="Output parquet file",
+    ),
+    model: str = typer.Option(
+        "claude-3-5-sonnet-20241022",
+        "--model",
+        "-m",
+        help="Model to use for reasoning",
+    ),
+    k: int = typer.Option(
+        3,
+        "--attempts",
+        "-k",
+        help="Max retry attempts",
+    ),
+    limit: int = typer.Option(
+        None,
+        "--limit",
+        "-n",
+        help="Limit number of items to process",
+    ),
+    no_checkpoint: bool = typer.Option(
+        False,
+        "--no-checkpoint",
+        help="Disable checkpointing",
+    ),
+) -> None:
+    """Enrich ZebraLogic SDs with correct reasoning traces.
+    
+    Iterates through the input parquet file containing ZebraLogic SDs,
+    asks the model to solve each puzzle, checks the solution against the ground truth,
+    and retries up to k times if incorrect. Adds the correct reasoning trace to the output.
+    
+    Examples:
+    
+        # Generate reasoning for ZebraLogic SDs
+        uv run python -m sdtd generate-reasoning -i outputs/zebralogic_level2.parquet -o outputs/zebralogic_enriched.parquet
+        
+        # Test with limit and specific model
+        uv run python -m sdtd generate-reasoning -i outputs/zebralogic_level2.parquet -o test.parquet -n 5 -m gpt-4o
+    """
+    from sdtd.reasoning import generate_reasoning_traces
+    
+    if not input_file.exists():
+        typer.echo(f"Error: Input file {input_file} not found", err=True)
+        raise typer.Exit(1)
+        
+    try:
+        generate_reasoning_traces(
+            input_file,
+            output_file,
+            model,
+            k,
+            limit,
+            checkpoint_enabled=not no_checkpoint,
+        )
+        typer.echo("\n✓ Reasoning generation complete!")
+    except Exception as e:
+        typer.echo(f"\n✗ Error: {e}", err=True)
         raise typer.Exit(1)
 
 

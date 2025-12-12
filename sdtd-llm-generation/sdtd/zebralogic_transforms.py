@@ -3,9 +3,9 @@
 import json
 import re
 import random
-from litellm import completion
 
 from sdtd.generate import retry_with_backoff
+from sdtd.utils import get_client
 
 
 def _get_prompts(prompt_template: str | dict | None) -> tuple[dict, dict]:
@@ -62,12 +62,11 @@ def _generate_substitution_plan(
     ]
 
     def _generate():
-        response = completion(
+        response = get_client().chat.completions.create(
             model=model,
             messages=messages,
             temperature=temperature,
             max_tokens=4096,
-            caching=True,
         )
         return response.choices[0].message.content.strip()
 
@@ -123,12 +122,11 @@ def _apply_substitution_to_puzzle(
     ]
 
     def _generate():
-        response = completion(
+        response = get_client().chat.completions.create(
             model=model,
             messages=messages,
             temperature=temperature,
             max_tokens=4096,
-            caching=True,
         )
         return response.choices[0].message.content.strip()
 

@@ -11,17 +11,15 @@ import os
 import requests
 import time
 import logging
+import traceback
 from collections import Counter
-import litellm
-from litellm import completion
-from litellm.caching import Cache
+from openai import OpenAI
 
 from sdtd.datasets import load_dataset
-from sdtd.utils import load_prompts, format_prompt
+from sdtd.utils import get_client, load_prompts, format_prompt
 
 
-# Set up disk cache for litellm
-litellm.cache = Cache(disk_cache_dir=".cache/litellm")
+
 
 
 # Map dataset names to their primary text field
@@ -476,14 +474,12 @@ def get_embedding(text: str, model: str = EMBEDDING_MODEL) -> list[float]:
             result = response.json()
             return result['data'][0]['embedding']
         else:
-            # Fallback to litellm for non-OpenRouter models
-            from litellm import embedding
-            response = embedding(
+            # Fallback to OpenAI client for non-OpenRouter models
+            response = get_client().embeddings.create(
                 model=model,
-                input=[text],
-                caching=True,
+                input=text,
             )
-            return response.data[0]['embedding']
+            return response.data[0].embedding
 
     # Use retry logic for embedding API calls
     return retry_with_backoff(_get_embedding_inner)
@@ -566,21 +562,23 @@ def calculate_all_metrics(original_text: str, sd_text: str,
 
 def generate_sds(
     dataset_name: str,
-    levels: list[int],
+    selection: list[str],
     output_dir: Path,
     limit: int | None = None,
     model_override: str | None = None,
     checkpoint_enabled: bool = True,
+    input_file: Path | None = None,
 ) -> None:
     """Generate semantic duplicates for a dataset with checkpointing.
 
     Args:
         dataset_name: Name of dataset (gsm8k, codeforces, allenai, or all)
-        levels: List of levels to generate (e.g., [1] or [1, 2])
+        selection: List of levels (e.g. "1") or variant names (e.g. "value_substitution")
         output_dir: Directory to save output files
         limit: Optional limit on number of items to process
         model_override: Optional model to use instead of YAML defaults
         checkpoint_enabled: Enable checkpoint/resume functionality (default: True)
+        input_file: Optional path to input parquet file (overrides default dataset loading)
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -593,18 +591,18 @@ def generate_sds(
 
     # Handle "all" datasets
     if dataset_name == "all":
-        datasets = load_dataset("all", limit)
+        datasets = load_dataset("all", limit, input_file=input_file)
         for name, df in datasets.items():
-            _generate_for_dataset(name, df, levels, output_dir, model_override, checkpoint_enabled)
+            _generate_for_dataset(name, df, selection, output_dir, model_override, checkpoint_enabled)
     else:
-        df = load_dataset(dataset_name, limit)
-        _generate_for_dataset(dataset_name, df, levels, output_dir, model_override, checkpoint_enabled)
+        df = load_dataset(dataset_name, limit, input_file=input_file)
+        _generate_for_dataset(dataset_name, df, selection, output_dir, model_override, checkpoint_enabled)
 
 
 def _generate_for_dataset(
     dataset_name: str,
     df: pl.DataFrame,
-    levels: list[int],
+    selection: list[str],
     output_dir: Path,
     model_override: str | None = None,
     checkpoint_enabled: bool = True,
@@ -614,7 +612,7 @@ def _generate_for_dataset(
     Args:
         dataset_name: Name of dataset
         df: Dataset DataFrame
-        levels: List of levels to generate
+        selection: List of levels or variant names
         output_dir: Output directory
         model_override: Optional model to use instead of YAML defaults
         checkpoint_enabled: Enable checkpoint/resume functionality (default: True)
@@ -626,41 +624,78 @@ def _generate_for_dataset(
     # Set up error logging
     setup_error_logging(output_dir)
 
-    # Load prompts for requested levels
+    # Parse selection
+    levels_to_run_all = set()
+    variants_to_run = set()
+    
+    for item in selection:
+        item = str(item).strip()
+        if item.isdigit():
+            levels_to_run_all.add(int(item))
+        else:
+            variants_to_run.add(item)
+    
+    # Levels to scan for variants (default to 1 and 2)
+    scan_levels = [1, 2]
+
+    # Load prompts for all potential levels
     prompts = {}
-    for level in levels:
+    for level in scan_levels:
         prompt_path = Path(f"prompts/level{level}.yaml")
         if not prompt_path.exists():
             logging.warning(f"{prompt_path} not found, skipping level {level}")
             continue
         prompts[level] = load_prompts(prompt_path)
 
-    # Prepare checkpoint and output paths
-    checkpoint_path = output_dir / f".checkpoint_{dataset_name}_level{''.join(map(str, levels))}.json"
-    output_path = output_dir / f"{dataset_name}_level{''.join(map(str, levels))}.parquet"
+    # Construct deterministic identifier for this run based on selection
+    # Use sorted unique items from input selection
+    selection_key = "_".join(sorted(list(set(selection))))
+    # Sanitize key for filename
+    selection_key = re.sub(r'[^a-zA-Z0-9_]', '_', selection_key)
+    
+    checkpoint_path = output_dir / f".checkpoint_{dataset_name}_{selection_key}.json"
+    output_path = output_dir / f"{dataset_name}_{selection_key}.parquet"
 
     # Load checkpoint if enabled
     checkpoint = load_checkpoint(checkpoint_path) if checkpoint_enabled else {}
     completed_items = checkpoint.get("completed_items", {})
 
-    # Generate for each level
+    # Generate
     all_results = []
     total_errors = 0
     total_items = 0
 
     try:
-        for level in levels:
+        for level in scan_levels:
             if level not in prompts:
                 continue
 
             level_prompts = prompts[level].get(dataset_name)
             if not level_prompts:
-                logging.warning(f"No prompts found for {dataset_name} level {level}")
+                # Only log warning if we explicitly wanted this level
+                if level in levels_to_run_all:
+                    logging.warning(f"No prompts found for {dataset_name} level {level}")
                 continue
 
-            print(f"\nLevel {level}: {len(level_prompts)} variants")
+            # Determine variants to run in this level
+            variants_in_level = []
+            if level in levels_to_run_all:
+                # Add all variants
+                variants_in_level = list(level_prompts.keys())
+            else:
+                # Add only requested variants found in this level
+                for v in level_prompts.keys():
+                    if v in variants_to_run:
+                        variants_in_level.append(v)
+            
+            if not variants_in_level:
+                continue
 
-            for variant_name, prompt_config in level_prompts.items():
+            print(f"\nLevel {level}: {len(variants_in_level)} variants selected")
+
+            for variant_name in variants_in_level:
+                prompt_config = level_prompts[variant_name]
+                
                 # Use model override if provided, otherwise use YAML default
                 # Skip variants with "none" model (non-LLM transformations)
                 yaml_model = prompt_config.get("model", "")
@@ -677,7 +712,8 @@ def _generate_for_dataset(
                 else:
                     print(f"  - {variant_name} ({model})...", end=" ", flush=True)
                     completed_items[variant_key] = 0
-
+                
+                # ... remainder of the loop is the same ...
                 variant_results = []
                 variant_errors = 0
                 start_idx = completed_items[variant_key]
@@ -691,7 +727,7 @@ def _generate_for_dataset(
 
                     try:
                         # Special handling for ZebraLogic transformations
-                        if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "combined"]:
+                        if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined"]:
                             from sdtd.zebralogic_transforms import (
                                 transform_value_substitution,
                                 transform_condition_shuffle,
@@ -703,18 +739,26 @@ def _generate_for_dataset(
                             
                             if variant_name == "value_substitution":
                                 # Get prompt template from config if available
-                                prompt_template = prompt_config.get("user")
+                                prompt_template = prompt_config
                                 sd_text, transformed_solution = transform_value_substitution(
                                     puzzle, solution, model, prompt_config.get("temperature", 0.7), prompt_template
                                 )
                             elif variant_name == "condition_shuffle":
                                 sd_text = transform_condition_shuffle(puzzle)
                                 transformed_solution = solution  # Solution unchanged for shuffle-only
-                            elif variant_name == "combined":
-                                # Get prompt template from config if available
-                                prompt_template = prompt_config.get("user")
+                            elif variant_name == "zebralogic_combined":
+                                # Get prompt template from config if available (uses step1/step2 from config)
+                                # For combined, we need to pass the prompt config from value_substitution usually,
+                                # but since combined is just shuffle + sub, we should probably use the value_substitution prompts?
+                                # The current combined implementation in transforms ignores prompt_template if it's None.
+                                # But we should pass the config if we have it.
+                                # Actually, level2.yaml defines combined with "Auto-handled".
+                                # We need to fetch value_substitution config for the prompts if combined doesn't have them.
+                                
+                                # Fetch value_substitution config for prompts if needed
+                                sub_config = level_prompts.get("value_substitution", {})
                                 sd_text, transformed_solution = transform_combined(
-                                    puzzle, solution, model, prompt_config.get("temperature", 0.7), prompt_template
+                                    puzzle, solution, model, prompt_config.get("temperature", 0.7), sub_config
                                 )
                             else:
                                 # Fallback to regular generation
@@ -793,6 +837,7 @@ def _generate_for_dataset(
                         # For non-transient errors, print to console as well
                         if not is_transient_error(e):
                             print(f"\n    ! Permanent error on item {idx}: {type(e).__name__}")
+                            traceback.print_exc()
 
                         continue
 
@@ -840,7 +885,7 @@ def generate_single(
     dataset_name: str,
     model_override: str | None = None,
 ) -> str:
-    """Generate a single semantic duplicate using litellm (with retry logic).
+    """Generate a single semantic duplicate using OpenAI client via Helicone.
 
     Args:
         row: Data row dictionary
@@ -864,13 +909,12 @@ def generate_single(
     model = model_override if model_override else prompt_config["model"]
 
     def _generate_single_inner():
-        # Call litellm (with caching)
-        response = completion(
+        # Call OpenAI client via Helicone
+        response = get_client().chat.completions.create(
             model=model,
             messages=messages,
             temperature=prompt_config.get("temperature", 0.7),
             max_tokens=prompt_config.get("max_tokens", 2048),
-            caching=True,  # Enable caching
         )
         return response.choices[0].message.content.strip()
 
