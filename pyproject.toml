@@ -15,6 +15,8 @@ dependencies = [
     "seaborn>=0.12.0",
     "tqdm>=4.65.0",
     "requests>=2.31.0",
+    "peft>=0.13.2",
+    "bitsandbytes>=0.45.5",
 ]
 
 [project.optional-dependencies]
