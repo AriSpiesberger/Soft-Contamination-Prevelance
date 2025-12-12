@@ -1026,84 +1026,63 @@ popqa:
 
 zebralogic:
   value_substitution:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "helicone/claude-4.5-haiku"
     temperature: 0.7
-    # Note: This variant uses special transformation logic in zebralogic_transforms.py
-    # The prompt is handled programmatically to transform both puzzle and solution
-    user: |
-      Transform this logic grid puzzle by substituting values (e.g., changing colors, foods, drinks, names, etc.) while keeping the puzzle structure and logical relationships identical.
+    # Two-step prompts used by zebralogic_transforms.py
+    step1_plan:
+      system: |
+        You are a helpful assistant that creates substitution plans for logic puzzles.
+        Your goal is to transform the puzzle by changing BOTH the categories and their values to new domains.
+      user: |
+        Create a substitution plan to transform this logic grid puzzle.
+        1. Identify all categories (e.g., Color, Drink, Pet).
+        2. Assign a NEW category to each (e.g., Color -> Shape, Drink -> Snack, Pet -> Book).
+        3. Map every existing value to a new value appropriate for the new category.
 
-      TASK:
-      1. First, create a substitution plan mapping old values to new values for each category
-      2. Then apply the substitutions to BOTH the puzzle text AND the solution
+        Original Puzzle:
+        {puzzle}
 
-      CRITICAL REQUIREMENTS:
-      - The puzzle structure must remain IDENTICAL (same number of houses, same categories, same clue structure)
-      - All logical relationships must be preserved
-      - The solution structure must remain the same (same header/rows format)
-      - Apply substitutions consistently throughout both puzzle and solution
-      - Use disjoint sets (e.g., if changing colors, use colors not in the original set)
+        Original Solution:
+        {solution_json}
 
-      Original Puzzle:
-      {puzzle}
+        REQUIREMENTS:
+        1. Change the categories to natural, distinct alternatives (e.g., colors -> shapes, flowers -> gemstones).
+        2. Keep the new categories and values DISTINCT from all of the original ones.
+        3. Ensure 1-to-1 mapping for all values.
+        4. Do NOT use obscure or strange categories (keep it general knowledge and natural within the flow of the puzzle wording).
 
-      Original Solution:
-      {solution_json}
-
-      Output your response as a JSON object with two fields:
-      {{
-        "substitution_plan": {{
-          "category_name": {{"old_value1": "new_value1", "old_value2": "new_value2", ...}},
-          ...
-        }},
-        "transformed_puzzle": "...",
-        "transformed_solution": {{
-          "header": [...],
-          "rows": [[...], ...]
+        Output ONLY a JSON object with this structure:
+        {{
+          "substitution_plan": {{
+            "OriginalCategoryName": {{
+              "new_category": "NewCategoryName",
+              "values": {{
+                "OldValue1": "NewValue1",
+                "OldValue2": "NewValue2"
+              }}
+            }},
+            ...
+          }}
         }}
-      }}
 
-  condition_shuffle:
-    # Note: This variant uses non-LLM transformation logic in zebralogic_transforms.py
-    # No prompt needed - it's a deterministic transformation
-    model: "none"
-    temperature: 0.0
+    step2_apply:
+      system: |
+        You are a helpful assistant that rewrites logic puzzles based on a substitution plan.
+        You must replace categories and values exactly according to the plan while PRESERVING the puzzle structure, logic, and clues EXACTLY.
+      user: |
+        Rewrite this logic puzzle by applying the following substitution plan.
+        Replace ALL occurrences of the old categories and values with their corresponding new ones.
 
-  combined:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
-    # Note: This variant combines condition_shuffle + value_substitution
-    # Uses special transformation logic in zebralogic_transforms.py
-    user: |
-      Transform this logic grid puzzle by first shuffling the conditions, then substituting values while keeping the puzzle structure and logical relationships identical.
+        Substitution Plan:
+        {plan_json}
 
-      TASK:
-      1. Shuffle the numbered conditions and renumber them
-      2. Create a substitution plan mapping old values to new values for each category
-      3. Apply the substitutions to BOTH the puzzle text AND the solution
+        Original Puzzle:
+        {puzzle}
 
-      CRITICAL REQUIREMENTS:
-      - The puzzle structure must remain IDENTICAL (same number of houses, same categories)
-      - All logical relationships must be preserved
-      - The solution structure must remain the same (same header/rows format)
-      - Apply substitutions consistently throughout both puzzle and solution
-      - Use disjoint sets (e.g., if changing colors, use colors not in the original set)
-
-      Original Puzzle:
-      {puzzle}
-
-      Original Solution:
-      {solution_json}
-
-      Output your response as a JSON object with two fields:
-      {{
-        "substitution_plan": {{
-          "category_name": {{"old_value1": "new_value1", "old_value2": "new_value2", ...}},
-          ...
-        }},
-        "transformed_puzzle": "...",
-        "transformed_solution": {{
-          "header": [...],
-          "rows": [[...], ...]
-        }}
-      }}
+        CRITICAL INSTRUCTIONS:
+        1. Replace old categories (e.g., "Color") with new categories (e.g., "Shape").
+        2. Replace old values (e.g., "Red") with new values (e.g., "Square").
+        3. Do NOT change the logic, clues, or structure.
+        4. Keep the puzzle wording identical as much as possible, only make minor syntactic adjustments where necessary to preserve the flow and meaning of the puzzle wording.
+        5. Keep the numbering and formatting identical.
+        6. Output ONLY the rewritten puzzle text.
