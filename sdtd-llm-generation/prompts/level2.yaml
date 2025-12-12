@@ -1023,3 +1023,87 @@ popqa:
       Original question: {question}
 
       Generate ONE entity substitution variant. OUTPUT ONLY THE QUESTION TEXT - no preamble, no explanation, no answer, just the question.
+
+zebralogic:
+  value_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    # Note: This variant uses special transformation logic in zebralogic_transforms.py
+    # The prompt is handled programmatically to transform both puzzle and solution
+    user: |
+      Transform this logic grid puzzle by substituting values (e.g., changing colors, foods, drinks, names, etc.) while keeping the puzzle structure and logical relationships identical.
+
+      TASK:
+      1. First, create a substitution plan mapping old values to new values for each category
+      2. Then apply the substitutions to BOTH the puzzle text AND the solution
+
+      CRITICAL REQUIREMENTS:
+      - The puzzle structure must remain IDENTICAL (same number of houses, same categories, same clue structure)
+      - All logical relationships must be preserved
+      - The solution structure must remain the same (same header/rows format)
+      - Apply substitutions consistently throughout both puzzle and solution
+      - Use disjoint sets (e.g., if changing colors, use colors not in the original set)
+
+      Original Puzzle:
+      {puzzle}
+
+      Original Solution:
+      {solution_json}
+
+      Output your response as a JSON object with two fields:
+      {{
+        "substitution_plan": {{
+          "category_name": {{"old_value1": "new_value1", "old_value2": "new_value2", ...}},
+          ...
+        }},
+        "transformed_puzzle": "...",
+        "transformed_solution": {{
+          "header": [...],
+          "rows": [[...], ...]
+        }}
+      }}
+
+  condition_shuffle:
+    # Note: This variant uses non-LLM transformation logic in zebralogic_transforms.py
+    # No prompt needed - it's a deterministic transformation
+    model: "none"
+    temperature: 0.0
+
+  combined:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    temperature: 0.7
+    # Note: This variant combines condition_shuffle + value_substitution
+    # Uses special transformation logic in zebralogic_transforms.py
+    user: |
+      Transform this logic grid puzzle by first shuffling the conditions, then substituting values while keeping the puzzle structure and logical relationships identical.
+
+      TASK:
+      1. Shuffle the numbered conditions and renumber them
+      2. Create a substitution plan mapping old values to new values for each category
+      3. Apply the substitutions to BOTH the puzzle text AND the solution
+
+      CRITICAL REQUIREMENTS:
+      - The puzzle structure must remain IDENTICAL (same number of houses, same categories)
+      - All logical relationships must be preserved
+      - The solution structure must remain the same (same header/rows format)
+      - Apply substitutions consistently throughout both puzzle and solution
+      - Use disjoint sets (e.g., if changing colors, use colors not in the original set)
+
+      Original Puzzle:
+      {puzzle}
+
+      Original Solution:
+      {solution_json}
+
+      Output your response as a JSON object with two fields:
+      {{
+        "substitution_plan": {{
+          "category_name": {{"old_value1": "new_value1", "old_value2": "new_value2", ...}},
+          ...
+        }},
+        "transformed_puzzle": "...",
+        "transformed_solution": {{
+          "header": [...],
+          "rows": [[...], ...]
+        }}
+      }}
