@@ -32,14 +32,14 @@ TRAIN_ONLY_ON_OUTPUTS = True  # If True, compute loss only on model outputs (ass
 TRAIN_ON_CORRECT_ONLY = True # If True, train only on correct answers { "correct": false,}
 
 # LoRA configuration
-lora_r = 16 # Reasonable rank for balance between performance and efficiency
+lora_r = 16 
 lora_alpha = 2 * lora_r # Typical to set alpha = 2 * r = 32
 lora_dropout = 0.05
 target_modules = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 
-# Training configuration
-per_device_train_batch_size = 2  # NF4 uses less memory than int8, can increase batch size
-gradient_accumulation_steps = 8  # Effective batch size = 16
+# Training configuration (can change on better machine)
+per_device_train_batch_size = 2  
+gradient_accumulation_steps = 8  
 num_train_epochs = 3
 learning_rate = 1e-4
 max_length = 4096

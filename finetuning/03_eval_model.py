@@ -13,7 +13,7 @@ import os
 model_repo = "allenai/Olmo-3-7B-Instruct"
 
 # Configuration
-QUESTION_RETRIES = 5
+QUESTION_RETRIES = 8
 USE_FINETUNED_MODEL = False  # Set to True to load finetuned LoRA weights
 WANDB_ID = "3ga4dhm9" 
 FINETUNED_MODEL_PATH = f"./olmo3-murder-mystery-qlora-{WANDB_ID}"  # Path to LoRA weights from finetune-model.py
@@ -70,7 +70,7 @@ correct = 0
 total = 0
 
 # Output log file
-log_file = f"eval_outputs_{('finetuned_' + WANDB_ID) if USE_FINETUNED_MODEL else 'base'}.jsonl"
+log_file = f"eval_outputs_{('finetuned_' + WANDB_ID) if USE_FINETUNED_MODEL else 'base'}_x{QUESTION_RETRIES}.jsonl"
 log_filepath = Path(__file__).parent / "outputs" / "eval_logs" / log_file
 os.makedirs(log_filepath.parent, exist_ok=True)
 print(f"Outputs will be logged to: {log_filepath}")
