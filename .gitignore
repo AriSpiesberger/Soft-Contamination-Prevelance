@@ -51,6 +51,10 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# wandb
+wandb/
+finetuning/outputs/checkpoints/
+
 # Translations
 *.mo
 *.pot
