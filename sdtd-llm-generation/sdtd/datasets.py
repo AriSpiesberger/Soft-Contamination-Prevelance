@@ -6,12 +6,13 @@ from pathlib import Path
 from datasets import load_dataset as hf_load_dataset
 
 
-def load_dataset(name: str, limit: int | None = None) -> pl.DataFrame:
+def load_dataset(name: str, limit: int | None = None, input_file: Path | str | None = None) -> pl.DataFrame:
     """Load dataset by name.
 
     Args:
         name: Dataset name (gsm8k, codeforces, allenai, mbpp, humaneval, popqa, bigbenchhard, zebralogic, agieval, or all)
         limit: Optional limit on number of rows
+        input_file: Optional path to local input file (overrides default loading)
 
     Returns:
         Polars DataFrame with dataset contents
@@ -31,7 +32,7 @@ def load_dataset(name: str, limit: int | None = None) -> pl.DataFrame:
     elif name == "bigbenchhard":
         return load_bigbenchhard(limit)
     elif name == "zebralogic":
-        return load_zebralogic(limit)
+        return load_zebralogic(limit, input_file)
     elif name == "agieval":
         return load_agieval(limit)
     elif name == "all":
@@ -44,7 +45,7 @@ def load_dataset(name: str, limit: int | None = None) -> pl.DataFrame:
             "humaneval": load_humaneval(limit),
             "popqa": load_popqa(limit),
             "bigbenchhard": load_bigbenchhard(limit),
-            "zebralogic": load_zebralogic(limit),
+            "zebralogic": load_zebralogic(limit, input_file),
             # agieval: Not yet implemented due to HuggingFace compatibility issues
         }
     else:
@@ -198,20 +199,24 @@ def load_bigbenchhard(limit: int | None = None) -> pl.DataFrame:
     return df
 
 
-def load_zebralogic(limit: int | None = None) -> pl.DataFrame:
+def load_zebralogic(limit: int | None = None, input_file: Path | str | None = None) -> pl.DataFrame:
     """Load ZebraLogic dataset.
 
     Args:
         limit: Optional limit on number of rows
+        input_file: Optional path to local parquet file
 
     Returns:
         DataFrame with columns: puzzle_id, puzzle, solution, clues, size_n, size_m, etc.
     """
-    # Load the grid_mode configuration (full puzzle format with clues)
-    dataset = hf_load_dataset("WildEval/ZebraLogic", "grid_mode", split="test")
-
-    # Convert to polars DataFrame
-    df = pl.DataFrame(dataset.to_dict())
+    if input_file:
+        df = pl.read_parquet(input_file)
+    else:
+        # Load the grid_mode configuration (full puzzle format with clues)
+        dataset = hf_load_dataset("WildEval/ZebraLogic", "grid_mode", split="test")
+        
+        # Convert to polars DataFrame
+        df = pl.DataFrame(dataset.to_dict())
 
     if limit:
         df = df.head(limit)
