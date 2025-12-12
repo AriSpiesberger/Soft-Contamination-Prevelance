@@ -382,6 +382,12 @@ def export_jsonl(
         "-d",
         help="Filter by dataset name (only for parquet type, e.g., 'zebralogic')",
     ),
+    sd_variant: str = typer.Option(
+        None,
+        "--sd-variant",
+        "-v",
+        help="Filter by sd_variant (one or comma-separated list, e.g., 'value_substitution' or 'value_substitution,condition_shuffle')",
+    ),
 ) -> None:
     """Export datasets to JSONL format for OpenAI fine-tuning.
 
@@ -401,6 +407,12 @@ def export_jsonl(
 
         # Export with dataset filter
         uv run python -m sdtd export-jsonl -t parquet -i outputs/all.parquet -o zebra.jsonl -d zebralogic
+
+        # Export with sd_variant filter
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level2.parquet -o output.jsonl -v value_substitution
+
+        # Export multiple variants
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level2.parquet -o output.jsonl -v value_substitution,condition_shuffle
 
         # Use custom template
         uv run python -m sdtd export-jsonl -t zebralogic -o output.jsonl --template custom_template
@@ -437,6 +449,11 @@ def export_jsonl(
         if template_name is None:
             template_name = "zebralogic_generated"
         
+        # Parse sd_variant filter (comma-separated list)
+        variant_filter = None
+        if sd_variant:
+            variant_filter = [v.strip() for v in sd_variant.split(",")]
+        
         try:
             export_parquet_to_jsonl(
                 input_file=input_file,
@@ -444,6 +461,7 @@ def export_jsonl(
                 template_name=template_name,
                 template_path=template_path,
                 dataset_filter=dataset_filter,
+                sd_variant_filter=variant_filter,
             )
             typer.echo(f"✓ Exported parquet file to {output_file}")
         except Exception as e:

@@ -118,6 +118,7 @@ def export_parquet_to_jsonl(
     template_name: str = "zebralogic_generated",
     template_path: Path | str = "prompts/jsonl_templates.yaml",
     dataset_filter: str | None = None,
+    sd_variant_filter: list[str] | None = None,
 ) -> None:
     """Export generated parquet file to JSONL format for OpenAI fine-tuning.
 
@@ -127,6 +128,7 @@ def export_parquet_to_jsonl(
         template_name: Name of template to use from templates YAML
         template_path: Path to templates YAML file
         dataset_filter: Optional filter to only export specific dataset (e.g., "zebralogic")
+        sd_variant_filter: Optional list of sd_variant values to filter by (e.g., ["value_substitution", "condition_shuffle"])
     """
     # Load templates
     templates = load_jsonl_templates(template_path)
@@ -147,6 +149,10 @@ def export_parquet_to_jsonl(
     # Apply dataset filter if specified
     if dataset_filter:
         df = df.filter(pl.col("source_dataset") == dataset_filter)
+
+    # Apply sd_variant filter if specified
+    if sd_variant_filter:
+        df = df.filter(pl.col("sd_variant").is_in(sd_variant_filter))
 
     if len(df) == 0:
         raise ValueError(f"No data found in {input_file} (after filtering)")
@@ -169,10 +175,14 @@ def export_parquet_to_jsonl(
             if "additional_info" in row_dict and isinstance(row_dict["additional_info"], dict):
                 info = row_dict["additional_info"]
                 
-                # Get solution headers from additional_info
-                if "solution" in info:
-                    solution = info["solution"]
-                    
+                # Get solution headers from additional_info (use sd_solution for transformed, fallback to original_solution)
+                solution = None
+                if "sd_solution" in info:
+                    solution = info["sd_solution"]
+                elif "original_solution" in info:
+                    solution = info["original_solution"]
+                
+                if solution:
                     # Extract headers if solution is in header/rows format
                     if isinstance(solution, dict) and "header" in solution and "rows" in solution:
                         # Get headers (skip "House" column)
@@ -190,14 +200,18 @@ def export_parquet_to_jsonl(
             if assistant_template:
                 solution_dict = {}
                 
-                # Try to get solution from additional_info
+                # Try to get solution from additional_info (prefer sd_solution, fallback to original_solution)
                 if "additional_info" in row_dict and isinstance(row_dict["additional_info"], dict):
                     info = row_dict["additional_info"]
                     
-                    # Get solution from additional_info
-                    if "solution" in info:
-                        solution = info["solution"]
-                        
+                    # Get solution from additional_info (prefer transformed solution)
+                    solution = None
+                    if "sd_solution" in info:
+                        solution = info["sd_solution"]
+                    elif "original_solution" in info:
+                        solution = info["original_solution"]
+                    
+                    if solution:
                         # Handle solution in header/rows format (like original dataset)
                         if isinstance(solution, dict) and "header" in solution and "rows" in solution:
                             # Convert from header/rows format to House dict format

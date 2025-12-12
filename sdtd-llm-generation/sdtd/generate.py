@@ -662,7 +662,12 @@ def _generate_for_dataset(
 
             for variant_name, prompt_config in level_prompts.items():
                 # Use model override if provided, otherwise use YAML default
-                model = model_override if model_override else prompt_config["model"]
+                # Skip variants with "none" model (non-LLM transformations)
+                yaml_model = prompt_config.get("model", "")
+                if yaml_model == "none" and model_override is None:
+                    model = "none"
+                else:
+                    model = model_override if model_override else yaml_model
                 variant_key = f"L{level}_{variant_name}"
 
                 # Check if this variant was already completed
@@ -685,7 +690,40 @@ def _generate_for_dataset(
                     total_items += 1
 
                     try:
-                        sd_text = generate_single(row, prompt_config, dataset_name, model_override)
+                        # Special handling for ZebraLogic transformations
+                        if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "combined"]:
+                            from sdtd.zebralogic_transforms import (
+                                transform_value_substitution,
+                                transform_condition_shuffle,
+                                transform_combined,
+                            )
+                            
+                            puzzle = row.get("puzzle", "")
+                            solution = row.get("solution", {})
+                            
+                            if variant_name == "value_substitution":
+                                # Get prompt template from config if available
+                                prompt_template = prompt_config.get("user")
+                                sd_text, transformed_solution = transform_value_substitution(
+                                    puzzle, solution, model, prompt_config.get("temperature", 0.7), prompt_template
+                                )
+                            elif variant_name == "condition_shuffle":
+                                sd_text = transform_condition_shuffle(puzzle)
+                                transformed_solution = solution  # Solution unchanged for shuffle-only
+                            elif variant_name == "combined":
+                                # Get prompt template from config if available
+                                prompt_template = prompt_config.get("user")
+                                sd_text, transformed_solution = transform_combined(
+                                    puzzle, solution, model, prompt_config.get("temperature", 0.7), prompt_template
+                                )
+                            else:
+                                # Fallback to regular generation
+                                sd_text = generate_single(row, prompt_config, dataset_name, model_override)
+                                transformed_solution = None
+                        else:
+                            # Regular generation for other datasets/variants
+                            sd_text = generate_single(row, prompt_config, dataset_name, model_override)
+                            transformed_solution = None
 
                         # Get the primary text field for this dataset
                         text_field = DATASET_TEXT_FIELDS.get(dataset_name, "text")
@@ -708,6 +746,17 @@ def _generate_for_dataset(
                                     additional_info[k] = v
                                 else:
                                     additional_info[k] = str(v) if v is not None else None
+                        
+                        # For ZebraLogic: add original solution and transformed solution
+                        if dataset_name == "zebralogic":
+                            original_solution = row.get("solution", {})
+                            if original_solution:
+                                additional_info["original_solution"] = original_solution
+                            if transformed_solution is not None:
+                                additional_info["sd_solution"] = transformed_solution
+                        elif transformed_solution is not None:
+                            # For other datasets, keep old behavior if needed
+                            additional_info["solution"] = transformed_solution
 
                         result = {
                             "source_dataset": dataset_name,
