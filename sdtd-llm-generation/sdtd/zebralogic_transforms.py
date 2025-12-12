@@ -3,80 +3,58 @@
 import json
 import re
 import random
-from typing import Any
-import litellm
 from litellm import completion
 
 from sdtd.generate import retry_with_backoff
 
 
-def transform_value_substitution(
+def _get_prompts(prompt_template: str | dict | None) -> tuple[dict, dict]:
+    """Extract step1 and step2 prompts from config or use defaults.
+    
+    Args:
+        prompt_template: Config object from YAML
+        
+    Returns:
+        Tuple of (step1_config, step2_config)
+    """
+    if isinstance(prompt_template, dict):
+        step1 = prompt_template.get("step1_plan", {})
+        step2 = prompt_template.get("step2_apply", {})
+        return step1, step2
+    
+    # Defaults should not be reached if config is loaded correctly
+    raise ValueError("Prompt configuration missing for ZebraLogic value substitution")
+
+
+def _generate_substitution_plan(
     puzzle: str,
     solution: dict,
-    model: str = "openrouter/anthropic/claude-sonnet-4.5",
+    model: str,
+    prompt_config: dict,
     temperature: float = 0.7,
-    prompt_template: str | None = None,
-) -> tuple[str, dict]:
-    """Transform puzzle by substituting values (e.g., colors, foods) using LLM.
-    
-    The LLM first creates a substitution plan, then applies it to both puzzle and solution.
+) -> dict:
+    """Generate a substitution plan for puzzle values.
     
     Args:
         puzzle: Original puzzle text
-        solution: Solution dict with header/rows format
+        solution: Solution dict
         model: LLM model to use
+        prompt_config: Configuration for step 1
         temperature: Temperature for generation
-        prompt_template: Optional prompt template (if None, uses default)
         
     Returns:
-        Tuple of (transformed_puzzle, transformed_solution)
+        Substitution plan dict mapping categories to value replacements
     """
-    # Format solution as JSON for the prompt
     solution_json = json.dumps(solution, indent=2)
     
-    if prompt_template:
-        # Use provided template and format with puzzle and solution_json
-        # The template may have {puzzle} and {solution_json} placeholders
-        try:
-            user_prompt = prompt_template.format(puzzle=puzzle, solution_json=solution_json)
-        except KeyError:
-            # If template doesn't have placeholders, use as-is and append puzzle/solution
-            user_prompt = prompt_template + f"\n\nOriginal Puzzle:\n{puzzle}\n\nOriginal Solution:\n{solution_json}"
-        system_prompt = """You are a helpful assistant that transforms logic grid puzzles by substituting values while preserving the puzzle structure and solution logic."""
-    else:
-        system_prompt = """You are a helpful assistant that transforms logic grid puzzles by substituting values while preserving the puzzle structure and solution logic."""
-        # Default prompt
-        user_prompt = f"""Transform this logic grid puzzle by substituting values (e.g., changing colors, foods, drinks, names, etc.) while keeping the puzzle structure and logical relationships identical.
-
-TASK:
-1. First, create a substitution plan mapping old values to new values for each category
-2. Then apply the substitutions to BOTH the puzzle text AND the solution
-
-CRITICAL REQUIREMENTS:
-- The puzzle structure must remain IDENTICAL (same number of houses, same categories, same clue structure)
-- All logical relationships must be preserved
-- The solution structure must remain the same (same header/rows format)
-- Apply substitutions consistently throughout both puzzle and solution
-- Use disjoint sets (e.g., if changing colors, use colors not in the original set)
-
-Original Puzzle:
-{puzzle}
-
-Original Solution:
-{solution_json}
-
-Output your response as a JSON object with two fields:
-{{
-  "substitution_plan": {{
-    "category_name": {{"old_value1": "new_value1", "old_value2": "new_value2", ...}},
-    ...
-  }},
-  "transformed_puzzle": "...",
-  "transformed_solution": {{
-    "header": [...],
-    "rows": [[...], ...]
-  }}
-}}"""
+    system_prompt = prompt_config.get("system", "")
+    user_template = prompt_config.get("user", "")
+    
+    # Format user prompt
+    user_prompt = user_template.format(
+        puzzle=puzzle,
+        solution_json=solution_json
+    )
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -103,13 +81,162 @@ Output your response as a JSON object with two fields:
             response_json = json.loads(json_match.group())
         else:
             response_json = json.loads(response_text)
-        
-        transformed_puzzle = response_json["transformed_puzzle"]
-        transformed_solution = response_json["transformed_solution"]
-        
-        return transformed_puzzle, transformed_solution
+            
+        return response_json.get("substitution_plan", {})
     except (json.JSONDecodeError, KeyError) as e:
-        raise ValueError(f"Failed to parse LLM response as JSON: {e}\nResponse: {response_text[:500]}")
+        raise ValueError(f"Failed to parse substitution plan JSON: {e}\nResponse: {response_text[:500]}")
+
+
+def _apply_substitution_to_puzzle(
+    puzzle: str,
+    substitution_plan: dict,
+    model: str,
+    prompt_config: dict,
+    temperature: float = 0.7,
+) -> str:
+    """Apply substitution plan to puzzle text using LLM.
+    
+    Args:
+        puzzle: Original puzzle text
+        substitution_plan: Plan mapping old values to new values
+        model: LLM model to use
+        prompt_config: Configuration for step 2
+        temperature: Temperature for generation
+        
+    Returns:
+        Transformed puzzle text
+    """
+    plan_json = json.dumps(substitution_plan, indent=2)
+    
+    system_prompt = prompt_config.get("system", "")
+    user_template = prompt_config.get("user", "")
+    
+    # Format user prompt
+    user_prompt = user_template.format(
+        puzzle=puzzle,
+        plan_json=plan_json
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+
+    def _generate():
+        response = completion(
+            model=model,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=4096,
+            caching=True,
+        )
+        return response.choices[0].message.content.strip()
+
+    return retry_with_backoff(_generate)
+
+
+def _apply_substitution_to_solution(
+    solution: dict,
+    substitution_plan: dict,
+) -> dict:
+    """Apply substitution plan to solution dictionary programmatically.
+    
+    Args:
+        solution: Original solution dict
+        substitution_plan: Plan mapping old categories/values to new ones
+        
+    Returns:
+        Transformed solution dict
+    """
+    import copy
+    new_solution = copy.deepcopy(solution)
+    
+    # Normalize plan for case-insensitive matching
+    # Plan structure: {OldCategory: {"new_category": NewCat, "values": {OldVal: NewVal}}}
+    normalized_plan = {}
+    for cat, details in substitution_plan.items():
+        normalized_plan[cat.lower()] = details
+        
+    # Iterate through solution houses
+    for house_key, attributes in new_solution.items():
+        # Create a new attributes dict to handle key replacements
+        new_attributes = {}
+        
+        for attr_key, attr_value in attributes.items():
+            # Check if this category exists in our plan (case-insensitive)
+            plan_entry = normalized_plan.get(attr_key.lower())
+            
+            if plan_entry:
+                # 1. Get new category name
+                new_cat_name = plan_entry.get("new_category", attr_key)
+                
+                # 2. Get new value
+                # Check for value match (exact or case-insensitive)
+                value_map = plan_entry.get("values", {})
+                new_val = attr_value # Default to old value if no map match
+                
+                if attr_value in value_map:
+                    new_val = value_map[attr_value]
+                else:
+                    # Try case-insensitive lookup
+                    for old_v, new_v in value_map.items():
+                        if str(old_v).lower() == str(attr_value).lower():
+                            new_val = new_v
+                            break
+                
+                new_attributes[new_cat_name] = new_val
+            else:
+                # Keep original category and value if not in plan
+                new_attributes[attr_key] = attr_value
+                
+        # Replace attributes for this house
+        new_solution[house_key] = new_attributes
+                        
+    return new_solution
+
+
+def transform_value_substitution(
+    puzzle: str,
+    solution: dict,
+    model: str = "helicone/claude-4.5-haiku",
+    temperature: float = 0.7,
+    prompt_template: str | dict | None = None,
+) -> tuple[str, dict]:
+    """Transform puzzle by substituting values (e.g., colors, foods) using 2-step process.
+    
+    1. Generate substitution plan (LLM)
+    2. Apply plan to puzzle (LLM)
+    3. Apply plan to solution (Python)
+    
+    Args:
+        puzzle: Original puzzle text
+        solution: Solution dict
+        model: LLM model to use (default: helicone/claude-4.5-haiku)
+        temperature: Temperature for generation
+        prompt_template: Dictionary containing step1_plan and step2_apply configs
+        
+    Returns:
+        Tuple of (transformed_puzzle, transformed_solution)
+    """
+    # Get prompt configurations
+    step1_config, step2_config = _get_prompts(prompt_template)
+    
+    # Step 1: Generate substitution plan
+    substitution_plan = _generate_substitution_plan(
+        puzzle, solution, model, step1_config, temperature
+    )
+    
+    # Step 2: Apply to puzzle text
+    transformed_puzzle = _apply_substitution_to_puzzle(
+        puzzle, substitution_plan, model, step2_config, temperature
+    )
+    
+    # Step 3: Apply to solution (programmatically)
+    transformed_solution = _apply_substitution_to_solution(
+        solution, substitution_plan
+    )
+    
+    return transformed_puzzle, transformed_solution
 
 
 def transform_condition_shuffle(puzzle: str) -> str:
@@ -184,9 +311,9 @@ def transform_condition_shuffle(puzzle: str) -> str:
 def transform_combined(
     puzzle: str,
     solution: dict,
-    model: str = "openrouter/anthropic/claude-sonnet-4.5",
+    model: str = "helicone/claude-4.5-haiku",
     temperature: float = 0.7,
-    prompt_template: str | None = None,
+    prompt_template: str | dict | None = None,
 ) -> tuple[str, dict]:
     """Combine condition shuffling and value substitution transformations.
     
@@ -194,10 +321,10 @@ def transform_combined(
     
     Args:
         puzzle: Original puzzle text
-        solution: Solution dict with header/rows format
+        solution: Solution dict
         model: LLM model to use
         temperature: Temperature for generation
-        prompt_template: Optional prompt template for value substitution
+        prompt_template: Dictionary containing step1_plan and step2_apply configs
         
     Returns:
         Tuple of (transformed_puzzle, transformed_solution)
@@ -211,4 +338,3 @@ def transform_combined(
     )
     
     return transformed_puzzle, transformed_solution
-
