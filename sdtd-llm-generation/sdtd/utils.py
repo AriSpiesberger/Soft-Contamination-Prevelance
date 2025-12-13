@@ -7,6 +7,7 @@ from pyarrow.util import os
 import yaml
 from pathlib import Path
 from typing import Any
+from functools import lru_cache
 
 
 _openai_client = threading.local()
@@ -40,6 +41,39 @@ def load_prompts(path: str | Path) -> dict[str, Any]:
     """
     with open(path) as f:
         return yaml.safe_load(f)
+
+
+@lru_cache(maxsize=4)
+def _load_prompts_cached(path: str) -> dict[str, Any]:
+    """Cached version of load_prompts.
+    
+    Args:
+        path: Path string (lru_cache needs hashable args)
+    """
+    return load_prompts(path)
+
+
+def get_variant_config(dataset: str, level: int, variant: str) -> dict:
+    """Get prompt configuration for a specific variant.
+    
+    Uses caching to avoid repeated file reads.
+    
+    Args:
+        dataset: Dataset name
+        level: Level number
+        variant: Variant name
+        
+    Returns:
+        Configuration dictionary for the variant
+    """
+    path = Path(f"prompts/level{level}.yaml")
+    if not path.exists():
+        return {}
+        
+    # Use cached loader (convert Path to str for lru_cache)
+    data = _load_prompts_cached(str(path))
+    
+    return data.get(dataset, {}).get(variant, {})
 
 
 def format_prompt(template: str, row: dict, dataset_name: str) -> str:
