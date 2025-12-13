@@ -10,12 +10,7 @@ import time
 
 from openai import OpenAI
 from sdtd.generate import retry_with_backoff, load_checkpoint, save_checkpoint, save_partial_results
-
-# Initialize OpenAI client with Helicone configuration
-client = OpenAI(
-    api_key=os.getenv("HELICONE_API_KEY"),
-    base_url="https://oai.helicone.ai/v1"
-)
+from sdtd.utils import get_client
 
 # Template for ZebraLogic
 ZEBRA_TEMPLATE = """# Puzzle to Solve 
@@ -171,7 +166,7 @@ def solve_zebra_puzzle(
     
     for attempt in range(1, k + 1):
         try:
-            response = client.chat.completions.create(
+            response = get_client().chat.completions.create(
                 model=model,
                 messages=messages,
                 temperature=temperature,

@@ -23,6 +23,7 @@ def _get_prompts(prompt_template: str | dict | None, level: int = 2) -> tuple[di
         config = prompt_template
     else:
         # Load default for value_substitution (which defines the steps)
+        # Note: We specifically fetch 'value_substitution' as it contains the prompts
         config = get_variant_config("zebralogic", level, "value_substitution")
     
     step1 = config.get("step1_plan", {})
@@ -70,12 +71,17 @@ def _generate_substitution_plan(
     messages.append({"role": "user", "content": user_prompt})
 
     def _generate():
-        response = get_client().chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=4096,
-        )
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": 8192, # Increased max_tokens to accommodate reasoning
+        }
+        
+        # Add reasoning budget for all models (hardcoded for now)
+        kwargs["extra_body"] = {"thinking": {"type": "enabled", "budget_tokens": 1024}}
+
+        response = get_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content.strip()
 
     response_text = retry_with_backoff(_generate)
@@ -130,12 +136,17 @@ def _apply_substitution_to_puzzle(
     messages.append({"role": "user", "content": user_prompt})
 
     def _generate():
-        response = get_client().chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=4096,
-        )
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": 8192, # Increased max_tokens to accommodate reasoning
+        }
+        
+        # Add reasoning budget for all models (hardcoded for now)
+        kwargs["extra_body"] = {"thinking": {"type": "enabled", "budget_tokens": 1024}}
+
+        response = get_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content.strip()
 
     return retry_with_backoff(_generate)
@@ -274,6 +285,11 @@ def transform_value_substitution(
     Returns:
         Tuple of (transformed_puzzle, transformed_solution, substitution_plan)
     """
+    # If model is "none" or empty, try to get it from default config
+    if not model or model == "none":
+        default_config = get_variant_config("zebralogic", level, "value_substitution")
+        model = default_config.get("model", "helicone/claude-4.5-haiku")
+
     # Get prompt configurations
     step1_config, step2_config = _get_prompts(prompt_template, level)
     
@@ -387,6 +403,11 @@ def transform_combined(
     Returns:
         Tuple of (transformed_puzzle, transformed_solution, substitution_plan)
     """
+    # If model is "none" or empty, try to get it from default config
+    if not model or model == "none":
+        default_config = get_variant_config("zebralogic", level, "value_substitution")
+        model = default_config.get("model", "helicone/claude-4.5-haiku")
+
     # First, shuffle conditions
     shuffled_puzzle = transform_condition_shuffle(puzzle)
     
