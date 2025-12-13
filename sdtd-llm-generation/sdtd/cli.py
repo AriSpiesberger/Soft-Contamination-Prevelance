@@ -26,11 +26,11 @@ def generate(
         "-l",
         help="Levels (e.g. '1', '2') OR specific variants (e.g. 'value_substitution'). Can be comma-separated list like '1,value_substitution'.",
     ),
-    output_dir: Path = typer.Option(
-        "outputs",
-        "--output-dir",
+    output_file: Path = typer.Option(
+        "outputs/output.parquet",
+        "--output",
         "-o",
-        help="Output directory for generated files",
+        help="Output parquet file path",
     ),
     limit: int = typer.Option(
         None,
@@ -107,7 +107,7 @@ def generate(
         generate_sds(
             dataset,
             selection,
-            output_dir,
+            output_file,
             limit,
             model_override=model,
             checkpoint_enabled=not no_checkpoint,
