@@ -1089,7 +1089,7 @@ zebralogic:
     user: null
 
   paraphrase:
-    model: "claude-4.5-haiku"
+    model: "claude-4.5-sonnet"
     system: |
       You are an expert editor tasked with rewriting logic grid puzzles while exactly preserving the logical structure and semantics.
     user: |
@@ -1105,5 +1105,6 @@ zebralogic:
       4. PRESERVE all entity names, values, numbers, and categories EXACTLY. Do not change "Red" to "Crimson" or "John" to "Jon". The specific terms used for the puzzle items MUST remain identical to match the solution exactly.
       5. The output must be natural, clear, and readable. Avoid contrived or unnatural constructions.
       6. Maintain the formatting of the puzzle, including the format and numbering of the list of clues.
+      7. Do not start your response with a header or a preamble. Start with a naturally flowing puzzle statement in a very similar stlye and format as the original.
 
       Output ONLY the rewritten puzzle text.
