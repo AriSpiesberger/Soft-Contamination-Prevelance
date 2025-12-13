@@ -11,16 +11,15 @@ import os
 import requests
 import time
 import logging
-import traceback
 from collections import Counter
-from openai import OpenAI
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from sdtd.datasets import load_dataset
 from sdtd.utils import get_client, load_prompts, format_prompt
 
-
-
-
+# Global lock for file access
+FILE_LOCK = threading.Lock()
 
 # Map dataset names to their primary text field
 DATASET_TEXT_FIELDS = {
@@ -121,57 +120,73 @@ def retry_with_backoff(func: Callable, *args, max_retries: int = MAX_RETRIES, **
             delay = min(delay * 2 * (0.5 + 0.5 * time.time() % 1), MAX_RETRY_DELAY)
 
 
-def load_checkpoint(checkpoint_path: Path) -> dict:
-    """Load checkpoint file if it exists.
-
-    Args:
-        checkpoint_path: Path to checkpoint file
+def get_existing_results(output_path: Path) -> set:
+    """Get set of existing results from output file to skip duplicates.
 
     Returns:
-        Dictionary with checkpoint data or empty dict if no checkpoint
+        Set of (original_text_snippet, sd_level, sd_variant)
+        where original_text_snippet is first 50 chars to avoid huge keys
     """
-    if checkpoint_path.exists():
-        try:
-            with open(checkpoint_path, 'r') as f:
-                return json.load(f)
-        except Exception as e:
-            logging.warning(f"Failed to load checkpoint: {e}")
-            return {}
-    return {}
-
-
-def save_checkpoint(checkpoint_path: Path, checkpoint_data: dict) -> None:
-    """Save checkpoint data to file.
-
-    Args:
-        checkpoint_path: Path to checkpoint file
-        checkpoint_data: Data to save
-    """
+    if not output_path.exists():
+        return set()
+    
     try:
-        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(checkpoint_path, 'w') as f:
-            json.dump(checkpoint_data, f, indent=2)
+        with FILE_LOCK:
+            df = pl.read_parquet(output_path)
+        
+        existing = set()
+        for row in df.iter_rows(named=True):
+            # Use original text snippet + variant info as unique key
+            # ideally we would use a proper ID, but not all datasets have one
+            # We can use the 'additional_info' ID if available, but fallback to text snippet
+            
+            # Try to get ID from additional_info first
+            item_id = None
+            if row.get("additional_info"):
+                try:
+                    info = json.loads(row["additional_info"])
+                    item_id = info.get("id")
+                except Exception:
+                    pass
+            
+            if item_id:
+                key = (str(item_id), row["sd_level"], row["sd_variant"])
+            else:
+                # Fallback to text snippet
+                text = row.get("original_text", "")
+                key = (text[:100], row["sd_level"], row["sd_variant"])
+                
+            existing.add(key)
+            
+        return existing
     except Exception as e:
-        logging.error(f"Failed to save checkpoint: {e}")
+        logging.warning(f"Failed to read existing results from {output_path}: {e}")
+        return set()
 
 
-def save_partial_results(output_path: Path, results: list[dict]) -> None:
-    """Save partial results to parquet file.
-
+def append_result_to_parquet(output_path: Path, result: dict) -> None:
+    """Thread-safe append of a single result to parquet file.
+    
     Args:
         output_path: Path to output file
-        results: List of result dictionaries
+        result: Result dictionary
     """
-    if not results:
-        return
-
-    try:
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        result_df = pl.DataFrame(results)
-        result_df.write_parquet(output_path, compression="zstd", compression_level=3)
-        logging.info(f"Saved {len(results)} partial results to {output_path}")
-    except Exception as e:
-        logging.error(f"Failed to save partial results: {e}")
+    with FILE_LOCK:
+        try:
+            df = pl.DataFrame([result])
+            
+            if output_path.exists():
+                # Read existing schema/file to ensure compatibility
+                # For simplicity in this append mode, we'll read, concat, write
+                # This is not most efficient for huge files but safe and robust
+                existing_df = pl.read_parquet(output_path)
+                combined_df = pl.concat([existing_df, df])
+                combined_df.write_parquet(output_path, compression="uncompressed")
+            else:
+                df.write_parquet(output_path, compression="uncompressed")
+                
+        except Exception as e:
+            logging.error(f"Failed to append result to {output_path}: {e}")
 
 
 def calculate_ngram_overlap(text1: str, text2: str, n: int = 2) -> float:
@@ -560,25 +575,170 @@ def calculate_all_metrics(original_text: str, sd_text: str,
     }
 
 
+def process_item(
+    item_idx: int,
+    row: dict,
+    dataset_name: str,
+    variants: list[tuple[int, str, dict]], # (level, variant_name, prompt_config)
+    output_path: Path,
+    model_override: str | None = None,
+) -> int:
+    """Process a single item for multiple variants.
+    
+    Args:
+        item_idx: Index of item in dataset
+        row: Data row
+        dataset_name: Dataset name
+        variants: List of variants to process for this item
+        output_path: Output file path to check/write
+        model_override: Model override
+        
+    Returns:
+        Number of successfully generated SDs
+    """
+    generated_count = 0
+    
+    # Get existing results to skip
+    existing_keys = get_existing_results(output_path)
+    
+    # Identify item ID for skipping check
+    item_id = str(row.get("id", ""))
+    text_field = DATASET_TEXT_FIELDS.get(dataset_name, "text")
+    original_text = row.get(text_field, "")
+    
+    for level, variant_name, prompt_config in variants:
+        # Check if already done
+        # Try both ID and text snippet keys
+        key_id = (item_id, level, variant_name)
+        key_text = (original_text[:100], level, variant_name)
+        
+        if key_id in existing_keys or (not item_id and key_text in existing_keys):
+            continue
+            
+        try:
+            # Determine model
+            yaml_model = prompt_config.get("model", "")
+            if yaml_model == "none" and model_override is None:
+                model = "none"
+            else:
+                model = model_override if model_override else yaml_model
+
+            # Generate
+            substitution_map = None
+            transformed_solution = None
+            sd_text = ""
+            
+            # Special handling for ZebraLogic transformations
+            if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined"]:
+                from sdtd.zebralogic_transforms import (
+                    transform_value_substitution,
+                    transform_condition_shuffle,
+                    transform_combined,
+                )
+                
+                puzzle = row.get("puzzle", "")
+                solution = row.get("solution", {})
+                
+                if variant_name == "value_substitution":
+                    sd_text, transformed_solution, substitution_map = transform_value_substitution(
+                        puzzle, solution, model, prompt_config.get("temperature", 0.7), level=level
+                    )
+                elif variant_name == "condition_shuffle":
+                    sd_text = transform_condition_shuffle(puzzle)
+                    transformed_solution = solution  # Solution unchanged for shuffle-only
+                elif variant_name == "zebralogic_combined":
+                    # For zebralogic_combined, we don't need to pass prompts manually anymore
+                    # The transform function will fetch them based on the level
+                    sd_text, transformed_solution, substitution_map = transform_combined(
+                        puzzle, solution, model, prompt_config.get("temperature", 0.7), level=level
+                    )
+                else:
+                    # Fallback to regular generation
+                    sd_text = generate_single(row, prompt_config, dataset_name, model_override)
+                    transformed_solution = None
+            else:
+                # Regular generation
+                sd_text = generate_single(row, prompt_config, dataset_name, model_override)
+                transformed_solution = None
+
+            # Get embeddings
+            original_embedding = get_embedding(original_text)
+            sd_embedding = get_embedding(sd_text)
+
+            # Calculate metrics
+            metrics = calculate_all_metrics(original_text, sd_text,
+                                           original_embedding, sd_embedding)
+
+            # Prepare result
+            additional_info = {}
+            for k, v in row.items():
+                if k != text_field:
+                    if dataset_name == "zebralogic" and k == "solution":
+                        continue
+                    if isinstance(v, (list, dict)):
+                        additional_info[k] = v
+                    else:
+                        additional_info[k] = str(v) if v is not None else None
+            
+            if dataset_name == "zebralogic":
+                original_solution = row.get("solution", {})
+                if original_solution:
+                    additional_info["original_solution"] = original_solution
+                if transformed_solution is not None:
+                    additional_info["sd_solution"] = transformed_solution
+                if substitution_map:
+                    additional_info["value_category_map"] = substitution_map
+            elif transformed_solution is not None:
+                additional_info["solution"] = transformed_solution
+
+            result = {
+                "source_dataset": dataset_name,
+                "sd_level": level,
+                "sd_variant": variant_name,
+                "model_used": model,
+                "original_text": original_text,
+                "sd_text": sd_text,
+                "original_embedding": original_embedding,
+                "sd_embedding": sd_embedding,
+                "embedding_model": EMBEDDING_MODEL,
+                "metrics": json.dumps(metrics),
+                "additional_info": json.dumps(additional_info),
+                "timestamp": datetime.now().isoformat(),
+            }
+            
+            # Write immediately
+            append_result_to_parquet(output_path, result)
+            generated_count += 1
+            
+        except Exception as e:
+            error_msg = f"[{dataset_name}][L{level}][{variant_name}][Item {item_idx}] {type(e).__name__}: {e}"
+            logging.error(error_msg)
+            # We don't stop the whole process for one item error
+            
+    return generated_count
+
+
 def generate_sds(
     dataset_name: str,
     selection: list[str],
     output_dir: Path,
     limit: int | None = None,
     model_override: str | None = None,
-    checkpoint_enabled: bool = True,
+    checkpoint_enabled: bool = True, # Ignored, kept for compatibility
     input_file: Path | None = None,
+    workers: int = 4,
 ) -> None:
-    """Generate semantic duplicates for a dataset with checkpointing.
+    """Generate semantic duplicates for a dataset with parallel workers.
 
     Args:
-        dataset_name: Name of dataset (gsm8k, codeforces, allenai, or all)
-        selection: List of levels (e.g. "1") or variant names (e.g. "value_substitution")
+        dataset_name: Name of dataset
+        selection: List of levels (e.g. "1") or variant names
         output_dir: Directory to save output files
-        limit: Optional limit on number of items to process
-        model_override: Optional model to use instead of YAML defaults
-        checkpoint_enabled: Enable checkpoint/resume functionality (default: True)
-        input_file: Optional path to input parquet file (overrides default dataset loading)
+        limit: Optional limit on number of items
+        model_override: Optional model override
+        checkpoint_enabled: Deprecated, ignored (always resumes via file check)
+        input_file: Optional input parquet file
+        workers: Number of concurrent workers
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -586,42 +746,30 @@ def generate_sds(
     if model_override:
         print(f"Model override: Using '{model_override}' for all variants\n")
 
-    if checkpoint_enabled:
-        print(f"Checkpointing enabled (saves every {CHECKPOINT_INTERVAL} items)\n")
-
     # Handle "all" datasets
     if dataset_name == "all":
         datasets = load_dataset("all", limit, input_file=input_file)
         for name, df in datasets.items():
-            _generate_for_dataset(name, df, selection, output_dir, model_override, checkpoint_enabled)
+            _generate_for_dataset_parallel(name, df, selection, output_dir, model_override, workers)
     else:
         df = load_dataset(dataset_name, limit, input_file=input_file)
-        _generate_for_dataset(dataset_name, df, selection, output_dir, model_override, checkpoint_enabled)
+        _generate_for_dataset_parallel(dataset_name, df, selection, output_dir, model_override, workers)
 
 
-def _generate_for_dataset(
+def _generate_for_dataset_parallel(
     dataset_name: str,
     df: pl.DataFrame,
     selection: list[str],
     output_dir: Path,
     model_override: str | None = None,
-    checkpoint_enabled: bool = True,
+    workers: int = 4,
 ) -> None:
-    """Generate SDs for a single dataset with checkpointing and error resilience.
-
-    Args:
-        dataset_name: Name of dataset
-        df: Dataset DataFrame
-        selection: List of levels or variant names
-        output_dir: Output directory
-        model_override: Optional model to use instead of YAML defaults
-        checkpoint_enabled: Enable checkpoint/resume functionality (default: True)
+    """Generate SDs for a single dataset using parallel workers.
     """
     print(f"\n{'='*60}")
-    print(f"Generating SDs for {dataset_name}")
+    print(f"Generating SDs for {dataset_name} with {workers} workers")
     print(f"{'='*60}")
 
-    # Set up error logging
     setup_error_logging(output_dir)
 
     # Parse selection
@@ -635,247 +783,97 @@ def _generate_for_dataset(
         else:
             variants_to_run.add(item)
     
-    # Levels to scan for variants (default to 1 and 2)
-    scan_levels = [1, 2]
-
-    # Load prompts for all potential levels
+    # Load prompts
     prompts = {}
-    for level in scan_levels:
+    for level in [1, 2]:
         prompt_path = Path(f"prompts/level{level}.yaml")
-        if not prompt_path.exists():
-            logging.warning(f"{prompt_path} not found, skipping level {level}")
-            continue
-        prompts[level] = load_prompts(prompt_path)
+        if prompt_path.exists():
+            prompts[level] = load_prompts(prompt_path)
 
-    # Construct deterministic identifier for this run based on selection
-    # Use sorted unique items from input selection
+    # Construct output filename
     selection_key = "_".join(sorted(list(set(selection))))
-    # Sanitize key for filename
     selection_key = re.sub(r'[^a-zA-Z0-9_]', '_', selection_key)
-    
-    checkpoint_path = output_dir / f".checkpoint_{dataset_name}_{selection_key}.json"
     output_path = output_dir / f"{dataset_name}_{selection_key}.parquet"
+    
+    print(f"Output file: {output_path}")
 
-    # Load checkpoint if enabled
-    checkpoint = load_checkpoint(checkpoint_path) if checkpoint_enabled else {}
-    completed_items = checkpoint.get("completed_items", {})
-
-    # Generate
-    all_results = []
-    total_errors = 0
-    total_items = 0
-
-    try:
-        for level in scan_levels:
-            if level not in prompts:
-                continue
-
-            level_prompts = prompts[level].get(dataset_name)
-            if not level_prompts:
-                # Only log warning if we explicitly wanted this level
-                if level in levels_to_run_all:
-                    logging.warning(f"No prompts found for {dataset_name} level {level}")
-                continue
-
-            # Determine variants to run in this level
-            variants_in_level = []
-            if level in levels_to_run_all:
-                # Add all variants
-                variants_in_level = list(level_prompts.keys())
-            else:
-                # Add only requested variants found in this level
-                for v in level_prompts.keys():
-                    if v in variants_to_run:
-                        variants_in_level.append(v)
+    # Prepare list of variants to run
+    variants_to_process = [] # List of (level, variant_name, prompt_config)
+    
+    for level, level_prompts in prompts.items():
+        if dataset_name not in level_prompts:
+            continue
             
-            if not variants_in_level:
-                continue
-
-            print(f"\nLevel {level}: {len(variants_in_level)} variants selected")
-
-            for variant_name in variants_in_level:
-                prompt_config = level_prompts[variant_name]
-                
-                # Use model override if provided, otherwise use YAML default
-                # Skip variants with "none" model (non-LLM transformations)
-                yaml_model = prompt_config.get("model", "")
-                if yaml_model == "none" and model_override is None:
-                    model = "none"
-                else:
-                    model = model_override if model_override else yaml_model
-                variant_key = f"L{level}_{variant_name}"
-
-                # Check if this variant was already completed
-                if variant_key in completed_items:
-                    num_completed = completed_items[variant_key]
-                    print(f"  - {variant_name} ({model}): Resuming from item {num_completed}...")
-                else:
-                    print(f"  - {variant_name} ({model})...", end=" ", flush=True)
-                    completed_items[variant_key] = 0
-                
-                # ... remainder of the loop is the same ...
-                variant_results = []
-                variant_errors = 0
-                start_idx = completed_items[variant_key]
-
-                for idx, row in enumerate(df.iter_rows(named=True)):
-                    # Skip already completed items
-                    if idx < start_idx:
-                        continue
-
-                    total_items += 1
-
-                    try:
-                        # Special handling for ZebraLogic transformations
-                        substitution_map = None
-                        if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined"]:
-                            from sdtd.zebralogic_transforms import (
-                                transform_value_substitution,
-                                transform_condition_shuffle,
-                                transform_combined,
-                            )
-                            
-                            puzzle = row.get("puzzle", "")
-                            solution = row.get("solution", {})
-                            
-                            if variant_name == "value_substitution":
-                                # Get prompt template from config if available
-                                prompt_template = prompt_config
-                                sd_text, transformed_solution, substitution_map = transform_value_substitution(
-                                    puzzle, solution, model, prompt_config.get("temperature", 0.7), prompt_template
-                                )
-                            elif variant_name == "condition_shuffle":
-                                sd_text = transform_condition_shuffle(puzzle)
-                                transformed_solution = solution  # Solution unchanged for shuffle-only
-                            elif variant_name == "zebralogic_combined":
-                                # Fetch value_substitution config for prompts if needed
-                                sub_config = level_prompts.get("value_substitution", {})
-                                sd_text, transformed_solution, substitution_map = transform_combined(
-                                    puzzle, solution, model, prompt_config.get("temperature", 0.7), sub_config
-                                )
-                            else:
-                                # Fallback to regular generation
-                                sd_text = generate_single(row, prompt_config, dataset_name, model_override)
-                                transformed_solution = None
-                        else:
-                            # Regular generation for other datasets/variants
-                            sd_text = generate_single(row, prompt_config, dataset_name, model_override)
-                            transformed_solution = None
-
-                        # Get the primary text field for this dataset
-                        text_field = DATASET_TEXT_FIELDS.get(dataset_name, "text")
-                        original_text = row.get(text_field, "")
-
-                        # Get embeddings for both texts
-                        original_embedding = get_embedding(original_text)
-                        sd_embedding = get_embedding(sd_text)
-
-                        # Calculate all metrics
-                        metrics = calculate_all_metrics(original_text, sd_text,
-                                                       original_embedding, sd_embedding)
-
-                        # Separate primary text from additional info
-                        additional_info = {}
-                        for k, v in row.items():
-                            if k != text_field:
-                                # For ZebraLogic, skip 'solution' key here
-                                if dataset_name == "zebralogic" and k == "solution":
-                                    continue
-
-                                # Convert to JSON-serializable format
-                                if isinstance(v, (list, dict)):
-                                    additional_info[k] = v
-                                else:
-                                    additional_info[k] = str(v) if v is not None else None
-                        
-                        # For ZebraLogic: add original solution and transformed solution
-                        if dataset_name == "zebralogic":
-                            original_solution = row.get("solution", {})
-                            if original_solution:
-                                additional_info["original_solution"] = original_solution
-                            if transformed_solution is not None:
-                                additional_info["sd_solution"] = transformed_solution
-                            if substitution_map:
-                                additional_info["value_category_map"] = substitution_map
-                        elif transformed_solution is not None:
-                            # For other datasets, keep old behavior if needed
-                            additional_info["solution"] = transformed_solution
-
-                        result = {
-                            "source_dataset": dataset_name,
-                            "sd_level": level,
-                            "sd_variant": variant_name,
-                            "model_used": model,
-                            "original_text": original_text,
-                            "sd_text": sd_text,
-                            "original_embedding": original_embedding,
-                            "sd_embedding": sd_embedding,
-                            "embedding_model": EMBEDDING_MODEL,
-                            "metrics": json.dumps(metrics),
-                            "additional_info": json.dumps(additional_info),
-                            "timestamp": datetime.now().isoformat(),
-                        }
-
-                        variant_results.append(result)
-                        completed_items[variant_key] = idx + 1
-
-                        # Checkpoint periodically
-                        if checkpoint_enabled and (idx + 1) % CHECKPOINT_INTERVAL == 0:
-                            checkpoint["completed_items"] = completed_items
-                            save_checkpoint(checkpoint_path, checkpoint)
-                            # Also save partial results
-                            all_temp = all_results + variant_results
-                            save_partial_results(output_path, all_temp)
-
-                    except Exception as e:
-                        variant_errors += 1
-                        total_errors += 1
-                        error_msg = f"[{dataset_name}][L{level}][{variant_name}][Item {idx}] {type(e).__name__}: {e}"
-                        logging.error(error_msg)
-
-                        # For non-transient errors, print to console as well
-                        if not is_transient_error(e):
-                            print(f"\n    ! Permanent error on item {idx}: {type(e).__name__}")
-                            traceback.print_exc()
-
-                        continue
-
-                all_results.extend(variant_results)
-
-                # Print summary for this variant
-                if variant_errors > 0:
-                    print(f"✓ {len(variant_results)} generated ({variant_errors} errors)")
-                else:
-                    print(f"✓ {len(variant_results)} generated")
-
-                # Save checkpoint after completing variant
-                if checkpoint_enabled:
-                    checkpoint["completed_items"] = completed_items
-                    save_checkpoint(checkpoint_path, checkpoint)
-                    save_partial_results(output_path, all_results)
-
-    finally:
-        # Always save results and final checkpoint, even if interrupted
-        if all_results:
-            result_df = pl.DataFrame(all_results)
-            result_df.write_parquet(output_path, compression="zstd", compression_level=3)
-            logging.info(f"Saved {len(all_results)} SDs to {output_path} (zstd compressed)")
-            print(f"\n✓ Saved {len(all_results)} SDs to {output_path} (zstd compressed)")
+        ds_prompts = level_prompts[dataset_name]
+        
+        # Determine active variants
+        active_variants = []
+        if level in levels_to_run_all:
+            active_variants = list(ds_prompts.keys())
         else:
-            logging.warning(f"No SDs generated for {dataset_name}")
-            print(f"\n⚠ No SDs generated for {dataset_name}")
+            for v in ds_prompts.keys():
+                if v in variants_to_run:
+                    active_variants.append(v)
+                    
+        for v_name in active_variants:
+            variants_to_process.append((level, v_name, ds_prompts[v_name]))
 
-        # Save final checkpoint
-        if checkpoint_enabled:
-            checkpoint["completed_items"] = completed_items
-            checkpoint["finished"] = True
-            save_checkpoint(checkpoint_path, checkpoint)
+    if not variants_to_process:
+        print("No matching variants found to generate.")
+        return
 
-        # Print error summary
-        if total_errors > 0:
-            error_rate = (total_errors / total_items * 100) if total_items > 0 else 0
-            logging.info(f"Generation completed with {total_errors} errors out of {total_items} items ({error_rate:.1f}%)")
-            print(f"\n⚠ {total_errors} errors occurred (see generation_errors.log for details)")
+    print(f"Variants to process: {len(variants_to_process)}")
+    for lvl, v, _ in variants_to_process:
+        print(f"  - Level {lvl}: {v}")
+
+    # Process items in parallel
+    total_items = len(df)
+    print(f"\nProcessing {total_items} items...")
+    
+    total_generated = 0
+    
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = []
+        for idx, row in enumerate(df.iter_rows(named=True)):
+            futures.append(
+                executor.submit(
+                    process_item, 
+                    idx, 
+                    row, 
+                    dataset_name, 
+                    variants_to_process, 
+                    output_path, 
+                    model_override
+                )
+            )
+            
+        # Monitor progress
+        completed = 0
+        for future in as_completed(futures):
+            completed += 1
+            try:
+                count = future.result()
+                total_generated += count
+                if completed % 10 == 0 or completed == total_items:
+                    print(f"\rProgress: {completed}/{total_items} items processed (Total SDs generated: {total_generated})", end="")
+            except Exception as e:
+                logging.error(f"Worker exception: {e}")
+                
+    print(f"\n\nGeneration complete. Total SDs generated: {total_generated}")
+    
+    # Final consolidation and compression
+    if output_path.exists():
+        print("Consolidating and compressing output file...")
+        try:
+            # Re-read everything
+            with FILE_LOCK:
+                final_df = pl.read_parquet(output_path)
+                # Write back compressed
+                final_df.write_parquet(output_path, compression="zstd", compression_level=3)
+            print(f"✓ Saved {len(final_df)} SDs to {output_path} (zstd compressed)")
+        except Exception as e:
+            logging.error(f"Failed to consolidate file: {e}")
+            print(f"⚠ Failed to consolidate file: {e}")
 
 
 def generate_single(
@@ -900,7 +898,7 @@ def generate_single(
 
     # Build messages
     messages = []
-    if "system" in prompt_config:
+    if "system" in prompt_config and prompt_config["system"] and prompt_config["system"].strip():
         messages.append({"role": "system", "content": prompt_config["system"]})
     messages.append({"role": "user", "content": user_prompt})
 

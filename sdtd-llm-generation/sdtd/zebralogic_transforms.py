@@ -5,25 +5,33 @@ import re
 import random
 
 from sdtd.generate import retry_with_backoff
-from sdtd.utils import get_client
+from sdtd.utils import get_client, get_variant_config
 
 
-def _get_prompts(prompt_template: str | dict | None) -> tuple[dict, dict]:
+def _get_prompts(prompt_template: str | dict | None, level: int = 2) -> tuple[dict, dict]:
     """Extract step1 and step2 prompts from config or use defaults.
     
     Args:
-        prompt_template: Config object from YAML
+        prompt_template: Optional config override
+        level: Level number to load default config from (if template not provided)
         
     Returns:
         Tuple of (step1_config, step2_config)
     """
-    if isinstance(prompt_template, dict):
-        step1 = prompt_template.get("step1_plan", {})
-        step2 = prompt_template.get("step2_apply", {})
-        return step1, step2
+    if isinstance(prompt_template, dict) and "step1_plan" in prompt_template:
+        # Use provided template
+        config = prompt_template
+    else:
+        # Load default for value_substitution (which defines the steps)
+        config = get_variant_config("zebralogic", level, "value_substitution")
     
-    # Defaults should not be reached if config is loaded correctly
-    raise ValueError("Prompt configuration missing for ZebraLogic value substitution")
+    step1 = config.get("step1_plan", {})
+    step2 = config.get("step2_apply", {})
+    
+    if not step1 or not step2:
+        raise ValueError(f"Prompt configuration missing for ZebraLogic value substitution (Level {level})")
+        
+    return step1, step2
 
 
 def _generate_substitution_plan(
@@ -56,10 +64,10 @@ def _generate_substitution_plan(
         solution_json=solution_json
     )
 
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt},
-    ]
+    messages = []
+    if system_prompt and system_prompt.strip():
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": user_prompt})
 
     def _generate():
         response = get_client().chat.completions.create(
@@ -116,10 +124,10 @@ def _apply_substitution_to_puzzle(
         plan_json=plan_json
     )
 
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt},
-    ]
+    messages = []
+    if system_prompt and system_prompt.strip():
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": user_prompt})
 
     def _generate():
         response = get_client().chat.completions.create(
@@ -246,6 +254,7 @@ def transform_value_substitution(
     solution: dict,
     model: str = "helicone/claude-4.5-haiku",
     temperature: float = 0.7,
+    level: int = 2,
     prompt_template: str | dict | None = None,
 ) -> tuple[str, dict, dict]:
     """Transform puzzle by substituting values (e.g., colors, foods) using 2-step process.
@@ -259,13 +268,14 @@ def transform_value_substitution(
         solution: Solution dict
         model: LLM model to use (default: helicone/claude-4.5-haiku)
         temperature: Temperature for generation
-        prompt_template: Dictionary containing step1_plan and step2_apply configs
+        level: SD level to load prompts from
+        prompt_template: Optional explicit prompt configuration
         
     Returns:
         Tuple of (transformed_puzzle, transformed_solution, substitution_plan)
     """
     # Get prompt configurations
-    step1_config, step2_config = _get_prompts(prompt_template)
+    step1_config, step2_config = _get_prompts(prompt_template, level)
     
     # Step 1: Generate substitution plan
     substitution_plan = _generate_substitution_plan(
@@ -359,6 +369,7 @@ def transform_combined(
     solution: dict,
     model: str = "helicone/claude-4.5-haiku",
     temperature: float = 0.7,
+    level: int = 2,
     prompt_template: str | dict | None = None,
 ) -> tuple[str, dict, dict]:
     """Combine condition shuffling and value substitution transformations.
@@ -370,7 +381,8 @@ def transform_combined(
         solution: Solution dict
         model: LLM model to use
         temperature: Temperature for generation
-        prompt_template: Dictionary containing step1_plan and step2_apply configs
+        level: SD level
+        prompt_template: Optional explicit prompt config (passed to value subst)
         
     Returns:
         Tuple of (transformed_puzzle, transformed_solution, substitution_plan)
@@ -379,8 +391,9 @@ def transform_combined(
     shuffled_puzzle = transform_condition_shuffle(puzzle)
     
     # Then, apply value substitution
+    # Note: we pass the level so it can fetch the correct prompts if prompt_template is missing
     transformed_puzzle, transformed_solution, substitution_plan = transform_value_substitution(
-        shuffled_puzzle, solution, model, temperature, prompt_template
+        shuffled_puzzle, solution, model, temperature, level, prompt_template
     )
     
     return transformed_puzzle, transformed_solution, substitution_plan

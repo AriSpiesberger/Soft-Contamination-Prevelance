@@ -55,6 +55,12 @@ def generate(
         "-i",
         help="Input parquet file (optional, overrides default dataset loader, mainly for zebralogic)",
     ),
+    workers: int = typer.Option(
+        4,
+        "--workers",
+        "-w",
+        help="Number of concurrent workers (default: 4)",
+    ),
 ) -> None:
     """Generate semantic duplicates for a dataset.
 
@@ -89,6 +95,9 @@ def generate(
 
         # Generate SDs for ZebraLogic from a local file
         uv run python -m sdtd generate -d zebralogic -l 2 -i datasets/my_zebralogic.parquet
+        
+        # Run with 8 concurrent workers
+        uv run python -m sdtd generate -d gsm8k -l 1 -w 8
     """
     # Parse selection
     selection = [x.strip() for x in level.split(",")]
@@ -103,6 +112,7 @@ def generate(
             model_override=model,
             checkpoint_enabled=not no_checkpoint,
             input_file=input_file,
+            workers=workers,
         )
         typer.echo("\n✓ Generation complete!")
     except Exception as e:
