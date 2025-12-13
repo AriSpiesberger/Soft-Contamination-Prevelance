@@ -19,7 +19,6 @@
 gsm8k:
   number_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.5
     user: |
       You are generating a STRUCTURAL DUPLICATE of a math word problem by changing numerical values.
 
@@ -86,7 +85,6 @@ gsm8k:
 
   object_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.6
     user: |
       You are generating a STRUCTURAL DUPLICATE by replacing objects and names.
 
@@ -161,7 +159,6 @@ gsm8k:
 
   domain_transfer:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
     user: |
       You are generating a STRUCTURAL DUPLICATE by transferring the problem to a different domain/context.
 
@@ -228,7 +225,6 @@ gsm8k:
 
   compositional:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.8
     user: |
       You are generating a STRUCTURAL DUPLICATE using MULTIPLE parameter changes simultaneously.
 
@@ -310,7 +306,6 @@ gsm8k:
 
   fictional_setting:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.8
     user: |
       You are generating a STRUCTURAL DUPLICATE by placing a math word problem into a fictional or fantastical setting with added narrative details.
 
@@ -377,7 +372,6 @@ gsm8k:
 codeforces:
   number_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.4
     user: |
       You are generating a STRUCTURAL DUPLICATE of a competitive programming problem by changing numerical constraints.
 
@@ -451,7 +445,6 @@ codeforces:
 
   fictional_setting:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.8
     user: |
       You are generating a STRUCTURAL DUPLICATE by placing a competitive programming problem into a fictional narrative setting with added story elements.
 
@@ -531,7 +524,6 @@ codeforces:
 allenai:
   object_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
     user: |
       You are generating a STRUCTURAL DUPLICATE of educational text by replacing examples and objects.
 
@@ -610,7 +602,6 @@ allenai:
 
   domain_transfer:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
     user: |
       You are generating a STRUCTURAL DUPLICATE by transferring educational content to a different pedagogical domain/context.
 
@@ -678,7 +669,6 @@ allenai:
 mbpp:
   parameter_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.5
     user: |
       You are generating a STRUCTURAL DUPLICATE of a Python programming problem by changing parameters and examples.
 
@@ -745,7 +735,6 @@ mbpp:
 
   domain_transfer:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.6
     user: |
       You are generating a STRUCTURAL DUPLICATE by transferring a Python programming problem to a different application domain.
 
@@ -810,7 +799,6 @@ mbpp:
 humaneval:
   parameter_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.5
     user: |
       You are generating a STRUCTURAL DUPLICATE of a Python function by changing parameters and examples in the docstring.
 
@@ -880,7 +868,6 @@ humaneval:
 
   domain_transfer:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.6
     user: |
       You are generating a STRUCTURAL DUPLICATE by changing the semantic domain of a Python function while preserving its algorithmic structure.
 
@@ -944,7 +931,6 @@ humaneval:
 popqa:
   entity_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.5
     user: |
       You are generating a STRUCTURAL DUPLICATE of a knowledge question by substituting the entity while keeping the relationship type IDENTICAL.
 
@@ -1025,9 +1011,8 @@ popqa:
       Generate ONE entity substitution variant. OUTPUT ONLY THE QUESTION TEXT - no preamble, no explanation, no answer, just the question.
 
 zebralogic:
-  value_substitution:
+  category_substitution:
     model: "claude-4.5-haiku"
-    temperature: 0.7
     # Two-step prompts used by zebralogic_transforms.py
     step1_plan:
       system: |
@@ -1091,13 +1076,20 @@ zebralogic:
     model: null
     user: null
 
-  zebralogic_combined:
+  shuffle_and_substitute:
+    model: null
+    user: null
+
+  shuffle_and_paraphrase:
+    model: null
+    user: null
+
+  shuffle_and_substitute_and_paraphrase:
     model: null
     user: null
 
   paraphrase:
     model: "claude-4.5-haiku"
-    temperature: 0.7
     system: |
       You are an expert editor tasked with rewriting logic grid puzzles while exactly preserving the logical structure and semantics.
     user: |

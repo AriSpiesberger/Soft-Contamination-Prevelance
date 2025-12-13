@@ -637,37 +637,46 @@ def process_item(
             sd_text = ""
             
             # Special handling for ZebraLogic transformations
-            if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined", "paraphrase"]:
+            if dataset_name == "zebralogic":
                 from sdtd.zebralogic_transforms import (
-                    transform_value_substitution,
+                    transform_category_substitution,
                     transform_condition_shuffle,
-                    transform_combined,
+                    transform_shuffle_and_substitute,
                     transform_paraphrase,
+                    transform_shuffle_and_paraphrase,
+                    transform_shuffle_and_substitute_and_paraphrase,
                 )
                 
                 puzzle = row.get("puzzle", "")
                 solution = row.get("solution", {})
                 
-                if variant_name == "value_substitution":
-                    sd_text, transformed_solution, substitution_map = transform_value_substitution(
-                        puzzle, solution, model, prompt_config.get("temperature", 0.7), level=level
+                if variant_name == "category_substitution":
+                    sd_text, transformed_solution, substitution_map = transform_category_substitution(
+                        puzzle, solution, model, prompt_config.get("temperature"), level=level
                     )
                 elif variant_name == "condition_shuffle":
                     sd_text = transform_condition_shuffle(puzzle)
                     transformed_solution = solution  # Solution unchanged for shuffle-only
-                elif variant_name == "zebralogic_combined":
-                    # For zebralogic_combined, we don't need to pass prompts manually anymore
-                    # The transform function will fetch them based on the level
-                    sd_text, transformed_solution, substitution_map = transform_combined(
-                        puzzle, solution, model, prompt_config.get("temperature", 0.7), level=level
+                elif variant_name == "shuffle_and_substitute":
+                    # Combined shuffle + category substitution
+                    sd_text, transformed_solution, substitution_map = transform_shuffle_and_substitute(
+                        puzzle, solution, model, prompt_config.get("temperature"), level=level
                     )
                 elif variant_name == "paraphrase":
                     sd_text = transform_paraphrase(
-                        puzzle, model, prompt_config.get("temperature", 0.7), level=level, prompt_template=prompt_config
+                        puzzle, model, prompt_config.get("temperature"), level=level, prompt_template=prompt_config
                     )
                     transformed_solution = solution # Solution unchanged for paraphrase
+                elif variant_name == "shuffle_and_paraphrase":
+                    sd_text, transformed_solution, _ = transform_shuffle_and_paraphrase(
+                        puzzle, solution, model, prompt_config.get("temperature"), level=level
+                    )
+                elif variant_name == "shuffle_and_substitute_and_paraphrase":
+                    sd_text, transformed_solution, substitution_map = transform_shuffle_and_substitute_and_paraphrase(
+                        puzzle, solution, model, prompt_config.get("temperature"), level=level
+                    )
                 else:
-                    # Fallback to regular generation
+                    # Fallback to regular generation if not a specific logical transform
                     sd_text = generate_single(row, prompt_config, dataset_name, model_override)
                     transformed_solution = None
             else:
@@ -921,12 +930,19 @@ def generate_single(
 
     def _generate_single_inner():
         # Call OpenAI client via Helicone
-        response = get_client().chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=prompt_config.get("temperature", 0.7),
-            max_tokens=prompt_config.get("max_tokens", 2048),
-        )
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "max_tokens": prompt_config.get("max_tokens", 2048),
+        }
+        
+        # Only add temperature if provided (or default to None/provider default if explicitly removed from config)
+        # Note: Previous default was 0.7. Now we rely on config or None.
+        temp = prompt_config.get("temperature")
+        if temp is not None:
+            kwargs["temperature"] = temp
+            
+        response = get_client().chat.completions.create(**kwargs)
         return response.choices[0].message.content.strip()
 
     # Use retry logic for LLM calls
