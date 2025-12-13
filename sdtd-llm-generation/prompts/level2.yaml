@@ -1046,10 +1046,10 @@ zebralogic:
         {solution_json}
 
         REQUIREMENTS:
-        1. Change the categories to natural, distinct alternatives (e.g., colors -> shapes, flowers -> gemstones).
-        2. Keep the new categories and values DISTINCT from all of the original ones.
+        1. Change the categories to natural, distinct alternatives (e.g., colors -> shapes, flowers -> animals).
+        2. Keep the new categories and values DISTINCT from all of the original ones. Avoid number categories (to avoid confusion with the numbering of the puzzle).
         3. Ensure 1-to-1 mapping for all values.
-        4. Do NOT use obscure or strange categories (keep it general knowledge and natural within the flow of the puzzle wording).
+        4. Do NOT use obscure or unusual categories. Stick to common categories like colors, animals, shapes, countries, etc. Choose natural categories and values within the flow of the puzzle wording.
 
         Output ONLY a JSON object with this structure:
         {{
