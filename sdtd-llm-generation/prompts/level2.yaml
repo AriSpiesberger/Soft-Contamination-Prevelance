@@ -1088,13 +1088,9 @@ zebralogic:
         6. Output ONLY the rewritten puzzle text.
 
   condition_shuffle:
-    # Note: This variant uses non-LLM transformation logic in zebralogic_transforms.py
-    # No prompt needed - it's a deterministic transformation
-    model: "none"
+    model: null
+    user: null
 
   zebralogic_combined:
-    model: "claude-4.5-haiku"
-    # Note: This variant combines condition_shuffle + value_substitution
-    # It reuses the prompts from value_substitution, so they are not repeated here
-    # The logic is handled in zebralogic_transforms.py which will read from value_substitution
-    user: "Auto-handled by transform function"
+    model: null
+    user: null
