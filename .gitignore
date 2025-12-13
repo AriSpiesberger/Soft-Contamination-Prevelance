@@ -135,8 +135,17 @@ duplicate_comparison/
 
 # Large Data Files
 *.jsonl
-*.json
-*.csv
+*.jsonl.zst
+# Exclude large JSON data files but keep small config files
+# (Add specific exclusions if needed: !important_config.json)
+results/**/*.json
+data/**/*.json
+*.matches.json
+*.results.json
+
+# CSV data files (but keep small config CSVs if needed)
+results/**/*.csv
+data/**/*.csv
 
 # Data directories
 data/
@@ -222,3 +231,125 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# =============================================================================
+# ML / Research Specific Exclusions
+# =============================================================================
+
+# Model Checkpoints & Weights
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.h5
+*.hdf5
+*.pb
+*.onnx
+*.tflite
+*.pkl
+*.pickle
+checkpoints/
+checkpoints_*/
+checkpoint/
+checkpoint_*/
+models/
+model_weights/
+weights/
+*.pth.tar
+*.pt.tar
+
+# Results & Output Directories
+results/
+results_*/
+output/
+output_*/
+results_timebased/
+results_fast/
+checkpoints_fast/
+checkpoints_timebased/
+
+# Graphs, Plots & Visualizations
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+*.eps
+*.fig
+plots/
+plots_*/
+figures/
+figures_*/
+visualizations/
+*.dist.png
+*.hist.png
+*.bivariate.png
+*.ngram_hist.png
+*.semantic_comparison.png
+
+# Embedding & Data Files
+*.npy
+*.npz
+*.parquet
+*.arrow
+*.feather
+*.h5
+*.hdf5
+embeddings/
+embedding_folder/
+embedding_data/
+*.emb
+*.embedding
+
+# Cache & Temporary Files
+cache/
+cache_*/
+.cache/
+*.cache
+temp/
+tmp/
+.tmp/
+*.tmp
+
+# Analysis Output
+*.matches.json
+*_top_k_sims.npy
+*_sims.npy
+*_idxs.npy
+*_bench.npy
+meta_chunks/
+meta_*.pkl
+
+# Large Data Directories (already have some, but being explicit)
+data_creation/dolma3_sample/
+data_creation/*/data/
+*.jsonl
+*.jsonl.zst
+*.zst
+
+# S3/Local Data Directories
+/lambda/
+/nfs/
+s3_data/
+local_data/
+
+# Jupyter & Notebook outputs
+*.ipynb_checkpoints/
+.ipynb_checkpoints/
+
+# Experiment tracking (if you use any)
+wandb/
+mlruns/
+.mlflow/
+tensorboard_logs/
+tb_logs/
+
+# Environment & Secrets
+.env.local
+.env.*.local
+*.key
+*.pem
+credentials.json
+secrets/
