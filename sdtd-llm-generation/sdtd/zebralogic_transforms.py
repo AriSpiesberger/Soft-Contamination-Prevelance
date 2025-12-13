@@ -154,9 +154,57 @@ def _apply_substitution_to_solution(
     normalized_plan = {}
     for cat, details in substitution_plan.items():
         normalized_plan[cat.lower()] = details
+
+    # Handle grid format (header + rows) common in ZebraLogic
+    if "header" in new_solution and "rows" in new_solution and isinstance(new_solution["header"], list):
+        header = new_solution["header"]
+        rows = new_solution["rows"]
         
+        # 1. Update values in rows
+        new_rows = []
+        for row in rows:
+            new_row = []
+            for idx, val in enumerate(row):
+                # Get category from header if index is valid
+                category = header[idx] if idx < len(header) else ""
+                
+                # Check plan
+                plan_entry = normalized_plan.get(category.lower())
+                
+                new_val = val
+                if plan_entry:
+                    value_map = plan_entry.get("values", {})
+                    if val in value_map:
+                        new_val = value_map[val]
+                    else:
+                        # Try case-insensitive lookup
+                        for old_v, new_v in value_map.items():
+                            if str(old_v).lower() == str(val).lower():
+                                new_val = new_v
+                                break
+                
+                new_row.append(new_val)
+            new_rows.append(new_row)
+        new_solution["rows"] = new_rows
+        
+        # 2. Update header (categories)
+        new_header = []
+        for cat in header:
+            plan_entry = normalized_plan.get(cat.lower())
+            if plan_entry:
+                new_header.append(plan_entry.get("new_category", cat))
+            else:
+                new_header.append(cat)
+        new_solution["header"] = new_header
+        
+        return new_solution
+        
+    # Handle dict-of-dicts format
     # Iterate through solution houses
     for house_key, attributes in new_solution.items():
+        if not isinstance(attributes, dict):
+            continue
+
         # Create a new attributes dict to handle key replacements
         new_attributes = {}
         
@@ -199,7 +247,7 @@ def transform_value_substitution(
     model: str = "helicone/claude-4.5-haiku",
     temperature: float = 0.7,
     prompt_template: str | dict | None = None,
-) -> tuple[str, dict]:
+) -> tuple[str, dict, dict]:
     """Transform puzzle by substituting values (e.g., colors, foods) using 2-step process.
     
     1. Generate substitution plan (LLM)
@@ -214,7 +262,7 @@ def transform_value_substitution(
         prompt_template: Dictionary containing step1_plan and step2_apply configs
         
     Returns:
-        Tuple of (transformed_puzzle, transformed_solution)
+        Tuple of (transformed_puzzle, transformed_solution, substitution_plan)
     """
     # Get prompt configurations
     step1_config, step2_config = _get_prompts(prompt_template)
@@ -234,7 +282,7 @@ def transform_value_substitution(
         solution, substitution_plan
     )
     
-    return transformed_puzzle, transformed_solution
+    return transformed_puzzle, transformed_solution, substitution_plan
 
 
 def transform_condition_shuffle(puzzle: str) -> str:
@@ -312,7 +360,7 @@ def transform_combined(
     model: str = "helicone/claude-4.5-haiku",
     temperature: float = 0.7,
     prompt_template: str | dict | None = None,
-) -> tuple[str, dict]:
+) -> tuple[str, dict, dict]:
     """Combine condition shuffling and value substitution transformations.
     
     First shuffles conditions, then applies value substitution.
@@ -325,14 +373,14 @@ def transform_combined(
         prompt_template: Dictionary containing step1_plan and step2_apply configs
         
     Returns:
-        Tuple of (transformed_puzzle, transformed_solution)
+        Tuple of (transformed_puzzle, transformed_solution, substitution_plan)
     """
     # First, shuffle conditions
     shuffled_puzzle = transform_condition_shuffle(puzzle)
     
     # Then, apply value substitution
-    transformed_puzzle, transformed_solution = transform_value_substitution(
+    transformed_puzzle, transformed_solution, substitution_plan = transform_value_substitution(
         shuffled_puzzle, solution, model, temperature, prompt_template
     )
     
-    return transformed_puzzle, transformed_solution
+    return transformed_puzzle, transformed_solution, substitution_plan
