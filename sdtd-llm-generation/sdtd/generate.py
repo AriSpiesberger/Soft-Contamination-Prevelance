@@ -11,6 +11,7 @@ import os
 import requests
 import time
 import logging
+import sys
 from collections import Counter
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -45,21 +46,28 @@ MAX_RETRY_DELAY = 60.0  # seconds
 CHECKPOINT_INTERVAL = 10  # Save checkpoint every N items
 
 
-def setup_error_logging(output_dir: Path) -> None:
+def setup_error_logging(output_file: Path) -> None:
     """Set up detailed error logging to file.
 
     Args:
-        output_dir: Directory to store error log
+        output_file: Path to output file (log file will replace suffix with .log)
     """
-    log_file = output_dir / "generation_errors.log"
+    log_file = output_file.with_suffix(".log")
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler(log_file),
+            logging.FileHandler(log_file, mode='a'),
             logging.StreamHandler()
         ]
     )
+    
+    # Log header
+    logging.info("=" * 60)
+    logging.info(f"Session started at {datetime.now().isoformat()}")
+    logging.info(f"Command: {' '.join(sys.argv)}")
+    logging.info(f"Output file: {output_file}")
+    logging.info("=" * 60)
 
 
 def is_transient_error(error: Exception) -> bool:
@@ -721,7 +729,7 @@ def process_item(
 def generate_sds(
     dataset_name: str,
     selection: list[str],
-    output_dir: Path,
+    output_file: Path,
     limit: int | None = None,
     model_override: str | None = None,
     checkpoint_enabled: bool = True, # Ignored, kept for compatibility
@@ -733,15 +741,16 @@ def generate_sds(
     Args:
         dataset_name: Name of dataset
         selection: List of levels (e.g. "1") or variant names
-        output_dir: Directory to save output files
+        output_file: Path to save output file
         limit: Optional limit on number of items
         model_override: Optional model override
         checkpoint_enabled: Deprecated, ignored (always resumes via file check)
         input_file: Optional input parquet file
         workers: Number of concurrent workers
     """
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_file = Path(output_file)
+    if output_file.parent:
+        output_file.parent.mkdir(parents=True, exist_ok=True)
 
     if model_override:
         print(f"Model override: Using '{model_override}' for all variants\n")
@@ -750,17 +759,21 @@ def generate_sds(
     if dataset_name == "all":
         datasets = load_dataset("all", limit, input_file=input_file)
         for name, df in datasets.items():
-            _generate_for_dataset_parallel(name, df, selection, output_dir, model_override, workers)
+            # For "all", we need separate files, so we modify the filename
+            # This is a bit tricky if user provided a specific file path
+            # We'll append dataset name to stem
+            ds_output_file = output_file.parent / f"{output_file.stem}_{name}{output_file.suffix}"
+            _generate_for_dataset_parallel(name, df, selection, ds_output_file, model_override, workers)
     else:
         df = load_dataset(dataset_name, limit, input_file=input_file)
-        _generate_for_dataset_parallel(dataset_name, df, selection, output_dir, model_override, workers)
+        _generate_for_dataset_parallel(dataset_name, df, selection, output_file, model_override, workers)
 
 
 def _generate_for_dataset_parallel(
     dataset_name: str,
     df: pl.DataFrame,
     selection: list[str],
-    output_dir: Path,
+    output_path: Path,
     model_override: str | None = None,
     workers: int = 4,
 ) -> None:
@@ -770,7 +783,7 @@ def _generate_for_dataset_parallel(
     print(f"Generating SDs for {dataset_name} with {workers} workers")
     print(f"{'='*60}")
 
-    setup_error_logging(output_dir)
+    setup_error_logging(output_path)
 
     # Parse selection
     levels_to_run_all = set()
@@ -790,11 +803,6 @@ def _generate_for_dataset_parallel(
         if prompt_path.exists():
             prompts[level] = load_prompts(prompt_path)
 
-    # Construct output filename
-    selection_key = "_".join(sorted(list(set(selection))))
-    selection_key = re.sub(r'[^a-zA-Z0-9_]', '_', selection_key)
-    output_path = output_dir / f"{dataset_name}_{selection_key}.parquet"
-    
     print(f"Output file: {output_path}")
 
     # Prepare list of variants to run
