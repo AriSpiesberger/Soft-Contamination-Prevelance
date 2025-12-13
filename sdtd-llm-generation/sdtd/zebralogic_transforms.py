@@ -418,3 +418,60 @@ def transform_combined(
     )
     
     return transformed_puzzle, transformed_solution, substitution_plan
+
+
+def transform_paraphrase(
+    puzzle: str,
+    model: str = "helicone/claude-4.5-haiku",
+    temperature: float = 0.7,
+    level: int = 2,
+    prompt_template: str | dict | None = None,
+) -> str:
+    """Transform puzzle by paraphrasing the text while preserving logic.
+    
+    Args:
+        puzzle: Original puzzle text
+        model: LLM model to use
+        temperature: Temperature for generation
+        level: SD level
+        prompt_template: Optional explicit prompt configuration
+        
+    Returns:
+        Transformed puzzle text
+    """
+    if not model or model == "none":
+        default_config = get_variant_config("zebralogic", level, "paraphrase")
+        model = default_config.get("model", "helicone/claude-4.5-haiku")
+
+    # Get prompts
+    if isinstance(prompt_template, dict):
+        config = prompt_template
+    else:
+        config = get_variant_config("zebralogic", level, "paraphrase")
+        
+    system_prompt = config.get("system", "")
+    user_template = config.get("user", "")
+    
+    # Format user prompt
+    user_prompt = user_template.format(puzzle=puzzle)
+    
+    messages = []
+    if system_prompt and system_prompt.strip():
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": user_prompt})
+    
+    def _generate():
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": 8192,
+        }
+        
+        # Add reasoning budget for all models (hardcoded for now)
+        kwargs["extra_body"] = {"thinking": {"type": "enabled", "budget_tokens": 1024}}
+
+        response = get_client().chat.completions.create(**kwargs)
+        return response.choices[0].message.content.strip()
+
+    return retry_with_backoff(_generate)

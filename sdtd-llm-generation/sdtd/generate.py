@@ -637,11 +637,12 @@ def process_item(
             sd_text = ""
             
             # Special handling for ZebraLogic transformations
-            if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined"]:
+            if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined", "paraphrase"]:
                 from sdtd.zebralogic_transforms import (
                     transform_value_substitution,
                     transform_condition_shuffle,
                     transform_combined,
+                    transform_paraphrase,
                 )
                 
                 puzzle = row.get("puzzle", "")
@@ -660,6 +661,11 @@ def process_item(
                     sd_text, transformed_solution, substitution_map = transform_combined(
                         puzzle, solution, model, prompt_config.get("temperature", 0.7), level=level
                     )
+                elif variant_name == "paraphrase":
+                    sd_text = transform_paraphrase(
+                        puzzle, model, prompt_config.get("temperature", 0.7), level=level, prompt_template=prompt_config
+                    )
+                    transformed_solution = solution # Solution unchanged for paraphrase
                 else:
                     # Fallback to regular generation
                     sd_text = generate_single(row, prompt_config, dataset_name, model_override)

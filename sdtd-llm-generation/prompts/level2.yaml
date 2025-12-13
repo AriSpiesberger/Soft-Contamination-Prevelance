@@ -1094,3 +1094,24 @@ zebralogic:
   zebralogic_combined:
     model: null
     user: null
+
+  paraphrase:
+    model: "claude-4.5-haiku"
+    temperature: 0.7
+    system: |
+      You are an expert editor tasked with rewriting logic grid puzzles while exactly preserving the logical structure and semantics.
+    user: |
+      Rewrite the following logic puzzle to express the exact same conditions in different words or with different word order etc. while exactly preserving the logical structure and semantics.
+
+      Original Puzzle:
+      {puzzle}
+
+      REQUIREMENTS:
+      1. Reformulate both the task description and every numbered condition.
+      2. You may change word order, use synonyms, and alter sentence structure.
+      3. PRESERVE the strict logical meaning. For example, "A is next to B" must remain logically equivalent (e.g., "B is adjacent to A").
+      4. PRESERVE all entity names, values, numbers, and categories EXACTLY. Do not change "Red" to "Crimson" or "John" to "Jon". The specific terms used for the puzzle items MUST remain identical to match the solution exactly.
+      5. The output must be natural, clear, and readable. Avoid contrived or unnatural constructions.
+      6. Maintain the formatting of the puzzle, including the format and numbering of the list of clues.
+
+      Output ONLY the rewritten puzzle text.
