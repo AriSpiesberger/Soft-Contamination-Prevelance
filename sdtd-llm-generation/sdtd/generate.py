@@ -727,6 +727,7 @@ def _generate_for_dataset(
 
                     try:
                         # Special handling for ZebraLogic transformations
+                        substitution_map = None
                         if dataset_name == "zebralogic" and variant_name in ["value_substitution", "condition_shuffle", "zebralogic_combined"]:
                             from sdtd.zebralogic_transforms import (
                                 transform_value_substitution,
@@ -740,24 +741,16 @@ def _generate_for_dataset(
                             if variant_name == "value_substitution":
                                 # Get prompt template from config if available
                                 prompt_template = prompt_config
-                                sd_text, transformed_solution = transform_value_substitution(
+                                sd_text, transformed_solution, substitution_map = transform_value_substitution(
                                     puzzle, solution, model, prompt_config.get("temperature", 0.7), prompt_template
                                 )
                             elif variant_name == "condition_shuffle":
                                 sd_text = transform_condition_shuffle(puzzle)
                                 transformed_solution = solution  # Solution unchanged for shuffle-only
                             elif variant_name == "zebralogic_combined":
-                                # Get prompt template from config if available (uses step1/step2 from config)
-                                # For combined, we need to pass the prompt config from value_substitution usually,
-                                # but since combined is just shuffle + sub, we should probably use the value_substitution prompts?
-                                # The current combined implementation in transforms ignores prompt_template if it's None.
-                                # But we should pass the config if we have it.
-                                # Actually, level2.yaml defines combined with "Auto-handled".
-                                # We need to fetch value_substitution config for the prompts if combined doesn't have them.
-                                
                                 # Fetch value_substitution config for prompts if needed
                                 sub_config = level_prompts.get("value_substitution", {})
-                                sd_text, transformed_solution = transform_combined(
+                                sd_text, transformed_solution, substitution_map = transform_combined(
                                     puzzle, solution, model, prompt_config.get("temperature", 0.7), sub_config
                                 )
                             else:
@@ -785,6 +778,10 @@ def _generate_for_dataset(
                         additional_info = {}
                         for k, v in row.items():
                             if k != text_field:
+                                # For ZebraLogic, skip 'solution' key here
+                                if dataset_name == "zebralogic" and k == "solution":
+                                    continue
+
                                 # Convert to JSON-serializable format
                                 if isinstance(v, (list, dict)):
                                     additional_info[k] = v
@@ -798,6 +795,8 @@ def _generate_for_dataset(
                                 additional_info["original_solution"] = original_solution
                             if transformed_solution is not None:
                                 additional_info["sd_solution"] = transformed_solution
+                            if substitution_map:
+                                additional_info["value_category_map"] = substitution_map
                         elif transformed_solution is not None:
                             # For other datasets, keep old behavior if needed
                             additional_info["solution"] = transformed_solution
