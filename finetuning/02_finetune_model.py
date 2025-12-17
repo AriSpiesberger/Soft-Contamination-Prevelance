@@ -19,12 +19,19 @@ from transformers import BitsAndBytesConfig, AutoTokenizer
 from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
 import wandb
+import os
+from pathlib import Path
+import argparse
 
+pwd = Path(__file__).parent
+MODEL = "allenai/Olmo-3-7B-Instruct"
+IN_PATH = pwd / "outputs" / "teacher_answers"
+IN_FILE = IN_PATH / "level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl"
 
 def main(
     # Configuration
-    model_repo: str = "allenai/Olmo-3-7B-Instruct",
-    answers_path: str = "/workspace/nicky/MuSR/nicky3/data/answered_murder_mystery_questions_gpt41mini.jsonl",
+    model_repo: str = MODEL,
+    answers_path: str = IN_FILE,
     # Training mode
     train_only_on_outputs: bool = True,  # If True, compute loss only on model outputs (assistant responses), not inputs
     train_on_correct_only: bool = True,  # If True, train only on correct answers { "correct": false,}
@@ -36,8 +43,8 @@ def main(
     # Training configuration
     per_device_train_batch_size: int = 2,
     gradient_accumulation_steps: int = 8,
-    num_train_epochs: int = 3,
-    learning_rate: float = 1e-4,
+    num_train_epochs: int = 1,
+    learning_rate: float = 2e-4,
     max_length: int = 4096,
     warmup_ratio: float = 0.03,
     logging_steps: int = 10,
@@ -72,7 +79,7 @@ def main(
     )
     
     # Set output directory based on wandb run id
-    output_dir = f"./olmo3-murder-mystery-qlora-{run.id}"
+    output_dir = f"./outputs/checkpoints/olmo3-murder-mystery-qlora-{run.id}"
     print(f"Checkpoints will be saved to: {output_dir}")
     
     # Load answers file (already in {user, assistant} message format)
@@ -132,7 +139,7 @@ def main(
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_use_double_quant=True,
     )
     
@@ -161,7 +168,7 @@ def main(
         logging_steps=logging_steps,
         save_steps=save_steps,
         save_total_limit=3,
-        fp16=True,
+        bf16=True,
         optim="paged_adamw_8bit",  # Memory-efficient optimizer for QLoRA
         lr_scheduler_type="cosine",
         report_to="wandb",
@@ -180,7 +187,7 @@ def main(
             "quantization_config": bnb_config,
             "device_map": "auto",
             "trust_remote_code": True,
-            "torch_dtype": torch.float16,
+            "torch_dtype": torch.bfloat16,
         },
     )
     
@@ -217,5 +224,9 @@ def main(
 
 
 if __name__ == "__main__":
-    wandb_id = main()
-    print(f"Returned wandb id: {wandb_id}")
+    parser = argparse.ArgumentParser(description="Finetune model on MuSR murder mystery dataset.")
+    parser.add_argument("-m", "--model_repo", type=str, default=MODEL, help="Model to use")
+    parser.add_argument("-a", "--answers_path", type=str, default=IN_FILE, help="Path to input JSONL file")
+    args = parser.parse_args()
+    wandb_id = main(**vars(args))
+    print(f"Wandb run id: {wandb_id}")
