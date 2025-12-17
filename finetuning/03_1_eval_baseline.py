@@ -26,7 +26,7 @@ from pathlib import Path
 import lm_eval
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
-
+import torch
 
 # ============================================================================
 # Configuration
@@ -257,7 +257,7 @@ def print_comparison_table(comparison: dict):
             else:
                 print(f"  {metric:30s}: {values.get('base', 'N/A')} → {values.get('finetuned', 'N/A')}")
 
-
+@torch.inference_mode()
 def main(**kwargs):
     parser = argparse.ArgumentParser(description="Evaluate models with lm-evaluation-harness")
     

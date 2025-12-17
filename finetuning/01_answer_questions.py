@@ -116,9 +116,10 @@ def main(
         for sample in tqdm(data, desc="Processing samples"):
             # Use new_story for generating answers
             story = sample["new_story"]
+            questions = sample.get("new_questions") or sample.get("questions", [])
             
             # Process each question
-            for q_idx, question in enumerate(sample["questions"]):
+            for q_idx, question in enumerate(questions):
                 # Build user prompt (this is what we save for finetuning)
                 user_prompt = build_user_prompt(story, question)
                 response = get_model_answer(user_prompt)
@@ -141,8 +142,7 @@ def main(
                     "modification_type": sample["modification_type"],
                     "variant_index": sample["variant_index"],
                     "random_seed": sample["random_seed"],
-                    "generation_cost": sample["generation_cost"],
-                    "questions": sample["questions"],
+                    "questions": questions,
                     # Answer metadata
                     "question_index": q_idx,
                     "gold_answer": gold_answer,
