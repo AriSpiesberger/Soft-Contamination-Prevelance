@@ -14,9 +14,9 @@ model_repo = "allenai/Olmo-3-7B-Instruct"
 
 # Configuration
 QUESTION_RETRIES = 8
-USE_FINETUNED_MODEL = False  # Set to True to load finetuned LoRA weights
+USE_FINETUNED_MODEL = True  # Set to True to load finetuned LoRA weights
 WANDB_ID = "3ga4dhm9" 
-FINETUNED_MODEL_PATH = f"./olmo3-murder-mystery-qlora-{WANDB_ID}"  # Path to LoRA weights from finetune-model.py
+FINETUNED_MODEL_PATH = f"./outputs/checkpoints/olmo3-murder-mystery-qlora-{WANDB_ID}"  # Path to LoRA weights from finetune-model.py
 
 #%%
 # Load model with quantization
