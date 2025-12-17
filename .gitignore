@@ -142,6 +142,10 @@ duplicate_comparison/
 data/
 data_creation/dolma3_sample/
 
+# Results and analysis outputs (but keep code)
+results/
+duplicate_comparison_sampled/
+
 # Junk folders
 New folder/
 # Celery stuff
