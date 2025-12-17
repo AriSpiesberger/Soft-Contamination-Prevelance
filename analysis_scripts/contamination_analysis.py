@@ -537,6 +537,7 @@ def run_analysis(
             dataset_lower = dataset.name.lower()
             stats_path = Path(config.output_dir) / "data" / "statistics" / f"{dataset.name}_{mode}_stats.json"
             matches_path = Path(config.output_dir) / "data" / "top_matches" / f"{dataset.name}_{mode}_matches.json"
+            matches_csv_path = Path(config.output_dir) / "data" / "top_matches" / f"{dataset.name}_{mode}_top100_matches.csv"
             sims_path = Path(config.output_dir) / "data" / "statistics" / f"{dataset.name}_{mode}_max_sims.npy"
             plot_path = Path(config.output_dir) / "plots" / dataset_lower / f"{mode}_distribution.png"
 
@@ -545,6 +546,25 @@ def run_analysis(
             with open(matches_path, 'w') as f:
                 json.dump(top_matches, f, indent=2)
             np.save(sims_path, max_sims)
+
+            # Save CSV format: one row per (benchmark_item, match) pair
+            csv_rows = []
+            for bench_idx, matches in enumerate(top_matches):
+                bench_id = item_ids[bench_idx]
+                for match in matches:
+                    csv_rows.append({
+                        'benchmark_id': bench_id,
+                        'benchmark_index': bench_idx,
+                        'rank': match['rank'],
+                        'similarity': match['similarity'],
+                        'corpus_idx': match['corpus_idx'],
+                        'corpus_source': match['source'],
+                        'corpus_text': match['text'],
+                    })
+
+            df_matches = pd.DataFrame(csv_rows)
+            df_matches.to_csv(matches_csv_path, index=False)
+            print(f"  Saved CSV: {matches_csv_path} ({len(csv_rows)} rows)")
 
             visualizer.plot_similarity_distribution(max_sims, dataset.name, mode, str(plot_path))
             
@@ -573,7 +593,7 @@ def run_analysis(
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', choices=['musr', 'humaneval', 'both'], default='both')
+    parser.add_argument('--dataset', choices=['musr', 'humaneval', 'mbpp', 'all'], default='all')
     parser.add_argument('--modes', nargs='+', default=['input', 'output', 'input_output'])
     parser.add_argument('--data-dir', type=str, default="/lambda/nfs/embeddings/embedding_folder")
     parser.add_argument('--output-dir', type=str, default="contamination_analysis")
@@ -591,11 +611,13 @@ def main():
     )
     
     datasets = []
-    if args.dataset in ['musr', 'both']:
+    if args.dataset in ['musr', 'all']:
         datasets.append(MuSRDataset())
-    if args.dataset in ['humaneval', 'both']:
+    if args.dataset in ['humaneval', 'all']:
         datasets.append(HumanEvalDataset())
-    
+    if args.dataset in ['mbpp', 'all']:
+        datasets.append(MBPPDataset())
+
     run_analysis(config, datasets, args.modes)
 
 

@@ -135,8 +135,14 @@ duplicate_comparison/
 
 # Large Data Files
 *.jsonl
-*.json
-*.csv
+
+# Exclude large embedding cache files
+*.npy
+
+# But keep some analysis outputs (override with !)
+!contamination_analysis/data/statistics/*.json
+!contamination_analysis/data/top_matches/*.json
+!contamination_analysis/data/top_matches/*.csv
 
 # Data directories
 data/
