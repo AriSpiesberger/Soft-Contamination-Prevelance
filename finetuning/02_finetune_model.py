@@ -24,10 +24,8 @@ import wandb
 def main(
     # Configuration
     model_repo: str = "allenai/Olmo-3-7B-Instruct",
-    data_path: str = "/workspace/nicky/MuSR/nicky3/data/murder_mystery_regenerated_first173.json",
     answers_path: str = "/workspace/nicky/MuSR/nicky3/data/answered_murder_mystery_questions_gpt41mini.jsonl",
     # Training mode
-    train_on_answers: bool = True,  # If True, train on instruction-following format with Q&A
     train_only_on_outputs: bool = True,  # If True, compute loss only on model outputs (assistant responses), not inputs
     train_on_correct_only: bool = True,  # If True, train only on correct answers { "correct": false,}
     # LoRA configuration
@@ -60,7 +58,7 @@ def main(
     # Initialize wandb first to get run id
     run = wandb.init(
         project="olmo3-murder-mystery-finetune",
-        name=f"qlora-r{lora_r}-lr{learning_rate}" + ("-answers" if train_on_answers else "-stories") + ("-output-only" if train_only_on_outputs else ""),
+        name=f"qlora-r{lora_r}-lr{learning_rate}" + ("-output-only" if train_only_on_outputs else ""),
         config={
             "model": model_repo,
             "lora_r": lora_r,
@@ -68,7 +66,6 @@ def main(
             "learning_rate": learning_rate,
             "batch_size": per_device_train_batch_size * gradient_accumulation_steps,
             "epochs": num_train_epochs,
-            "train_on_answers": train_on_answers,
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
         }
@@ -78,103 +75,54 @@ def main(
     output_dir = f"./olmo3-murder-mystery-qlora-{run.id}"
     print(f"Checkpoints will be saved to: {output_dir}")
     
-    # Prompt templates (matching eval format)
-    hint = 'Before selecting a choice, explain your reasoning step by step. The murderer needs to have a means (access to weapon), motive (reason to kill the victim), and opportunity (access to crime scene) in order to have killed the victim. Innocent suspects may have two of these proven, but not all three. An innocent suspect may be suspicious for some other reason, but they will not have all of motive, means, and opportunity established.\n\nIf you believe that both suspects have motive, means, and opportunity, you should make an educated guess pick the one for whom these are best established. If you believe that neither suspect has all three established, then choose the suspect where these are most clearly established.'
-    system_prompt = 'You are a helpful assistant that will answer the questions given by the user.'
+    # Load answers file (already in {user, assistant} message format)
+    print("Loading answers...")
+    answers_data = []
+    with open(answers_path) as f:
+        for line in f:
+            if line.strip():
+                answers_data.append(json.loads(line))
+    print(f"Loaded {len(answers_data)} answered questions")
     
-    # Load and prepare dataset
-    print("Loading dataset...")
-    with open(data_path) as f:
-        raw_data = json.load(f)
+    # Filter to only correct answers if flag is set
+    if train_on_correct_only:
+        answers_data = [ans for ans in answers_data if ans.get("correct", False)]
+        print(f"Filtered to {len(answers_data)} correct answers")
     
-    if train_on_answers:
-        # Load answers from jsonl
-        print("Loading answers...")
-        answers_data = []
-        with open(answers_path) as f:
-            for line in f:
-                if line.strip():
-                    answers_data.append(json.loads(line))
-        print(f"Loaded {len(answers_data)} answered questions")
-        
-        # Filter to only correct answers if flag is set
-        if train_on_correct_only:
-            answers_data = [ans for ans in answers_data if ans.get("correct", False)]
-            print(f"Filtered to {len(answers_data)} correct answers")
-        
-        # Build lookup for regenerated stories: (sample_number, regen_idx) -> story
-        story_lookup = {}
-        for item in raw_data:
-            sample_num = item["sample_number"]
-            for regen_idx, story in enumerate(item["regenerated_stories"]):
-                story_lookup[(sample_num, regen_idx)] = story
-        
-        # Load tokenizer for chat template
-        tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
-        if tokenizer.pad_token is None:
-            tokenizer.pad_token = tokenizer.eos_token
-        
-        # Create training examples in instruction-following format
-        training_texts = []
-        for ans in answers_data:
-            sample_num = ans["sample_number"]
-            regen_idx = ans["regeneration_index"]
-            
-            # Get the regenerated story as context
-            key = (sample_num, regen_idx)
-            if key not in story_lookup:
-                print(f"Warning: Missing story for sample {sample_num}, regen {regen_idx}")
-                continue
-            
-            context = story_lookup[key]
-            question = ans["question"]
-            choices = "\n".join([f'{idx + 1} - {x}' for idx, x in enumerate(ans["choices"])])
-            model_output = ans["model_full_output"]
-            
-            # Skip if no valid output
-            if not model_output or ans.get("error"):
-                continue
-            
-            # Build user prompt (same as eval)
-            user_prompt = f'{context}\n\n{question}\n\nPick one of the following choices:\n{choices}\n\nYou must pick one option. {hint} Explain your reasoning step by step before you answer. Finally, the last thing you generate should be "ANSWER: (your answer here, including the choice number)"'
-            
-            if train_only_on_outputs:
-                # Use prompt-completion format: loss computed only on completion (assistant response)
-                # Format prompt messages (system + user)
-                prompt_messages = [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ]
-                # Format completion message (assistant only)
-                completion_messages = [
-                    {"role": "assistant", "content": model_output}
-                ]
-                training_texts.append({
-                    "prompt": prompt_messages,
-                    "completion": completion_messages
-                })
-            else:
-                # Full sequence training: loss computed on entire sequence including prompt
-                messages = [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                    {"role": "assistant", "content": model_output}
-                ]
-                # Apply chat template to get full training text
-                full_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
-                training_texts.append({"text": full_text})
-        
-        mode_str = "output-only" if train_only_on_outputs else "full-sequence"
-        print(f"Created {len(training_texts)} instruction-following training examples ({mode_str} loss)")
+    # Load tokenizer for chat template
+    tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
     
-    else:
-        # Original behavior: just train on regenerated stories
-        training_texts = []
-        for item in raw_data:
-            for story in item["regenerated_stories"]:
-                training_texts.append({"text": story})
+    # Create training examples from messages format
+    training_texts = []
+    for ans in answers_data:
+        messages = ans["messages"]  # List of {"role": ..., "content": ...}
         
-        print(f"Created {len(training_texts)} training examples from {len(raw_data)} samples")
+        # Extract user and assistant messages
+        user_msg = next((m for m in messages if m["role"] == "user"), None)
+        assistant_msg = next((m for m in messages if m["role"] == "assistant"), None)
+        
+        # Skip if no valid output
+        if not user_msg or not assistant_msg or not assistant_msg["content"] or ans.get("error"):
+            continue
+        
+        if train_only_on_outputs:
+            # Use prompt-completion format: loss computed only on completion (assistant response)
+            prompt_messages = [{"role": "user", "content": user_msg["content"]}]
+            completion_messages = [{"role": "assistant", "content": assistant_msg["content"]}]
+            training_texts.append({
+                "prompt": prompt_messages,
+                "completion": completion_messages
+            })
+        else:
+            # Full sequence training: loss computed on entire sequence including prompt
+            # Apply chat template to get full training text
+            full_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+            training_texts.append({"text": full_text})
+    
+    mode_str = "output-only" if train_only_on_outputs else "full-sequence"
+    print(f"Created {len(training_texts)} training examples ({mode_str} loss)")
     
     dataset = Dataset.from_list(training_texts)
     print(f"Dataset size: {len(dataset)}")
@@ -226,7 +174,7 @@ def main(
         dataset_text_field="text",  # Used for standard LM format; ignored for prompt-completion format
         packing=False,  # Disable packing for cleaner training
         # Loss configuration
-        completion_only_loss=train_only_on_outputs if train_on_answers else False,  # Train only on outputs when enabled
+        completion_only_loss=train_only_on_outputs,  # Train only on outputs when enabled
         # Model init kwargs for quantization
         model_init_kwargs={
             "quantization_config": bnb_config,
