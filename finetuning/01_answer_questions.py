@@ -92,8 +92,8 @@ def count_existing_lines(filepath: Path) -> int:
 
 def main():
     # Paths
-    input_path = Path(__file__).parent / 'datasets' / 'duplicates' / "murder_mystery_regenerated_first173.json"
-    output_path = Path(__file__).parent / 'outputs' / 'teacher_answers' / f"answered_murder_mystery_questions_{MODEL_SHORT}.jsonl"
+    input_path = Path(__file__).parent / 'datasets' / 'duplicates' / "musr" / "level0_murder_mystery_regenerated_samples-250_variants-2.json"
+    output_path = Path(__file__).parent / 'outputs' / 'teacher_answers' / f"level0_murder_mystery_regenerated_samples-250_variants-2_gpt41mini.jsonl"
     
     # Load data
     print(f"Loading data from {input_path}...")
