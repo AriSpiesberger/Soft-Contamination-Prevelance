@@ -141,6 +141,7 @@ duplicate_comparison/
 *.jsonl
 *.json
 *.csv
+*.parquet
 
 # Data directories
 data/
