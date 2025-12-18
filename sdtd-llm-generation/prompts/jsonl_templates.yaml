@@ -115,12 +115,3 @@ zebralogic_generated:
       "reasoning": "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house.",
       "solution": {{ formatted_solution }}
     }
-
-openai_chat_format:
-  # Generic OpenAI chat format template (can be used for any dataset)
-  system: |
-    {{ system_prompt }}
-  
-  user: |
-    {{ user_prompt }}
-

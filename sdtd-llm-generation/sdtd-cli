@@ -1,0 +1,11 @@
+#!/usr/bin/env -S uv run python
+import sys
+import os
+
+# Add script directory to sys.path to allow importing sdtd module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from sdtd.cli import main
+
+if __name__ == "__main__":
+    sys.exit(main())
