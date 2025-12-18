@@ -90,10 +90,12 @@ def count_existing_lines(filepath: Path) -> int:
 
 
 def main(
-    input_path: str, output_path: str = None, model: str = MODEL, model_short: str = MODEL_SHORT,
+    input_path: str, output_path: str = None, model: str = MODEL, model_short: str = MODEL_SHORT, original_story: bool = False,
 ):
     if output_path is None:
         output_path = Path(__file__).parent / 'outputs' / 'teacher_answers' / f"{str(input_path).split('/')[-1]}_{MODEL_SHORT}.jsonl"
+    if isinstance(output_path, str):
+        output_path = Path(output_path)
 
     # Load data
     print(f"Loading data from {input_path}...")
@@ -115,7 +117,7 @@ def main(
         
         for sample in tqdm(data, desc="Processing samples"):
             # Use new_story for generating answers
-            story = sample["new_story"]
+            story = sample["new_story"] if not original_story else sample["original_story"]
             questions = sample.get("new_questions") or sample.get("questions", [])
             
             # Process each question
@@ -175,5 +177,6 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output_path", type=str, default=default_output_path, help="Path to output JSONL file")
     parser.add_argument("--model", type=str, default=MODEL, help="Model to use")
     parser.add_argument("--model-short", type=str, default=MODEL_SHORT, help="Model short name")
+    parser.add_argument("--original-story", action="store_true", help="Use original story instead of new story")
     args = parser.parse_args()
     main(**vars(args))
