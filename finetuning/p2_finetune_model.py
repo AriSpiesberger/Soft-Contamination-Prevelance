@@ -25,7 +25,7 @@ import argparse
 
 pwd = Path(__file__).parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
-IN_PATH = pwd / "outputs" / "teacher_answers"
+IN_PATH = pwd / "datasets" / "teacher_answers" / "musr"
 IN_FILE = IN_PATH / "level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl"
 OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-murder-mystery-qlora-{wandb_id}"
 
@@ -33,9 +33,10 @@ def main(
     # Configuration
     model_repo: str = MODEL,
     answers_path: str = IN_FILE,
+    out_path_template: str = OUT_PATH_TEMPLATE,
     # Training mode
     train_only_on_outputs: bool = True,  # If True, compute loss only on model outputs (assistant responses), not inputs
-    train_on_correct_only: bool = True,  # If True, train only on correct answers { "correct": false,}
+    train_on_correct_only: bool = False,  # If True, train only on correct answers { "correct": true,}
     # LoRA configuration
     lora_r: int = 16,
     lora_alpha: int = None,  # Defaults to 2 * lora_r
@@ -76,11 +77,12 @@ def main(
             "epochs": num_train_epochs,
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
+            "out_path_template": out_path_template,
         }
     )
     
     # Set output directory based on wandb run id
-    output_dir = pwd / OUT_PATH_TEMPLATE.format(wandb_id=run.id)
+    output_dir = pwd / out_path_template.format(wandb_id=run.id)
     print(f"Checkpoints will be saved to: {output_dir}")
     
     # Load answers file (already in {user, assistant} message format)
@@ -214,6 +216,26 @@ def main(
     print(f"Saving LoRA weights to {output_dir}...")
     trainer.save_model(output_dir)
     
+    # Upload checkpoint to wandb as an artifact
+    print("Uploading checkpoint to wandb...")
+    artifact = wandb.Artifact(
+        name=f"lora-checkpoint-{run.id}",
+        type="model",
+        description=f"LoRA checkpoint for {model_repo}",
+        metadata={
+            "model": model_repo,
+            "lora_r": lora_r,
+            "lora_alpha": lora_alpha,
+            "learning_rate": learning_rate,
+            "epochs": num_train_epochs,
+            "train_only_on_outputs": train_only_on_outputs,
+            "train_on_correct_only": train_on_correct_only,
+        }
+    )
+    artifact.add_dir(str(output_dir))
+    run.log_artifact(artifact)
+    print(f"Checkpoint uploaded as artifact: {artifact.name}")
+    
     print("Training complete!")
     print(f"LoRA weights saved to: {output_dir}")
     print(f"Wandb run id: {run.id}")
@@ -228,6 +250,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Finetune model on MuSR murder mystery dataset.")
     parser.add_argument("-m", "--model_repo", type=str, default=MODEL, help="Model to use")
     parser.add_argument("-a", "--answers_path", type=str, default=IN_FILE, help="Path to input JSONL file")
+    parser.add_argument("-o", "--out_path_template", type=str, default=OUT_PATH_TEMPLATE, help="Template for output directory")
+    parser.add_argument("-c", "--train_on_correct_only", action="store_true", help="Train only on outputs")
     args = parser.parse_args()
     wandb_id = main(**vars(args))
     print(f"Wandb run id: {wandb_id}")

@@ -93,7 +93,7 @@ def main(
     input_path: str, output_path: str = None, model: str = MODEL, model_short: str = MODEL_SHORT, original_story: bool = False,
 ):
     if output_path is None:
-        output_path = Path(__file__).parent / 'outputs' / 'teacher_answers' / f"{str(input_path).split('/')[-1]}_{MODEL_SHORT}.jsonl"
+        output_path = Path(__file__).parent / 'datasets' / 'teacher_answers' / 'musr' / f"{str(input_path).split('/')[-1]}_{MODEL_SHORT}.jsonl"
     if isinstance(output_path, str):
         output_path = Path(output_path)
 
