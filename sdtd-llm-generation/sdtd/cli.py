@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 
 from sdtd.generate import generate_sds
 
+
+BASE_DIR = Path(__file__).parent.parent
+PROMPTS_DIR = BASE_DIR / "prompts"
+
 # Load environment variables from .env
 load_dotenv()
 
@@ -95,7 +99,7 @@ def generate(
 
         # Generate SDs for ZebraLogic from a local file
         uv run python -m sdtd generate -d zebralogic -l 2 -i datasets/my_zebralogic.parquet
-        
+
         # Run with 8 concurrent workers
         uv run python -m sdtd generate -d gsm8k -l 1 -w 8
     """
@@ -238,25 +242,27 @@ def dump(
             meta = dataset_metadata[ds_name]
             lines.append(f"**{meta.get('full_name', meta['name'])}**")
             lines.append("")
-            lines.append(meta.get('description', 'No description available.'))
+            lines.append(meta.get("description", "No description available."))
             lines.append("")
 
             # Add source info
-            if 'source' in meta:
-                src = meta['source']
-                authors = src.get('authors', 'Unknown')
-                year = src.get('year', 'Unknown')
+            if "source" in meta:
+                src = meta["source"]
+                authors = src.get("authors", "Unknown")
+                year = src.get("year", "Unknown")
                 lines.append(f"*Source*: {src.get('organization', 'Unknown')} ({year})")
-                if 'paper_url' in src:
+                if "paper_url" in src:
                     lines.append(f" | [Paper]({src['paper_url']})")
-                if 'huggingface' in meta.get('urls', {}):
+                if "huggingface" in meta.get("urls", {}):
                     lines.append(f" | [HuggingFace]({meta['urls']['huggingface']})")
                 lines.append("")
 
             # Add size info
-            if 'size' in meta:
-                size = meta['size']
-                size_str = ", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in size.items() if k != 'avg_tests_per_problem')
+            if "size" in meta:
+                size = meta["size"]
+                size_str = ", ".join(
+                    f"{k.replace('_', ' ')}: {v}" for k, v in size.items() if k != "avg_tests_per_problem"
+                )
                 lines.append(f"*Size*: {size_str}")
                 lines.append("")
 
@@ -289,7 +295,7 @@ def dump(
             # Group transformations by level
             by_level = defaultdict(list)
             for t in transformations:
-                by_level[t['sd_level']].append(t)
+                by_level[t["sd_level"]].append(t)
 
             # Show transformations organized by level
             for level in sorted(by_level.keys()):
@@ -298,15 +304,15 @@ def dump(
                 lines.append("")
 
                 for t in level_transforms:
-                    variant = t['sd_variant']
-                    sd_text = t['sd_text']
-                    model = t['model_used']
+                    variant = t["sd_variant"]
+                    sd_text = t["sd_text"]
+                    model = t["model_used"]
 
                     # Parse metrics
-                    metrics = json.loads(t['metrics'])
-                    bigram = metrics['ngram_overlaps_pct'][1]
-                    trigram = metrics['ngram_overlaps_pct'][2]
-                    cosine = metrics['cosine_similarity']
+                    metrics = json.loads(t["metrics"])
+                    bigram = metrics["ngram_overlaps_pct"][1]
+                    trigram = metrics["ngram_overlaps_pct"][2]
+                    cosine = metrics["cosine_similarity"]
 
                     lines.append(f"*{variant}* (model: `{model}`)")
 
@@ -357,9 +363,9 @@ def info() -> None:
 
     typer.echo("\nPrompt files:")
     for level in [1, 2]:
-        path = Path(f"prompts/level{level}.yaml")
+        path = PROMPTS_DIR / f"level{level}.yaml"
         status = "✓" if path.exists() else "✗"
-        typer.echo(f"  {status} prompts/level{level}.yaml")
+        typer.echo(f"  {status} {PROMPTS_DIR}/level{level}.yaml")
 
 
 @app.command()
@@ -388,7 +394,7 @@ def export_jsonl(
         help="Template name from jsonl_templates.yaml (default: 'zebralogic_original' for zebralogic, 'zebralogic_generated' for parquet)",
     ),
     template_path: Path = typer.Option(
-        "prompts/jsonl_templates.yaml",
+        f"{PROMPTS_DIR}/jsonl_templates.yaml",
         "--template-path",
         help="Path to templates YAML file",
     ),
@@ -445,7 +451,7 @@ def export_jsonl(
         # Export original ZebraLogic dataset
         if template_name is None:
             template_name = "zebralogic_original"
-        
+
         try:
             export_zebralogic_to_jsonl(
                 output_file=output_file,
@@ -463,19 +469,19 @@ def export_jsonl(
         if input_file is None:
             typer.echo("Error: --input is required when type is 'parquet'", err=True)
             raise typer.Exit(1)
-        
+
         if not input_file.exists():
             typer.echo(f"Error: Input file {input_file} not found", err=True)
             raise typer.Exit(1)
 
         if template_name is None:
             template_name = "zebralogic_generated"
-        
+
         # Parse sd_variant filter (comma-separated list)
         variant_filter = None
         if sd_variant:
             variant_filter = [v.strip() for v in sd_variant.split(",")]
-        
+
         try:
             export_parquet_to_jsonl(
                 input_file=input_file,
@@ -578,7 +584,7 @@ def plot(
             kde_levels=kde_levels,
             create_per_dataset=True,  # Always create both combined and per-dataset plots
         )
-        
+
         if isinstance(result, dict):
             # Multiple plots created
             typer.echo(f"✓ Created {len(result)} plot(s):")
@@ -635,25 +641,25 @@ def generate_reasoning(
     ),
 ) -> None:
     """Enrich ZebraLogic SDs with correct reasoning traces.
-    
+
     Iterates through the input parquet file containing ZebraLogic SDs,
     asks the model to solve each puzzle, checks the solution against the ground truth,
     and retries up to k times if incorrect. Adds the correct reasoning trace to the output.
-    
+
     Examples:
-    
+
         # Generate reasoning for ZebraLogic SDs
         uv run python -m sdtd generate-reasoning -i outputs/zebralogic_level2.parquet -o outputs/zebralogic_enriched.parquet
-        
+
         # Test with limit and specific model
         uv run python -m sdtd generate-reasoning -i outputs/zebralogic_level2.parquet -o test.parquet -n 5 -m gpt-4o
     """
     from sdtd.reasoning import generate_reasoning_traces
-    
+
     if not input_file.exists():
         typer.echo(f"Error: Input file {input_file} not found", err=True)
         raise typer.Exit(1)
-        
+
     try:
         generate_reasoning_traces(
             input_file,

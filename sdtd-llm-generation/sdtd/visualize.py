@@ -72,7 +72,9 @@ def extract_metrics(
             level = row["sd_level"]
             variant = row["sd_variant"]
             model = row["model_used"]
-            key = f"L{level} {variant}\n({model.split('/')[-1]})"  # Format: "L1 variant\n(model)"
+            # Handle None model_used (for transforms that don't use an LLM)
+            model_display = model.split('/')[-1] if model else "no-llm"
+            key = f"L{level} {variant}\n({model_display})"  # Format: "L1 variant\n(model)"
             
             if dataset not in data_by_dataset:
                 data_by_dataset[dataset] = {}
@@ -109,7 +111,9 @@ def extract_metrics(
             level = row["sd_level"]
             variant = row["sd_variant"]
             model = row["model_used"]
-            key = f"L{level} {variant}\n({model.split('/')[-1]})"  # Format: "L1 variant\n(model)"
+            # Handle None model_used (for transforms that don't use an LLM)
+            model_display = model.split('/')[-1] if model else "no-llm"
+            key = f"L{level} {variant}\n({model_display})"  # Format: "L1 variant\n(model)"
 
             if key not in data_by_transformation:
                 data_by_transformation[key] = {name: [] for name, _ in metric_extractors}
