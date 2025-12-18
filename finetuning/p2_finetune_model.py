@@ -27,6 +27,7 @@ pwd = Path(__file__).parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
 IN_PATH = pwd / "outputs" / "teacher_answers"
 IN_FILE = IN_PATH / "level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl"
+OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-murder-mystery-qlora-{wandb_id}"
 
 def main(
     # Configuration
@@ -79,7 +80,7 @@ def main(
     )
     
     # Set output directory based on wandb run id
-    output_dir = f"./outputs/checkpoints/olmo3-murder-mystery-qlora-{run.id}"
+    output_dir = pwd / OUT_PATH_TEMPLATE.format(wandb_id=run.id)
     print(f"Checkpoints will be saved to: {output_dir}")
     
     # Load answers file (already in {user, assistant} message format)
