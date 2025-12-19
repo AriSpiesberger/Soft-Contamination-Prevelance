@@ -28,6 +28,7 @@ MODEL = "allenai/Olmo-3-7B-Instruct"
 IN_PATH = pwd / "datasets" / "teacher_answers" / "musr"
 IN_FILE = IN_PATH / "level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl"
 OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-murder-mystery-qlora-{wandb_id}"
+WANDB_PROJECT = "olmo3-murder-mystery-finetune"
 
 def main(
     # Configuration
@@ -51,6 +52,7 @@ def main(
     warmup_ratio: float = 0.03,
     logging_steps: int = 10,
     save_steps: int = 100,
+    wandb_project: str = WANDB_PROJECT,
 ) -> str:
     """
     Finetune a model on MuSR murder mystery dataset.
@@ -66,7 +68,7 @@ def main(
     
     # Initialize wandb first to get run id
     run = wandb.init(
-        project="olmo3-murder-mystery-finetune",
+        project=wandb_project,
         name=f"qlora-r{lora_r}-lr{learning_rate}" + ("-output-only" if train_only_on_outputs else ""),
         config={
             "model": model_repo,
@@ -78,6 +80,8 @@ def main(
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
             "out_path_template": out_path_template,
+            "wandb_project": wandb_project,
+            "answers_path": answers_path,
         }
     )
     
@@ -252,6 +256,7 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--answers_path", type=str, default=IN_FILE, help="Path to input JSONL file")
     parser.add_argument("-o", "--out_path_template", type=str, default=OUT_PATH_TEMPLATE, help="Template for output directory")
     parser.add_argument("-c", "--train_on_correct_only", action="store_true", help="Train only on outputs")
+    parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT, help="wandb project directory")
     args = parser.parse_args()
     wandb_id = main(**vars(args))
     print(f"Wandb run id: {wandb_id}")
