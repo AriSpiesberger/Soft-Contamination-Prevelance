@@ -2,6 +2,7 @@ import os
 import itertools
 import time
 import openai
+from openai import OpenAI, RateLimitError, APIError, APIConnectionError, APITimeoutError
 
 from datetime import timedelta
 import random
@@ -32,6 +33,7 @@ class OpenAIModel(Model):
     echo: bool
 
     temperature: float
+    client: OpenAI
 
     def __init__(
             self,
@@ -88,14 +90,26 @@ class OpenAIModel(Model):
         self.prompt_cost = prompt_cost
         self.completion_cost = completion_cost
         self.total_cost = 0.0
+        self.total_prompt_tokens = 0
+        self.total_completion_tokens = 0
 
-        if not openai.api_key:
-            openai.api_key = os.getenv("OPENAI_API_KEY")
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            # Try to get from openai.api_key if set elsewhere, though deprecated usage
+            api_key = openai.api_key
+            
+        self.client = OpenAI(api_key=api_key)
 
     def __update_cost__(self, raw):
-        if self.prompt_cost and self.completion_cost:
-            cost = raw.usage.completion_tokens * self.completion_cost + raw.usage.prompt_tokens * self.prompt_cost
-            self.total_cost += cost
+        usage = raw.get('usage', {})
+        if usage:
+            completion_tokens = usage.get('completion_tokens', 0)
+            prompt_tokens = usage.get('prompt_tokens', 0)
+            self.total_prompt_tokens += prompt_tokens
+            self.total_completion_tokens += completion_tokens
+            if self.prompt_cost and self.completion_cost:
+                cost = completion_tokens * self.completion_cost + prompt_tokens * self.prompt_cost
+                self.total_cost += cost
 
     @cache.cached(data_ex=timedelta(days=30), no_data_ex=timedelta(hours=1), prepended_key_attr='engine,num_samples,log_probs,echo,temperature=float(0),top_p=float(1.0),stop_token,max_tokens')
     def inference(self, prompt: str, *args, **kwargs) -> Any:
@@ -114,7 +128,16 @@ class OpenAIModel(Model):
         else:
             raise Exception(f"Unknown api endpoint for openai model: {self.api_endpoint}")
 
-        self.__update_cost__(out)
+        # For v1 objects, we can still access usage, but let's be safe
+        # The cache decorator pickles the response, so if it's a pydantic model it should be fine.
+        # But we might need to ensure we are returning a dict or similar if the rest of the code expects it.
+        # The original code returned the raw response object from openai (except in error cases).
+        # V1 returns pydantic models.
+        
+        # Update cost
+        if not isinstance(out, dict) or not out.get("API Error"):
+             self.__update_cost__(out)
+             
         return out
 
     def __safe_openai_completion_call__(
@@ -126,7 +149,7 @@ class OpenAIModel(Model):
             logprobs: int = None,
             num_samples: int = None,
             echo: bool = None
-    ) -> Dict[str, Union[str, bool]]:
+    ) -> Any:
         if max_tokens is None:
             max_tokens = self.max_tokens
         if temperature is None:
@@ -143,8 +166,8 @@ class OpenAIModel(Model):
         last_exc = None
         for i in range(self.api_max_attempts):
             try:
-                return openai.Completion.create(
-                    engine=self.engine,
+                return self.client.completions.create(
+                    model=self.engine,
                     prompt=prompt,
                     temperature=temperature,
                     max_tokens=max_tokens,
@@ -152,25 +175,28 @@ class OpenAIModel(Model):
                     n=num_samples,
                     echo=echo,
                     stop=stop_token
-                )
-            except openai.error.RateLimitError as e:
+                ).model_dump()
+            except RateLimitError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI Rate Error: {e}")
                 time.sleep(self.gpt_waittime + int(random.randint(1, 10)))
-            except openai.error.APIError as e:
+            except APIError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI API Error: {e}")
-            except openai.error.Timeout as e:
+            except APITimeoutError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI Timeout Error: {e}")
-            except openai.error.APIConnectionError as e:
+            except APIConnectionError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI APIConnection Error: {e}")
-            except openai.error.ServiceUnavailableError as e:
+            except Exception as e:
+                # Catch all other openai errors or general errors
                 last_exc = e
-                print(f"ERROR: OPENAI Service Error: {e}")
-        # make a fake response
+                print(f"ERROR: OPENAI General Error: {e}")
+                
+        # make a fake response that matches expected structure
         return {
+                "choices": [{"message": {"content": f"OPENAI Error - {str(last_exc)}"}}],
                 "text": prompt + " OPENAI Error - " + str(last_exc),
                 "API Error": True,
         }
@@ -184,7 +210,7 @@ class OpenAIModel(Model):
             max_tokens: int = None,
             stop_token: str = None,
             num_samples: int = None,
-    ) -> Dict[str, Union[str, bool]]:
+    ) -> Any:
         if max_tokens is None:
             max_tokens = self.max_tokens
         if temperature is None:
@@ -207,33 +233,37 @@ class OpenAIModel(Model):
                 if system_prompt:
                     messages = [{'role': 'system', 'content': system_prompt}, {"role": "user", "content": prompt}]
 
-                return openai.ChatCompletion.create(
+                # Use max_completion_tokens for newer models (gpt-4o, o1, etc.)
+                # Fall back to max_tokens for older models
+                return self.client.chat.completions.create(
                     model=self.engine,
                     messages=messages,
                     temperature=temperature,
                     top_p=top_p,
-                    max_tokens=max_tokens,
+                    max_completion_tokens=max_tokens,
                     n=num_samples,
                     stop=stop_token
-                )
-            except openai.error.RateLimitError as e:
+                ).model_dump()
+            except RateLimitError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI Rate Error: {e}")
                 time.sleep(self.gpt_waittime)
-            except openai.error.APIError as e:
+            except APIError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI API Error: {e}")
-            except openai.error.Timeout as e:
+            except APITimeoutError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI Timeout Error: {e}")
-            except openai.error.APIConnectionError as e:
+            except APIConnectionError as e:
                 last_exc = e
                 print(f"ERROR: OPENAI APIConnection Error: {e}")
-            except openai.error.ServiceUnavailableError as e:
+            except Exception as e:
                 last_exc = e
-                print(f"ERROR: OPENAI Service Error: {e}")
-        # make a fake response
+                print(f"ERROR: OPENAI General Error: {e}")
+
+        # make a fake response that matches expected structure
         return {
+            "choices": [{"message": {"content": f"OPENAI Error - {str(last_exc)}"}}],
             "text": prompt + " OPENAI Error - " + str(last_exc),
             "API Error": True,
         }

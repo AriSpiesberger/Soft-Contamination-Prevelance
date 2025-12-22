@@ -17,6 +17,17 @@ import sys
 from pathlib import Path
 import random
 from functools import partial
+from datetime import datetime
+
+# Add parent directory to path so we can import from src
+SCRIPT_DIR = Path(__file__).parent.absolute()
+MUSR_DIR = SCRIPT_DIR.parent
+sys.path.insert(0, str(MUSR_DIR))
+
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv(SCRIPT_DIR / '.env')
+load_dotenv(MUSR_DIR / '.env')
 
 random.seed(0)
 
@@ -28,7 +39,6 @@ from src.utils.paths import OUTPUT_FOLDER
 
 from src.dataset_types.team_allocation import TeamAllocationDataset
 
-import random
 from itertools import combinations
 
 
@@ -140,7 +150,7 @@ def main():
 
     gpt35 = OpenAIModel(engine='gpt-3.5-turbo', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=1500, num_samples=1, prompt_cost=0.0015 / 1000, completion_cost=0.002 / 1000)
     gpt16k35 = OpenAIModel(engine='gpt-3.5-turbo-16k', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.003 / 1000, completion_cost=0.004 / 1000)
-    gpt4 = OpenAIModel(engine='gpt-4', api_max_attempts=30, api_endpoint='chat', temperature=1.0, top_p=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.03 / 1000, completion_cost=0.06 / 1000)
+    gpt4 = OpenAIModel(engine='gpt-4-0613', api_max_attempts=30, api_endpoint='chat', temperature=1.0, top_p=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.03 / 1000, completion_cost=0.06 / 1000)
 
     model_to_use = gpt4
 
@@ -148,16 +158,37 @@ def main():
 
     tree_depth = 2
 
-    max_examples = 1
+    max_examples = 3
 
     structure_retries = 1
 
 
     verbose = False
 
-    out_file = OUTPUT_FOLDER / 'custom_team_allocation.json'
+    # Create timestamped output folder
+    run_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_folder_name = f"team_allocation_samples-{max_examples}_{run_datetime}"
+    output_folder = OUTPUT_FOLDER / output_folder_name
+    output_folder.mkdir(parents=True, exist_ok=True)
+    
+    out_file = output_folder / f'team_allocation_samples-{max_examples}.json'
+    metadata_file = output_folder / 'run_metadata.txt'
+
+    print("="*80)
+    print("GENERATING TEAM ALLOCATION DATASET")
+    print("="*80)
+    print(f"\nConfiguration:")
+    print(f"  Max examples: {max_examples}")
+    print(f"  Tree depth: {tree_depth}")
+    print(f"  Structure retries: {structure_retries}")
+    print(f"  Model: {model_to_use.engine}")
+    print(f"  Output folder: {output_folder}")
+    print()
+
+    start_time = datetime.now()
     dataset = []
     previous_samples = [['']]
+    errors = []
 
     # Sample a description/scenario to build the story from
     madlib = creator.build_madlib(
@@ -177,6 +208,8 @@ def main():
     )
 
     total_cost = 0.0
+    total_prompt_tokens = 0
+    total_completion_tokens = 0
 
     idx = 0
     max_idx = int(max_examples * 1.5)
@@ -216,11 +249,15 @@ Output:
         '''.strip()
         output, _ = creator.inference(prompt, model_to_use)
 
-        cost = gpt35.total_cost + gpt16k35.total_cost + gpt4.total_cost
+        cost = model_to_use.total_cost
+        prompt_tokens = model_to_use.total_prompt_tokens
+        completion_tokens = model_to_use.total_completion_tokens
         total_cost += cost
-        gpt16k35.total_cost = 0.0
-        gpt35.total_cost = 0.0
-        gpt4.total_cost = 0.0
+        total_prompt_tokens += prompt_tokens
+        total_completion_tokens += completion_tokens
+        model_to_use.total_cost = 0.0
+        model_to_use.total_prompt_tokens = 0
+        model_to_use.total_completion_tokens = 0
 
         people = []
         skills = []
@@ -371,16 +408,103 @@ It should be short.  No longer than the original introduction.
             )
         )
 
-        cost = gpt4.total_cost + gpt16k35.total_cost + gpt35.total_cost
+        cost = model_to_use.total_cost
+        prompt_tokens = model_to_use.total_prompt_tokens
+        completion_tokens = model_to_use.total_completion_tokens
         total_cost += cost
-        gpt4.total_cost = 0.0
-        gpt35.total_cost = 0.0
-        gpt16k35.total_cost = 0.0
+        total_prompt_tokens += prompt_tokens
+        total_completion_tokens += completion_tokens
+        model_to_use.total_cost = 0.0
+        model_to_use.total_prompt_tokens = 0
+        model_to_use.total_completion_tokens = 0
 
-        print(f"Cost of example: {cost} | Total cost so far {total_cost}")
+        print(f"Cost: ${cost:.4f} | Tokens: {prompt_tokens:,} in / {completion_tokens:,} out | Total: ${total_cost:.4f}")
 
     out_file.parent.mkdir(exist_ok=True, parents=True)
-    json.dump(dataset, out_file.open('w'))
+    json.dump(dataset, out_file.open('w'), indent=2)
+
+    # Calculate final statistics
+    end_time = datetime.now()
+    total_elapsed = end_time - start_time
+    total_elapsed_str = str(total_elapsed).split('.')[0]
+    
+    total_samples = len(dataset)
+    total_tokens = total_prompt_tokens + total_completion_tokens
+    avg_cost_per_sample = total_cost / total_samples if total_samples > 0 else 0
+    avg_tokens_per_sample = total_tokens / total_samples if total_samples > 0 else 0
+    
+    # Write metadata file
+    metadata_content = f"""Run Metadata
+============
+
+Run Information:
+  Start Time: {start_time.strftime("%Y%m%d_%H%M%S")}
+  End Time: {end_time.strftime("%Y%m%d_%H%M%S")}
+  Total Elapsed: {total_elapsed_str}
+  Script: create_team_allocation.py
+
+Configuration:
+  Max Examples: {max_examples}
+  Tree Depth: {tree_depth}
+  Structure Retries: {structure_retries}
+
+Model Configuration:
+  Primary Model: {model_to_use.engine}
+  Temperature: {model_to_use.temperature}
+  Top P: {model_to_use.top_p}
+  Max Tokens: {model_to_use.max_tokens}
+
+Results:
+  Samples Generated: {total_samples}
+  Retried Samples: {real_idx - idx}
+
+Token Statistics:
+  Total Prompt Tokens: {total_prompt_tokens:,}
+  Total Completion Tokens: {total_completion_tokens:,}
+  Total Tokens: {total_tokens:,}
+  Avg Tokens Per Sample: {avg_tokens_per_sample:,.0f}
+
+Cost Statistics:
+  Total Cost: ${total_cost:.4f}
+  Avg Cost Per Sample: ${avg_cost_per_sample:.4f}
+
+Output Files:
+  - {out_file.name}
+  - {metadata_file.name}
+
+Description:
+  Team allocation dataset generation. Each sample has 3 people and 2 tasks.
+  The model generates scenarios, creates skill matrices, builds reasoning trees,
+  and generates story narratives from the facts.
+"""
+    
+    with open(metadata_file, 'w', encoding='utf-8') as f:
+        f.write(metadata_content)
+    
+    # Final summary
+    print(f"\n{'='*80}")
+    print("GENERATION COMPLETE")
+    print(f"{'='*80}")
+    print(f"\n📊 Generation Statistics:")
+    print(f"  Samples generated: {total_samples}")
+    print(f"  Retried samples: {real_idx - idx}")
+    print(f"  Total elapsed time: {total_elapsed_str}")
+    
+    print(f"\n🔢 Token Statistics:")
+    print(f"  Prompt tokens: {total_prompt_tokens:,}")
+    print(f"  Completion tokens: {total_completion_tokens:,}")
+    print(f"  Total tokens: {total_tokens:,}")
+    print(f"  Avg tokens per sample: {avg_tokens_per_sample:,.0f}")
+    
+    print(f"\n💰 Cost Statistics:")
+    print(f"  Total cost: ${total_cost:.4f}")
+    print(f"  Avg cost per sample: ${avg_cost_per_sample:.4f}")
+    
+    print(f"\n📁 Output:")
+    print(f"  Folder: {output_folder}")
+    print(f"  Data file: {out_file.name}")
+    print(f"  Metadata file: {metadata_file.name}")
+    print(f"{'='*80}\n")
 
 
 if __name__ == "__main__":

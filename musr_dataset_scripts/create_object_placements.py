@@ -13,12 +13,21 @@ import json
 import copy
 import sys
 import time
-from copy import deepcopy
 from pathlib import Path
 import random
 import pprint
 import re
 import traceback
+
+# Add parent directory to path so we can import from src
+SCRIPT_DIR = Path(__file__).parent.absolute()
+MUSR_DIR = SCRIPT_DIR.parent
+sys.path.insert(0, str(MUSR_DIR))
+
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv(SCRIPT_DIR / '.env')
+load_dotenv(MUSR_DIR / '.env')
 
 random.seed(0)
 
@@ -97,13 +106,17 @@ def remove_prepended_numbers(strings):
 
 def main():
     # CACHE
-    cache.enable()
+    cache.disable()  # Disable Redis caching - not needed for single sample generation
 
     # PARAMS (if not with a comment, look at the Object Placements dataset class for more info.)
 
     out_file = OUTPUT_FOLDER / 'custom_object_placements.json'
+    scaffolding_file = OUTPUT_FOLDER / 'custom_object_placements_scaffolding.json'
     if out_file:
         out_file.parent.mkdir(exist_ok=True, parents=True)
+
+    # Collect scaffolding data for all samples
+    all_scaffolding = []
 
     max_sequence_len = 3
     chance_to_see = 0.33
@@ -146,7 +159,7 @@ def main():
             things_to_create_description=["Create a scenario where a group of people are together and there is an item of great importance to at least one of those people. If this item is moved, and they don't know it has been moved, they could be negatively impacted. Do not number them, give the scenario separated by newlines only."],
             examples_of_things_to_create=[["Sarah is making coffee at her work, she wants to use almond milk for her customer.", "Aunt Mays medicine is always behind her mirror, she needs to take some of her pills before the day starts.", "Evidence is imperative for a detective, Winston needs his key to get into the evidence locker."]]
         )
-
+        
         # This scenario acts like a high level description of the story.
         descriptions, _, previous_samples = creator.sample_madlib(madlib, ['scenario_descriptions'], '{scenario_descriptions}', previously_sampled=previous_samples)
         description = descriptions[0]
@@ -267,6 +280,25 @@ Output:
 
             story_desc = lines[3].replace('Story outline:\n','').replace('Story Outline:\n','')
 
+            # Print scaffolding data for use as few-shot examples
+            if verbose:
+                print("\n=== SCAFFOLDING DATA (for few-shot examples) ===")
+                print(f"description: {description}")
+                print(f"\npeople_data:")
+                import json as _json
+                print(_json.dumps(people_data, indent=2))
+                print(f"\nstory_desc: {story_desc}")
+                print("=" * 50)
+
+            # Store scaffolding for this sample (moves added later)
+            current_scaffolding = {
+                "sample_idx": __idx,
+                "description": description,
+                "people_data": people_data,
+                "story_desc": story_desc,
+                "moves": [],  # Will be populated below
+            }
+
             for move_info in lines[5:]:
                 m = move_info.split('\n')
                 """Move 3 - Sarah moves the almond milk from the back shelves to the fridge.
@@ -285,6 +317,7 @@ Reason - She noticed the milk was left out for too long and put it back before i
                 }
 
                 moves.append(move_data)
+                current_scaffolding["moves"].append(move_data)
 
                 locations.extend([move_data['from'], move_data['to']])
                 items.append(move_data['item'])
@@ -312,14 +345,14 @@ Reason - She noticed the milk was left out for too long and put it back before i
                 continue
 
             # To check if the moves produced by the model are valid, we recreate them using our code.  This also gives
-            # us the belief states and observations of other people in the story.  This could be cleaner, but deadlines.
+            # us the belief states and observations of other people in the story.
             max_retries = 100_000
             mri = 0
             sampled = False
             while mri < max_retries:
                 mri += 1
                 events, beliefs, actual_locs, event_structure = creator.create_sequence_v2(
-                    items, deepcopy(locations), people, max_sequence_length=max_sequence_len, chance_subject_sees=chance_to_see, initial_starting_positions=world_state
+                    items, copy.deepcopy(locations), people, max_sequence_length=max_sequence_len, chance_subject_sees=chance_to_see, initial_starting_positions=world_state
                 )
 
                 retry = False
@@ -722,10 +755,22 @@ Output:
             )
         )
 
+        # Add final story to scaffolding and save
+        current_scaffolding["final_story"] = story
+        current_scaffolding["items"] = items
+        current_scaffolding["locations"] = locations
+        current_scaffolding["people"] = people
+        all_scaffolding.append(current_scaffolding)
+
         __idx += 1
 
 
     json.dump(dataset, out_file.open('w'))
+
+    # Save scaffolding data
+    with open(scaffolding_file, 'w', encoding='utf-8') as f:
+        json.dump(all_scaffolding, f, indent=2, ensure_ascii=False)
+    print(f"\nScaffolding data saved to: {scaffolding_file}")
 
     print(f"TOTAL COST: {total_cost} | {total_cost / max_examples} per example.")
 

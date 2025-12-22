@@ -64,7 +64,7 @@ class ModelValidator(Validator):
         if self.early_escape_model:
             early_prompt = f'{self.prompt}\n\nThe Deduction:\n{raw_output}\n\nWrite your answer in the following format:\nANSWER: (yes/no)'
             early_output = self.early_escape_model.inference(early_prompt)
-            early_output = early_output.choices[0]['message']['content']
+            early_output = early_output['choices'][0]['message']['content']
             early_answer = early_output.split('ANSWER:')[-1]
 
             if self.answer_for_validity.lower() in early_answer.lower():
@@ -72,7 +72,7 @@ class ModelValidator(Validator):
 
         prompt = f'{self.prompt}\n\nThe Deduction:\n{raw_output}\n\nWrite a short description of your reasoning then answer in the following format:\nANSWER: (yes/no)'
         output = self.model.inference(prompt)
-        output = output.choices[0]['message']['content']
+        output = output['choices'][0]['message']['content']
         answer = output.split('ANSWER:')[-1]
 
         if self.answer_for_validity.lower() in answer.lower():

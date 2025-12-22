@@ -402,7 +402,7 @@ class DatasetBuilder:
                     sys.exit(0)
 
                 raw = model.inference(prompt)
-                output = raw.choices[0]['message']['content']
+                output = raw['choices'][0]['message']['content']
 
                 def parse_out(output):
                     facts_from_story = []
@@ -435,7 +435,7 @@ class DatasetBuilder:
                     else:
                         raw = retry_model.inference(prompt)
 
-                    output = raw.choices[0]['message']['content']
+                    output = raw['choices'][0]['message']['content']
 
                     facts_from_story, cs_knowledge = parse_out(output)
 
@@ -471,7 +471,7 @@ class DatasetBuilder:
             raw = model.inference(prompt, temperature=temperature)
         else:
             raw = model.inference(prompt)
-        output = raw.choices[0]['message']['content']
+        output = raw['choices'][0]['message']['content']
 
         return output, raw
 
@@ -562,7 +562,7 @@ class DatasetBuilder:
             while retry_idx <= max_retries_on_error:
                 all_valid = True
                 raw = model.inference(prompt)
-                output = raw.choices[0]['message']['content']
+                output = raw['choices'][0]['message']['content']
 
                 facts_from_story, cs_knowledge = parse_out(output)
 

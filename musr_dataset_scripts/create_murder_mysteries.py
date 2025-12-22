@@ -14,6 +14,17 @@ import json
 import sys
 from pathlib import Path
 import random
+from datetime import datetime
+
+# Add parent directory to path so we can import from src
+SCRIPT_DIR = Path(__file__).parent.absolute()
+MUSR_DIR = SCRIPT_DIR.parent
+sys.path.insert(0, str(MUSR_DIR))
+
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv(SCRIPT_DIR / '.env')
+load_dotenv(MUSR_DIR / '.env')
 
 random.seed(0)
 
@@ -123,11 +134,12 @@ example_descriptions = [example1_description, example2_description, example3_des
 
 def main():
     # CACHE
-    cache.disable()  # Disable Redis caching - not needed for single sample generation
+    # cache.enable()
+    cache.disable()
 
     # PARAMS (if not with a comment, look at the Murder Mystery dataset class for more info.)
 
-    max_examples = 1
+    max_examples = 125
     tree_depth = 3
 
     max_number_of_suspects = 2
@@ -136,21 +148,41 @@ def main():
 
     use_validators = True
 
-    out_file = OUTPUT_FOLDER / 'custom_murder_mysteries.json'
-    if out_file:
-        out_file.parent.mkdir(exist_ok=True, parents=True)
+    # Models we found helpful to use.  In our finalized dataset, we only used gpt4.
+    gpt35 = OpenAIModel(engine='gpt-3.5-turbo', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=1500, num_samples=1, prompt_cost=0.0015/1000, completion_cost=0.002/1000)
+    gpt16k35 = OpenAIModel(engine='gpt-3.5-turbo-16k', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.003/1000, completion_cost=0.004/1000)
+    gpt4 = OpenAIModel(engine='gpt-4-0613', api_max_attempts=30, api_endpoint='chat', temperature=1.0, top_p=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.03/1000, completion_cost=0.06/1000)
+
+    model_to_use = gpt4
+
+    # Create timestamped output folder
+    run_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_folder_name = f"murder_mystery_samples-{max_examples}_{run_datetime}"
+    output_folder = OUTPUT_FOLDER / output_folder_name
+    output_folder.mkdir(parents=True, exist_ok=True)
+    
+    out_file = output_folder / f'murder_mystery_samples-{max_examples}.json'
+    metadata_file = output_folder / 'run_metadata.txt'
+
+    print("="*80)
+    print("GENERATING MURDER MYSTERY DATASET")
+    print("="*80)
+    print(f"\nConfiguration:")
+    print(f"  Max examples: {max_examples}")
+    print(f"  Suspects per story: {max_number_of_suspects}")
+    print(f"  Questions per story: {max_number_of_suspects} (one per suspect as murderer)")
+    print(f"  Total expected questions: {max_examples * max_number_of_suspects}")
+    print(f"  Tree depth: {tree_depth}")
+    print(f"  Model: {model_to_use.engine}")
+    print(f"  Output folder: {output_folder}")
+    print()
 
     dataset = []
 
     total_cost = 0
-
-    # Models we foudn helpful to use.  In our finalized dataset, we only used gpt4.
-    # NOTE: temperature=1.0 gives creative variety (different story text with same facts each run)
-    gpt35 = OpenAIModel(engine='gpt-3.5-turbo', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=1500, num_samples=1, prompt_cost=0.0015/1000, completion_cost=0.002/1000)
-    gpt16k35 = OpenAIModel(engine='gpt-3.5-turbo-16k', api_endpoint='chat', api_max_attempts=30, temperature=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.003/1000, completion_cost=0.004/1000)
-    gpt4 = OpenAIModel(engine='gpt-4', api_max_attempts=30, api_endpoint='chat', temperature=1.0, top_p=1.0, max_tokens=2400, num_samples=1, prompt_cost=0.03/1000, completion_cost=0.06/1000)
-
-    model_to_use = gpt16k35
+    total_prompt_tokens = 0
+    total_completion_tokens = 0
+    start_time = datetime.now()
 
     creator = MurderMysteryDataset()
 
@@ -262,12 +294,21 @@ def main():
 
             choices = [x['suspect_info']["suspect"] for x in _suspect_trees]
 
-            call_cost = gpt35.total_cost + gpt16k35.total_cost + gpt4.total_cost
+            # Track costs from model_to_use (main model) + gpt16k35 (early escape validator)
+            # Note: model_to_use and gpt4 (validator model) may be the same object
+            call_cost = model_to_use.total_cost + gpt16k35.total_cost
+            call_prompt_tokens = model_to_use.total_prompt_tokens + gpt16k35.total_prompt_tokens
+            call_completion_tokens = model_to_use.total_completion_tokens + gpt16k35.total_completion_tokens
             total_cost += call_cost
-            print(f'EXAMPLE COST: {call_cost:.2f} | TOTAL COST SO FAR: {total_cost:.2f}')
-            gpt35.total_cost = 0.0
+            total_prompt_tokens += call_prompt_tokens
+            total_completion_tokens += call_completion_tokens
+            print(f'EXAMPLE COST: ${call_cost:.4f} | Tokens: {call_prompt_tokens:,} in / {call_completion_tokens:,} out | TOTAL: ${total_cost:.4f}')
+            model_to_use.total_cost = 0.0
+            model_to_use.total_prompt_tokens = 0
+            model_to_use.total_completion_tokens = 0
             gpt16k35.total_cost = 0.0
-            gpt4.total_cost = 0.0
+            gpt16k35.total_prompt_tokens = 0
+            gpt16k35.total_completion_tokens = 0
 
             safe_suspects_dict = [{k: v.to_json() if isinstance(v, LogicTree) else v for k, v in x.items()} for x in _suspect_trees]
             dataset.append(
@@ -282,12 +323,100 @@ def main():
             )
 
             if out_file:
-                json.dump(dataset, out_file.open('w'))
+                json.dump(dataset, out_file.open('w'), indent=2)
 
     if out_file:
-        json.dump(dataset, out_file.open('w'))
+        json.dump(dataset, out_file.open('w'), indent=2)
 
-    print(f"TOTAL COST: {total_cost} | {total_cost / max_examples} per example.")
+    # Calculate final statistics
+    end_time = datetime.now()
+    total_elapsed = end_time - start_time
+    total_elapsed_str = str(total_elapsed).split('.')[0]
+    
+    total_questions = len(dataset)
+    total_stories = max_examples
+    total_tokens = total_prompt_tokens + total_completion_tokens
+    avg_cost_per_story = total_cost / total_stories if total_stories > 0 else 0
+    avg_cost_per_question = total_cost / total_questions if total_questions > 0 else 0
+    avg_tokens_per_story = total_tokens / total_stories if total_stories > 0 else 0
+    
+    # Write metadata file
+    metadata_content = f"""Run Metadata
+============
+
+Run Information:
+  Start Time: {start_time.strftime("%Y%m%d_%H%M%S")}
+  End Time: {end_time.strftime("%Y%m%d_%H%M%S")}
+  Total Elapsed: {total_elapsed_str}
+  Script: create_murder_mysteries.py
+
+Configuration:
+  Max Examples (Stories): {max_examples}
+  Suspects Per Story: {max_number_of_suspects}
+  Tree Depth: {tree_depth}
+  Max Structure Completion Retries: {max_structure_completion_retries}
+  Max Suspicious Facts: {max_num_suspicious_facts}
+  Use Validators: {use_validators}
+
+Model Configuration:
+  Primary Model: {model_to_use.engine}
+  Validator Model: {gpt4.engine}
+  Temperature: {model_to_use.temperature}
+
+Results:
+  Stories Generated: {total_stories}
+  Total Questions: {total_questions}
+  Questions Per Story: {max_number_of_suspects}
+
+Token Statistics:
+  Total Prompt Tokens: {total_prompt_tokens:,}
+  Total Completion Tokens: {total_completion_tokens:,}
+  Total Tokens: {total_tokens:,}
+  Avg Tokens Per Story: {avg_tokens_per_story:,.0f}
+
+Cost Statistics:
+  Total Cost: ${total_cost:.4f}
+  Avg Cost Per Story: ${avg_cost_per_story:.4f}
+  Avg Cost Per Question: ${avg_cost_per_question:.4f}
+
+Output Files:
+  - {out_file.name}
+  - {metadata_file.name}
+
+Description:
+  Murder mystery dataset generation. Each story has {max_number_of_suspects} suspects,
+  and generates {max_number_of_suspects} questions (one per suspect as the murderer).
+  Stories include detective Winston interviewing suspects at various crime scenes.
+"""
+    
+    with open(metadata_file, 'w', encoding='utf-8') as f:
+        f.write(metadata_content)
+    
+    # Final summary
+    print(f"\n{'='*80}")
+    print("GENERATION COMPLETE")
+    print(f"{'='*80}")
+    print(f"\n📊 Generation Statistics:")
+    print(f"  Stories generated: {total_stories}")
+    print(f"  Total questions: {total_questions}")
+    print(f"  Total elapsed time: {total_elapsed_str}")
+    
+    print(f"\n🔢 Token Statistics:")
+    print(f"  Prompt tokens: {total_prompt_tokens:,}")
+    print(f"  Completion tokens: {total_completion_tokens:,}")
+    print(f"  Total tokens: {total_tokens:,}")
+    print(f"  Avg tokens per story: {avg_tokens_per_story:,.0f}")
+    
+    print(f"\n💰 Cost Statistics:")
+    print(f"  Total cost: ${total_cost:.4f}")
+    print(f"  Avg cost per story: ${avg_cost_per_story:.4f}")
+    print(f"  Avg cost per question: ${avg_cost_per_question:.4f}")
+    
+    print(f"\n📁 Output:")
+    print(f"  Folder: {output_folder}")
+    print(f"  Data file: {out_file.name}")
+    print(f"  Metadata file: {metadata_file.name}")
+    print(f"{'='*80}\n")
 
 
 if __name__ == "__main__":
