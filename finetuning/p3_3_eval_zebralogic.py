@@ -28,6 +28,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from tqdm import tqdm
+import torch
 
 # ============================================================================
 # Configuration
@@ -155,118 +156,192 @@ def load_zebralogic_dataset(limit: Optional[int] = None):
     return docs
 
 
+def load_existing_progress(progress_file: Path) -> tuple[set, list]:
+    """Load existing progress from JSONL file.
+    
+    Returns:
+        tuple of (set of completed indices, list of results)
+    """
+    completed_indices = set()
+    results = []
+    
+    if progress_file.exists():
+        with open(progress_file, 'r') as f:
+            for line in f:
+                try:
+                    result = json.loads(line.strip())
+                    completed_indices.add(result["index"])
+                    results.append(result)
+                except (json.JSONDecodeError, KeyError):
+                    pass
+    
+    return completed_indices, results
+
+
+def save_result_to_jsonl(result: dict, progress_file: Path):
+    """Append a single result to the JSONL progress file."""
+    with open(progress_file, 'a') as f:
+        f.write(json.dumps(result) + '\n')
+
+@torch.inference_mode()
 def run_zebralogic_eval(
     model,
     tokenizer,
     limit: Optional[int] = None,
     output_dir: Optional[Path] = None,
     model_name: str = "model",
+    batch_size: int = 4,
 ) -> dict:
     """
-    Run ZebraLogic evaluation.
+    Run ZebraLogic evaluation with batched inference and progress saving.
     
-    Returns dict with accuracy metrics.
+    Args:
+        model: The loaded model
+        tokenizer: The tokenizer
+        limit: Optional limit on number of puzzles
+        output_dir: Directory to save results
+        model_name: Name for logging/saving
+        batch_size: Number of puzzles to process in parallel
+    
+    Returns:
+        dict with accuracy metrics.
     """
     import torch
+    
+    # Setup output and progress file
+    if output_dir:
+        output_dir.mkdir(parents=True, exist_ok=True)
+    progress_file = output_dir / f"{model_name}_progress.jsonl" if output_dir else None
+    
+    # Load existing progress for resume
+    completed_indices = set()
+    results = []
+    if progress_file:
+        completed_indices, results = load_existing_progress(progress_file)
+        if completed_indices:
+            print(f"Resuming from {len(completed_indices)} previously completed puzzles")
     
     # Load ZebraLogic dataset
     docs = load_zebralogic_dataset(limit)
     
-    print(f"Evaluating on {len(docs)} ZebraLogic puzzles...")
+    # Filter out already completed docs
+    remaining_docs = [doc for doc in docs if doc.get("index", doc.get("id", 0)) not in completed_indices]
     
-    results = []
-    correct = 0
-    total_cells_correct = 0
-    total_cells = 0
-    parsed_count = 0
+    print(f"Evaluating on {len(remaining_docs)} remaining ZebraLogic puzzles (batch_size={batch_size})...")
+    
+    # Setup tokenizer for batched encoding
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"  # Left padding for generation
     
     # Generation settings
     max_new_tokens = 4096
-    temperature = 0.0
-    do_sample = False
     
-    for doc in tqdm(docs, desc="Evaluating"):
-        # Build prompt using ZebraLogic format
-        prompt = build_zebralogic_prompt(doc)
+    # Process in batches
+    for batch_start in tqdm(range(0, len(remaining_docs), batch_size), desc="Batches"):
+        batch_docs = remaining_docs[batch_start:batch_start + batch_size]
         
-        # Format as chat
-        messages = [{"role": "user", "content": prompt}]
-        chat_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        # Build prompts for batch
+        prompts = []
+        for doc in batch_docs:
+            prompt = build_zebralogic_prompt(doc)
+            messages = [{"role": "user", "content": prompt}]
+            chat_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+            prompts.append(chat_prompt)
         
-        # Generate
-        inputs = tokenizer(chat_prompt, return_tensors="pt").to(model.device)
+        # Tokenize batch with padding
+        inputs = tokenizer(
+            prompts,
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            max_length=8192,
+        ).to(model.device)
         
+        input_lengths = [inputs['attention_mask'][i].sum().item() for i in range(len(batch_docs))]
+        
+        # Generate for entire batch
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
                 max_new_tokens=max_new_tokens,
-                do_sample=do_sample,
-                temperature=temperature if do_sample else None,
+                do_sample=False,
                 pad_token_id=tokenizer.eos_token_id,
             )
         
-        response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
-        
-        # Parse response and evaluate
-        solution_table = build_solution_table(doc)
-        parsed_solution = extract_json_solution(response)
-        
-        # Determine difficulty from size
-        size = doc.get("size", "")
-        easy_sizes = ["2*2", "2*3", "2*4", "2*5", "2*6", "3*2", "3*3"]
-        difficulty = "easy" if size in easy_sizes else "hard"
-        
-        if parsed_solution:
-            parsed_count += 1
-            # Calculate cell accuracy
-            cells_correct, cells_total = compare_solutions(parsed_solution, solution_table)
-            total_cells_correct += cells_correct
-            total_cells += cells_total
+        # Decode and evaluate each response in the batch
+        for i, doc in enumerate(batch_docs):
+            # Extract response (skip input tokens)
+            response = tokenizer.decode(
+                outputs[i][input_lengths[i]:],
+                skip_special_tokens=True
+            )
             
-            # Puzzle is correct if all cells match
-            is_correct = cells_correct == cells_total
-            if is_correct:
-                correct += 1
-        else:
-            # Count total cells from solution
-            total_cells += sum(len(attrs) for attrs in solution_table.values())
-            is_correct = False
-        
-        result = {
-            "index": doc.get("index", doc.get("id", 0)),
-            "size": size,
-            "difficulty": difficulty,
-            "correct": is_correct,
-            "parsed": parsed_solution is not None,
-            "response": response[:500],  # Truncate for logging
-            "gold": solution_table,
-            "predicted": parsed_solution,
-        }
-        results.append(result)
+            # Parse response and evaluate
+            solution_table = build_solution_table(doc)
+            parsed_solution = extract_json_solution(response)
+            
+            # Determine difficulty from size
+            size = doc.get("size", "")
+            easy_sizes = ["2*2", "2*3", "2*4", "2*5", "2*6", "3*2", "3*3"]
+            difficulty = "easy" if size in easy_sizes else "hard"
+            
+            # Calculate accuracy
+            if parsed_solution:
+                cells_correct, cells_total = compare_solutions(parsed_solution, solution_table)
+                is_correct = cells_correct == cells_total
+            else:
+                cells_correct = 0
+                cells_total = sum(len(attrs) for attrs in solution_table.values())
+                is_correct = False
+            
+            result = {
+                "index": doc.get("index", doc.get("id", 0)),
+                "size": size,
+                "difficulty": difficulty,
+                "correct": is_correct,
+                "parsed": parsed_solution is not None,
+                "cells_correct": cells_correct,
+                "cells_total": cells_total,
+                "response": response[:1000],  # Truncate for logging
+                "gold": solution_table,
+                "predicted": parsed_solution,
+            }
+            results.append(result)
+            
+            # Save progress immediately
+            if progress_file:
+                save_result_to_jsonl(result, progress_file)
     
-    # Calculate metrics
+    # Calculate final metrics
+    total_docs = len(results)
+    correct = sum(1 for r in results if r["correct"])
+    parsed_count = sum(1 for r in results if r["parsed"])
+    total_cells_correct = sum(r.get("cells_correct", 0) for r in results)
+    total_cells = sum(r.get("cells_total", 0) for r in results)
+    
     metrics = {
-        "puzzle_accuracy": correct / len(docs) if docs else 0,
+        "puzzle_accuracy": correct / total_docs if total_docs else 0,
         "cell_accuracy": total_cells_correct / total_cells if total_cells else 0,
-        "parsed_rate": parsed_count / len(docs) if docs else 0,
+        "parsed_rate": parsed_count / total_docs if total_docs else 0,
         "correct": correct,
-        "total": len(docs),
+        "total": total_docs,
     }
     
     print(f"\n{'='*60}")
     print(f"ZebraLogic Results ({model_name}):")
-    print(f"  Puzzle Accuracy: {metrics['puzzle_accuracy']:.2%} ({correct}/{len(docs)})")
+    print(f"  Puzzle Accuracy: {metrics['puzzle_accuracy']:.2%} ({correct}/{total_docs})")
     print(f"  Cell Accuracy:   {metrics['cell_accuracy']:.2%}")
     print(f"  Parse Rate:      {metrics['parsed_rate']:.2%}")
     print(f"{'='*60}\n")
     
-    # Save results
+    # Save final results summary
     if output_dir:
-        output_dir.mkdir(parents=True, exist_ok=True)
         results_file = output_dir / f"{model_name}_results.json"
         with open(results_file, "w") as f:
-            json.dump({"metrics": metrics, "results": results}, f, indent=2)
+            json.dump({"metrics": metrics, "num_results": len(results)}, f, indent=2)
         print(f"Results saved to: {results_file}")
+        print(f"Progress saved to: {progress_file}")
     
     return metrics
 
@@ -442,10 +517,12 @@ def main():
     # Evaluation settings
     parser.add_argument("--limit", type=int, default=None,
                         help="Limit number of puzzles to evaluate")
+    parser.add_argument("--batch-size", type=int, default=4,
+                        help="Batch size for generation (default: 4)")
     
     # Output
-    parser.add_argument("--output-dir", type=str, default=str(OUTPUT_DIR),
-                        help="Output directory for results")
+    parser.add_argument("--output-dir", type=str, default=None,
+                        help="Output directory (defaults to outputs/zebralogic_results/{wandb_id} for auto-resume)")
     
     # Utility
     parser.add_argument("--list-checkpoints", action="store_true",
@@ -465,9 +542,20 @@ def main():
                 print(f"  path: {ckpt['path']}\n")
         return 0
     
-    # Setup output directory
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_base = Path(args.output_dir) / timestamp
+    # Setup output directory - default to wandb_id for auto-resume
+    if args.output_dir:
+        output_base = Path(args.output_dir)
+    elif args.wandb_id:
+        # Use wandb_id as directory name for automatic resume
+        output_base = OUTPUT_DIR / args.wandb_id
+    elif args.peft_path:
+        # Extract name from peft path
+        peft_name = Path(args.peft_path).name
+        output_base = OUTPUT_DIR / peft_name
+    else:
+        # Create new timestamped directory
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_base = OUTPUT_DIR / timestamp
     
     # Determine what to evaluate
     run_base = args.base_only or args.compare
@@ -501,6 +589,7 @@ def main():
             limit=args.limit,
             output_dir=output_base,
             model_name="base",
+            batch_size=args.batch_size,
         )
         
         # Clean up
@@ -521,6 +610,7 @@ def main():
             limit=args.limit,
             output_dir=output_base,
             model_name="finetuned",
+            batch_size=args.batch_size,
         )
     
     # Compare results
