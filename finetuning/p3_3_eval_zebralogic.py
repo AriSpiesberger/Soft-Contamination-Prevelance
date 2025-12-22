@@ -2,22 +2,29 @@
 Evaluate finetuned models on ZebraLogic using oe-eval Python API.
 
 This script loads the model with QLoRA + PEFT directly and runs ZebraLogic evaluation.
+Results are automatically logged back to the original wandb run as zebralogic/acc metrics.
 
 Usage:
-    # Evaluate finetuned model by wandb ID
-    python p4_3_eval_zebralogic.py --wandb-id dkgqk7s2
+    # Evaluate finetuned model by wandb ID (logs to wandb automatically)
+    python p3_3_eval_zebralogic.py --wandb-id dkgqk7s2
+    
+    # Evaluate with specific wandb project
+    python p3_3_eval_zebralogic.py --wandb-id dkgqk7s2 --wandb-project my-project
+    
+    # Evaluate without logging to wandb
+    python p3_3_eval_zebralogic.py --wandb-id dkgqk7s2 --no-wandb
     
     # Evaluate base model
-    python p4_3_eval_zebralogic.py --base-only
+    python p3_3_eval_zebralogic.py --base-only
     
     # Compare base vs finetuned
-    python p4_3_eval_zebralogic.py --wandb-id dkgqk7s2 --compare
+    python p3_3_eval_zebralogic.py --wandb-id dkgqk7s2 --compare
     
     # Limit samples for quick testing
-    python p4_3_eval_zebralogic.py --wandb-id dkgqk7s2 --limit 10
+    python p3_3_eval_zebralogic.py --wandb-id dkgqk7s2 --limit 10
     
     # List available checkpoints
-    python p4_3_eval_zebralogic.py --list-checkpoints
+    python p3_3_eval_zebralogic.py --list-checkpoints
 """
 
 import argparse
@@ -29,6 +36,7 @@ from pathlib import Path
 from typing import Optional
 from tqdm import tqdm
 import torch
+import wandb
 
 # ============================================================================
 # Configuration
@@ -492,6 +500,91 @@ def compare_solutions(predicted: dict, gold: dict) -> tuple[int, int]:
     return correct, total
 
 
+def log_metrics_to_wandb(
+    wandb_id: str,
+    metrics: dict,
+    wandb_project: str = DEFAULT_WANDB_PROJECT,
+    eval_command: Optional[str] = None,
+) -> bool:
+    """
+    Log ZebraLogic evaluation metrics to the original wandb run.
+    
+    Args:
+        wandb_id: The wandb run ID from finetuning
+        metrics: Dict of evaluation metrics
+        wandb_project: The wandb project name
+        eval_command: Optional eval command to save
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        print(f"\nLogging metrics to wandb run {wandb_id} (project: {wandb_project})...")
+        
+        # Resume the original run to add metrics
+        run = wandb.init(
+            id=wandb_id,
+            project=wandb_project,
+            resume="allow",
+        )
+        
+        # Try to get original training command from run config/notes
+        training_command = None
+        try:
+            if run.config:
+                # Check if there's command info in config
+                training_command = run.config.get("command", None)
+        except Exception:
+            pass
+        
+        # Log metrics with zebralogic prefix
+        zebralogic_metrics = {
+            f"zebralogic/{k}": v for k, v in metrics.items()
+            if k not in ["correct", "total"]  # Skip raw counts, keep rates
+        }
+        
+        # Also add the raw accuracy as a top-level metric for easy viewing
+        zebralogic_metrics["zebralogic/acc"] = metrics.get("puzzle_accuracy", 0)
+        
+        wandb.log(zebralogic_metrics)
+        
+        # Update run summary with final metrics
+        for k, v in zebralogic_metrics.items():
+            wandb.run.summary[k] = v
+        
+        # Save eval command if provided
+        if eval_command:
+            wandb.run.summary["zebralogic/eval_command"] = eval_command
+        
+        # Try to save training command if it looks like it used p2_finetune_model.py
+        if training_command and "p2_finetune_model" in str(training_command):
+            wandb.run.summary["training_command"] = training_command
+        
+        wandb.finish()
+        print(f"✓ Metrics logged to wandb run: {wandb_id}")
+        return True
+        
+    except Exception as e:
+        print(f"Warning: Could not log to wandb: {e}")
+        return False
+
+
+def get_wandb_project_from_run(wandb_id: str) -> Optional[str]:
+    """Try to find the wandb project for a given run ID by checking the API."""
+    try:
+        api = wandb.Api()
+        # Try common project names
+        for project in [DEFAULT_WANDB_PROJECT, "olmo3-murder-mystery-finetune", "sdtd-finetune"]:
+            try:
+                run = api.run(f"{api.default_entity}/{project}/{wandb_id}")
+                return project
+            except wandb.errors.CommError:
+                continue
+        return None
+    except Exception:
+        return None
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Evaluate models on ZebraLogic using oe-eval",
@@ -523,6 +616,12 @@ def main():
     # Output
     parser.add_argument("--output-dir", type=str, default=None,
                         help="Output directory (defaults to outputs/zebralogic_results/{wandb_id} for auto-resume)")
+    
+    # Wandb logging
+    parser.add_argument("--wandb-project", type=str, default=None,
+                        help="Wandb project name (auto-detected if not specified)")
+    parser.add_argument("--no-wandb", action="store_true",
+                        help="Disable logging metrics to wandb")
     
     # Utility
     parser.add_argument("--list-checkpoints", action="store_true",
@@ -612,6 +711,27 @@ def main():
             model_name="finetuned",
             batch_size=args.batch_size,
         )
+        
+        # Log metrics to original wandb run
+        if args.wandb_id and not args.no_wandb:
+            # Determine wandb project
+            wandb_project = args.wandb_project
+            if not wandb_project:
+                # Try to auto-detect from the run
+                wandb_project = get_wandb_project_from_run(args.wandb_id)
+                if not wandb_project:
+                    wandb_project = DEFAULT_WANDB_PROJECT
+                    print(f"Using default wandb project: {wandb_project}")
+            
+            # Build eval command for reference
+            eval_command = " ".join(sys.argv)
+            
+            log_metrics_to_wandb(
+                wandb_id=args.wandb_id,
+                metrics=finetuned_metrics,
+                wandb_project=wandb_project,
+                eval_command=eval_command,
+            )
     
     # Compare results
     if base_metrics and finetuned_metrics:
