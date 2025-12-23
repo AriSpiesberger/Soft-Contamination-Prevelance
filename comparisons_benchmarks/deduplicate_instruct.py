@@ -10,6 +10,7 @@ import os
 import json
 import gc
 import re
+import gzip
 from pathlib import Path
 from dataclasses import dataclass
 from tqdm import tqdm
@@ -518,13 +519,13 @@ def main():
     # Save the initial randomly sampled dataset
     sample_name = f"random_sample_{args.sample_size}"
     initial_output_path = Path(config.output_dir) / sample_name
-    initial_json_path = Path(config.output_dir) / f"{sample_name}.jsonl"
+    initial_json_path = Path(config.output_dir) / f"{sample_name}.jsonl.gz"
     print(f"\n💾 Saving initial random sample ({len(instruct_ds):,} texts) to:")
     print(f"   Dataset: {initial_output_path}")
-    print(f"   JSONL: {initial_json_path}")
+    print(f"   JSONL (compressed): {initial_json_path}")
     instruct_ds.save_to_disk(str(initial_output_path))
-    # Examples are already in input/output format, so just write directly
-    with open(initial_json_path, 'w', encoding='utf-8') as f:
+    # Examples are already in input/output format, so just write directly with compression
+    with gzip.open(initial_json_path, 'wt', encoding='utf-8') as f:
         for example in tqdm(instruct_ds, desc="Writing initial sample"):
             f.write(json.dumps(example, ensure_ascii=False) + '\n')
     print(f"✅ Initial sample saved!")
@@ -653,9 +654,9 @@ def main():
     filtered_ds.save_to_disk(str(output_path))
 
     # Also save as JSON for easy inspection
-    json_path = Path(config.output_dir) / "deduplicated_instruct.jsonl"
-    print(f"Saving to {json_path}...")
-    with open(json_path, 'w', encoding='utf-8') as f:
+    json_path = Path(config.output_dir) / "deduplicated_instruct.jsonl.gz"
+    print(f"Saving to {json_path} (compressed)...")
+    with gzip.open(json_path, 'wt', encoding='utf-8') as f:
         for example in tqdm(filtered_ds, desc="Writing JSONL"):
             example_dict = clean_example_for_json(example)
             f.write(json.dumps(example_dict, ensure_ascii=False) + '\n')
