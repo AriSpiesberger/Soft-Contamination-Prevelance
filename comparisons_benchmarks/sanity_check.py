@@ -50,13 +50,15 @@ def load_parquet_data(parquet_path: Path):
             text_col = c
             break
     
+    # Look for both hash_id and id
+    hash_id_col = None
     id_col = None
-    for c in ['id', 'hash_id', 'doc_hash', 'doc_id']:
-        if c in cols:
-            id_col = c
-            break
+    if 'hash_id' in cols:
+        hash_id_col = 'hash_id'
+    if 'id' in cols:
+        id_col = 'id'
     
-    print(f"  Found columns: embeddings, text={text_col}, id={id_col}")
+    print(f"  Found columns: embeddings, text={text_col}, id={id_col}, hash_id={hash_id_col}")
     
     # Get embedding dimension from schema
     emb_field = pf.schema_arrow.field('embeddings')
@@ -74,11 +76,14 @@ def load_parquet_data(parquet_path: Path):
         cols_to_read.append(text_col)
     if id_col:
         cols_to_read.append(id_col)
+    if hash_id_col:
+        cols_to_read.append(hash_id_col)
     
     # Read all row groups, process chunks without combining
     all_mats = []
     all_texts = []
     all_ids = []
+    all_hash_ids = []
     
     for rg_idx in range(pf.num_row_groups):
         table = pf.read_row_group(rg_idx, columns=cols_to_read)
@@ -89,6 +94,8 @@ def load_parquet_data(parquet_path: Path):
             texts_rg = table[text_col].to_pylist()
         if id_col:
             ids_rg = table[id_col].to_pylist()
+        if hash_id_col:
+            hash_ids_rg = table[hash_id_col].to_pylist()
         
         # Track offset for this row group
         row_offset = 0
@@ -104,6 +111,8 @@ def load_parquet_data(parquet_path: Path):
                 all_texts.extend(texts_rg[row_offset:row_offset+n])
             if id_col:
                 all_ids.extend(ids_rg[row_offset:row_offset+n])
+            if hash_id_col:
+                all_hash_ids.extend(hash_ids_rg[row_offset:row_offset+n])
             row_offset += n
             
             # Extract values from fixed_size_list chunk
@@ -140,8 +149,10 @@ def load_parquet_data(parquet_path: Path):
     # Generate IDs if not available
     if not all_ids:
         all_ids = [f"{parquet_path.stem}_{i}" for i in range(len(final_mat))]
+    if not all_hash_ids:
+        all_hash_ids = [None] * len(final_mat)
     
-    return final_mat, all_texts, all_ids
+    return final_mat, all_texts, all_ids, all_hash_ids
 
 
 def main():
@@ -200,7 +211,7 @@ def main():
     torch.cuda.empty_cache()
 
     # Load ALL embeddings, texts, and IDs from the parquet file
-    corpus_embs, corpus_texts, corpus_ids = load_parquet_data(parquet_path)
+    corpus_embs, corpus_texts, corpus_ids, corpus_hash_ids = load_parquet_data(parquet_path)
 
     # Compute similarities (both are already normalized)
     print("\nComputing cosine similarities...")
@@ -229,7 +240,8 @@ def main():
     print(f"\n=== Top 10 matches ===")
     for i in range(min(10, len(top_scores))):
         idx = top_indices[i]
-        print(f"  {i+1}. score={top_scores[i]:.4f}, id={corpus_ids[idx]}, index={idx}")
+        hash_id_str = f", hash_id={corpus_hash_ids[idx]}" if corpus_hash_ids[idx] is not None else ""
+        print(f"  {i+1}. score={top_scores[i]:.4f}, id={corpus_ids[idx]}{hash_id_str}, index={idx}")
     
     # Create output directory
     output_dir = Path("sanity_check_plots")
@@ -288,6 +300,7 @@ def main():
             'score': float(top_scores[i]),
             'index': int(idx),
             'id': str(corpus_ids[idx]),
+            'hash_id': str(corpus_hash_ids[idx]) if corpus_hash_ids[idx] is not None else None,
             'text': corpus_texts[idx] if corpus_texts and idx < len(corpus_texts) else None
         }
         top_comparisons.append(comparison)
