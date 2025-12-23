@@ -8,19 +8,22 @@ Usage:
     python p3_1_eval_baseline.py --max-samples 10   # Quick test
 
 Requirements:
-    pip install lighteval[accelerate] bitsandbytes peft transformers
+    pip install lighteval[accelerate] bitsandbytes peft transformers wandb
 """
 
 import argparse
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
+import wandb
 from lighteval.logging.evaluation_tracker import EvaluationTracker
 from lighteval.pipeline import Pipeline, PipelineParameters, ParallelismManager
 from lighteval.models.transformers.adapter_model import AdapterModelConfig
 from lighteval.models.transformers.transformers_model import TransformersModelConfig
 from lighteval.models.model_input import GenerationParameters
+import torch
 
 # ============================================================================
 # Configuration
@@ -29,6 +32,7 @@ from lighteval.models.model_input import GenerationParameters
 MODEL_REPO = "allenai/Olmo-3-7B-Instruct"
 WANDB_ID = "3ga4dhm9"
 FINETUNED_MODEL_PATH = f"./outputs/checkpoints/olmo3-murder-mystery-qlora-{WANDB_ID}"
+WANDB_PROJECT = "olmo3-murder-mystery"
 
 OUTPUT_DIR = Path("./outputs/eval_results")
 
@@ -48,12 +52,27 @@ COT_GENERATION_PARAMS = GenerationParameters(
 )
 
 
+def extract_wandb_id(peft_path: str) -> str | None:
+    """Extract wandb run ID from peft path (e.g., 'olmo3-murder-mystery-qlora-3ga4dhm9' -> '3ga4dhm9')."""
+    match = re.search(r'-([a-z0-9]{8})$', peft_path)
+    return match.group(1) if match else None
+
+
+def log_results_to_wandb(results: dict, model_type: str, tasks: str):
+    """Log evaluation results to current wandb run."""
+    # Flatten results for wandb logging
+    metrics = {f"eval/{model_type}/{k}": v for k, v in results.items() if isinstance(v, (int, float))}
+    metrics[f"eval/{model_type}/tasks"] = tasks
+    wandb.log(metrics)
+
+
 def run_base_evaluation(
     base_model: str,
     tasks: str,
     output_path: Path,
     batch_size: int = 1,
     max_samples: int = None,
+    wandb_project: str = None,
 ) -> dict:
     """Run evaluation on base model (no adapter)."""
     print(f"\n{'='*60}")
@@ -63,6 +82,21 @@ def run_base_evaluation(
     print(f"{'='*60}\n")
     
     output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Initialize new wandb run for base model
+    if wandb_project:
+        wandb.init(
+            project=wandb_project,
+            name=f"eval-base-{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            config={
+                "model": base_model,
+                "model_type": "base",
+                "tasks": tasks,
+                "batch_size": batch_size,
+                "max_samples": max_samples,
+            },
+            tags=["eval", "base"],
+        )
     
     tracker = EvaluationTracker(
         output_dir=str(output_path),
@@ -100,6 +134,11 @@ def run_base_evaluation(
     with open(results_file, "w") as f:
         json.dump(results, f, indent=2, default=str)
     
+    # Log to wandb
+    if wandb_project and wandb.run:
+        log_results_to_wandb(results, "base", tasks)
+        wandb.finish()
+    
     return results
 
 
@@ -110,6 +149,8 @@ def run_finetuned_evaluation(
     output_path: Path,
     batch_size: int = 1,
     max_samples: int = None,
+    wandb_project: str = None,
+    wandb_id: str = None,
 ) -> dict:
     """Run evaluation on finetuned model with PEFT adapter."""
     print(f"\n{'='*60}")
@@ -120,6 +161,30 @@ def run_finetuned_evaluation(
     print(f"{'='*60}\n")
     
     output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Initialize wandb - resume existing run if wandb_id provided
+    if wandb_project:
+        if wandb_id:
+            print(f"Resuming wandb run: {wandb_id}")
+            wandb.init(
+                project=wandb_project,
+                id=wandb_id,
+                resume="allow",
+            )
+        else:
+            wandb.init(
+                project=wandb_project,
+                name=f"eval-finetuned-{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                config={
+                    "base_model": base_model,
+                    "adapter": peft_path,
+                    "model_type": "finetuned",
+                    "tasks": tasks,
+                    "batch_size": batch_size,
+                    "max_samples": max_samples,
+                },
+                tags=["eval", "finetuned"],
+            )
     
     tracker = EvaluationTracker(
         output_dir=str(output_path),
@@ -158,9 +223,14 @@ def run_finetuned_evaluation(
     with open(results_file, "w") as f:
         json.dump(results, f, indent=2, default=str)
     
+    # Log to wandb
+    if wandb_project and wandb.run:
+        log_results_to_wandb(results, "finetuned", tasks)
+        wandb.finish()
+    
     return results
 
-
+@torch.inference_mode()
 def main():
     parser = argparse.ArgumentParser(description="Evaluate models on GPQA with CoT")
     
@@ -178,11 +248,23 @@ def main():
     parser.add_argument("--batch-size", type=int, default=1, help="Batch size (GPQA is long, keep small)")
     parser.add_argument("--output-dir", type=str, default=str(OUTPUT_DIR), help="Output directory")
     
+    # Wandb settings
+    parser.add_argument("--wandb-project", type=str, default=WANDB_PROJECT, help="Wandb project name")
+    parser.add_argument("--wandb-id", type=str, default=None, help="Wandb run ID to resume (auto-detected from peft-path if not set)")
+    parser.add_argument("--no-wandb", action="store_true", help="Disable wandb logging")
+    
     args = parser.parse_args()
     
     # Setup output
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_output_dir = Path(args.output_dir) / timestamp
+    
+    # Wandb setup
+    wandb_project = None if args.no_wandb else args.wandb_project
+    wandb_id = args.wandb_id or extract_wandb_id(args.peft_path)
+    
+    if wandb_id:
+        print(f"Detected wandb ID from peft path: {wandb_id}")
     
     # Run evaluations
     if not args.finetuned_only:
@@ -192,6 +274,7 @@ def main():
             output_path=run_output_dir / "base",
             batch_size=args.batch_size,
             max_samples=args.max_samples,
+            wandb_project=wandb_project,
         )
     
     if not args.base_only:
@@ -206,6 +289,8 @@ def main():
                 output_path=run_output_dir / "finetuned",
                 batch_size=args.batch_size,
                 max_samples=args.max_samples,
+                wandb_project=wandb_project,
+                wandb_id=wandb_id,
             )
     
     print(f"\n{'='*60}")
