@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Quick sanity check: embed 1 MUSR example with bf16, compare against ~1M corpus paragraphs.
-Samples N items from each parquet file for a random spread across the corpus.
+Quick sanity check: embed test data, compare against ONE parquet file (all contents).
+Simple and fast - just read one file and compare.
 """
 
 import torch
@@ -9,133 +9,133 @@ import torch.nn.functional as F
 import numpy as np
 from transformers import AutoTokenizer, AutoModel
 from datasets import load_dataset
-from tqdm import tqdm
 import pyarrow.parquet as pq
 from pathlib import Path
 import argparse
-import random
 
 
-def embed_single_text(text: str, model, tokenizer, device) -> np.ndarray:
-    """Embed a single text using bfloat16."""
+def embed_texts(texts, model, tokenizer, device, batch_size=16):
+    """Embed texts in batches."""
+    embeddings = []
     with torch.inference_mode():
-        enc = tokenizer([text], padding=True, truncation=True,
-                       max_length=8192, return_tensors='pt').to(device)
-        out = model(**enc)
-        mask = enc['attention_mask'].unsqueeze(-1).to(out[0].dtype)
-        emb = (out[0] * mask).sum(1) / mask.sum(1).clamp(min=1e-9)
-        emb = F.normalize(emb, p=2, dim=1)
-        return emb.float().cpu().numpy()[0]
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i:i+batch_size]
+            enc = tokenizer(batch, padding=True, truncation=True,
+                          max_length=512, return_tensors='pt').to(device)
+            out = model(**enc)
+            mask = enc['attention_mask'].unsqueeze(-1).to(out[0].dtype)
+            emb = (out[0] * mask).sum(1) / mask.sum(1).clamp(min=1e-9)
+            emb = F.normalize(emb, p=2, dim=1)
+            embeddings.append(emb.float().cpu().numpy())
+    return np.vstack(embeddings)
 
 
-def load_corpus_embeddings_sampled(data_dir: Path, samples_per_file: int = 1000) -> tuple:
-    """Load random sample of embeddings from each parquet file."""
-    # Recursively find all parquet files
-    parquet_files = sorted(data_dir.rglob("*.parquet"))
-    print(f"Found {len(parquet_files)} parquet files")
-    print(f"Sampling {samples_per_file} items from each -> ~{len(parquet_files) * samples_per_file} total")
-
-    all_embeddings = []
-    all_ids = []
-
-    for pf_path in tqdm(parquet_files, desc="Loading corpus samples"):
-        try:
-            pf = pq.ParquetFile(str(pf_path))
-            table = pf.read()
-
-            # Get embeddings column
-            if 'embeddings' in table.column_names:
-                emb_col = 'embeddings'
-            elif 'embedding' in table.column_names:
-                emb_col = 'embedding'
-            else:
-                continue
-
-            # Get ID column
-            if 'id' in table.column_names:
-                id_col = 'id'
-            elif 'hash_id' in table.column_names:
-                id_col = 'hash_id'
-            else:
-                id_col = None
-
-            embeddings = table[emb_col].to_pylist()
-            ids = table[id_col].to_pylist() if id_col else [f"{pf_path.name}_{i}" for i in range(len(embeddings))]
-
-            # Random sample from this file
-            n_samples = min(samples_per_file, len(embeddings))
-            indices = random.sample(range(len(embeddings)), n_samples)
-
-            for idx in indices:
-                all_embeddings.append(embeddings[idx])
-                all_ids.append(ids[idx])
-
-        except Exception as e:
-            print(f"Error loading {pf_path.name}: {e}")
+def load_parquet_embeddings(parquet_path: Path):
+    """Load ALL embeddings from a single parquet file."""
+    print(f"Loading {parquet_path.name}...")
+    
+    pf = pq.ParquetFile(str(parquet_path))
+    cols = [f.name for f in pf.schema_arrow]
+    
+    if 'embeddings' not in cols:
+        raise ValueError(f"No 'embeddings' column in {parquet_path.name}")
+    
+    # Read only embeddings column
+    table = pq.read_table(str(parquet_path), columns=['embeddings'])
+    emb_col = table['embeddings']
+    
+    # Process chunks without combining (avoid overflow)
+    all_mats = []
+    for chunk_idx in range(emb_col.num_chunks):
+        chunk = emb_col.chunk(chunk_idx)
+        n = len(chunk)
+        if n == 0:
             continue
-
-    print(f"Loaded {len(all_embeddings)} embeddings from {len(parquet_files)} files")
-    return np.array(all_embeddings, dtype=np.float32), all_ids
+        
+        vals = chunk.values.to_numpy()
+        dim = len(vals) // n
+        mat = vals.reshape(n, dim).astype(np.float32)
+        
+        # Normalize
+        norms = np.linalg.norm(mat, axis=1, keepdims=True)
+        mat = mat / np.maximum(norms, 1e-9)
+        all_mats.append(mat)
+    
+    if not all_mats:
+        raise ValueError("No embeddings found in file")
+    
+    final_mat = np.vstack(all_mats) if len(all_mats) > 1 else all_mats[0]
+    print(f"  Loaded {len(final_mat):,} embeddings (dim={final_mat.shape[1]})")
+    
+    return final_mat
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-dir', required=True, help='Directory with corpus parquet files')
-    parser.add_argument('--samples-per-file', type=int, default=1000, help='Random samples per parquet file')
-    parser.add_argument('--test-idx', type=int, default=0, help='Which MUSR test example to use')
+    parser.add_argument('--parquet-file', required=True, help='Single parquet file to check')
+    parser.add_argument('--benchmark', default='musr', choices=['musr', 'mbpp', 'humaneval'],
+                       help='Benchmark dataset to compare against')
+    parser.add_argument('--test-idx', type=int, default=0, help='Which test example to use')
     args = parser.parse_args()
 
-    data_dir = Path(args.data_dir)
+    parquet_path = Path(args.parquet_file)
+    if not parquet_path.exists():
+        raise FileNotFoundError(f"File not found: {parquet_path}")
 
-    # Load MUSR
-    print("Loading MUSR dataset...")
-    ds = load_dataset("TAUR-Lab/MuSR")
-
-    # Get first test example
-    split = list(ds.keys())[0]
-    item = ds[split][args.test_idx]
-    test_text = f"{item.get('narrative', item.get('question', ''))}\n\n{item.get('answer', '')}"
+    # Load benchmark test data
+    print(f"Loading {args.benchmark} dataset...")
+    if args.benchmark == 'musr':
+        ds = load_dataset("TAUR-Lab/MuSR")
+        split = list(ds.keys())[0]
+        item = ds[split][args.test_idx]
+        test_text = f"{item.get('narrative', item.get('question', ''))}\n\n{item.get('answer', '')}"
+    elif args.benchmark == 'mbpp':
+        try:
+            ds = load_dataset("evalplus/mbpp", "mbpp")
+        except:
+            ds = load_dataset("google-research-datasets/mbpp", "sanitized")
+        item = ds['test'][args.test_idx]
+        test_text = f"{item.get('prompt', item.get('text', ''))}\n\n{item.get('canonical_solution', item.get('code', ''))}"
+    elif args.benchmark == 'humaneval':
+        ds = load_dataset("openai/openai_humaneval")
+        item = ds['test'][args.test_idx]
+        test_text = f"{item.get('prompt', '')}\n\n{item.get('canonical_solution', '')}"
+    
     print(f"\n=== Test text (first 500 chars) ===")
     print(test_text[:500])
     print("...")
 
-    # Load model with bf16
-    print("\nLoading embedding model with bfloat16...")
+    # Load model
+    print("\nLoading embedding model...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model_name = "nvidia/llama-embed-nemotron-8b"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     model = AutoModel.from_pretrained(
         model_name,
-        torch_dtype=torch.bfloat16,
+        torch_dtype=torch.float16,
         trust_remote_code=True
     ).to(device).eval()
 
     # Embed test text
     print("Embedding test text...")
-    test_emb = embed_single_text(test_text, model, tokenizer, device)
-    print(f"Test embedding shape: {test_emb.shape}, dtype: {test_emb.dtype}")
+    test_emb = embed_texts([test_text], model, tokenizer, device)[0]
+    print(f"Test embedding shape: {test_emb.shape}")
 
     # Free model memory
     del model, tokenizer
     torch.cuda.empty_cache()
 
-    # Load corpus embeddings (random sample from each file)
-    corpus_embs, corpus_ids = load_corpus_embeddings_sampled(data_dir, args.samples_per_file)
+    # Load ALL embeddings from the parquet file
+    corpus_embs = load_parquet_embeddings(parquet_path)
 
-    # Compute similarities
+    # Compute similarities (both are already normalized)
     print("\nComputing cosine similarities...")
-    # test_emb is already L2 normalized, corpus should be too
-    # But let's normalize corpus just in case
-    corpus_norms = np.linalg.norm(corpus_embs, axis=1, keepdims=True)
-    corpus_embs_normed = corpus_embs / np.clip(corpus_norms, 1e-9, None)
-
-    similarities = corpus_embs_normed @ test_emb
+    similarities = corpus_embs @ test_emb
 
     # Get top-100
     top_k = 100
     top_indices = np.argsort(similarities)[-top_k:][::-1]
     top_scores = similarities[top_indices]
-    top_ids = [corpus_ids[i] for i in top_indices]
 
     print(f"\n=== Top-{top_k} Similarity Distribution ===")
     print(f"Top-1:   {top_scores[0]:.4f}")
@@ -153,8 +153,8 @@ def main():
     print(f"Std:     {similarities.std():.4f}")
 
     print(f"\n=== Top 10 matches ===")
-    for i in range(10):
-        print(f"  {i+1}. score={top_scores[i]:.4f}, id={top_ids[i]}")
+    for i in range(min(10, len(top_scores))):
+        print(f"  {i+1}. score={top_scores[i]:.4f}, index={top_indices[i]}")
 
 
 if __name__ == "__main__":
