@@ -40,26 +40,63 @@ def load_parquet_embeddings(parquet_path: Path):
     if 'embeddings' not in cols:
         raise ValueError(f"No 'embeddings' column in {parquet_path.name}")
     
-    # Read only embeddings column
-    table = pq.read_table(str(parquet_path), columns=['embeddings'])
-    emb_col = table['embeddings']
+    # Get embedding dimension from schema
+    emb_field = pf.schema_arrow.field('embeddings')
+    emb_type = emb_field.type
+    if hasattr(emb_type, 'list_size'):
+        dim = emb_type.list_size
+    else:
+        # Fallback: assume 4096 (standard for your embeddings)
+        dim = 4096
     
-    # Process chunks without combining (avoid overflow)
+    print(f"  Embedding dimension: {dim}")
+    
+    # Read all row groups, process chunks without combining
     all_mats = []
-    for chunk_idx in range(emb_col.num_chunks):
-        chunk = emb_col.chunk(chunk_idx)
-        n = len(chunk)
-        if n == 0:
-            continue
+    
+    for rg_idx in range(pf.num_row_groups):
+        table = pf.read_row_group(rg_idx, columns=['embeddings'])
+        emb_col = table['embeddings']
         
-        vals = chunk.values.to_numpy()
-        dim = len(vals) // n
-        mat = vals.reshape(n, dim).astype(np.float32)
-        
-        # Normalize
-        norms = np.linalg.norm(mat, axis=1, keepdims=True)
-        mat = mat / np.maximum(norms, 1e-9)
-        all_mats.append(mat)
+        for chunk_idx in range(emb_col.num_chunks):
+            chunk = emb_col.chunk(chunk_idx)
+            n = len(chunk)
+            if n == 0:
+                continue
+            
+            # Extract values from fixed_size_list chunk
+            # Use flatten() to get underlying values array, then reshape
+            try:
+                # Flatten the list array to access underlying values
+                values_chunk = chunk.flatten()
+                vals = values_chunk.to_numpy()
+                
+                # Reshape: n rows, dim columns
+                expected_size = n * dim
+                if len(vals) == expected_size:
+                    mat = vals.reshape(n, dim).astype(np.float32)
+                else:
+                    # Try to infer dimension
+                    if len(vals) % n == 0:
+                        inferred_dim = len(vals) // n
+                        print(f"  Using inferred dim={inferred_dim} (schema said {dim}, vals={len(vals)}, n={n})")
+                        mat = vals.reshape(n, inferred_dim).astype(np.float32)
+                        dim = inferred_dim  # Update for consistency
+                    else:
+                        # Fallback: convert via Python (slower but works)
+                        print(f"  Cannot reshape cleanly, using Python conversion")
+                        py_list = chunk.to_pylist()
+                        mat = np.array(py_list, dtype=np.float32)
+            except Exception as e:
+                # Fallback: convert via Python (slower but works)
+                print(f"  Fallback to Python conversion for chunk {chunk_idx}: {e}")
+                py_list = chunk.to_pylist()
+                mat = np.array(py_list, dtype=np.float32)
+            
+            # Normalize
+            norms = np.linalg.norm(mat, axis=1, keepdims=True)
+            mat = mat / np.maximum(norms, 1e-9)
+            all_mats.append(mat)
     
     if not all_mats:
         raise ValueError("No embeddings found in file")
