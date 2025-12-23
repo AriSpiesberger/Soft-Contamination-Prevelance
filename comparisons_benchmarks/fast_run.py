@@ -111,7 +111,7 @@ def read_embeddings_fast(file_path):
         
         # Read all row groups, process chunks without combining
         all_mats = []
-        all_ids = []
+        total_rows = 0
         
         for rg_idx in range(pf.num_row_groups):
             table = pf.read_row_group(rg_idx, columns=cols_to_read)
@@ -132,18 +132,15 @@ def read_embeddings_fast(file_path):
                 norms = np.linalg.norm(mat, axis=1, keepdims=True)
                 mat = mat / np.maximum(norms, 1e-9)
                 all_mats.append(mat)
-                
-                # IDs
-                if id_col_name:
-                    all_ids.extend(table[id_col_name].to_pylist()[:n])
-                else:
-                    all_ids.extend([f"row_{i}" for i in range(n)])
+                total_rows += n
         
         if not all_mats:
             return None
         
         final_mat = np.vstack(all_mats) if len(all_mats) > 1 else all_mats[0]
-        return final_mat, all_ids
+        
+        # Return file path and row count instead of IDs (much faster, reconstruct IDs later if needed)
+        return final_mat, (str(file_path), total_rows)
         
     except Exception as e:
         return None
@@ -172,14 +169,48 @@ def load_benchmark(name, mode):
                 'output': item.get('canonical_solution', '')
             })
     elif name == 'mbpp':
-        ds = load_dataset("evalplus/mbpp", "mbpp")
+        # Try evalplus first, fallback to google-research-datasets
+        try:
+            ds = load_dataset("evalplus/mbpp", "mbpp")
+            print(f"  ✅ Loaded evalplus/mbpp")
+        except Exception as e:
+            print(f"  ⚠️ evalplus/mbpp not available ({str(e)[:100]}), trying google-research-datasets/mbpp...")
+            try:
+                ds = load_dataset("google-research-datasets/mbpp", "sanitized")
+                print(f"  ✅ Loaded google-research-datasets/mbpp")
+            except Exception as e2:
+                print(f"  ❌ Failed to load MBPP: {e2}")
+                raise
+        
         data = []
-        for item in ds['test']:
+        target_split = 'test' if 'test' in ds else list(ds.keys())[0]
+        print(f"  📊 Using split: {target_split}, found {len(ds[target_split])} items")
+        
+        # Show sample item structure for verification
+        if len(ds[target_split]) > 0:
+            sample = ds[target_split][0]
+            print(f"  🔍 Sample item keys: {list(sample.keys())}")
+            print(f"  🔍 Sample task_id: {sample.get('task_id', 'N/A')}")
+            print(f"  🔍 Has 'prompt': {'prompt' in sample}")
+            print(f"  🔍 Has 'text': {'text' in sample}")
+            print(f"  🔍 Has 'canonical_solution': {'canonical_solution' in sample}")
+            print(f"  🔍 Has 'code': {'code' in sample}")
+            if 'prompt' in sample:
+                prompt_preview = str(sample['prompt'])[:100]
+                print(f"  🔍 Prompt preview: {prompt_preview}...")
+        
+        for item in ds[target_split]:
+            task_id = str(item.get('task_id', f"mbpp_{len(data)}"))
+            input_text = item.get('prompt', item.get('text', ''))
+            output_text = item.get('canonical_solution', item.get('code', item.get('solution', '')))
+            
             data.append({
-                'id': str(item.get('task_id')),
-                'input': item.get('prompt', item.get('text', '')),
-                'output': item.get('canonical_solution', item.get('code', ''))
+                'id': task_id,
+                'input': input_text,
+                'output': output_text
             })
+        
+        print(f"  ✅ Loaded {len(data)} MBPP items")
     else:
         raise ValueError(f"Unknown benchmark: {name}")
     
@@ -197,24 +228,27 @@ def load_benchmark(name, mode):
 
 
 def embed_texts(texts, config):
-    """Embed benchmark texts."""
+    """Embed benchmark texts using bfloat16 to match corpus embeddings."""
     device = torch.device("cuda")
     tokenizer = AutoTokenizer.from_pretrained(config.model_name, trust_remote_code=True)
     model = AutoModel.from_pretrained(
-        config.model_name, torch_dtype=torch.float16, trust_remote_code=True
+        config.model_name,
+        torch_dtype=torch.bfloat16,  # Match corpus embeddings (production_embeddings.py uses bf16)
+        trust_remote_code=True
     ).to(device).eval()
-    
+
     embeddings = []
     with torch.inference_mode():
         for i in tqdm(range(0, len(texts), config.embedding_batch_size), desc="Embedding"):
             batch = texts[i:i+config.embedding_batch_size]
-            enc = tokenizer(batch, padding=True, truncation=True, 
+            enc = tokenizer(batch, padding=True, truncation=True,
                           max_length=config.max_seq_length, return_tensors='pt').to(device)
             out = model(**enc)
-            mask = enc['attention_mask'].unsqueeze(-1).float()
+            # Keep in bfloat16 for pooling to match corpus
+            mask = enc['attention_mask'].unsqueeze(-1).to(out[0].dtype)
             emb = (out[0] * mask).sum(1) / mask.sum(1).clamp(min=1e-9)
             emb = F.normalize(emb, p=2, dim=1)
-            embeddings.append(emb.cpu())
+            embeddings.append(emb.float().cpu())  # Convert to float32 after normalize
     
     del model, tokenizer
     gc.collect()
@@ -275,6 +309,7 @@ def run_analysis(config, benchmark, mode, files, uploader):
     
     # Main loop - simple and fast
     pbar = tqdm(enumerate(files), total=len(files), initial=start_idx, desc=f"{benchmark}/{mode}")
+    last_time = time.time()
     
     for file_idx, file_path in pbar:
         if file_idx < start_idx:
@@ -285,23 +320,23 @@ def run_analysis(config, benchmark, mode, files, uploader):
         if result is None:
             continue
         
-        corpus_mat, corpus_ids = result
+        corpus_mat, file_info = result
         n_corpus = len(corpus_mat)
         
-        # Store IDs for later resolution
-        all_ids.extend(corpus_ids)
+        # Store file info for later (file_path, row_count)
+        all_ids.append((file_info[0], global_offset, global_offset + n_corpus))
         
-        # GPU computation
+        # GPU computation - batch if very large
         corpus_gpu = torch.from_numpy(corpus_mat).to(device)
         
-        # Compute similarities (all at once if fits, otherwise batch)
+        # Compute similarities
         sims = torch.matmul(bench_gpu, corpus_gpu.T)  # (n_bench, n_corpus)
         
         # Create indices for this batch
         batch_idxs = torch.arange(global_offset, global_offset + n_corpus, device=device)
         batch_idxs = batch_idxs.unsqueeze(0).expand(n_bench, -1)
         
-        # Merge with current top-k
+        # Efficient top-k: merge and select in one step
         cat_sims = torch.cat([top_sims, sims], dim=1)
         cat_idxs = torch.cat([top_idxs, batch_idxs], dim=1)
         
@@ -310,8 +345,16 @@ def run_analysis(config, benchmark, mode, files, uploader):
         
         global_offset += n_corpus
         
-        # Cleanup
+        # Cleanup immediately
         del corpus_gpu, sims, cat_sims, cat_idxs, best, corpus_mat
+        torch.cuda.empty_cache()  # Free GPU memory immediately
+        
+        # Update progress with speed
+        if (file_idx + 1) % 10 == 0:
+            elapsed = time.time() - last_time
+            speed = 10 / elapsed if elapsed > 0 else 0
+            pbar.set_postfix({'speed': f'{speed:.1f} files/s', 'rows': n_corpus})
+            last_time = time.time()
         
         # Checkpoint
         if (file_idx + 1) % config.save_every_files == 0:
@@ -333,6 +376,13 @@ def run_analysis(config, benchmark, mode, files, uploader):
     top_sims_np = top_sims.cpu().numpy()
     top_idxs_np = top_idxs.cpu().numpy()
     
+    def find_file_for_idx(global_idx):
+        """Binary search to find which file contains this global index."""
+        for file_path, start_idx, end_idx in all_ids:
+            if start_idx <= global_idx < end_idx:
+                return file_path, global_idx - start_idx
+        return None, None
+    
     matches = []
     for i in range(n_bench):
         row = []
@@ -340,9 +390,17 @@ def run_analysis(config, benchmark, mode, files, uploader):
             score = float(top_sims_np[i, j])
             if score < 0:
                 continue
-            idx = int(top_idxs_np[i, j])
-            if idx < len(all_ids):
-                row.append({'rank': j+1, 'score': score, 'id': all_ids[idx]})
+            global_idx = int(top_idxs_np[i, j])
+            file_path, local_idx = find_file_for_idx(global_idx)
+            if file_path:
+                file_name = Path(file_path).name
+                row.append({
+                    'rank': j+1, 
+                    'score': score, 
+                    'file': file_name,
+                    'local_idx': int(local_idx),
+                    'global_idx': int(global_idx)
+                })
         matches.append(row)
     
     # Save locally
@@ -352,10 +410,23 @@ def run_analysis(config, benchmark, mode, files, uploader):
         json.dump(matches, f)
     
     # Quick histogram
+    top1_sims = top_sims_np[:, 0]
+    valid_mask = top1_sims > -1.1  # Filter out uninitialized (-1.0) values
+    
     plt.figure(figsize=(10, 6))
-    plt.hist(top_sims_np[:, 0], bins=50)
-    plt.title(f"{benchmark} {mode} - Top-1 Similarity Distribution")
-    plt.savefig(f"{out_base}_dist.png")
+    if valid_mask.sum() > 0:
+        valid_sims = top1_sims[valid_mask]
+        plt.hist(valid_sims, bins=50, edgecolor='black', alpha=0.7)
+        plt.xlabel('Cosine Similarity')
+        plt.ylabel('Frequency')
+        plt.title(f"{benchmark} {mode} - Top-1 Similarity Distribution")
+        plt.grid(True, alpha=0.3)
+    else:
+        plt.text(0.5, 0.5, 'No valid similarities found', ha='center', va='center')
+        plt.title(f"{benchmark} {mode} - No Data")
+    
+    plt.tight_layout()
+    plt.savefig(f"{out_base}_dist.png", dpi=150)
     plt.close()
     
     # Background S3 upload
