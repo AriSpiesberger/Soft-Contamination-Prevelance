@@ -30,7 +30,8 @@ def embed_single_text(text: str, model, tokenizer, device) -> np.ndarray:
 
 def load_corpus_embeddings_sampled(data_dir: Path, samples_per_file: int = 1000) -> tuple:
     """Load random sample of embeddings from each parquet file."""
-    parquet_files = sorted(data_dir.glob("*.parquet"))
+    # Recursively find all parquet files
+    parquet_files = sorted(data_dir.rglob("*.parquet"))
     print(f"Found {len(parquet_files)} parquet files")
     print(f"Sampling {samples_per_file} items from each -> ~{len(parquet_files) * samples_per_file} total")
 
