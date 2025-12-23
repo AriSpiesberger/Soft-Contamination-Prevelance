@@ -322,6 +322,15 @@ tmp/
 meta_chunks/
 meta_*.pkl
 
+# Contamination Analysis Results (saved to S3)
+contamination_analysis_fast/
+contamination_analysis_fast/**/*.npy
+contamination_analysis_fast/**/*.json
+contamination_analysis_fast/**/*.png
+contamination_analysis_fast/cache/
+contamination_analysis_fast/musr/
+contamination_analysis_fast/mbpp/
+
 # Large Data Directories (already have some, but being explicit)
 data_creation/dolma3_sample/
 data_creation/*/data/
