@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Quick sanity check: embed 1 MUSR example with bf16, compare against 1M corpus paragraphs.
+Quick sanity check: embed 1 MUSR example with bf16, compare against ~1M corpus paragraphs.
+Samples N items from each parquet file for a random spread across the corpus.
 """
 
 import torch
@@ -12,6 +13,7 @@ from tqdm import tqdm
 import pyarrow.parquet as pq
 from pathlib import Path
 import argparse
+import random
 
 
 def embed_single_text(text: str, model, tokenizer, device) -> np.ndarray:
@@ -26,62 +28,59 @@ def embed_single_text(text: str, model, tokenizer, device) -> np.ndarray:
         return emb.float().cpu().numpy()[0]
 
 
-def load_corpus_embeddings(data_dir: Path, max_docs: int = 1_000_000) -> tuple:
-    """Load up to max_docs embeddings from parquet files."""
+def load_corpus_embeddings_sampled(data_dir: Path, samples_per_file: int = 1000) -> tuple:
+    """Load random sample of embeddings from each parquet file."""
     parquet_files = sorted(data_dir.glob("*.parquet"))
     print(f"Found {len(parquet_files)} parquet files")
+    print(f"Sampling {samples_per_file} items from each -> ~{len(parquet_files) * samples_per_file} total")
 
     all_embeddings = []
     all_ids = []
-    total = 0
 
-    for pf_path in tqdm(parquet_files, desc="Loading corpus"):
-        if total >= max_docs:
-            break
+    for pf_path in tqdm(parquet_files, desc="Loading corpus samples"):
+        try:
+            pf = pq.ParquetFile(str(pf_path))
+            table = pf.read()
 
-        pf = pq.ParquetFile(str(pf_path))
-        table = pf.read()
+            # Get embeddings column
+            if 'embeddings' in table.column_names:
+                emb_col = 'embeddings'
+            elif 'embedding' in table.column_names:
+                emb_col = 'embedding'
+            else:
+                continue
 
-        # Get embeddings column
-        if 'embeddings' in table.column_names:
-            emb_col = 'embeddings'
-        elif 'embedding' in table.column_names:
-            emb_col = 'embedding'
-        else:
-            print(f"No embeddings column in {pf_path.name}, cols: {table.column_names}")
+            # Get ID column
+            if 'id' in table.column_names:
+                id_col = 'id'
+            elif 'hash_id' in table.column_names:
+                id_col = 'hash_id'
+            else:
+                id_col = None
+
+            embeddings = table[emb_col].to_pylist()
+            ids = table[id_col].to_pylist() if id_col else [f"{pf_path.name}_{i}" for i in range(len(embeddings))]
+
+            # Random sample from this file
+            n_samples = min(samples_per_file, len(embeddings))
+            indices = random.sample(range(len(embeddings)), n_samples)
+
+            for idx in indices:
+                all_embeddings.append(embeddings[idx])
+                all_ids.append(ids[idx])
+
+        except Exception as e:
+            print(f"Error loading {pf_path.name}: {e}")
             continue
 
-        # Get ID column
-        if 'id' in table.column_names:
-            id_col = 'id'
-        elif 'hash_id' in table.column_names:
-            id_col = 'hash_id'
-        else:
-            id_col = None
-
-        embeddings = table[emb_col].to_pylist()
-        ids = table[id_col].to_pylist() if id_col else list(range(len(embeddings)))
-
-        # Take only what we need
-        remaining = max_docs - total
-        embeddings = embeddings[:remaining]
-        ids = ids[:remaining]
-
-        all_embeddings.extend(embeddings)
-        all_ids.extend(ids)
-        total += len(embeddings)
-
-        if total >= max_docs:
-            break
-
-    print(f"Loaded {len(all_embeddings)} embeddings")
+    print(f"Loaded {len(all_embeddings)} embeddings from {len(parquet_files)} files")
     return np.array(all_embeddings, dtype=np.float32), all_ids
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', required=True, help='Directory with corpus parquet files')
-    parser.add_argument('--max-docs', type=int, default=1_000_000, help='Max corpus docs to compare')
+    parser.add_argument('--samples-per-file', type=int, default=1000, help='Random samples per parquet file')
     parser.add_argument('--test-idx', type=int, default=0, help='Which MUSR test example to use')
     args = parser.parse_args()
 
@@ -119,8 +118,8 @@ def main():
     del model, tokenizer
     torch.cuda.empty_cache()
 
-    # Load corpus embeddings
-    corpus_embs, corpus_ids = load_corpus_embeddings(data_dir, args.max_docs)
+    # Load corpus embeddings (random sample from each file)
+    corpus_embs, corpus_ids = load_corpus_embeddings_sampled(data_dir, args.samples_per_file)
 
     # Compute similarities
     print("\nComputing cosine similarities...")
