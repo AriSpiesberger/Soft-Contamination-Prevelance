@@ -1,0 +1,201 @@
+# =============================================================================
+# SDTD Pipeline Master Configuration
+# =============================================================================
+# Swap this config file to run the entire pipeline on different data sources.
+# All stages read from this config to ensure consistency.
+#
+# Usage:
+#   ./run_all.sh                           # Uses default.yaml
+#   ./run_all.sh --config custom.yaml      # Uses custom config
+# =============================================================================
+
+# Pipeline identification
+pipeline:
+  name: "dolma3_default"
+  description: "Default Dolma3 contamination analysis pipeline"
+  version: "1.0"
+
+# =============================================================================
+# Stage 1: Data Download Configuration
+# =============================================================================
+download:
+  # HuggingFace dataset source
+  repo_id: "allenai/dolma3_mix-6T-1025"
+
+  # Sample percentage (0.0001 = 0.01% of ~24TB = ~2.4GB)
+  sample_percentage: 0.0001
+
+  # Total known size of dataset in TB (for progress estimation)
+  known_total_tb: 23.7
+
+  # Local output directory (relative to pipeline root)
+  output_dir: "./data/dolma3_sample"
+
+  # Parallel download workers (defaults to min(8, cpu_count))
+  num_workers: 8
+
+  # File extensions to download
+  extensions:
+    - ".parquet"
+    - ".json.gz"
+    - ".jsonl"
+    - ".json.zst"
+    - ".zst"
+
+# =============================================================================
+# Stage 2: Chunking Configuration (PRODUCTION MODE - Paragraphs Only)
+# =============================================================================
+chunking:
+  # Input directory (output from download stage)
+  input_dir: "./data/dolma3_sample"
+
+  # Output file for paragraphs
+  output_paragraphs: "./data/random_paragraphs.jsonl"
+
+  # Sample percentage (0.01 = 1% of total paragraphs)
+  # Alternatively, use paragraph_sample_size for a fixed number
+  paragraph_sample_percentage: 0.01
+
+  # Token filtering - paragraphs only
+  min_paragraph_tokens: 50
+  max_paragraph_tokens: 512
+
+  # Tokenizer: Use tiktoken for fast token counting (production mode)
+  tokenizer_encoding: "cl100k_base"  # Fast GPT-4 style encoding
+
+  # Processing
+  num_workers: 12
+  chunk_size: 1000
+
+# =============================================================================
+# Stage 3: Embedding Generation Configuration
+# =============================================================================
+embeddings:
+  # Model for embedding generation
+  model: "nvidia/llama-embed-nemotron-8b"
+
+  # S3 configuration
+  s3:
+    bucket: "dolmo-3-sampling"
+    region: "us-east-1"
+    input_prefix: "dolma3_20251201_p1.5000pct"
+    output_prefix: "embeddings/v1/"
+    buffer_size: 10485760  # 10MB
+    max_pool_connections: 50
+    max_retry_attempts: 10
+
+  # Batch configuration (tuned for H100)
+  target_tokens_per_batch: 400000
+  max_batch_size: 512
+  max_seq_length: 512
+
+  # DataLoader
+  num_loader_workers: 24
+  prefetch_factor: 4
+
+  # Local cache
+  cache_dir: "/tmp/embedding_runner_cache"
+
+# =============================================================================
+# Stage 4: Contamination Analysis Configuration
+# =============================================================================
+analysis:
+  # Input: directory containing corpus embeddings (parquet files)
+  corpus_dir: "/lambda/nfs/embeddings/embedding_folder"
+
+  # Output directory for results
+  output_dir: "./results/contamination"
+
+  # Benchmarks to analyze
+  benchmarks:
+    - name: "musr_murder_mysteries"
+      mode: "input_output"
+    - name: "musr_object_placements"
+      mode: "input_output"
+    - name: "musr_team_allocation"
+      mode: "input_output"
+    - name: "mbpp"
+      mode: "input"
+
+  # Cluster configuration (8x A100 40GB)
+  cluster:
+    world_size: 8
+    gpu_batch_size: 8192
+    corpus_gpu_chunk: 12000000  # ~24GB in FP16
+    max_rows_per_block: 5000000
+    gpu_memory_threshold: 0.92
+    ram_memory_threshold: 0.88
+    prefetch_files: 3
+    flush_stagger_delay: 0.5
+
+  # Checkpointing
+  checkpoint_dir: "./results/contamination/checkpoints"
+
+  # CUDA optimizations
+  cuda:
+    launch_blocking: false
+    expandable_segments: true
+    float32_matmul_precision: "high"
+
+# =============================================================================
+# Stage 5: Merge Configuration
+# =============================================================================
+merge:
+  # Input: output from analysis stage
+  input_dir: "./results/contamination"
+
+  # World size (must match analysis)
+  world_size: 8
+
+# =============================================================================
+# Stage 6: Aggregate and Plot Configuration
+# =============================================================================
+aggregates:
+  # Input: merged results
+  input_dir: "./results/contamination"
+
+  # World size (must match analysis)
+  source_world_size: 8
+  world_size: 8
+
+  # Histogram configuration
+  num_bins: 1000
+  hist_range:
+    - -1.0
+    - 1.0
+
+  # Output plots
+  plots:
+    - "aggregate_histogram_linear.png"
+    - "aggregate_histogram_log.png"
+    - "aggregate_cdf.png"
+    - "aggregate_topk.png"
+
+  # CSV output
+  top_k: 100
+  output_csv: "top_100_contamination.csv"
+
+# =============================================================================
+# Paths Configuration (resolved relative to pipeline root)
+# =============================================================================
+paths:
+  # Pipeline root directory
+  pipeline_root: "/lambda/nfs/embeddings/SDTD_Main/pipeline"
+
+  # Python virtual environment
+  venv: "/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python"
+
+  # Logs directory
+  logs_dir: "./logs"
+
+# =============================================================================
+# Stage Control
+# =============================================================================
+# Set to true to skip a stage (useful for re-runs)
+skip_stages:
+  download: false
+  chunking: false
+  embeddings: false
+  analysis: false
+  merge: false
+  aggregates: false

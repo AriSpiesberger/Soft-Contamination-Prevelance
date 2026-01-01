@@ -1,0 +1,135 @@
+# =============================================================================
+# Example: Custom Dataset Configuration
+# =============================================================================
+# Copy this file and modify for your own data source.
+# Run with: ./run_all.sh --config example_custom.yaml
+# =============================================================================
+
+pipeline:
+  name: "custom_dataset_run"
+  description: "Example of running on a custom dataset"
+  version: "1.0"
+
+# =============================================================================
+# Stage 1: Data Download - CUSTOMIZE FOR YOUR DATA SOURCE
+# =============================================================================
+download:
+  # Change to your HuggingFace dataset
+  repo_id: "your-org/your-dataset"
+  sample_percentage: 0.01  # 1%
+  known_total_tb: 5.0
+  output_dir: "./data/custom_sample"
+  extensions:
+    - ".parquet"
+    - ".jsonl"
+
+# =============================================================================
+# Stage 2: Chunking - Usually keep these defaults
+# =============================================================================
+chunking:
+  input_dir: "./data/custom_sample"
+  output_sentences: "./data/custom_sentences.jsonl"
+  output_paragraphs: "./data/custom_paragraphs.jsonl"
+  sentence_sample_size: 100000
+  paragraph_sample_size: 100000
+  min_sentence_tokens: 5
+  max_sentence_tokens: 100
+  min_paragraph_tokens: 50
+  max_paragraph_tokens: 512
+  tokenizer: "Qwen/Qwen3-0.6B"
+  num_workers: 12
+  chunk_size: 1000
+
+# =============================================================================
+# Stage 3: Embeddings - UPDATE S3 PATHS FOR YOUR DATA
+# =============================================================================
+embeddings:
+  model: "nvidia/llama-embed-nemotron-8b"
+  s3:
+    bucket: "your-bucket-name"
+    region: "us-east-1"
+    input_prefix: "your/input/path"
+    output_prefix: "your/output/embeddings/"
+    buffer_size: 10485760
+    max_pool_connections: 50
+    max_retry_attempts: 10
+  target_tokens_per_batch: 400000
+  max_batch_size: 512
+  max_seq_length: 512
+  num_loader_workers: 24
+  prefetch_factor: 4
+  cache_dir: "/tmp/embedding_runner_cache"
+
+# =============================================================================
+# Stage 4: Analysis - UPDATE CORPUS_DIR TO YOUR EMBEDDINGS
+# =============================================================================
+analysis:
+  # Point to your embedding parquet files
+  corpus_dir: "/path/to/your/embeddings"
+  output_dir: "./results/custom_contamination"
+
+  # Choose which benchmarks to analyze against
+  benchmarks:
+    - name: "musr_murder_mysteries"
+      mode: "input_output"
+    - name: "mbpp"
+      mode: "input"
+    # Add more benchmarks as needed
+
+  # Adjust cluster size based on your hardware
+  cluster:
+    world_size: 8              # Number of GPUs
+    gpu_batch_size: 8192       # Reduce if running out of memory
+    corpus_gpu_chunk: 12000000 # Reduce if running out of GPU memory
+    max_rows_per_block: 5000000
+    gpu_memory_threshold: 0.92
+    ram_memory_threshold: 0.88
+    prefetch_files: 3
+    flush_stagger_delay: 0.5
+
+  checkpoint_dir: "./results/custom_contamination/checkpoints"
+
+  cuda:
+    launch_blocking: false
+    expandable_segments: true
+    float32_matmul_precision: "high"
+
+# =============================================================================
+# Stages 5 & 6: Merge and Aggregate - Match analysis settings
+# =============================================================================
+merge:
+  input_dir: "./results/custom_contamination"
+  world_size: 8
+
+aggregates:
+  input_dir: "./results/custom_contamination"
+  source_world_size: 8
+  world_size: 8
+  num_bins: 1000
+  hist_range: [-1.0, 1.0]
+  plots:
+    - "aggregate_histogram_linear.png"
+    - "aggregate_histogram_log.png"
+    - "aggregate_cdf.png"
+    - "aggregate_topk.png"
+  top_k: 100
+  output_csv: "top_100_contamination.csv"
+
+# =============================================================================
+# Paths - Usually keep defaults
+# =============================================================================
+paths:
+  pipeline_root: "/lambda/nfs/embeddings/SDTD_Main/pipeline"
+  venv: "/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python"
+  logs_dir: "./logs"
+
+# =============================================================================
+# Skip Stages - Enable to skip completed stages
+# =============================================================================
+skip_stages:
+  download: false
+  chunking: false
+  embeddings: false
+  analysis: false
+  merge: false
+  aggregates: false
