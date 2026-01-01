@@ -1,0 +1,116 @@
+# =============================================================================
+# SDTD Pipeline Configuration for Dolci-Instruct-SFT Dataset
+# =============================================================================
+# Configuration for running contamination analysis on conversation/instruction data
+#
+# Usage:
+#   export PIPELINE_CONFIG=configs/dolci.yaml
+#   python stages/02_chunk_and_sample.py
+# =============================================================================
+
+# Pipeline identification
+pipeline:
+  name: "dolci_instruct_sft"
+  description: "Dolci Instruct SFT contamination analysis pipeline"
+  version: "1.0"
+
+# =============================================================================
+# Stage 1: Data Download Configuration
+# =============================================================================
+download:
+  # HuggingFace dataset source
+  repo_id: "allenai/Dolci-Instruct-SFT"
+
+  # Sample percentage (1.0 = 100% of dataset)
+  sample_percentage: 1.0
+
+  # Total known size of dataset in TB (for progress estimation)
+  known_total_tb: 0.1
+
+  # Local output directory (relative to pipeline root)
+  output_dir: "./data/dolci_sample"
+
+  # Parallel download workers
+  num_workers: 2
+
+  # File extensions to download
+  extensions:
+    - ".parquet"
+    - ".json.gz"
+    - ".jsonl"
+    - ".json.zst"
+    - ".zst"
+
+# =============================================================================
+# Stage 2: Chunking Configuration - CONVERSATION MODE
+# =============================================================================
+chunking:
+  # Mode: "conversation" for instruction-tuning datasets
+  mode: "conversation"
+
+  # Input directory (output from download stage)
+  input_dir: "./data/dolci_sample"
+
+  # Output file for conversations
+  output_paragraphs: "./data/dolci_conversations.jsonl"
+
+  # Sample percentage (0.01 = 1% of total conversations)
+  paragraph_sample_percentage: 0.01
+
+  # Token filtering (applied to the combined prompt+response text)
+  min_paragraph_tokens: 50
+  max_paragraph_tokens: 512
+
+  # Tokenizer: Use tiktoken for fast token counting
+  tokenizer_encoding: "cl100k_base"
+
+  # Processing
+  num_workers: 12
+  chunk_size: 1000
+
+  # Conversation mode settings
+  conversation:
+    # Format: "Prompt: {user_content}\n\nResponse: {assistant_content}"
+    user_role: "user"       # Role name for prompts
+    assistant_role: "assistant"  # Role name for responses
+    content_field: "content"  # Field containing the actual text
+
+# =============================================================================
+# Stage 3: Embedding Generation Configuration
+# =============================================================================
+embeddings:
+  # Model for embedding generation
+  model: "nvidia/llama-embed-nemotron-8b"
+
+  # Mode: "local" or "s3"
+  mode: "local"
+
+  # Local configuration
+  local:
+    input_file: "./data/dolci_conversations.jsonl"
+    output_file: "./data/dolci_embeddings.parquet"
+
+  # Batch configuration (tuned for GPU)
+  target_tokens_per_batch: 400000
+  max_batch_size: 512
+  max_seq_length: 512
+
+  # DataLoader
+  num_loader_workers: 24
+  prefetch_factor: 4
+
+  # Local cache
+  cache_dir: "/tmp/embedding_runner_cache"
+
+# =============================================================================
+# Paths Configuration
+# =============================================================================
+paths:
+  # Pipeline root directory
+  pipeline_root: "/home/ubuntu/embeddings/SDTD_Main/pipeline"
+
+  # Python virtual environment
+  venv: "/home/ubuntu/embeddings/SDTD_Main/.venv/bin/python"
+
+  # Logs directory
+  logs_dir: "./logs"
