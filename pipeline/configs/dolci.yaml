@@ -90,9 +90,11 @@ embeddings:
     input_file: "./data/dolci_conversations.jsonl"
     output_file: "./data/dolci_embeddings.parquet"
 
-  # Batch configuration (tuned for GPU)
+  # Batch configuration (tuned for GPU with FP16)
+  # With FP16, model uses ~42GB, leaving ~52GB for batches on 94GB GPU
+  # Conservative batch size for 2048 seq length
   target_tokens_per_batch: 400000
-  max_batch_size: 512
+  max_batch_size: 64
   max_seq_length: 2048
 
   # DataLoader
