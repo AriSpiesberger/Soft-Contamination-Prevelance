@@ -19,6 +19,7 @@ from tqdm import tqdm
 import yaml
 import tiktoken
 import zstandard as zstd
+import duckdb
 
 # --- Configuration Loading ---
 PIPELINE_ROOT = Path(__file__).parent.parent
@@ -102,6 +103,39 @@ def open_data_file(file_path):
     else:
         # Plain text
         return open(file_path, 'r', encoding='utf-8')
+
+
+def read_parquet_as_jsonl(file_path):
+    """
+    Read parquet file using duckdb and yield JSON lines.
+    Memory-efficient streaming with batches.
+    """
+    con = duckdb.connect()
+
+    # Get column names once at the start
+    columns = con.execute(f"DESCRIBE SELECT * FROM read_parquet('{file_path}')").fetchall()
+    col_names = [col[0] for col in columns]
+
+    # Read in batches to avoid memory issues
+    batch_size = 10000
+    offset = 0
+
+    while True:
+        result = con.execute(
+            f"SELECT * FROM read_parquet('{file_path}') LIMIT {batch_size} OFFSET {offset}"
+        ).fetchall()
+
+        if not result:
+            break
+
+        for row in result:
+            # Convert row tuple to dict using column names
+            row_dict = dict(zip(col_names, row))
+            yield json.dumps(row_dict)
+
+        offset += batch_size
+
+    con.close()
 
 
 def extract_category(file_path):
@@ -192,18 +226,27 @@ def extract_conversation_text(conversation_data):
 def read_data_chunks(jsonl_files, chunk_size):
     """
     Generator that reads lines from files and yields them in chunks.
-    Supports compressed formats (.zst, .gz) and plain .jsonl files.
+    Supports compressed formats (.zst, .gz), plain .jsonl, and .parquet files.
     """
     chunk = []
     for file_path in jsonl_files:
         source_name = os.path.basename(file_path)
         try:
-            with open_data_file(file_path) as f:
-                for line in f:
+            if file_path.endswith('.parquet'):
+                # Read parquet using duckdb
+                for line in read_parquet_as_jsonl(file_path):
                     chunk.append((line, source_name))
                     if len(chunk) >= chunk_size:
                         yield chunk
                         chunk = []
+            else:
+                # Read JSONL/compressed formats
+                with open_data_file(file_path) as f:
+                    for line in f:
+                        chunk.append((line, source_name))
+                        if len(chunk) >= chunk_size:
+                            yield chunk
+                            chunk = []
         except Exception as e:
             print(f"Error reading {file_path}: {e}", file=sys.stderr)
 
@@ -304,18 +347,18 @@ class ReservoirSampler:
 
 
 def main():
-    # Find all data files (.jsonl, .jsonl.zst, .json.gz)
+    # Find all data files (.jsonl, .jsonl.zst, .json.gz, .parquet)
     print(f"Scanning for data files in {DATA_DIR}...")
     jsonl_files = []
     for root, _, files in os.walk(DATA_DIR):
         for file in files:
             # Support multiple formats
-            if file.endswith((".jsonl", ".jsonl.zst", ".json.gz", ".jsonl.gz")):
+            if file.endswith((".jsonl", ".jsonl.zst", ".json.gz", ".jsonl.gz", ".parquet")):
                 jsonl_files.append(os.path.join(root, file))
 
     if not jsonl_files:
         print(f"Error: No data files found in {DATA_DIR}", file=sys.stderr)
-        print(f"Note: Supported formats: .jsonl, .jsonl.zst, .json.gz, .jsonl.gz")
+        print(f"Note: Supported formats: .jsonl, .jsonl.zst, .json.gz, .jsonl.gz, .parquet")
         return
 
     print(f"Found {len(jsonl_files)} files to process with {NUM_WORKERS} workers.")
