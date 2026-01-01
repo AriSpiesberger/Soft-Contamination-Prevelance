@@ -242,7 +242,8 @@ def main():
                     "429", "rate limit",  # Rate limiting
                     "502", "503", "504",  # Server errors
                     "bad gateway", "service unavailable", "gateway timeout",
-                    "connection", "timeout", "network"  # Network issues
+                    "connection", "timeout", "network",  # Network issues
+                    "tls", "certificate", "ssl", "cacert"  # TLS/SSL certificate issues
                 ]
 
                 is_retryable = any(err in error_msg.lower() for err in retryable_errors)
