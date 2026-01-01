@@ -1,0 +1,441 @@
+# -*- coding: utf-8 -*-
+"""
+Production Paragraph Chunker with Multiprocessing
+Supports YAML config and 'process all' mode
+PRODUCTION MODE: Only processes paragraphs/chunks, not sentences
+Uses tiktoken for fast token counting
+"""
+
+import os
+import json
+import random
+import sys
+import hashlib
+import multiprocessing
+import gzip
+import io
+from pathlib import Path
+from tqdm import tqdm
+import yaml
+import tiktoken
+import zstandard as zstd
+
+# --- Configuration Loading ---
+PIPELINE_ROOT = Path(__file__).parent.parent
+CONFIG_FILE = os.environ.get("PIPELINE_CONFIG", PIPELINE_ROOT / "configs" / "default.yaml")
+
+def load_config():
+    """Load pipeline configuration from YAML."""
+    config_path = Path(CONFIG_FILE)
+    if not config_path.exists():
+        print(f"Error: Config file not found: {CONFIG_FILE}", file=sys.stderr)
+        sys.exit(1)
+
+    with open(config_path) as f:
+        return yaml.safe_load(f)
+
+config = load_config()
+chunking_config = config.get('chunking', {})
+
+# Extract configuration values
+MODE = chunking_config.get('mode', 'paragraph')  # 'paragraph' or 'conversation'
+DATA_DIR = chunking_config.get('input_dir', './data/dolma3_sample')
+OUTPUT_PARAGRAPHS_FILE = chunking_config.get('output_paragraphs', './data/random_paragraphs.jsonl')
+
+# Sample percentage (percentage of total paragraphs to keep)
+PARAGRAPH_SAMPLE_PERCENTAGE = chunking_config.get('paragraph_sample_percentage', 0.01)
+# Fallback to paragraph_sample_size if percentage not specified (backwards compatibility)
+PARAGRAPH_SAMPLE_SIZE = chunking_config.get('paragraph_sample_size', None)
+
+# Token filtering
+MIN_PARAGRAPH_TOKEN_LEN = chunking_config.get('min_paragraph_tokens', 50)
+MAX_PARAGRAPH_TOKEN_LEN = chunking_config.get('max_paragraph_tokens', 512)
+
+# Processing
+TOKENIZER_ENCODING = chunking_config.get('tokenizer_encoding', 'cl100k_base')  # tiktoken encoding
+NUM_WORKERS = chunking_config.get('num_workers', max(1, multiprocessing.cpu_count() - 1))
+CHUNK_SIZE = chunking_config.get('chunk_size', 1000)
+
+# Conversation mode settings
+CONVERSATION_CONFIG = chunking_config.get('conversation', {})
+USER_ROLE = CONVERSATION_CONFIG.get('user_role', 'user')
+ASSISTANT_ROLE = CONVERSATION_CONFIG.get('assistant_role', 'assistant')
+CONTENT_FIELD = CONVERSATION_CONFIG.get('content_field', 'content')
+
+# Resolve paths relative to pipeline root
+def resolve_path(path_str):
+    """Resolve path relative to pipeline root if not absolute."""
+    path = Path(path_str)
+    if not path.is_absolute():
+        path = PIPELINE_ROOT / path
+    return str(path)
+
+DATA_DIR = resolve_path(DATA_DIR)
+OUTPUT_PARAGRAPHS_FILE = resolve_path(OUTPUT_PARAGRAPHS_FILE)
+
+# --- Globals for worker processes ---
+worker_tokenizer = None
+
+
+def initialize_worker():
+    """Initialize the tiktoken encoder for a new worker process."""
+    global worker_tokenizer
+    print(f"Initializing tiktoken encoder in worker PID: {os.getpid()}...")
+    worker_tokenizer = tiktoken.get_encoding(TOKENIZER_ENCODING)
+
+
+def open_data_file(file_path):
+    """
+    Open a data file with appropriate decompression based on extension.
+    Supports: .jsonl, .jsonl.zst, .json.gz, .jsonl.gz
+    Returns a text file object.
+    """
+    if file_path.endswith('.zst'):
+        # Zstandard compressed
+        dctx = zstd.ZstdDecompressor()
+        fh = open(file_path, 'rb')
+        reader = dctx.stream_reader(fh)
+        return io.TextIOWrapper(reader, encoding='utf-8')
+    elif file_path.endswith('.gz'):
+        # Gzip compressed
+        return gzip.open(file_path, 'rt', encoding='utf-8')
+    else:
+        # Plain text
+        return open(file_path, 'r', encoding='utf-8')
+
+
+def extract_category(file_path):
+    """
+    Extract category from file path based on folder hierarchy.
+
+    Examples:
+        data/common_crawl-travel_and_tourism-0018/file.jsonl -> common_crawl
+        data/wiki_to_rcqa-part3/file.jsonl -> wiki_to_rcqa
+        data/olmocr_science_pdfs-high_quality-health-2e12/file.jsonl -> olmocr_science_pdfs
+
+    Returns the base category name (prefix before first hyphen).
+    """
+    parts = Path(file_path).parts
+    for part in parts:
+        # Check for known category prefixes
+        if part.startswith(('common_crawl', 'wiki_to_rcqa', 'olmocr_science_pdfs', 'dolma', 'wiki', 'olmocr')):
+            # Extract base category (before first hyphen or underscore)
+            if '-' in part:
+                return part.split('-')[0]
+            elif '_' in part:
+                # For categories like wiki_to_rcqa, take up to last underscore
+                return part.rsplit('_', 1)[0] if part.count('_') > 1 else part
+            return part
+    return 'unknown'
+
+
+def build_category_inventory(jsonl_files):
+    """
+    Group files by category.
+
+    Returns:
+        dict: {category_name: [list of file paths]}
+    """
+    category_files = {}
+    for file_path in jsonl_files:
+        category = extract_category(file_path)
+        if category not in category_files:
+            category_files[category] = []
+        category_files[category].append(file_path)
+    return category_files
+
+
+def extract_conversation_text(conversation_data):
+    """
+    Extract prompt and response from conversation format.
+
+    Returns formatted string: "Prompt: {user_content}\n\nResponse: {assistant_content}"
+    Or None if conversation is invalid.
+    """
+    try:
+        # Handle different conversation formats
+        if isinstance(conversation_data, list):
+            # Array of messages format
+            user_content = None
+            assistant_content = None
+
+            for msg in conversation_data:
+                if not isinstance(msg, dict):
+                    continue
+
+                role = msg.get('role', '')
+                content = msg.get(CONTENT_FIELD, '')
+
+                if role == USER_ROLE and user_content is None:
+                    user_content = content
+                elif role == ASSISTANT_ROLE and assistant_content is None:
+                    assistant_content = content
+
+            if user_content and assistant_content:
+                return f"Prompt: {user_content}\n\nResponse: {assistant_content}"
+
+        elif isinstance(conversation_data, dict):
+            # Single conversation object - might have different structure
+            # Try to find prompt/response fields
+            user_content = conversation_data.get('prompt') or conversation_data.get('user') or conversation_data.get('question')
+            assistant_content = conversation_data.get('response') or conversation_data.get('assistant') or conversation_data.get('answer')
+
+            if user_content and assistant_content:
+                return f"Prompt: {user_content}\n\nResponse: {assistant_content}"
+
+        return None
+
+    except Exception:
+        return None
+
+
+def read_data_chunks(jsonl_files, chunk_size):
+    """
+    Generator that reads lines from files and yields them in chunks.
+    Supports compressed formats (.zst, .gz) and plain .jsonl files.
+    """
+    chunk = []
+    for file_path in jsonl_files:
+        source_name = os.path.basename(file_path)
+        try:
+            with open_data_file(file_path) as f:
+                for line in f:
+                    chunk.append((line, source_name))
+                    if len(chunk) >= chunk_size:
+                        yield chunk
+                        chunk = []
+        except Exception as e:
+            print(f"Error reading {file_path}: {e}", file=sys.stderr)
+
+    if chunk:
+        yield chunk
+def process_line_chunk(chunk):
+    """
+    Process a chunk of lines in a worker process.
+    Handles both paragraph and conversation modes.
+    Uses tiktoken for fast token counting.
+    """
+    global worker_tokenizer
+
+    local_paragraphs = []
+    total_filtered_paragraph_tokens = 0
+
+    for line, source_name in chunk:
+        try:
+            data = json.loads(line)
+
+            if MODE == 'conversation':
+                # Conversation mode: extract prompt + response
+                # The data itself might be the conversation array, or have a field containing it
+                conversation = data if isinstance(data, list) else data.get('messages') or data.get('conversation') or data
+
+                text = extract_conversation_text(conversation)
+                if not text:
+                    continue
+
+                # Treat the whole conversation as one "paragraph"
+                paragraphs = [text]
+
+            else:
+                # Paragraph mode: standard text splitting
+                text = data.get('text')
+                if not text or not isinstance(text, str):
+                    continue
+
+                # Split into paragraphs
+                paragraphs = text.split('\n\n')
+
+            for p in paragraphs:
+                p_clean = p.strip()
+                if not p_clean:
+                    continue
+
+                # Count tokens using tiktoken (allow special tokens in text)
+                p_token_size = len(worker_tokenizer.encode(p_clean, disallowed_special=()))
+
+                # Apply paragraph-level filtering
+                if (MIN_PARAGRAPH_TOKEN_LEN <= p_token_size <= MAX_PARAGRAPH_TOKEN_LEN):
+                    total_filtered_paragraph_tokens += p_token_size
+
+                    p_id = hashlib.sha256(p_clean.encode('utf-8')).hexdigest()
+                    p_data = {
+                        "id": p_id,
+                        "text": p_clean,
+                        "source": source_name,
+                        "token_size": p_token_size
+                    }
+                    local_paragraphs.append(p_data)
+
+        except (json.JSONDecodeError, TypeError):
+            continue
+        except Exception as e:
+            print(f"Error in worker {os.getpid()}: {e}", file=sys.stderr)
+
+    return (local_paragraphs, total_filtered_paragraph_tokens)
+
+class ReservoirSampler:
+    """
+    A proper reservoir sampler that maintains state internally.
+    """
+    def __init__(self, sample_size):
+        self.sample_size = sample_size
+        self.reservoir = []
+        self.items_seen = 0
+    
+    def add(self, item):
+        """Add an item using reservoir sampling algorithm."""
+        self.items_seen += 1
+        
+        if len(self.reservoir) < self.sample_size:
+            self.reservoir.append(item)
+        else:
+            # Random index from 0 to items_seen-1
+            j = random.randint(0, self.items_seen - 1)
+            if j < self.sample_size:
+                self.reservoir[j] = item
+    
+    def get_sample(self):
+        """Return the current reservoir."""
+        return self.reservoir
+    
+    def get_count(self):
+        """Return total items seen."""
+        return self.items_seen
+
+
+def main():
+    # Find all data files (.jsonl, .jsonl.zst, .json.gz)
+    print(f"Scanning for data files in {DATA_DIR}...")
+    jsonl_files = []
+    for root, _, files in os.walk(DATA_DIR):
+        for file in files:
+            # Support multiple formats
+            if file.endswith((".jsonl", ".jsonl.zst", ".json.gz", ".jsonl.gz")):
+                jsonl_files.append(os.path.join(root, file))
+
+    if not jsonl_files:
+        print(f"Error: No data files found in {DATA_DIR}", file=sys.stderr)
+        print(f"Note: Supported formats: .jsonl, .jsonl.zst, .json.gz, .jsonl.gz")
+        return
+
+    print(f"Found {len(jsonl_files)} files to process with {NUM_WORKERS} workers.")
+    print(f"Token filter range: {MIN_PARAGRAPH_TOKEN_LEN}-{MAX_PARAGRAPH_TOKEN_LEN} tokens")
+
+    if PARAGRAPH_SAMPLE_SIZE:
+        print(f"Sample size: {PARAGRAPH_SAMPLE_SIZE:,} paragraphs (fixed)")
+        target_sample_size = PARAGRAPH_SAMPLE_SIZE
+    else:
+        print(f"Sample percentage: {PARAGRAPH_SAMPLE_PERCENTAGE*100}% of total paragraphs")
+        # Use large reservoir initially, will calculate actual size after processing
+        target_sample_size = 10_000_000  # 10M buffer
+
+    # Build category inventory for stratified sampling
+    print(f"\nBuilding category inventory...")
+    category_inventory = build_category_inventory(jsonl_files)
+    print(f"Found {len(category_inventory)} categories:")
+    for category, files in sorted(category_inventory.items()):
+        print(f"  - {category}: {len(files)} files")
+
+    # Create one reservoir sampler per category
+    # Each category gets a large reservoir (we'll sample proportionally later)
+    category_samplers = {
+        cat: ReservoirSampler(target_sample_size)
+        for cat in category_inventory.keys()
+    }
+    category_tokens = {cat: 0 for cat in category_inventory.keys()}
+
+    # Process each category separately
+    print("\nProcessing categories with stratified sampling...")
+    with multiprocessing.Pool(
+        processes=NUM_WORKERS,
+        initializer=initialize_worker
+    ) as pool:
+
+        for category, cat_files in category_inventory.items():
+            print(f"\n--- Processing category: {category} ({len(cat_files)} files) ---")
+
+            # Create data generator for this category's files
+            data_generator = read_data_chunks(cat_files, CHUNK_SIZE)
+
+            pbar = tqdm(
+                pool.imap_unordered(process_line_chunk, data_generator),
+                desc=f"  {category}",
+                unit="chunk"
+            )
+
+            for (local_paragraphs, local_p_tokens) in pbar:
+                # Add paragraphs to this category's reservoir
+                for p_data in local_paragraphs:
+                    p_data['category'] = category  # Add category metadata
+                    category_samplers[category].add(p_data)
+
+                # Accumulate token totals for this category
+                category_tokens[category] += local_p_tokens
+
+                pbar.set_postfix_str(
+                    f"Paras: {category_samplers[category].get_count():,}"
+                )
+
+    # Calculate category proportions and sample proportionally
+    print("\n--- Stratified Sampling Results ---")
+    total_paragraphs_seen = sum(sampler.get_count() for sampler in category_samplers.values())
+    grand_total_tokens = sum(category_tokens.values())
+
+    print(f"Total paragraphs seen across all categories: {total_paragraphs_seen:,}")
+    print(f"Total tokens (filtered): {grand_total_tokens:,}")
+    print(f"\nCategory distribution:")
+
+    category_weights = {}
+    for category, sampler in category_samplers.items():
+        count = sampler.get_count()
+        weight = count / total_paragraphs_seen if total_paragraphs_seen > 0 else 0
+        category_weights[category] = weight
+        tokens = category_tokens[category]
+        print(f"  {category}: {count:,} paragraphs ({weight*100:.2f}%), {tokens:,} tokens")
+
+    # Calculate final sample size
+    if PARAGRAPH_SAMPLE_SIZE:
+        final_target_size = PARAGRAPH_SAMPLE_SIZE
+    else:
+        final_target_size = int(total_paragraphs_seen * PARAGRAPH_SAMPLE_PERCENTAGE)
+        print(f"\nCalculated sample size: {final_target_size:,} paragraphs ({PARAGRAPH_SAMPLE_PERCENTAGE*100}% of {total_paragraphs_seen:,})")
+
+    # Sample proportionally from each category
+    print(f"\nCombining samples proportionally (target: {final_target_size:,} paragraphs)...")
+    final_sample = []
+
+    for category, weight in sorted(category_weights.items()):
+        n_samples = int(final_target_size * weight)
+        cat_reservoir = category_samplers[category].get_sample()
+
+        # Sample up to n_samples from this category's reservoir
+        actual_samples = min(n_samples, len(cat_reservoir))
+        if actual_samples > 0:
+            sampled = random.sample(cat_reservoir, actual_samples)
+            final_sample.extend(sampled)
+            print(f"  {category}: sampled {actual_samples:,} paragraphs ({actual_samples/final_target_size*100:.2f}%)")
+
+    print(f"\n--- Final Sample ---")
+    print(f"Total paragraphs in final sample: {len(final_sample):,}")
+
+    # Report final category distribution
+    print(f"\nFinal category distribution in sample:")
+    for category in sorted(category_weights.keys()):
+        count_in_sample = sum(1 for p in final_sample if p.get('category') == category)
+        print(f"  {category}: {count_in_sample:,} paragraphs ({count_in_sample/len(final_sample)*100:.2f}%)")
+
+    # Ensure output directory exists
+    output_dir = Path(OUTPUT_PARAGRAPHS_FILE).parent
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save results
+    print(f"\nSaving paragraphs to {OUTPUT_PARAGRAPHS_FILE}...")
+    with open(OUTPUT_PARAGRAPHS_FILE, 'w', encoding='utf-8') as f:
+        for entry in final_sample:
+            f.write(json.dumps(entry) + '\n')
+
+    print("--- Done ---")
+
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
+    main()

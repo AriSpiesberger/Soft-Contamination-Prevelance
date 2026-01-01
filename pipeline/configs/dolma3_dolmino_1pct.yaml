@@ -1,0 +1,210 @@
+# =============================================================================
+# SDTD Pipeline Configuration - Dolma3 Dolmino Mix 1% Sample
+# =============================================================================
+# Configuration for processing 1% of allenai/dolma3_dolmino_mix-100B-1025
+# Processes ALL chunks from the 1% sample (no reservoir sampling limit)
+# PRODUCTION MODE: Only processes paragraphs, not sentences
+# =============================================================================
+
+# Pipeline identification
+pipeline:
+  name: "dolma3_dolmino_1pct"
+  description: "1% sample of Dolma3 Dolmino Mix with full chunk processing (paragraphs only)"
+  version: "1.0"
+
+  # Display name for folders and plots
+  dataset_name: "Dolmino_100B_1pct"  # Used in folder/file naming
+
+# =============================================================================
+# Stage 1: Data Download Configuration
+# =============================================================================
+download:
+  # HuggingFace dataset source - Dolmino Mix
+  repo_id: "allenai/dolma3_dolmino_mix-100B-1025"
+
+  # Sample percentage: 0.01 = 1% of dataset
+  sample_percentage: 0.01
+
+  # Total known size of dataset in TB (estimate for progress tracking)
+  # Update this if you know the actual size of the dolmino dataset
+  known_total_tb: 10.0
+
+  # Local output directory (relative to pipeline root)
+  output_dir: "./data/Dolmino_100B_1pct"
+
+  # File extensions to download
+  extensions:
+    - ".parquet"
+    - ".json.gz"
+    - ".jsonl"
+    - ".json.zst"
+    - ".zst"
+
+# =============================================================================
+# Stage 2: Chunking Configuration (PRODUCTION MODE - Paragraphs Only)
+# =============================================================================
+chunking:
+  # Input directory (output from download stage)
+  input_dir: "./data/Dolmino_100B_1pct"
+
+  # Output file for paragraphs
+  output_paragraphs: "./data/Dolmino_100B_1pct/paragraphs.jsonl"
+
+  # Sample size - SET TO VERY LARGE to process ALL filtered chunks
+  # This effectively disables reservoir sampling by making the reservoir larger than expected data
+  paragraph_sample_size: 100000000  # 100 million - should capture all chunks from 1% sample
+
+  # Token filtering - paragraphs only
+  min_paragraph_tokens: 50
+  max_paragraph_tokens: 512
+
+  # Tokenizer: Use tiktoken for fast token counting (production mode)
+  tokenizer_encoding: "cl100k_base"  # Fast GPT-4 style encoding
+
+  # Processing performance
+  num_workers: 12
+  chunk_size: 1000
+
+# =============================================================================
+# Stage 3: Embedding Generation Configuration
+# =============================================================================
+embeddings:
+  # Model for embedding generation
+  model: "nvidia/llama-embed-nemotron-8b"
+
+  # S3 configuration
+  s3:
+    bucket: "dolmo-3-sampling"
+    region: "us-east-1"
+    input_prefix: "Dolmino_100B_1pct"
+    output_prefix: "embeddings/Dolmino_100B_1pct/"
+    buffer_size: 10485760  # 10MB
+    max_pool_connections: 50
+    max_retry_attempts: 10
+
+  # Batch configuration (tuned for H100)
+  target_tokens_per_batch: 400000
+  max_batch_size: 512
+  max_seq_length: 512
+
+  # DataLoader
+  num_loader_workers: 24
+  prefetch_factor: 4
+
+  # Local cache
+  cache_dir: "/tmp/embedding_runner_cache"
+
+# =============================================================================
+# Stage 4: Contamination Analysis Configuration
+# =============================================================================
+analysis:
+  # Input: directory containing corpus embeddings (parquet files)
+  corpus_dir: "/lambda/nfs/embeddings/embedding_folder"
+
+  # Output directory for results - uses dataset name for clarity
+  output_dir: "./results/Dolmino_100B_1pct"
+
+  # Dataset identifier for plot/file naming
+  dataset_name: "Dolmino_100B_1pct"
+
+  # Benchmarks to analyze
+  benchmarks:
+    - name: "musr_murder_mysteries"
+      mode: "input_output"
+      display_name: "MUSR_Murder_Mysteries_input_output"
+    - name: "musr_object_placements"
+      mode: "input_output"
+      display_name: "MUSR_Object_Placements_input_output"
+    - name: "musr_team_allocation"
+      mode: "input_output"
+      display_name: "MUSR_Team_Allocation_input_output"
+    - name: "mbpp"
+      mode: "input"
+      display_name: "MBPP_input"
+
+  # Cluster configuration (8x A100 40GB)
+  cluster:
+    world_size: 8
+    gpu_batch_size: 8192
+    corpus_gpu_chunk: 12000000  # ~24GB in FP16
+    max_rows_per_block: 5000000
+    gpu_memory_threshold: 0.92
+    ram_memory_threshold: 0.88
+    prefetch_files: 3
+    flush_stagger_delay: 0.5
+
+  # Checkpointing
+  checkpoint_dir: "./results/Dolmino_100B_1pct/checkpoints"
+
+  # CUDA optimizations
+  cuda:
+    launch_blocking: false
+    expandable_segments: true
+    float32_matmul_precision: "high"
+
+# =============================================================================
+# Stage 5: Merge Configuration
+# =============================================================================
+merge:
+  # Input: output from analysis stage
+  input_dir: "./results/Dolmino_100B_1pct"
+
+  # World size (must match analysis)
+  world_size: 8
+
+# =============================================================================
+# Stage 6: Aggregate and Plot Configuration
+# =============================================================================
+aggregates:
+  # Input: merged results
+  input_dir: "./results/Dolmino_100B_1pct"
+
+  # Dataset name for plot naming
+  dataset_name: "Dolmino_100B_1pct"
+
+  # World size (must match analysis)
+  source_world_size: 8
+  world_size: 8
+
+  # Histogram configuration
+  num_bins: 1000
+  hist_range:
+    - -1.0
+    - 1.0
+
+  # Plot naming will be: {benchmark_display_name}__{dataset_name}__{plot_type}.png
+  # Example: MBPP_input__Dolmino_100B_1pct__histogram_linear.png
+  plots:
+    - "histogram_linear.png"
+    - "histogram_log.png"
+    - "cdf.png"
+    - "topk.png"
+
+  # CSV output naming: {benchmark_display_name}__{dataset_name}__top100.csv
+  # Example: MBPP_input__Dolmino_100B_1pct__top100.csv
+  top_k: 100
+
+# =============================================================================
+# Paths Configuration (resolved relative to pipeline root)
+# =============================================================================
+paths:
+  # Pipeline root directory
+  pipeline_root: "/lambda/nfs/embeddings/SDTD_Main/pipeline"
+
+  # Python virtual environment
+  venv: "/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python"
+
+  # Logs directory
+  logs_dir: "./logs"
+
+# =============================================================================
+# Stage Control
+# =============================================================================
+# Set to true to skip a stage (useful for re-runs)
+skip_stages:
+  download: false
+  chunking: false
+  embeddings: false
+  analysis: false
+  merge: false
+  aggregates: false
