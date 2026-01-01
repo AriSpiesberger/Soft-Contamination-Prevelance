@@ -117,10 +117,14 @@ def main():
     # Load model and tokenizer
     print(f"\nLoading model: {MODEL_NAME}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
-    model = AutoModel.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    model = AutoModel.from_pretrained(
+        MODEL_NAME,
+        trust_remote_code=True,
+        torch_dtype=torch.float16 if device.type == 'cuda' else torch.float32
+    )
     model = model.to(device)
     model.eval()
-    print("Model loaded successfully")
+    print(f"Model loaded successfully (dtype: {model.dtype})")
 
     # Load dataset
     dataset = JSONLDataset(INPUT_FILE)
