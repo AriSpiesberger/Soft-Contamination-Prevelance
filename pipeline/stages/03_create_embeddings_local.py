@@ -116,8 +116,8 @@ def main():
 
     # Load model and tokenizer
     print(f"\nLoading model: {MODEL_NAME}...")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    model = AutoModel.from_pretrained(MODEL_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    model = AutoModel.from_pretrained(MODEL_NAME, trust_remote_code=True)
     model = model.to(device)
     model.eval()
     print("Model loaded successfully")
