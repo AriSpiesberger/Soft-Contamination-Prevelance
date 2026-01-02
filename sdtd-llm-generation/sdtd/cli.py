@@ -416,32 +416,50 @@ def export_jsonl(
         "-v",
         help="Filter by sd_variant (one or comma-separated list, e.g., 'value_substitution' or 'value_substitution,condition_shuffle')",
     ),
+    sort_by_id: bool = typer.Option(
+        False,
+        "--sort-by-id",
+        help="Sort items by ID before exporting (useful for aligning generated files with originals)",
+    ),
+    sort_by_id_hash: bool = typer.Option(
+        False,
+        "--sort-by-id-hash",
+        help="Sort items by hash of ID for stable pseudo-randomization",
+    ),
+    debug: bool = typer.Option(
+        False,
+        "--debug",
+        help="Print IDs of exported samples to stdout",
+    ),
 ) -> None:
     """Export datasets to JSONL format for OpenAI fine-tuning.
-
+    
     Converts either the original ZebraLogic dataset or generated parquet files
     to JSONL format using templates defined in jsonl_templates.yaml.
-
+    
     Examples:
-
+    
         # Export original ZebraLogic dataset
         uv run python -m sdtd export-jsonl -t zebralogic -o zebralogic_train.jsonl
+        
+        # Export sorted by ID to ensure alignment
+        uv run python -m sdtd export-jsonl -t zebralogic -o zebralogic_train.jsonl --sort-by-id
 
         # Export with limit for testing
         uv run python -m sdtd export-jsonl -t zebralogic -o test.jsonl -n 10
-
+        
         # Export generated parquet file
         uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level12.parquet -o generated.jsonl
-
+        
         # Export with dataset filter
         uv run python -m sdtd export-jsonl -t parquet -i outputs/all.parquet -o zebra.jsonl -d zebralogic
-
+        
         # Export with sd_variant filter
         uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level2.parquet -o output.jsonl -v value_substitution
-
+        
         # Export multiple variants
         uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level2.parquet -o output.jsonl -v value_substitution,condition_shuffle
-
+        
         # Use custom template
         uv run python -m sdtd export-jsonl -t zebralogic -o output.jsonl --template custom_template
     """
@@ -458,6 +476,10 @@ def export_jsonl(
                 template_name=template_name,
                 template_path=template_path,
                 limit=limit,
+                input_file=input_file,
+                sort_by_id=sort_by_id,
+                sort_by_id_hash=sort_by_id_hash,
+                debug=debug,
             )
             typer.echo(f"✓ Exported ZebraLogic dataset to {output_file}")
         except Exception as e:
@@ -490,6 +512,9 @@ def export_jsonl(
                 template_path=template_path,
                 dataset_filter=dataset_filter,
                 sd_variant_filter=variant_filter,
+                sort_by_id=sort_by_id,
+                sort_by_id_hash=sort_by_id_hash,
+                debug=debug,
             )
             typer.echo(f"✓ Exported parquet file to {output_file}")
         except Exception as e:
