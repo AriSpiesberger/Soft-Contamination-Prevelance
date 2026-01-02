@@ -14,7 +14,7 @@ import logging
 import sys
 from collections import Counter
 import threading
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 
 from sdtd.datasets import load_dataset
 from sdtd.utils import get_client, load_prompts, format_prompt
@@ -590,7 +590,7 @@ def process_item(
     variants: list[tuple[int, str, dict]], # (level, variant_name, prompt_config)
     output_path: Path,
     model_override: str | None = None,
-) -> int:
+) -> list[dict]:
     """Process a single item for multiple variants.
     
     Args:
@@ -602,9 +602,9 @@ def process_item(
         model_override: Model override
         
     Returns:
-        Number of successfully generated SDs
+        List of generated SD result dictionaries
     """
-    generated_count = 0
+    results = []
     
     # Get existing results to skip
     existing_keys = get_existing_results(output_path)
@@ -729,16 +729,15 @@ def process_item(
                 "timestamp": datetime.now().isoformat(),
             }
             
-            # Write immediately
-            append_result_to_parquet(output_path, result)
-            generated_count += 1
+            # Add to results
+            results.append(result)
             
         except Exception as e:
             error_msg = f"[{dataset_name}][L{level}][{variant_name}][Item {item_idx}] {type(e).__name__}: {e}"
             logging.error(error_msg)
             # We don't stop the whole process for one item error
             
-    return generated_count
+    return results
 
 
 def generate_sds(
@@ -811,12 +810,13 @@ def _generate_for_dataset_parallel(
         else:
             variants_to_run.add(item)
     
+
+    PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
     # Load prompts
     prompts = {}
     for level in [1, 2]:
-        prompt_path = Path(f"prompts/level{level}.yaml")
-        if prompt_path.exists():
-            prompts[level] = load_prompts(prompt_path)
+        prompt_path = Path(f"{PROMPTS_DIR}/level{level}.yaml")
+        prompts[level] = load_prompts(prompt_path)
 
     print(f"Output file: {output_path}")
 
@@ -872,11 +872,16 @@ def _generate_for_dataset_parallel(
             
         # Monitor progress
         completed = 0
-        for future in as_completed(futures):
+        for future in futures:
             completed += 1
             try:
-                count = future.result()
-                total_generated += count
+                results = future.result()
+                
+                # Write results
+                for result in results:
+                    append_result_to_parquet(output_path, result)
+                    total_generated += 1
+                    
                 if completed % 10 == 0 or completed == total_items:
                     print(f"\rProgress: {completed}/{total_items} items processed (Total SDs generated: {total_generated})", end="")
             except Exception as e:

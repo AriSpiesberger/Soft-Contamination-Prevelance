@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 import yaml
 from jinja2 import Template
+import hashlib
 
 from sdtd.datasets import load_zebralogic
 
@@ -28,6 +29,10 @@ def export_zebralogic_to_jsonl(
     template_name: str = "zebralogic_original",
     template_path: Path | str = "prompts/jsonl_templates.yaml",
     limit: int | None = None,
+    input_file: Path | str | None = None,
+    sort_by_id: bool = False,
+    sort_by_id_hash: bool = False,
+    debug: bool = False,
 ) -> None:
     """Export ZebraLogic dataset to JSONL format for OpenAI fine-tuning.
 
@@ -36,6 +41,10 @@ def export_zebralogic_to_jsonl(
         template_name: Name of template to use from templates YAML
         template_path: Path to templates YAML file
         limit: Optional limit on number of puzzles to export
+        input_file: Optional path to local input file (overrides default loading)
+        sort_by_id: Sort items by ID before exporting
+        sort_by_id_hash: Sort items by hash of ID for stable pseudo-randomization
+        debug: Print IDs of exported samples to stdout
     """
     # Load templates
     templates = load_jsonl_templates(template_path)
@@ -51,7 +60,27 @@ def export_zebralogic_to_jsonl(
     example_puzzle = templates.get("example_puzzle", "")
 
     # Load ZebraLogic dataset
-    df = load_zebralogic(limit=limit)
+    df = load_zebralogic(limit=limit, input_file=input_file)
+
+    # Sort by ID if requested
+    if sort_by_id and "id" in df.columns:
+        df = df.sort("id")
+    elif sort_by_id_hash and "id" in df.columns:
+        # Sort by MD5 hash of ID for stable pseudo-randomization
+        ids = df["id"].to_list()
+        id_hash_pairs = [(id_val, hashlib.md5(id_val.encode()).hexdigest()) for id_val in ids]
+        id_hash_pairs.sort(key=lambda x: x[1])
+        sorted_ids = [x[0] for x in id_hash_pairs]
+        # Create a mapping for order
+        id_to_order = {id_val: i for i, id_val in enumerate(sorted_ids)}
+        # Add temporary column for sorting
+        df = df.with_columns(
+            pl.col("id").map_elements(lambda x: id_to_order.get(x, 0), return_dtype=pl.Int64).alias("_sort_order")
+        ).sort("_sort_order").drop("_sort_order")
+
+    if debug and "id" in df.columns:
+        ids = df["id"].to_list()[:30]
+        print("Exported IDs:", " ".join(ids))
 
     # Create output directory if needed
     output_file.parent.mkdir(parents=True, exist_ok=True)
@@ -119,6 +148,9 @@ def export_parquet_to_jsonl(
     template_path: Path | str = "prompts/jsonl_templates.yaml",
     dataset_filter: str | None = None,
     sd_variant_filter: list[str] | None = None,
+    sort_by_id: bool = False,
+    sort_by_id_hash: bool = False,
+    debug: bool = False,
 ) -> None:
     """Export generated parquet file to JSONL format for OpenAI fine-tuning.
 
@@ -129,6 +161,9 @@ def export_parquet_to_jsonl(
         template_path: Path to templates YAML file
         dataset_filter: Optional filter to only export specific dataset (e.g., "zebralogic")
         sd_variant_filter: Optional list of sd_variant values to filter by (e.g., ["value_substitution", "condition_shuffle"])
+        sort_by_id: Sort items by ID (extracted from additional_info) before exporting
+        sort_by_id_hash: Sort items by hash of ID for stable pseudo-randomization
+        debug: Print IDs of exported samples to stdout
     """
     # Load templates
     templates = load_jsonl_templates(template_path)
@@ -157,12 +192,37 @@ def export_parquet_to_jsonl(
     if len(df) == 0:
         raise ValueError(f"No data found in {input_file} (after filtering)")
 
+    # Sort by ID if requested (needs parsing additional_info)
+    rows = df.to_dicts()
+    
+    def get_id(row):
+        info = row.get("additional_info", "")
+        if isinstance(info, str):
+            try:
+                info_dict = json.loads(info)
+                return info_dict.get("id", "")
+            except:
+                pass
+        elif isinstance(info, dict):
+            return info.get("id", "")
+        return ""
+
+    if sort_by_id:
+        rows.sort(key=get_id)
+    elif sort_by_id_hash:
+        # Sort by MD5 hash of ID for stable pseudo-randomization
+        rows.sort(key=lambda row: hashlib.md5(get_id(row).encode()).hexdigest())
+
+    if debug:
+        ids = [get_id(row) for row in rows[:30]]
+        print("Exported IDs:", " ".join(ids))
+
     # Create output directory if needed
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     # Write JSONL file
     with open(output_file, "w") as f:
-        for row_dict in df.to_dicts():
+        for row_dict in rows:
             # Parse additional_info if it's a JSON string
             if "additional_info" in row_dict and isinstance(row_dict["additional_info"], str):
                 try:
