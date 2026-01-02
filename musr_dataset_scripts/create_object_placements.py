@@ -369,7 +369,7 @@ Reason - She noticed the milk was left out for too long and put it back before i
                 raise Exception("Couldn't get a sample from the code that matched the gold move from GPT.")
 
             question, answers = creator.generate_end_questions(
-                ending_beliefs=beliefs[-1], people=people, items=items, locations=locations, event_structure=deepcopy(event_structure)
+                ending_beliefs=beliefs[-1], people=people, items=items, locations=locations, event_structure=copy.deepcopy(event_structure)
             )
         except Exception as e:
             # If for any reason something fails, we will just retry the whole loop.
@@ -440,7 +440,7 @@ Respect the peoples roles when creating deductions and try to create motivations
         chapters = []
         story_so_far = ''
         for loop_idx, __n in enumerate(tree.nodes[0].children):
-            n = deepcopy(__n)
+            n = copy.deepcopy(__n)
             if n.value == 'opening scene':
                 # The opening scene "chapter" is meant to introduce the setting but also say that everyone knows where
                 # everything is initially (a starting point.)
