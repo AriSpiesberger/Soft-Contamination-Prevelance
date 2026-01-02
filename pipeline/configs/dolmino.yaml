@@ -60,7 +60,7 @@ chunking:
 
   # Token filtering
   min_paragraph_tokens: 50
-  max_paragraph_tokens: 512
+  max_paragraph_tokens: 1000
 
   # Tokenizer: Use tiktoken for fast token counting
   tokenizer_encoding: "cl100k_base"  # Fast GPT-4 style encoding
@@ -101,10 +101,10 @@ embeddings:
     max_pool_connections: 50
     max_retry_attempts: 10
 
-  # Batch configuration (tuned for GPU)
+  # Batch configuration (tuned for GPU with FP16)
   target_tokens_per_batch: 400000
-  max_batch_size: 512
-  max_seq_length: 512
+  max_batch_size: 128
+  max_seq_length: 1000
 
   # DataLoader
   num_loader_workers: 24
