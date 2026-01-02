@@ -26,6 +26,7 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import numpy as np
+import tiktoken
 
 # --- CONFIGURATION LOADING ---
 PIPELINE_ROOT = Path(__file__).parent.parent
@@ -83,43 +84,125 @@ print(f"=" * 80)
 
 
 class JSONLDataset(Dataset):
-    """Dataset for reading JSONL paragraphs with length-based sorting."""
+    """Dataset for reading JSONL paragraphs with token-based filtering and length sorting."""
 
-    def __init__(self, jsonl_path):
+    def __init__(self, jsonl_path, max_tokens=None):
         self.data = []
 
+        # Initialize tiktoken for fast token counting
+        tokenizer_enc = tiktoken.get_encoding("cl100k_base")
+
         print(f"\nLoading paragraphs from {jsonl_path}...")
+        total_loaded = 0
+        filtered_count = 0
+
         with open(jsonl_path, 'r') as f:
             for line in tqdm(f, desc="Reading JSONL"):
                 entry = json.loads(line)
-                self.data.append({
+                total_loaded += 1
+
+                # Estimate token count
+                if max_tokens:
+                    token_count = len(tokenizer_enc.encode(entry['text'], disallowed_special=()))
+                    if token_count > max_tokens:
+                        filtered_count += 1
+                        continue
+
+                # Store all fields from JSONL
+                item = {
                     'id': entry['id'],
                     'text': entry['text'],
-                    'length': len(entry['text'])  # Approximate length for sorting
-                })
+                    'length': len(entry['text'])  # For sorting
+                }
+
+                # Add optional fields if they exist
+                if 'source' in entry:
+                    item['source'] = entry['source']
+                if 'category' in entry:
+                    item['category'] = entry['category']
+                if 'token_size' in entry:
+                    item['token_size'] = entry['token_size']
+
+                self.data.append(item)
 
         # Sort by length for better batching efficiency
         print("Sorting by length for dynamic batching...")
         self.data.sort(key=lambda x: x['length'])
 
         print(f"Loaded {len(self.data):,} paragraphs")
+        if max_tokens and filtered_count > 0:
+            print(f"Filtered {filtered_count:,} paragraphs exceeding {max_tokens} tokens ({filtered_count/total_loaded*100:.1f}%)")
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
-        return {
-            'id': self.data[idx]['id'],
-            'text': self.data[idx]['text']
-        }
+        return self.data[idx]
 
 
-def collate_fn(batch):
-    """Custom collate function for efficient batching."""
-    return {
-        'id': [item['id'] for item in batch],
-        'text': [item['text'] for item in batch]
+class TokenBatchSampler:
+    """Batch sampler that groups items by total token count."""
+
+    def __init__(self, dataset, max_batch_items, target_tokens, max_seq_length):
+        self.dataset = dataset
+        self.max_batch_items = max_batch_items
+        self.target_tokens = target_tokens
+        self.max_seq_length = max_seq_length
+        self.tokenizer_enc = tiktoken.get_encoding("cl100k_base")
+
+    def __iter__(self):
+        batch = []
+        batch_tokens = 0
+
+        for idx in range(len(self.dataset)):
+            item = self.dataset[idx]
+            # Estimate tokens for this item
+            item_tokens = min(
+                len(self.tokenizer_enc.encode(item['text'], disallowed_special=())),
+                self.max_seq_length
+            )
+
+            # Check if adding this item would exceed limits
+            would_exceed_tokens = (batch_tokens + item_tokens) > self.target_tokens
+            would_exceed_items = len(batch) >= self.max_batch_items
+
+            if batch and (would_exceed_tokens or would_exceed_items):
+                # Yield current batch and start new one
+                yield batch
+                batch = [idx]
+                batch_tokens = item_tokens
+            else:
+                # Add to current batch
+                batch.append(idx)
+                batch_tokens += item_tokens
+
+        # Yield final batch
+        if batch:
+            yield batch
+
+    def __len__(self):
+        # Estimate number of batches
+        return (len(self.dataset) + self.max_batch_items - 1) // self.max_batch_items
+
+
+def collate_fn(batch_indices, dataset):
+    """Custom collate function that preserves all metadata."""
+    batch_data = [dataset[idx] for idx in batch_indices]
+
+    result = {
+        'id': [item['id'] for item in batch_data],
+        'text': [item['text'] for item in batch_data],
     }
+
+    # Add optional fields if they exist in first item
+    if batch_data and 'source' in batch_data[0]:
+        result['source'] = [item.get('source', '') for item in batch_data]
+    if batch_data and 'category' in batch_data[0]:
+        result['category'] = [item.get('category', '') for item in batch_data]
+    if batch_data and 'token_size' in batch_data[0]:
+        result['token_size'] = [item.get('token_size', 0) for item in batch_data]
+
+    return result
 
 
 def mean_pooling(token_embeddings, attention_mask):
@@ -169,16 +252,33 @@ def main():
     model.eval()
     print(f"Model loaded successfully (dtype: {model.dtype})")
 
-    # Load dataset
-    dataset = JSONLDataset(INPUT_FILE)
+    # Load dataset with token filtering
+    dataset = JSONLDataset(INPUT_FILE, max_tokens=MAX_SEQ_LENGTH)
+
+    # Get target tokens from config
+    TARGET_TOKENS = embeddings_config.get('target_tokens_per_batch', 400000)
+
+    # Create dynamic batch sampler
+    batch_sampler = TokenBatchSampler(
+        dataset,
+        max_batch_items=BATCH_SIZE,
+        target_tokens=TARGET_TOKENS,
+        max_seq_length=MAX_SEQ_LENGTH
+    )
+
+    print(f"Dynamic batching: target={TARGET_TOKENS:,} tokens/batch, max={BATCH_SIZE} items/batch")
+
+    # Create custom collate function that receives dataset
+    def collate_wrapper(batch_indices):
+        return collate_fn(batch_indices, dataset)
+
     dataloader = DataLoader(
         dataset,
-        batch_size=BATCH_SIZE,
-        shuffle=False,  # Already sorted by length
+        batch_sampler=batch_sampler,
         num_workers=NUM_WORKERS,
         pin_memory=True if device.type == 'cuda' else False,
         prefetch_factor=PREFETCH_FACTOR if NUM_WORKERS > 0 else None,
-        collate_fn=collate_fn,
+        collate_fn=collate_wrapper,
         persistent_workers=True if NUM_WORKERS > 0 else False
     )
 
@@ -188,24 +288,58 @@ def main():
     # Create output directory if needed
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
 
+    # Check for existing checkpoint
+    CHECKPOINT_FILE = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}.checkpoint"
+    TEMP_OUTPUT_FILE = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}.temp.parquet"
+
+    start_idx = 0
+    if TEMP_OUTPUT_FILE.exists() and CHECKPOINT_FILE.exists():
+        # Resume from checkpoint
+        with open(CHECKPOINT_FILE, 'r') as f:
+            checkpoint_data = json.load(f)
+            start_idx = checkpoint_data.get('processed', 0)
+        print(f"✓ Found checkpoint: resuming from {start_idx:,} / {len(dataset):,} paragraphs")
+        print(f"  Progress: {start_idx / len(dataset) * 100:.1f}%")
+    else:
+        # Start fresh
+        if TEMP_OUTPUT_FILE.exists():
+            TEMP_OUTPUT_FILE.unlink()
+        if CHECKPOINT_FILE.exists():
+            CHECKPOINT_FILE.unlink()
+
     # We'll write in chunks to avoid memory issues
     WRITE_CHUNK_SIZE = 10000
-    chunk_ids = []
-    chunk_embeddings = []
-    total_processed = 0
+    CHECKPOINT_INTERVAL = 50000  # Save checkpoint every 50K paragraphs
+    chunk_data = []  # Will store dicts with all fields
+    total_processed = start_idx
 
     # Use parquet writer for streaming
     writer = None
+    # Schema with all metadata fields (FP16 embeddings)
     schema = pa.schema([
         ('id', pa.string()),
-        ('embedding', pa.list_(pa.float32()))
+        ('text', pa.string()),
+        ('embedding', pa.list_(pa.float16())),
+        ('source', pa.string()),
+        ('category', pa.string()),
+        ('token_size', pa.int32())
     ])
+
+    # If resuming, open existing file for appending
+    if start_idx > 0 and TEMP_OUTPUT_FILE.exists():
+        writer = pq.ParquetWriter(TEMP_OUTPUT_FILE, schema, compression='snappy')
+        print(f"✓ Opened checkpoint file for appending")
 
     with torch.no_grad():
         # Use autocast for mixed precision if on CUDA
         use_amp = device.type == 'cuda'
 
-        for batch_idx, batch in enumerate(tqdm(dataloader, desc="Embedding")):
+        for batch_idx, batch in enumerate(tqdm(dataloader, desc="Embedding", initial=start_idx // BATCH_SIZE, total=len(dataloader))):
+            # Skip already processed batches
+            batch_start_idx = batch_idx * BATCH_SIZE
+            if batch_start_idx < start_idx:
+                continue
+
             # Tokenize
             encoded = tokenizer(
                 batch['text'],
@@ -230,47 +364,84 @@ def main():
                 embeddings = mean_pooling(outputs[0], attention_mask)
                 embeddings = F.normalize(embeddings, p=2, dim=1)
 
-            # Move back to CPU and store
-            chunk_ids.extend(batch['id'])
-            chunk_embeddings.append(embeddings.cpu().float().numpy())
+            # Move back to CPU and store with all metadata (convert to FP16)
+            embeddings_np = embeddings.cpu().half().numpy()  # FP16 instead of FP32
+
+            for i, embedding in enumerate(embeddings_np):
+                row_data = {
+                    'id': batch['id'][i],
+                    'text': batch['text'][i],
+                    'embedding': embedding,
+                    'source': batch.get('source', [''])[i] if 'source' in batch else '',
+                    'category': batch.get('category', [''])[i] if 'category' in batch else '',
+                    'token_size': batch.get('token_size', [0])[i] if 'token_size' in batch else 0
+                }
+                chunk_data.append(row_data)
+
             total_processed += len(batch['id'])
 
             # Write chunk to parquet when we have enough
-            if len(chunk_ids) >= WRITE_CHUNK_SIZE:
-                embeddings_array = np.vstack(chunk_embeddings)
-
+            if len(chunk_data) >= WRITE_CHUNK_SIZE:
                 # Create PyArrow table for this chunk
                 chunk_table = pa.table({
-                    'id': chunk_ids,
-                    'embedding': list(embeddings_array)
+                    'id': [r['id'] for r in chunk_data],
+                    'text': [r['text'] for r in chunk_data],
+                    'embedding': [list(r['embedding']) for r in chunk_data],
+                    'source': [r['source'] for r in chunk_data],
+                    'category': [r['category'] for r in chunk_data],
+                    'token_size': [r['token_size'] for r in chunk_data]
                 })
 
                 # Write to parquet (append mode)
                 if writer is None:
-                    writer = pq.ParquetWriter(OUTPUT_FILE, schema, compression='snappy')
+                    writer = pq.ParquetWriter(TEMP_OUTPUT_FILE, schema, compression='snappy')
 
                 writer.write_table(chunk_table)
 
-                # Clear chunk buffers
-                chunk_ids = []
-                chunk_embeddings = []
+                # Clear chunk buffer
+                chunk_data = []
+
+            # Save checkpoint periodically
+            if total_processed % CHECKPOINT_INTERVAL == 0 and total_processed > start_idx:
+                checkpoint_data = {
+                    'processed': total_processed,
+                    'total': len(dataset),
+                    'progress': total_processed / len(dataset)
+                }
+                with open(CHECKPOINT_FILE, 'w') as f:
+                    json.dump(checkpoint_data, f)
+                print(f"\n✓ Checkpoint saved: {total_processed:,} / {len(dataset):,} ({total_processed / len(dataset) * 100:.1f}%)")
 
     # Write any remaining data
-    if chunk_ids:
-        embeddings_array = np.vstack(chunk_embeddings)
+    if chunk_data:
         chunk_table = pa.table({
-            'id': chunk_ids,
-            'embedding': list(embeddings_array)
+            'id': [r['id'] for r in chunk_data],
+            'text': [r['text'] for r in chunk_data],
+            'embedding': [list(r['embedding']) for r in chunk_data],
+            'source': [r['source'] for r in chunk_data],
+            'category': [r['category'] for r in chunk_data],
+            'token_size': [r['token_size'] for r in chunk_data]
         })
 
         if writer is None:
-            writer = pq.ParquetWriter(OUTPUT_FILE, schema, compression='snappy')
+            writer = pq.ParquetWriter(TEMP_OUTPUT_FILE, schema, compression='snappy')
 
         writer.write_table(chunk_table)
 
     # Close writer
     if writer is not None:
         writer.close()
+
+    # Rename temp file to final output
+    if TEMP_OUTPUT_FILE.exists():
+        if OUTPUT_FILE.exists():
+            OUTPUT_FILE.unlink()
+        TEMP_OUTPUT_FILE.rename(OUTPUT_FILE)
+        print(f"\n✓ Moved temp file to final output")
+
+    # Clean up checkpoint file
+    if CHECKPOINT_FILE.exists():
+        CHECKPOINT_FILE.unlink()
 
     print(f"\n✓ Generated {total_processed:,} embeddings")
     print(f"✓ Embeddings saved successfully!")
