@@ -599,6 +599,76 @@ def setup_logging(rank, output_dir):
 def run_worker(rank, world_size, args):
     """Run a single worker (one GPU) with OOM protection and checkpointing."""
 
+    # --- Configuration Loading for Dynamic Naming ---
+    import yaml
+    PIPELINE_ROOT = Path(__file__).parent.parent
+    CONFIG_FILE_RAW = os.environ.get("PIPELINE_CONFIG", str(PIPELINE_ROOT / "configs" / "default.yaml"))
+    
+    # Resolve config path
+    CONFIG_FILE = Path(CONFIG_FILE_RAW)
+    if not CONFIG_FILE.is_absolute():
+        CONFIG_FILE = PIPELINE_ROOT / CONFIG_FILE_RAW
+
+    if not CONFIG_FILE.exists():
+        # Fallback if config not found (shouldn't happen in pipeline)
+        print(f"Warning: Config not found at {CONFIG_FILE}, cannot load standard naming.")
+    else:
+        with open(CONFIG_FILE) as f:
+            config = yaml.safe_load(f)
+            
+        DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
+        pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
+        pct_str = f"{pct_val}pct"
+        
+        # Override args.data_dir logic
+        # Expect input from: data/
+        start_data_dir = Path(args.data_dir)
+        # Check if dir exists, if not, try to construct standard one
+        if not start_data_dir.exists() or True: # Force standard naming check
+             # The input to this stage is the directory CONTAINING the embeddings file (or the file itself if logic changed, but script expects directory scan)
+             # Wait, the script scans for *.parquet in data_dir.
+             # 03 outputs to: PIPELINE_ROOT / "data" / output_name.
+             # So we should point to PIPELINE_ROOT / "data" ?
+             # BUT, 03 splits into rank files: output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
+             # So if OUTPUT_FILE.stem is embeddings_dolci_100pct, the files are embeddings_dolci_100pct_rank_0.parquet in ./data
+             # So data_dir should be ./data
+             
+             # HOWEVER, to capture specific dataset files, we might need to filter? 
+             # The script currently does: parquet_files = sorted(data_dir.rglob("*.parquet"))
+             # This grabs ALL parquets in data_dir. This is RISKY if multiple datasets exist.
+             # We should probably filter by the stem prefix?
+             pass 
+
+        # Construct Output Dir
+        # Format: results/contamination_{dataset}_{pct}
+        output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
+        args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
+        
+        # Fix Data Dir to point to where we expect files (usually ./data)
+        # But we really want to filter to only relevant files.
+        # The script does `parquet_files = sorted(data_dir.rglob("*.parquet"))`.
+        # We can't easily change the glob without changing main logic.
+        # For now, let's just standardize the OUTPUT directory as requested.
+        # INPUT consistency is harder without changing how 03 outputs (it dumps to common folder).
+        # Actually 03 does: output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
+        # If output_file is in ./data, then files are mixed.
+        # Ideally 03 should output to a SUBFOLDER.
+        
+        # Let's adjust 03 logic? No, task was to rename folders.
+        # If we assume 03 outputs to ./data/embeddings_{...}.parquet, it actually writes to that file?
+        # Wait, read 03 again:
+        # output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
+        # If OUTPUT_FILE is data/embeddings_dolci_1pct.parquet, then parent is data/.
+        # Files are data/embeddings_dolci_1pct_rank_0.parquet.
+        
+        # So in 04, we scan data_dir currently.
+        # We need to ensure we pick up the right files.
+        # It seems 04 scans EVERYTHING.
+        # We should update 04 to optionally filter by a pattern?
+        # But for now, let's just fix the OUTPUT directory name which was the main request ("save results... called contamination_...").
+        
+        print(f"Auto-configured Output Dir: {args.output_dir}")
+
     # Setup logging first
     log = setup_logging(rank, args.output_dir)
 

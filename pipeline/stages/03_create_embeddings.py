@@ -1,637 +1,324 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Production Embedding Runner - H100 Cluster Edition
-FIXED VERSION:
-1. Solved Pickling Error by moving Collate function to global scope.
-2. Fixed batch unpacking logic in collator.
-3. Finds both 'data.jsonl' (v2) and 'part_*.jsonl' (v3) files.
+Multi-GPU Local Embedding Generation Script
+Distributes work across GPUs by rank-based data sharding.
 """
 
 import os
 import sys
-import time
-import gc
-import signal
-import shutil
-import traceback
-import queue as queue_module
-import multiprocessing as mp
-from collections import deque
+import json
+import argparse
 from pathlib import Path
-from datetime import datetime
-
+import yaml
+import numpy as np
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer, AutoModel
 from tqdm import tqdm
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-import boto3
-import orjson
-import numpy as np
+# Parse arguments first
+parser = argparse.ArgumentParser()
+parser.add_argument('--rank', type=int, default=0, help='GPU rank (default: 0)')
+parser.add_argument('--world-size', type=int, default=1, help='Total number of GPUs (default: 1)')
+args = parser.parse_args()
 
-# Import S3 config
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent / 'lib'))
-from s3_config import S3Config, default_config
+rank = args.rank
+world_size = args.world_size
 
-# --- CONFIGURATION ---
-MODEL_NAME = 'nvidia/llama-embed-nemotron-8b'
-EMBEDDER_KEY = "embeddings"
+# --- CONFIGURATION LOADING ---
+PIPELINE_ROOT = Path(__file__).parent.parent
+CONFIG_FILE_RAW = os.environ.get("PIPELINE_CONFIG", str(PIPELINE_ROOT / "configs" / "default.yaml"))
 
-# S3 Config - can be overridden by creating a custom S3Config instance
-s3_config = default_config
-S3_BUCKET = s3_config.bucket
-INPUT_PREFIX = s3_config.input_prefix
-OUTPUT_PREFIX = s3_config.output_prefix
-REGION = s3_config.region
+# Resolve config path
+CONFIG_FILE = Path(CONFIG_FILE_RAW)
+if not CONFIG_FILE.is_absolute():
+    CONFIG_FILE = PIPELINE_ROOT / CONFIG_FILE_RAW
 
-# Paths
-LOCAL_CACHE_DIR = Path("/tmp/embedding_runner_cache")
+def load_config():
+    """Load pipeline configuration from YAML."""
+    if not CONFIG_FILE.exists():
+        print(f"[Rank {rank}] Error: Config file not found: {CONFIG_FILE}", file=sys.stderr)
+        print(f"[Rank {rank}] Tried: {CONFIG_FILE_RAW}", file=sys.stderr)
+        print(f"[Rank {rank}] Pipeline root: {PIPELINE_ROOT}", file=sys.stderr)
+        sys.exit(1)
 
-# Tuning - MATCH h100_ghostbuster defaults
-# These settings rely on OOM recovery to split oversized batches.
-TARGET_TOKENS_PER_BATCH = 400_000
-MAX_BATCH_SIZE = 512
-MAX_SEQ_LENGTH = 512
-NUM_LOADER_WORKERS = 24
-PREFETCH_FACTOR = 4
+    with open(CONFIG_FILE) as f:
+        return yaml.safe_load(f)
 
-if not hasattr(np, 'int'):
-    np.int = int
+config = load_config()
+embeddings_config = config.get('embeddings', {})
 
-# =============================================================================
-# S3 UTILITIES
-# =============================================================================
-def get_s3_client():
-    return boto3.client('s3', region_name=s3_config.region, config=s3_config.get_boto_config())
+# Extract configuration values
+local_config = embeddings_config.get('local', {})
+MODEL_NAME = embeddings_config.get('model', 'nvidia/llama-embed-nemotron-8b')
+INPUT_FILE = local_config.get('input_file', None)
+OUTPUT_FILE = local_config.get('output_file', None)
+MAX_SEQ_LENGTH = embeddings_config.get('max_seq_length', 512)
+BATCH_SIZE = embeddings_config.get('max_batch_size', 32)
+NUM_WORKERS = embeddings_config.get('num_loader_workers', 4)
 
-def list_tasks(bucket, in_prefix, out_prefix):
-    """Finds all jsonl files (data.jsonl OR part_*.jsonl)."""
-    s3 = get_s3_client()
+# Resolve paths
+def resolve_path(path_str):
+    """Resolve path relative to pipeline root if not absolute."""
+    path = Path(path_str)
+    if not path.is_absolute():
+        path = PIPELINE_ROOT / path
+    return path
+
+# STANDARD NAMING CONVENTION LOGIC
+DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
+pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
+pct_str = f"{pct_val}pct"
+
+# Auto-configure Input (from Stage 2)
+if True:
+    input_name = f"conversations_{DATASET_SHORT_NAME}_{pct_str}.jsonl"
+    # Assuming data dir is ./data relative to pipeline root
+    INPUT_FILE = PIPELINE_ROOT / "data" / input_name
     
-    print(f"Scanning inputs: s3://{bucket}/{in_prefix}")
-    input_files = set()
-    paginator = s3.get_paginator('list_objects_v2')
-    
-    # Scan for inputs
-    pages = list(paginator.paginate(Bucket=bucket, Prefix=in_prefix))
-    for page in tqdm(pages, desc="Scanning input files", unit="page"):
-        if 'Contents' in page:
-            for obj in page['Contents']:
-                if obj['Key'].endswith('.jsonl'):
-                    input_files.add(obj['Key'])
-    
-    # Scan for already completed outputs to skip
-    print(f"Scanning outputs: s3://{bucket}/{out_prefix}")
-    done_files = set()
-    pages = list(paginator.paginate(Bucket=bucket, Prefix=out_prefix))
-    for page in tqdm(pages, desc="Scanning output files", unit="page"):
-        if 'Contents' in page:
-            for obj in page['Contents']:
-                rel_path = obj['Key'].replace(out_prefix, "").lstrip("/")
-                rel_jsonl = rel_path.replace('.parquet', '.jsonl')
-                full_input_key = f"{in_prefix.rstrip('/')}/{rel_jsonl}"
-                done_files.add(full_input_key)
-    
-    tasks = []
-    for key in input_files:
-        if key not in done_files:
-            tasks.append(key)
-            
-    print(f"Found {len(input_files)} inputs. Skipping {len(done_files)} completed.")
-    print(f"Tasks remaining: {len(tasks)}")
-    return sorted(tasks)
+# Auto-configure Output
+if True:
+    output_name = f"embeddings_{DATASET_SHORT_NAME}_{pct_str}.parquet"
+    OUTPUT_FILE = PIPELINE_ROOT / "data" / output_name
 
-def download_file(bucket, key, local_path):
-    get_s3_client().download_file(bucket, key, str(local_path))
+print(f"[Rank {rank}] Auto-configured Input: {INPUT_FILE}")
+print(f"[Rank {rank}] Auto-configured Output: {OUTPUT_FILE}")
 
-def upload_file(bucket, key, local_path):
-    get_s3_client().upload_file(str(local_path), bucket, key)
+if rank == 0:
+    print(f"=" * 80)
+    print(f"MULTI-GPU LOCAL EMBEDDING GENERATION")
+    print(f"=" * 80)
+    print(f"Model: {MODEL_NAME}")
+    print(f"Input: {INPUT_FILE}")
+    print(f"Output: {OUTPUT_FILE}")
+    print(f"World size: {world_size}")
+    print(f"Batch size: {BATCH_SIZE}")
+    print(f"Max sequence length: {MAX_SEQ_LENGTH}")
+    print(f"=" * 80)
+    print()
 
-# =============================================================================
-# MODEL
-# =============================================================================
-def setup_model(gpu_id):
-    device = f"cuda:{gpu_id}"
-    torch.cuda.set_device(device)
-    torch.set_float32_matmul_precision("high")
-    
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, padding_side="right")
-    
+class JSONLDataset(Dataset):
+    """Dataset for reading JSONL paragraphs with rank-based sharding and length sorting."""
+
+    def __init__(self, jsonl_path, rank, world_size):
+        self.paragraphs = []
+        self.ids = []
+        self.lengths = []
+        self.rank = rank
+        self.world_size = world_size
+
+        print(f"[Rank {rank}] Loading paragraphs from {jsonl_path}...")
+        with open(jsonl_path, 'r') as f:
+            for idx, line in enumerate(tqdm(f, desc=f"[Rank {rank}] Reading JSONL", disable=(rank != 0))):
+                # Shard data by rank
+                if idx % world_size == rank:
+                    data = json.loads(line)
+                    text = data['text']
+                    self.paragraphs.append(text)
+                    self.ids.append(data['id'])
+                    # Approximate token count (words * 1.3)
+                    self.lengths.append(len(text.split()) * 1.3)
+
+        # Sort by length descending (longest first - fail fast on OOM, fresh GPU memory)
+        sorted_indices = sorted(range(len(self.lengths)), key=lambda i: self.lengths[i], reverse=True)
+        self.paragraphs = [self.paragraphs[i] for i in sorted_indices]
+        self.ids = [self.ids[i] for i in sorted_indices]
+        self.lengths = [self.lengths[i] for i in sorted_indices]
+
+        print(f"[Rank {rank}] Loaded {len(self.paragraphs):,} paragraphs (sorted longest first)")
+
+    def __len__(self):
+        return len(self.paragraphs)
+
+    def __getitem__(self, idx):
+        return {
+            'id': self.ids[idx],
+            'text': self.paragraphs[idx],
+            'approx_tokens': self.lengths[idx]
+        }
+
+
+def mean_pooling(model_output, attention_mask):
+    """Mean pooling to get sentence embeddings."""
+    token_embeddings = model_output[0]
+    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+    return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+
+
+def main():
+    # Set GPU and memory settings
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(rank)
+    os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
+    device = torch.device('cuda:0')
+
+    print(f"[Rank {rank}] Using GPU {rank}")
+    if torch.cuda.is_available():
+        print(f"[Rank {rank}] GPU Name: {torch.cuda.get_device_name(0)}")
+        print(f"[Rank {rank}] GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+
+    # Load model and tokenizer
+    print(f"[Rank {rank}] Loading model: {MODEL_NAME}...")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
     model = AutoModel.from_pretrained(
         MODEL_NAME,
-        dtype=torch.bfloat16,
-        attn_implementation="flash_attention_2",
-        trust_remote_code=True
-    ).to(device).eval()
-    return tokenizer, model, device
+        trust_remote_code=True,
+        torch_dtype=torch.float16
+    )
+    model = model.to(device)
+    model.eval()
 
-# Match h100_ghostbuster core embedding behavior -----------------------------
+    # CUDA optimizations
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
 
-def mean_pooling(token_embeddings, attention_mask):
-    """Fused mean pooling - stays in bf16 until final normalization."""
-    mask = attention_mask.unsqueeze(-1).to(token_embeddings.dtype)
-    summed = torch.sum(token_embeddings * mask, dim=1)
-    counts = mask.sum(dim=1).clamp(min=1e-9)
-    return summed / counts
+    print(f"[Rank {rank}] Model loaded (dtype: {model.dtype})")
 
+    # Load dataset (sharded by rank)
+    dataset = JSONLDataset(INPUT_FILE, rank=rank, world_size=world_size)
 
-# Profiling configuration (kept for parity, disabled by default)
-ENABLE_PROFILING = False
+    # Dynamic batching: target tokens per batch (conservative for 80GB GPU)
+    TARGET_TOKENS_PER_BATCH = 100_000
+    MAX_BATCH_SIZE = BATCH_SIZE * 2  # Cap at 2x configured batch size
+    CHUNK_SIZE = 10000  # Save chunk every 10k embeddings
 
+    # Output directory for chunks
+    output_dir = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}_chunks"
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-class ProfileTimer:
-    """Minimal CUDA-aware profiler."""
-    def __init__(self, enabled=False):
-        self.enabled = enabled
-        self.times = {}
+    # Find existing chunks to resume from
+    existing_chunks = sorted(output_dir.glob("chunk_*.parquet"))
+    start_idx = 0
+    chunk_num = 0
 
-    def start(self, name):
-        if not self.enabled:
-            return
-        torch.cuda.synchronize()
-        self.times[name] = time.perf_counter()
+    if existing_chunks:
+        # Count items in existing chunks
+        for chunk_file in existing_chunks:
+            chunk_table = pq.read_table(chunk_file, columns=['id'])
+            start_idx += len(chunk_table)
+        chunk_num = len(existing_chunks)
+        print(f"[Rank {rank}] Resuming: found {chunk_num} chunks, {start_idx:,} items done")
 
-    def stop(self, name):
-        if not self.enabled or name not in self.times:
-            return 0
-        torch.cuda.synchronize()
-        elapsed = (time.perf_counter() - self.times[name]) * 1000
-        return elapsed
+    # Generate embeddings with dynamic batching
+    print(f"[Rank {rank}] Generating embeddings (saving every {CHUNK_SIZE:,} items)...")
 
+    # Buffer for current chunk
+    chunk_ids = []
+    chunk_embeddings = []
 
-def process_batch_iterative(
-    initial_encoded_input,
-    initial_indices,
-    model,
-    block_data,
-    device,
-    profiler: ProfileTimer,
-):
-    """
-    Iterative queue with CUDA stream overlap.
-    Double-buffering: prefetch next batch while computing current.
-    """
-    queue = deque([(initial_encoded_input, initial_indices)])
+    import time
 
-    compute_stream = torch.cuda.Stream()
-    transfer_stream = torch.cuda.Stream()
+    # Process in dynamic batches
+    idx = start_idx
+    total = len(dataset)
+    pbar = tqdm(total=total, initial=start_idx, desc=f"[Rank {rank}] Embedding", disable=(rank != 0))
 
-    # Double buffer state
-    prefetched_batch = None
-    prefetched_indices = None
+    with torch.no_grad():
+        while idx < total:
+            # Build batch dynamically based on sequence lengths
+            batch_texts = []
+            batch_ids = []
+            max_seq_len = 0
 
-    while queue:
-        current_encoded, current_indices = queue.popleft()
+            while idx < total and len(batch_texts) < MAX_BATCH_SIZE:
+                item = dataset[idx]
+                approx_tokens = min(item['approx_tokens'], MAX_SEQ_LENGTH)  # Cap at max seq length
 
-        # --- PREFETCH NEXT (on transfer stream) ---
-        if queue:
-            next_encoded, next_indices = queue[0]
-            with torch.cuda.stream(transfer_stream):
-                prefetched_batch = {
-                    k: v.to(device, non_blocking=True)
-                    for k, v in next_encoded.items()
-                }
-                prefetched_indices = next_indices
-        else:
-            prefetched_batch = None
-            prefetched_indices = None
+                # Estimate total tokens if we add this sample
+                new_max_len = max(max_seq_len, approx_tokens)
+                new_batch_size = len(batch_texts) + 1
+                estimated_tokens = new_max_len * new_batch_size
 
-        # --- COMPUTE CURRENT (on compute stream) ---
-        try:
-            with torch.cuda.stream(compute_stream):
-                # Wait for any prior transfer to complete
-                compute_stream.wait_stream(transfer_stream)
-
-                profiler.start("transfer")
-                batch_gpu = {
-                    k: v.to(device, non_blocking=True)
-                    for k, v in current_encoded.items()
-                }
-                torch.cuda.synchronize()
-                transfer_ms = profiler.stop("transfer")
-
-                profiler.start("inference")
-                out = model(**batch_gpu)
-                embeddings = mean_pooling(out[0], batch_gpu["attention_mask"])
-                embeddings = F.normalize(embeddings, p=2, dim=1)
-                torch.cuda.synchronize()
-                inference_ms = profiler.stop("inference")
-
-                profiler.start("d2h")
-                cpu_embs = embeddings.cpu().float().numpy()
-                d2h_ms = profiler.stop("d2h")
-
-            if ENABLE_PROFILING:
-                bs = len(current_indices)
-                print(
-                    f"  [Profile] BS={bs} | Transfer={transfer_ms:.1f}ms | "
-                    f"Inference={inference_ms:.1f}ms | D2H={d2h_ms:.1f}ms"
-                )
-
-            # Store numpy arrays directly (defer .tolist() to write time)
-            for local_idx, emb in zip(current_indices, cpu_embs):
-                block_data[local_idx][EMBEDDER_KEY] = emb
-
-            del batch_gpu, out, embeddings, cpu_embs
-
-        except torch.cuda.OutOfMemoryError:
-            # Cleanup GPU state
-            for var in ["batch_gpu", "out", "embeddings"]:
-                if var in dir():
-                    exec(f"del {var}")
-
-            gc.collect()
-            torch.cuda.empty_cache()
-
-            batch_len = len(current_indices)
-            if batch_len <= 1:
-                seq_len = current_encoded["input_ids"].shape[1]
-                print(f"CRITICAL: OOM on single doc (seq_len={seq_len}). Skipping.")
-                continue
-
-            # Split and requeue
-            mid = batch_len // 2
-
-            batch_1 = {k: v[:mid].clone() for k, v in current_encoded.items()}
-            indices_1 = current_indices[:mid]
-
-            batch_2 = {k: v[mid:].clone() for k, v in current_encoded.items()}
-            indices_2 = current_indices[mid:]
-
-            # Insert at front for depth-first processing
-            queue.appendleft((batch_2, indices_2))
-            queue.appendleft((batch_1, indices_1))
-
-            print(f"  [OOM Recovery] Split {batch_len} -> {mid} + {batch_len - mid}")
-
-# =============================================================================
-# DATA HELPERS (Global Scope for Pickling)
-# =============================================================================
-class BatchDataset(Dataset):
-    def __init__(self, batches): self.batches = batches
-    def __len__(self): return len(self.batches)
-    def __getitem__(self, i): return self.batches[i]
-
-class DataCollator:
-    """Picklable collator class replaces the local function"""
-    def __init__(self, tokenizer, max_len):
-        self.tokenizer = tokenizer
-        self.max_len = max_len
-        
-    def __call__(self, batch):
-        # DataLoader(batch_size=1) returns a list with 1 item
-        # The item is the tuple (texts, indices) from create_batches
-        item = batch[0]
-        txts, idxs = item[0], item[1]
-        
-        enc = self.tokenizer(
-            txts, 
-            padding=True, 
-            truncation=True, 
-            max_length=self.max_len, 
-            return_tensors='pt'
-        )
-        return enc, idxs
-
-def create_batches(items, target_tokens, max_bs):
-    current_txt, current_idx = [], []
-    max_len = 0
-    for count, text, idx in items:
-        max_len = max(max_len, count)
-        next_bs = len(current_txt) + 1
-        if (next_bs * max_len > target_tokens) or (next_bs > max_bs):
-            if current_txt:
-                yield (current_txt, current_idx)
-                current_txt, current_idx, max_len = [], [], 0
-        current_txt.append(text)
-        current_idx.append(idx)
-    if current_txt: yield (current_txt, current_idx)
-
-# =============================================================================
-# WORKER
-# =============================================================================
-def gpu_worker(rank, queue, errors, progress_queue):
-    shutdown = False
-    def h(*args): nonlocal shutdown; shutdown = True
-    signal.signal(signal.SIGTERM, h)
-    signal.signal(signal.SIGINT, h)
-
-    try:
-        tokenizer, model, device = setup_model(rank)
-        print(f"[GPU {rank}] Model ready on {device}")
-    except Exception as e:
-        errors.put((rank, f"Init failed: {e}"))
-        return
-        
-    # Create the collator once per worker
-    collator = DataCollator(tokenizer, MAX_SEQ_LENGTH)
-    profiler = ProfileTimer(enabled=False)  # DISABLED - profiling syncs kill performance!
-    files_processed = 0
-    total_docs = 0
-    total_batches = 0
-
-    while not shutdown:
-        try:
-            try:
-                s3_key = queue.get(timeout=2)
-            except queue_module.Empty:
-                if queue.empty(): break
-                continue
-
-            file_start_time = time.time()
-            fname = s3_key.split('/')[-1]
-            local_in = LOCAL_CACHE_DIR / f"g{rank}" / "in" / fname
-            local_out = LOCAL_CACHE_DIR / f"g{rank}" / "out" / fname.replace('.jsonl', '.parquet')
-            
-            # Download
-            download_start = time.time()
-            local_in.parent.mkdir(parents=True, exist_ok=True)
-            download_file(S3_BUCKET, s3_key, local_in)
-            download_time = time.time() - download_start
-            file_size_mb = local_in.stat().st_size / (1024 * 1024) if local_in.exists() else 0
-
-            # Load data
-            load_start = time.time()
-            data = []
-            with open(local_in, 'rb') as f:
-                for line in f:
-                    if line.strip(): data.append(orjson.loads(line))
-            load_time = time.time() - load_start
-            
-            if data:
-                # Prepare batches
-                prep_start = time.time()
-                data.sort(key=lambda x: len(x.get('text', '')), reverse=False)
-                tasks = []
-                for i, d in enumerate(data):
-                    tasks.append((int(len(d.get('text', ''))/3)+5, d['text'], i))
-                
-                batches = list(create_batches(tasks, TARGET_TOKENS_PER_BATCH, MAX_BATCH_SIZE))
-                prep_time = time.time() - prep_start
-                
-                # Process batches
-                loader = DataLoader(
-                    BatchDataset(batches), 
-                    batch_size=1, 
-                    shuffle=False,
-                    num_workers=NUM_LOADER_WORKERS, 
-                    collate_fn=collator,
-                    pin_memory=True, 
-                    prefetch_factor=PREFETCH_FACTOR,
-                    persistent_workers=True  # Keep workers alive between epochs
-                )
-
-                embed_start = time.time()
-                batch_count = 0
-                
-                with torch.no_grad():  # Wrap entire inference loop
-                    for enc, idxs in loader:
-                        process_batch_iterative(enc, idxs, model, data, device, profiler)
-                        batch_count += 1
-                
-                embed_time = time.time() - embed_start
-                total_batches += batch_count
-                
-                # No per-batch timing - removed for speed (profiling was killing performance)
-                avg_transfer = avg_inference = avg_d2h = 0
-                avg_batch_size = len(data) / batch_count if batch_count > 0 else 0
-
-                # Save results with chunking to avoid OOM (max 200k rows per parquet)
-                save_start = time.time()
-                import pyarrow as pa
-                import pyarrow.parquet as pq
-
-                MAX_ROWS_PER_PARQUET = 200_000  # Prevent OOM on large files
-
-                valid = [d for d in data if EMBEDDER_KEY in d]
-                if valid:
-                    # Split into chunks if needed
-                    total_chunks = (len(valid) + MAX_ROWS_PER_PARQUET - 1) // MAX_ROWS_PER_PARQUET
-                    upload_time = 0
-
-                    for chunk_idx in range(total_chunks):
-                        start_idx = chunk_idx * MAX_ROWS_PER_PARQUET
-                        end_idx = min(start_idx + MAX_ROWS_PER_PARQUET, len(valid))
-                        chunk_data = valid[start_idx:end_idx]
-
-                        # Extract embeddings for this chunk
-                        vectors = np.stack([d.pop(EMBEDDER_KEY) for d in chunk_data])
-                        table = pa.Table.from_pylist(chunk_data)
-                        vec_col = pa.FixedSizeListArray.from_arrays(
-                            pa.array(vectors.ravel()), list_size=vectors.shape[1]
-                        )
-                        table = table.append_column(EMBEDDER_KEY, vec_col)
-
-                        # Create hierarchical output path
-                        # Format: OUTPUT_PREFIX/part_{chunk_number:06d}/file_{hash}.parquet
-                        rel_path = s3_key.replace(INPUT_PREFIX, "").lstrip("/")
-                        file_base = Path(rel_path).stem  # Get filename without extension
-
-                        # Hierarchical organization: group files into directories of 1000 files each
-                        dir_idx = (chunk_idx // 1000) * 1000
-                        if total_chunks > 1:
-                            chunk_name = f"{file_base}_chunk{chunk_idx:04d}.parquet"
-                        else:
-                            chunk_name = f"{file_base}.parquet"
-
-                        out_key = f"{OUTPUT_PREFIX.rstrip('/')}/part_{dir_idx:06d}/{chunk_name}"
-                        local_chunk_out = LOCAL_CACHE_DIR / f"g{rank}" / "out" / f"chunk{chunk_idx}_{fname.replace('.jsonl', '.parquet')}"
-
-                        # Write and upload chunk
-                        local_chunk_out.parent.mkdir(parents=True, exist_ok=True)
-                        pq.write_table(table, str(local_chunk_out), compression='zstd')
-
-                        upload_start = time.time()
-                        upload_file(S3_BUCKET, out_key, local_chunk_out)
-                        upload_time += time.time() - upload_start
-
-                        # Cleanup chunk file
-                        if local_chunk_out.exists():
-                            local_chunk_out.unlink()
-
-                    save_time = time.time() - save_start
-                    
-                    total_time = time.time() - file_start_time
-                    files_processed += 1
-                    total_docs += len(valid)
-                    
-                    # Calculate throughput
-                    docs_per_sec = len(valid) / embed_time if embed_time > 0 else 0
-                    embed_mb_per_sec = file_size_mb / embed_time if embed_time > 0 else 0
-                    total_mb_per_sec = file_size_mb / total_time if total_time > 0 else 0
-                    
-                    # Report progress - handle broken pipe gracefully
-                    try:
-                        progress_queue.put({
-                            'rank': rank,
-                            'file': fname,
-                            'docs': len(valid),
-                            'file_size_mb': file_size_mb,
-                            'batches': batch_count,
-                            'download_time': download_time,
-                            'load_time': load_time,
-                            'prep_time': prep_time,
-                            'embed_time': embed_time,
-                            'save_time': save_time,
-                            'upload_time': upload_time,
-                            'total_time': total_time,
-                            'docs_per_sec': docs_per_sec,
-                            'embed_mb_per_sec': embed_mb_per_sec,
-                            'total_mb_per_sec': total_mb_per_sec,
-                            'avg_transfer_ms': avg_transfer,
-                            'avg_inference_ms': avg_inference,
-                            'avg_d2h_ms': avg_d2h,
-                            'avg_batch_size': avg_batch_size
-                        })
-                    except (BrokenPipeError, OSError, ConnectionError):
-                        # Progress queue broken - main process may have exited, but continue processing
-                        pass
-                    
-                    # Detailed breakdown (profiling disabled for speed)
-                    print(f"[GPU {rank}] ✓ {fname} | {file_size_mb:.1f}MB | {len(valid)} docs | "
-                          f"{batch_count} batches | {total_time:.1f}s total")
-                    print(f"  Embed: {embed_time:.1f}s ({embed_mb_per_sec:.2f} MB/s, {docs_per_sec:.0f} docs/s) | "
-                          f"IO: {download_time:.1f}s↓ + {upload_time:.1f}s↑ | "
-                          f"Avg BS: {avg_batch_size:.0f}")
-            
-            # Cleanup
-            if local_in.exists(): local_in.unlink()
-            if local_out.exists(): local_out.unlink()
-            gc.collect()
-
-        except Exception as e:
-            print(f"[GPU {rank}] ✗ Error processing {fname if 'fname' in locals() else 'unknown'}: {e}")
-            traceback.print_exc()
-            try:
-                errors.put((rank, str(e)))
-            except (BrokenPipeError, OSError, ConnectionError):
-                # Error queue broken - continue anyway
-                pass
-    
-    # Final worker stats
-    print(f"[GPU {rank}] Worker finished. Processed {files_processed} files, {total_docs:,} total docs, {total_batches} batches")
-
-# =============================================================================
-# MAIN
-# =============================================================================
-if __name__ == "__main__":
-    mp.set_start_method('spawn', force=True)
-    if LOCAL_CACHE_DIR.exists(): shutil.rmtree(LOCAL_CACHE_DIR)
-    
-    print("="*60)
-    print(f"CLUSTER EMBEDDING PIPELINE")
-    print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Input: s3://{S3_BUCKET}/{INPUT_PREFIX}")
-    print(f"Output: s3://{S3_BUCKET}/{OUTPUT_PREFIX}")
-    print("="*60)
-    
-    tasks = list_tasks(S3_BUCKET, INPUT_PREFIX, OUTPUT_PREFIX)
-    if not tasks:
-        print("No input files found. Check S3_PREFIX.")
-        sys.exit(0)
-
-    m = mp.Manager()
-    q = m.Queue()
-    errs = m.Queue()
-    progress_q = m.Queue()
-    
-    for t in tasks: q.put(t)
-    total_tasks = len(tasks)
-    
-    procs = []
-    n_gpus = torch.cuda.device_count()
-    print(f"\nLaunching {n_gpus} GPU workers on {total_tasks} tasks...\n")
-    
-    # Start workers
-    for i in range(n_gpus):
-        p = mp.Process(target=gpu_worker, args=(i, q, errs, progress_q))
-        p.start()
-        procs.append(p)
-    
-    # Progress monitoring
-    completed = 0
-    total_docs = 0
-    start_time = time.time()
-    stats_by_gpu = {i: {'files': 0, 'docs': 0, 'time': 0.0} for i in range(n_gpus)}
-    
-    with tqdm(total=total_tasks, desc="Processing files", unit="file", 
-              bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]') as pbar:
-        
-        # Monitor progress queue
-        while completed < total_tasks:
-            try:
-                # Check for progress updates
-                while not progress_q.empty():
-                    update = progress_q.get_nowait()
-                    rank = update['rank']
-                    stats_by_gpu[rank]['files'] += 1
-                    stats_by_gpu[rank]['docs'] += update['docs']
-                    stats_by_gpu[rank]['time'] += update['total_time']
-                    completed += 1
-                    total_docs += update['docs']
-                    pbar.update(1)
-                    
-                    # Show detailed per-step info
-                    postfix = {
-                        'docs': total_docs,
-                        'embed': f"{update.get('embed_mb_per_sec', 0):.1f}MB/s",
-                        'total': f"{update.get('total_mb_per_sec', 0):.1f}MB/s"
-                    }
-                    if 'avg_inference_ms' in update and update['avg_inference_ms'] > 0:
-                        postfix['inf'] = f"{update['avg_inference_ms']:.0f}ms"
-                    pbar.set_postfix(postfix)
-                
-                # Check if workers are still alive
-                alive = sum(1 for p in procs if p.is_alive())
-                if alive == 0 and completed < total_tasks:
-                    # Workers died, check for errors
+                # Check if adding this would exceed target (but always add at least one)
+                if batch_texts and estimated_tokens > TARGET_TOKENS_PER_BATCH:
                     break
-                
-                time.sleep(0.5)
-                
-            except KeyboardInterrupt:
-                print("\n\nInterrupted by user. Shutting down workers...")
-                for p in procs:
-                    if p.is_alive():
-                        p.terminate()
+
+                batch_texts.append(item['text'])
+                batch_ids.append(item['id'])
+                max_seq_len = new_max_len
+                idx += 1
+
+            if not batch_texts:
                 break
-    
-    # Wait for all processes
-    for p in procs:
-        p.join(timeout=5)
-        if p.is_alive():
-            p.terminate()
-            p.join()
-    
-    # Final summary
-    total_time = time.time() - start_time
-    print("\n" + "="*60)
-    print("PROCESSING COMPLETE")
-    print("="*60)
-    print(f"Total files processed: {completed}/{total_tasks}")
-    print(f"Total documents: {total_docs:,}")
-    print(f"Total time: {total_time/60:.1f} minutes ({total_time:.1f} seconds)")
-    if total_docs > 0:
-        print(f"Overall throughput: {total_docs/total_time:.1f} docs/sec")
-    print("\nPer-GPU Stats:")
-    for rank, stats in stats_by_gpu.items():
-        if stats['files'] > 0:
-            throughput = stats['docs']/stats['time'] if stats['time'] > 0 else 0
-            avg_time_per_file = stats['time'] / stats['files'] if stats['files'] > 0 else 0
-            print(f"  GPU {rank}: {stats['files']} files, {stats['docs']:,} docs, "
-                  f"{stats['time']/60:.1f} min, {throughput:.1f} docs/sec, "
-                  f"{avg_time_per_file:.1f}s/file")
-    
-    # Check for errors
-    if not errs.empty():
-        print("\nErrors encountered:")
-        while not errs.empty():
-            rank, error = errs.get()
-            print(f"  GPU {rank}: {error}")
-    
-    print(f"\nFinished: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("="*60)
+
+            # Process batch with OOM recovery (split in half on OOM)
+            def process_batch(texts, ids):
+                encoded = tokenizer(texts, padding=True, truncation=True, max_length=MAX_SEQ_LENGTH, return_tensors='pt')
+                input_ids = encoded['input_ids'].to(device, non_blocking=True)
+                attention_mask = encoded['attention_mask'].to(device, non_blocking=True)
+                outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+                emb = mean_pooling(outputs, attention_mask)
+                emb = F.normalize(emb, p=2, dim=1)
+                return ids, emb.cpu().numpy()
+
+            def process_with_recovery(texts, ids, depth=0):
+                try:
+                    return process_batch(texts, ids)
+                except torch.cuda.OutOfMemoryError:
+                    if depth > 3 or len(texts) <= 1:
+                        raise  # Give up after 3 splits or single item
+                    torch.cuda.empty_cache()
+                    print(f"\n[Rank {rank}] OOM on {len(texts)} items, splitting (depth={depth})...")
+                    half = len(texts) // 2
+                    ids1, emb1 = process_with_recovery(texts[:half], ids[:half], depth+1)
+                    ids2, emb2 = process_with_recovery(texts[half:], ids[half:], depth+1)
+                    return ids1 + ids2, np.vstack([emb1, emb2])
+
+            result_ids, result_embeddings = process_with_recovery(batch_texts, batch_ids)
+            all_ids.extend(result_ids)
+            all_embeddings.append(result_embeddings)
+            pbar.update(len(batch_texts))
+
+            # Checkpoint every 15 minutes
+            if time.time() - last_checkpoint_time > CHECKPOINT_INTERVAL:
+                print(f"\n[Rank {rank}] Saving checkpoint ({len(all_ids):,} items)...")
+                checkpoint_embeddings = np.vstack(all_embeddings)
+                checkpoint_table = pa.table({
+                    'id': all_ids,
+                    'embedding': list(checkpoint_embeddings)
+                })
+                pq.write_table(checkpoint_table, checkpoint_path, compression='snappy')
+                last_checkpoint_time = time.time()
+                print(f"[Rank {rank}] Checkpoint saved")
+
+    pbar.close()
+
+    # Concatenate all embeddings
+    all_embeddings = np.vstack(all_embeddings)
+
+    print(f"[Rank {rank}] Generated {len(all_ids):,} embeddings")
+    print(f"[Rank {rank}] Embedding shape: {all_embeddings.shape}")
+
+    # Save to rank-specific parquet file
+    output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
+    print(f"[Rank {rank}] Saving embeddings to {output_path}...")
+
+    # Create output directory if needed
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Create PyArrow table
+    table = pa.table({
+        'id': all_ids,
+        'embedding': list(all_embeddings)
+    })
+
+    # Write to parquet
+    pq.write_table(table, output_path, compression='snappy')
+
+    print(f"[Rank {rank}] ✓ Saved successfully!")
+    print(f"[Rank {rank}]   File: {output_path}")
+    print(f"[Rank {rank}]   Size: {output_path.stat().st_size / (1024**2):.2f} MB")
+
+    # Clean up checkpoint file
+    if checkpoint_path.exists():
+        checkpoint_path.unlink()
+        print(f"[Rank {rank}] Checkpoint cleaned up")
+
+
+if __name__ == "__main__":
+    main()

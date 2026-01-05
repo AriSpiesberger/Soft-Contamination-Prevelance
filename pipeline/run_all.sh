@@ -14,7 +14,6 @@
 #   ./run_all.sh                           # Run all stages with default config
 #   ./run_all.sh --config custom.yaml      # Use custom config
 #   ./run_all.sh --stage 4                 # Start from stage 4 (analysis)
-#   ./run_all.sh --only 6                  # Run only stage 6 (aggregates)
 #   ./run_all.sh --dry-run                 # Show what would be run
 #
 # Environment Variables:
@@ -122,8 +121,7 @@ while [[ $# -gt 0 ]]; do
             echo "  2 - Chunk and sample data"
             echo "  3 - Create embeddings"
             echo "  4 - Contamination analysis"
-            echo "  5 - Merge results"
-            echo "  6 - Generate aggregates"
+            echo "  5 - Finalize and Merge Results"
             exit 0
             ;;
         *)
@@ -259,47 +257,21 @@ run_stage_3() {
         return 0
     fi
 
-    local MODE=$(get_config "embeddings.mode")
+    # New unified script handles both local and multigpu
+    log_info "Running unified embedding script..."
 
-    if [ "$MODE" = "local" ]; then
-        local INPUT_FILE=$(get_config "embeddings.local.input_file")
-        local OUTPUT_FILE=$(get_config "embeddings.local.output_file")
-
-        log_info "Mode: Local"
-        log_info "Input: $INPUT_FILE"
-        log_info "Output: $OUTPUT_FILE"
-
-        if $DRY_RUN; then
-            echo "Would run: python stages/03_create_embeddings_local.py"
-            return 0
-        fi
-
-        cd "$PIPELINE_ROOT"
-        $VENV_PYTHON stages/03_create_embeddings_local.py
-    else
-        local BUCKET=$(get_config "embeddings.s3.bucket")
-        local INPUT_PREFIX=$(get_config "embeddings.s3.input_prefix")
-        local OUTPUT_PREFIX=$(get_config "embeddings.s3.output_prefix")
-
-        log_info "Mode: S3"
-        log_info "S3 Bucket: $BUCKET"
-        log_info "Input prefix: $INPUT_PREFIX"
-        log_info "Output prefix: $OUTPUT_PREFIX"
-
-        if $DRY_RUN; then
-            echo "Would run: python stages/03_create_embeddings.py"
-            return 0
-        fi
-
-        cd "$PIPELINE_ROOT"
-
-        # Set environment variables for S3 config
-        export S3_BUCKET="$BUCKET"
-        export INPUT_PREFIX="$INPUT_PREFIX"
-        export OUTPUT_PREFIX="$OUTPUT_PREFIX"
-
-        $VENV_PYTHON stages/03_create_embeddings.py
+    if $DRY_RUN; then
+        echo "Would run: python stages/03_create_embeddings.py"
+        return 0
     fi
+
+    cd "$PIPELINE_ROOT"
+    
+    # Run the script - it now defaults to single GPU if no args provided,
+    # or can be controlled via config/args if needed.
+    # We pass the config file as env var which the script reads.
+    export PIPELINE_CONFIG="$CONFIG_FILE"
+    $VENV_PYTHON stages/03_create_embeddings.py
 
     log_success "Stage 3 complete"
 }
@@ -347,61 +319,24 @@ run_stage_4() {
 # =============================================================================
 
 run_stage_5() {
-    log_stage 5 "Merge Results"
+    log_stage 5 "Finalize and Merge Results"
 
     if is_stage_skipped "merge"; then
         log_warn "Stage 5 skipped (skip_stages.merge = true)"
         return 0
     fi
 
-    local OUTPUT_DIR=$(get_config "analysis.output_dir")
-    local WORLD_SIZE=$(get_config "merge.world_size")
-
-    log_info "Output dir: $OUTPUT_DIR"
-    log_info "World size: $WORLD_SIZE"
-
     if $DRY_RUN; then
-        echo "Would run: cluster/run_05_merge.sh"
+        echo "Would run: python stages/05_finalize_results_fixed.py"
         return 0
     fi
 
     cd "$PIPELINE_ROOT"
-
-    chmod +x cluster/run_05_merge.sh
-    ./cluster/run_05_merge.sh
+    
+    # Use the fixed finalizer script which handles everything
+    $VENV_PYTHON stages/05_finalize_results_fixed.py
 
     log_success "Stage 5 complete"
-}
-
-# =============================================================================
-# Stage 6: Generate Aggregates and Plots
-# =============================================================================
-
-run_stage_6() {
-    log_stage 6 "Generate Aggregates and Plots"
-
-    if is_stage_skipped "aggregates"; then
-        log_warn "Stage 6 skipped (skip_stages.aggregates = true)"
-        return 0
-    fi
-
-    local OUTPUT_DIR=$(get_config "analysis.output_dir")
-    local WORLD_SIZE=$(get_config "aggregates.world_size")
-
-    log_info "Output dir: $OUTPUT_DIR"
-    log_info "World size: $WORLD_SIZE"
-
-    if $DRY_RUN; then
-        echo "Would run: cluster/run_06_aggregates.sh"
-        return 0
-    fi
-
-    cd "$PIPELINE_ROOT"
-
-    chmod +x cluster/run_06_aggregates.sh
-    ./cluster/run_06_aggregates.sh
-
-    log_success "Stage 6 complete"
 }
 
 # =============================================================================
@@ -436,7 +371,6 @@ else
     [ $START_STAGE -le 3 ] && run_stage_3
     [ $START_STAGE -le 4 ] && run_stage_4
     [ $START_STAGE -le 5 ] && run_stage_5
-    [ $START_STAGE -le 6 ] && run_stage_6
 fi
 
 # Calculate duration

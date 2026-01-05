@@ -11,6 +11,7 @@
 # Pipeline identification
 pipeline:
   name: "dolci_instruct_sft"
+  dataset_short_name: "dolci"
   description: "Dolci Instruct SFT contamination analysis pipeline"
   version: "1.0"
 
