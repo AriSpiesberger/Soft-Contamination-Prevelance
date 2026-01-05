@@ -136,8 +136,14 @@ def load_benchmark(benchmark_name: str, mode: str):
 
 
 def load_chunk_file(chunk_file):
-    """Load a single chunk file (for parallel I/O)."""
-    return np.load(chunk_file, mmap_mode='r')  # Memory-mapped for speed
+    """Load a single chunk file (for parallel I/O). Supports both old .npz and new .npy formats."""
+    if str(chunk_file).endswith('.npz'):
+        # Old format: npz with similarities and hash_ids
+        data = np.load(chunk_file)
+        return data['similarities']
+    else:
+        # New format: raw .npy with just similarities
+        return np.load(chunk_file, mmap_mode='r')  # Memory-mapped for speed
 
 
 def merge_test_point(test_data, output_dir, world_size):
@@ -149,12 +155,13 @@ def merge_test_point(test_data, output_dir, world_size):
     test_text = test_data['text']
     global_idx = test_data['global_idx']
 
-    # Collect all chunk files from all ranks
+    # Collect all chunk files from all ranks (both old .npz and new .npy formats)
     chunk_files = []
     for r in range(world_size):
         chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{global_idx}"
         if chunk_dir.exists():
-            chunk_files.extend(sorted(chunk_dir.glob("chunk_*.npy")))
+            chunk_files.extend(sorted(chunk_dir.glob("chunk_*_sims.npy")))  # New format
+            chunk_files.extend(sorted(chunk_dir.glob("chunk_*.npz")))  # Old format (backward compat)
 
     if not chunk_files:
         return None

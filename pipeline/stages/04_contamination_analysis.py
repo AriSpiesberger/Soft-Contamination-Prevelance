@@ -87,12 +87,13 @@ def check_memory_pressure(device_id, gpu_threshold=0.90, ram_threshold=0.85):
     return gpu_usage > gpu_threshold or ram_usage > ram_threshold, gpu_usage, ram_usage
 
 
-def save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir):
+def save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir, rows_processed_in_file=0):
     """Save checkpoint for resuming after crash."""
     checkpoint = {
         'rank': rank,
         'last_file_idx': file_idx,
-        'chunk_indices': [test_results[i]['chunk_idx'] for i in range(num_tests)]
+        'chunk_indices': [test_results[i]['chunk_idx'] for i in range(num_tests)],
+        'rows_processed_in_file': rows_processed_in_file  # Track progress within large files
     }
     checkpoint_file = checkpoint_dir / f"checkpoint_rank_{rank}.json"
     with open(checkpoint_file, 'w') as f:
@@ -264,7 +265,9 @@ def load_single_parquet(pf_path, con, max_rows_per_load=1_500_000):
         cols_result = con.execute(cols_query).fetchall()
         cols = [row[0] for row in cols_result]
 
-        if 'embeddings' not in cols:
+        # Support both 'embedding' and 'embeddings' column names
+        emb_col_name = 'embeddings' if 'embeddings' in cols else ('embedding' if 'embedding' in cols else None)
+        if emb_col_name is None:
             return None, None, None, None, 0
 
         text_col = None
@@ -273,15 +276,16 @@ def load_single_parquet(pf_path, con, max_rows_per_load=1_500_000):
                 text_col = c
                 break
 
-        hash_id_col = 'hash_id' if 'hash_id' in cols else None
+        # Use hash_id if available, otherwise fall back to id
+        hash_id_col = 'hash_id' if 'hash_id' in cols else ('id' if 'id' in cols else None)
         id_col = 'id' if 'id' in cols else None
 
-        select_parts = ['embeddings']
+        select_parts = [emb_col_name]
         if text_col:
             select_parts.append(text_col)
         if id_col:
             select_parts.append(id_col)
-        if hash_id_col:
+        if hash_id_col and hash_id_col != id_col:  # Avoid selecting same column twice
             select_parts.append(hash_id_col)
 
         query = f"SELECT {', '.join(select_parts)} FROM read_parquet('{pf_path}')"
@@ -297,7 +301,7 @@ def load_single_parquet(pf_path, con, max_rows_per_load=1_500_000):
         if arrow_table.num_rows == 0:
             return None, None, None, None, 0
 
-        emb_col = arrow_table['embeddings']
+        emb_col = arrow_table[emb_col_name]
         batch_embs = []
         PYARROW_MAX = int((2**31 - 1) * 0.9)
         dim = 4096  # Default
@@ -362,10 +366,12 @@ def _load_parquet_chunked(pf_path, pf, con):
     }
 
 
-def iter_parquet_row_groups(pf_path, chunk_size=100_000):
+def iter_parquet_row_groups(pf_path, chunk_size=100_000, start_offset=0):
     """Iterate over a large parquet file in chunks using DuckDB LIMIT/OFFSET.
 
     Uses smaller chunks (100K rows) to avoid PyArrow's 2GB array limit.
+    Args:
+        start_offset: Row number to start from (for resuming from checkpoint)
     """
     import pyarrow.parquet as pq
 
@@ -376,7 +382,9 @@ def iter_parquet_row_groups(pf_path, chunk_size=100_000):
     schema = pf.schema_arrow
     col_names = schema.names
 
-    if 'embeddings' not in col_names:
+    # Support both 'embedding' and 'embeddings' column names
+    emb_col_name = 'embeddings' if 'embeddings' in col_names else ('embedding' if 'embedding' in col_names else None)
+    if emb_col_name is None:
         return
 
     text_col = None
@@ -385,15 +393,16 @@ def iter_parquet_row_groups(pf_path, chunk_size=100_000):
             text_col = c
             break
 
-    hash_id_col = 'hash_id' if 'hash_id' in col_names else None
+    # Use hash_id if available, otherwise fall back to id
+    hash_id_col = 'hash_id' if 'hash_id' in col_names else ('id' if 'id' in col_names else None)
     id_col = 'id' if 'id' in col_names else None
 
-    select_parts = ['embeddings']
+    select_parts = [emb_col_name]
     if text_col:
         select_parts.append(text_col)
     if id_col:
         select_parts.append(id_col)
-    if hash_id_col:
+    if hash_id_col and hash_id_col != id_col:  # Avoid selecting same column twice
         select_parts.append(hash_id_col)
 
     # Use thread-local DuckDB connection
@@ -403,7 +412,8 @@ def iter_parquet_row_groups(pf_path, chunk_size=100_000):
     dim = 4096
     PYARROW_MAX = int((2**31 - 1) * 0.9)
 
-    for offset in range(0, total_rows, chunk_size):
+    # Start from start_offset to support resuming from checkpoint
+    for offset in range(start_offset, total_rows, chunk_size):
         try:
             query = f"SELECT {', '.join(select_parts)} FROM read_parquet('{pf_path}') LIMIT {chunk_size} OFFSET {offset}"
             arrow_table = con.execute(query).arrow().read_all()
@@ -411,7 +421,7 @@ def iter_parquet_row_groups(pf_path, chunk_size=100_000):
             if arrow_table.num_rows == 0:
                 continue
 
-            emb_col = arrow_table['embeddings']
+            emb_col = arrow_table[emb_col_name]
             batch_embs = []
 
             for chunk_idx in range(emb_col.num_chunks):
@@ -479,15 +489,16 @@ def load_benchmark(benchmark_name: str, mode: str):
             answer = item.get('answer', '')
             data.append({'id': task_id, 'input': narrative, 'output': answer})
 
-    # Legacy 'musr' name - for backwards compatibility, uses first split only
+    # 'musr' name - loads ALL MuSR splits combined
     elif benchmark_name == 'musr':
         ds = load_dataset("TAUR-Lab/MuSR")
-        split = list(ds.keys())[0]
-        for item in ds[split]:
-            task_id = str(item.get('task_id', f"musr_{len(data)}"))
-            narrative = item.get('narrative', item.get('question', ''))
-            answer = item.get('answer', '')
-            data.append({'id': task_id, 'input': narrative, 'output': answer})
+        # Load all splits: murder_mysteries, object_placements, team_allocation
+        for split_name in ds.keys():
+            for idx, item in enumerate(ds[split_name]):
+                task_id = f"musr_{split_name}_{idx}"
+                narrative = item.get('narrative', item.get('question', ''))
+                answer = item.get('answer', '')
+                data.append({'id': task_id, 'input': narrative, 'output': answer})
 
     elif benchmark_name == 'mbpp':
         try:
@@ -516,35 +527,54 @@ def load_benchmark(benchmark_name: str, mode: str):
     return texts, ids
 
 
-def flush_buffers(test_results, num_tests, rank=None):
-    """Flush all similarity buffers AND corpus metadata to disk.
+def flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank=None):
+    """Flush all similarity buffers AND hash_ids to disk.
 
-    Uses numpy .npz for metadata (much faster than JSON for millions of items).
+    Saves similarities per test, hash_ids ONCE (shared across all tests).
+    Uses uncompressed .npy format for speed on network filesystems.
     """
     # Stagger flushes by rank to avoid I/O contention
     if rank is not None:
         stagger_delay = DEFAULT_CONFIG.get('flush_stagger_delay', 2.0)
         time.sleep(rank * stagger_delay)
 
+    # Concatenate shared hash_ids once
+    if not shared_hash_id_buffer:
+        return  # Nothing to flush
+
+    block_hash_ids = np.concatenate(shared_hash_id_buffer)
+
+    # Get chunk index from first test (all tests have same chunk_idx)
+    chunk_idx = test_results[0]['chunk_idx']
+
+    # Save hash_ids ONCE for this chunk (shared by all tests)
+    hash_ids_dir = test_results[0]['chunk_dir'].parent.parent / "shared_hash_ids"
+    hash_ids_dir.mkdir(parents=True, exist_ok=True)
+    hash_ids_file = hash_ids_dir / f"chunk_{chunk_idx:04d}_hash_ids.npy"
+    np.save(hash_ids_file, block_hash_ids)  # Uncompressed for speed
+
+    # Save similarities for each test (without duplicating hash_ids)
     for test_idx in range(num_tests):
         if not test_results[test_idx]['similarity_buffer']:
             continue
 
         block_sims = np.concatenate(test_results[test_idx]['similarity_buffer'])
-        chunk_idx = test_results[test_idx]['chunk_idx']
-        chunk_file = test_results[test_idx]['chunk_dir'] / f"chunk_{chunk_idx:04d}.npy"
+        chunk_file = test_results[test_idx]['chunk_dir'] / f"chunk_{chunk_idx:04d}_sims.npy"
 
-        # Save similarities only (IDs added post-hoc via fix_contamination_csvs.py)
-        np.save(chunk_file, block_sims)
+        # Save only similarities (hash_ids are in shared file)
+        np.save(chunk_file, block_sims)  # Uncompressed for speed
 
         test_results[test_idx]['similarity_buffer'] = []
         test_results[test_idx]['chunk_idx'] += 1
+
+    # Clear shared buffer after flush
+    shared_hash_id_buffer.clear()
 
 
 def setup_logging(rank, output_dir):
     """Setup logging for this rank."""
     log_dir = Path(output_dir) / "logs"
-    log_dir.mkdir(exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     # Create logger
     logger = logging.getLogger(f"rank_{rank}")
@@ -590,11 +620,11 @@ def run_worker(rank, world_size, args):
 
     data_dir = Path(args.data_dir)
     output_dir = Path(args.output_dir)
-    output_dir.mkdir(exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Checkpoint directory
     checkpoint_dir = output_dir / "checkpoints"
-    checkpoint_dir.mkdir(exist_ok=True)
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     worker_start = time.time()
 
@@ -619,9 +649,19 @@ def run_worker(rank, world_size, args):
     # Check for existing checkpoint (local to this rank)
     checkpoint = load_checkpoint(rank, checkpoint_dir)
     resume_from_idx = 0
+    resume_file_offset = 0
     if checkpoint:
-        resume_from_idx = checkpoint['last_file_idx'] + 1
-        log.info(f"🔄 RESUMING from local checkpoint index {resume_from_idx}")
+        rows_in_file = checkpoint.get('rows_processed_in_file', 0)
+        if rows_in_file > 0:
+            # Resume from middle of the checkpointed file
+            resume_from_idx = checkpoint['last_file_idx']
+            resume_file_offset = rows_in_file
+            log.info(f"🔄 RESUMING from file {resume_from_idx} at row {resume_file_offset:,}")
+        else:
+            # Checkpointed file was complete, start next file
+            resume_from_idx = checkpoint['last_file_idx'] + 1
+            resume_file_offset = 0
+            log.info(f"🔄 RESUMING from local checkpoint index {resume_from_idx}")
 
     # Build global offset map (all ranks need this)
     log.info("Building global offset map...")
@@ -661,7 +701,7 @@ def run_worker(rank, world_size, args):
     all_test_texts = []
 
     for benchmark in args.benchmarks:
-        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_')) else args.modes
+        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp') else args.modes
         for mode in modes_to_process:
             test_texts, test_ids = load_benchmark(benchmark, mode)
             log.debug(f"  {benchmark.upper()}/{mode}: {len(test_texts)} test points")
@@ -693,13 +733,19 @@ def run_worker(rank, world_size, args):
     test_results = []
     for i in range(num_tests):
         chunk_dir = similarities_dir / f"test_{i}"
-        chunk_dir.mkdir(exist_ok=True)
-        existing_chunks = list(chunk_dir.glob("chunk_*.npy"))
+        chunk_dir.mkdir(parents=True, exist_ok=True)
+        # Count existing chunks (both old .npz and new .npy formats)
+        existing_new = list(chunk_dir.glob("chunk_*_sims.npy"))
+        existing_old = list(chunk_dir.glob("chunk_*.npz"))
+        existing_chunks = existing_new + existing_old
         test_results.append({
             'chunk_dir': chunk_dir,
             'similarity_buffer': [],
             'chunk_idx': len(existing_chunks)
         })
+
+    # Shared hash_id buffer (same for all tests) - saves 1269x memory duplication!
+    shared_hash_id_buffer = []
 
     # Process my parquet files with prefetching
     files_to_process = my_files[resume_from_idx:]
@@ -723,7 +769,7 @@ def run_worker(rank, world_size, args):
 
     pbar = tqdm(range(len(files_to_process)), desc=f"[R{rank}]", position=rank, ncols=100)
 
-    def process_corpus_chunk(corpus_embs, corpus_gpu_chunk_size, test_embs_gpu, test_results, num_tests, device, rank, file_idx, checkpoint_dir):
+    def process_corpus_chunk(corpus_embs, corpus_hash_ids, corpus_gpu_chunk_size, test_embs_gpu, test_results, num_tests, device, rank, file_idx, checkpoint_dir):
         """Process a corpus embeddings array in GPU chunks. Returns (rows_processed, should_continue)."""
         nonlocal rows_in_buffer
 
@@ -733,6 +779,7 @@ def run_worker(rank, world_size, args):
         for corpus_start in range(0, num_corpus, corpus_gpu_chunk_size):
             corpus_end = min(corpus_start + corpus_gpu_chunk_size, num_corpus)
             corpus_chunk = corpus_embs[corpus_start:corpus_end]
+            hash_id_chunk = corpus_hash_ids[corpus_start:corpus_end]
 
             try:
                 # FP16 to match old run - use non_blocking for async transfer
@@ -746,9 +793,10 @@ def run_worker(rank, world_size, args):
                 torch.cuda.synchronize()
                 sims_np = sims_cpu.numpy()
 
-                # Store similarities only
+                # Store similarities per test, hash_ids once (shared)
                 for test_idx in range(num_tests):
                     test_results[test_idx]['similarity_buffer'].append(sims_np[test_idx])
+                shared_hash_id_buffer.append(np.array(hash_id_chunk))
 
                 rows_processed += len(corpus_chunk)
 
@@ -759,7 +807,7 @@ def run_worker(rank, world_size, args):
                 print(f"\n[Rank {rank}] ⚠️ GPU OOM! Flushing buffers...")
                 torch.cuda.empty_cache()
                 gc.collect()
-                flush_buffers(test_results, num_tests, rank)
+                flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank)
                 save_checkpoint(rank, file_idx - 1, test_results, num_tests, checkpoint_dir)
                 rows_in_buffer = 0
                 continue
@@ -776,6 +824,12 @@ def run_worker(rank, world_size, args):
         # Start prefetching next files
         prefetcher.prefetch(local_idx)
 
+        # Track rows processed in current file (for checkpoint resume)
+        rows_processed_in_current_file = 0
+
+        # Determine if we need to resume from middle of this file
+        file_start_offset = resume_file_offset if local_idx == 0 else 0
+
         try:
             result = prefetcher.get(local_idx)
             if result is None:
@@ -784,15 +838,19 @@ def run_worker(rank, world_size, args):
             # Check if this is a large file that needs chunked loading
             if isinstance(result, dict) and result.get('_chunked'):
                 # Large file - process by row groups
-                log.info(f"📦 Large file detected: {pf_path.name} ({result['total_rows']:,} rows, {result['num_row_groups']} row groups)")
+                if file_start_offset > 0:
+                    log.info(f"📦 Large file detected: {pf_path.name} ({result['total_rows']:,} rows, {result['num_row_groups']} row groups) - resuming from row {file_start_offset:,}")
+                else:
+                    log.info(f"📦 Large file detected: {pf_path.name} ({result['total_rows']:,} rows, {result['num_row_groups']} row groups)")
 
-                for corpus_embs, corpus_texts, corpus_ids, corpus_hash_ids, num_rows in iter_parquet_row_groups(pf_path):
+                for corpus_embs, corpus_texts, corpus_ids, corpus_hash_ids, num_rows in iter_parquet_row_groups(pf_path, start_offset=file_start_offset):
                     rows_processed = process_corpus_chunk(
-                        corpus_embs, args.corpus_gpu_chunk, test_embs_gpu,
+                        corpus_embs, corpus_hash_ids, args.corpus_gpu_chunk, test_embs_gpu,
                         test_results, num_tests, device, rank, file_idx, checkpoint_dir
                     )
                     embeddings_processed += rows_processed
                     rows_in_buffer += rows_processed
+                    rows_processed_in_current_file += rows_processed
 
                     del corpus_embs, corpus_texts, corpus_ids, corpus_hash_ids
                     gc.collect()
@@ -801,12 +859,16 @@ def run_worker(rank, world_size, args):
                     mem_pressure, gpu_use, ram_use = check_memory_pressure(0)
                     if mem_pressure or rows_in_buffer >= max_rows_per_block:
                         pbar.set_postfix({'flushing': f'{rows_in_buffer/1e6:.1f}M (large file)'})
-                        flush_buffers(test_results, num_tests, rank)
-                        save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir)
+                        flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank)
+                        # Save checkpoint with current progress in this file
+                        save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir,
+                                      rows_processed_in_file=file_start_offset + rows_processed_in_current_file)
                         rows_in_buffer = 0
                         gc.collect()
                         torch.cuda.empty_cache()
 
+                # File complete - save checkpoint with rows_processed_in_file=0 to mark completion
+                save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir, rows_processed_in_file=0)
                 files_processed += 1
                 continue
 
@@ -825,6 +887,7 @@ def run_worker(rank, world_size, args):
             for corpus_start in range(0, num_corpus, corpus_gpu_chunk_size):
                 corpus_end = min(corpus_start + corpus_gpu_chunk_size, num_corpus)
                 corpus_chunk = corpus_embs[corpus_start:corpus_end]
+                hash_id_chunk = corpus_hash_ids[corpus_start:corpus_end]
 
                 try:
                     # FP16 to match old run - use non_blocking for async transfer
@@ -839,9 +902,10 @@ def run_worker(rank, world_size, args):
                     torch.cuda.synchronize()  # Ensure compute done before reusing GPU memory
                     sims_np = sims_cpu.numpy()
 
-                    # Store similarities only (IDs looked up for top-100 during merge)
+                    # Store similarities per test, hash_ids once (shared)
                     for test_idx in range(num_tests):
                         test_results[test_idx]['similarity_buffer'].append(sims_np[test_idx])
+                    shared_hash_id_buffer.append(np.array(hash_id_chunk))
 
                     del sims, sims_cpu, sims_np
                     del corpus_gpu
@@ -850,7 +914,7 @@ def run_worker(rank, world_size, args):
                     print(f"\n[Rank {rank}] ⚠️ GPU OOM! Flushing buffers and retrying...")
                     torch.cuda.empty_cache()
                     gc.collect()
-                    flush_buffers(test_results, num_tests, rank)
+                    flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank)
                     save_checkpoint(rank, file_idx - 1, test_results, num_tests, checkpoint_dir)
                     rows_in_buffer = 0
                     # Retry with smaller chunk
@@ -868,7 +932,7 @@ def run_worker(rank, world_size, args):
             mem_pressure, gpu_use, ram_use = check_memory_pressure(0)  # Always device 0
             if mem_pressure:
                 pbar.set_postfix({'mem_flush': f'GPU:{gpu_use:.0%} RAM:{ram_use:.0%}'})
-                flush_buffers(test_results, num_tests, rank)
+                flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank)
                 save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir)
                 rows_in_buffer = 0
                 gc.collect()
@@ -877,7 +941,7 @@ def run_worker(rank, world_size, args):
             # Flush to disk and checkpoint when we hit row limit (safer than file-based)
             elif rows_in_buffer >= max_rows_per_block:
                 pbar.set_postfix({'flushing': f'{rows_in_buffer:,} rows'})
-                flush_buffers(test_results, num_tests, rank)
+                flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank)
                 save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir)
                 rows_in_buffer = 0
                 gc.collect()
@@ -915,7 +979,7 @@ def run_worker(rank, world_size, args):
     # Final flush
     if rows_in_buffer > 0:
         log.info(f"💾 Final flush: {rows_in_buffer:,} rows")
-        flush_buffers(test_results, num_tests, rank)
+        flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank)
         save_checkpoint(rank, file_idx, test_results, num_tests, checkpoint_dir)
 
     # Cleanup
@@ -947,6 +1011,11 @@ def run_worker(rank, world_size, args):
         json.dump(completion_info, f)
 
     return rank, embeddings_processed
+
+
+# Corpus ID mapping is NO LONGER USED
+# Hash IDs are now saved in shared_hash_ids/*.npy files (one per chunk, shared across all tests)
+# Similarities are saved per-test in test_*/chunk_*_sims.npy files
 
 
 def run_merger(args, world_size):
@@ -990,7 +1059,7 @@ def run_merger(args, world_size):
     all_test_texts = []
 
     for benchmark in args.benchmarks:
-        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_')) else args.modes
+        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp') else args.modes
         for mode in modes_to_process:
             test_texts, test_ids = load_benchmark(benchmark, mode)
             for text, test_id in zip(test_texts, test_ids):
@@ -1031,33 +1100,66 @@ def run_merger(args, world_size):
             test_text = test_data['text']
             global_idx = test_data['global_idx']
 
-            # Collect similarity chunks from ALL ranks (no metadata - IDs added post-hoc)
-            all_chunks = []
+            # Collect similarity chunks AND hash_ids from ALL ranks
+            all_sim_chunks = []
+            all_hash_id_chunks = []
             for r in range(world_size):
                 chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{global_idx}"
-                chunk_files = sorted(chunk_dir.glob("chunk_*.npy"))
-                for chunk_file in chunk_files:
-                    all_chunks.append(np.load(chunk_file))
 
-            if not all_chunks:
+                # Support both new .npy and old .npz formats
+                chunk_files_npy = sorted(chunk_dir.glob("chunk_*_sims.npy"))
+                chunk_files_npz = sorted(chunk_dir.glob("chunk_*.npz"))
+
+                # Load new format (.npy files)
+                for chunk_file in chunk_files_npy:
+                    # Extract chunk number (e.g., "0003" from "chunk_0003_sims.npy")
+                    chunk_num = chunk_file.stem.split('_')[1]
+
+                    # Load similarities
+                    sims = np.load(chunk_file, mmap_mode='r')
+                    all_sim_chunks.append(sims)
+
+                    # Load corresponding hash_ids from shared location
+                    # hash_ids are at temp_similarities/shared_hash_ids (not rank-specific)
+                    hash_ids_dir = chunk_dir.parent.parent / "shared_hash_ids"
+                    hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
+                    if hash_ids_file.exists():
+                        hash_ids = np.load(hash_ids_file, mmap_mode='r')
+                        all_hash_id_chunks.append(hash_ids)
+                    else:
+                        print(f"  ⚠️  Warning: Hash IDs file not found: {hash_ids_file}")
+
+                # Load old format (.npz files) for backward compatibility
+                for chunk_file in chunk_files_npz:
+                    data = np.load(chunk_file, allow_pickle=True)
+                    all_sim_chunks.append(data['similarities'])
+                    all_hash_id_chunks.append(data['hash_ids'])
+
+            if not all_sim_chunks:
                 print(f"  ⚠️  No chunks for {test_id}")
                 continue
 
-            all_similarities = np.concatenate(all_chunks)
+            if not all_hash_id_chunks:
+                print(f"  ⚠️  No hash_ids for {test_id}")
+                continue
+
+            all_similarities = np.concatenate(all_sim_chunks)
+            all_hash_ids = np.concatenate(all_hash_id_chunks)
 
             # Compute top-100
             top_k = min(100, len(all_similarities))
             top_indices = np.argpartition(all_similarities, -top_k)[-top_k:]
             top_indices = top_indices[np.argsort(all_similarities[top_indices])[::-1]]
             top_scores_arr = all_similarities[top_indices]
+            top_hash_ids = all_hash_ids[top_indices]
 
-            # Output with corpus_idx (texts added via 07_add_corpus_texts.py post-processing)
+            # Use hash_ids directly (no mapping needed!)
             topk_matches = []
-            for r, (idx, score) in enumerate(zip(top_indices, top_scores_arr), 1):
+            for r, (hash_id, score) in enumerate(zip(top_hash_ids, top_scores_arr), 1):
                 topk_matches.append({
                     'rank': r,
                     'score': float(score),
-                    'corpus_idx': int(idx),
+                    'corpus_id': str(hash_id),  # ✅ Using hash_id directly from saved data
                 })
 
             # Save JSON
@@ -1089,7 +1191,7 @@ def run_merger(args, world_size):
             if len(top_scores_arr) > 0:
                 all_top_scores.extend(top_scores_arr[:10].tolist())
 
-            del all_similarities, all_chunks
+            del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
             gc.collect()
 
         # Save aggregate stats
@@ -1140,7 +1242,12 @@ def run_merger(args, world_size):
     # Cleanup
     print("\nCleaning up temporary files...")
     import shutil
-    shutil.rmtree(output_dir / "temp_similarities")
+    try:
+        shutil.rmtree(output_dir / "temp_similarities")
+        print("✅ Temporary files cleaned up")
+    except Exception as e:
+        print(f"⚠️  Warning: Could not remove temp files: {e}")
+        print("   (This is not critical - all results are saved)")
 
     print("\n" + "="*80)
     print("✅ MERGE COMPLETE!")
@@ -1150,7 +1257,9 @@ def run_merger(args, world_size):
 def main():
     parser = argparse.ArgumentParser(description="Production Contamination Analysis (8x A100 40GB)")
     parser.add_argument('--data-dir', required=True, help='Directory with parquet files')
-    parser.add_argument('--output-dir', default='contamination_results', help='Output directory')
+    parser.add_argument('--output-dir', default='contamination_results', help='Base output directory')
+    parser.add_argument('--dataset-name', default='dataset', help='Dataset name for output directory structure')
+    parser.add_argument('--sample-size', default='unknown', help='Sample size/percentage for output directory structure')
     parser.add_argument('--benchmarks', nargs='+', default=['musr_murder_mysteries', 'musr_object_placements', 'musr_team_allocation', 'mbpp'],
                        help='Benchmarks to process. MuSR splits: musr_murder_mysteries, musr_object_placements, musr_team_allocation')
     parser.add_argument('--modes', nargs='+', default=['input', 'output'])
@@ -1162,6 +1271,20 @@ def main():
     parser.add_argument('--resume-from-file', type=int, default=0, help='Resume from this global parquet file index')
     parser.add_argument('--merge-only', action='store_true', help='Only run merger (skip workers)')
     args = parser.parse_args()
+
+    # Construct full output directory with dataset_name and sample_size
+    base_output_dir = Path(args.output_dir)
+    # Format sample size (convert 0.01 to "1pct", etc.)
+    try:
+        sample_pct = float(args.sample_size)
+        if sample_pct < 1:
+            sample_str = f"{int(sample_pct * 100)}pct"
+        else:
+            sample_str = str(int(sample_pct))
+    except (ValueError, TypeError):
+        sample_str = str(args.sample_size)
+
+    args.output_dir = str(base_output_dir / args.dataset_name / sample_str)
 
     # Get rank from environment or args
     if args.rank is not None:

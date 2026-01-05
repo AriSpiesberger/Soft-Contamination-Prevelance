@@ -113,22 +113,18 @@ analysis:
   corpus_file: "dolci_embeddings.parquet"
 
   # Output directory for results
-  output_dir: "./results/contamination_dolci"
+  output_dir: "./results/contamination_dolci_100pct"
 
-  # Benchmarks to analyze
+  # Benchmarks to analyze (input+output combined)
   benchmarks:
-    - name: "musr_murder_mysteries"
-      mode: "input_output"
-    - name: "musr_object_placements"
-      mode: "input_output"
-    - name: "musr_team_allocation"
+    - name: "musr"
       mode: "input_output"
     - name: "mbpp"
       mode: "input_output"
 
   # Cluster configuration (adjust based on your GPUs)
   cluster:
-    world_size: 8
+    world_size: 1
     gpu_batch_size: 8192
     corpus_gpu_chunk: 12000000
     max_rows_per_block: 5000000
@@ -138,7 +134,7 @@ analysis:
     flush_stagger_delay: 0.5
 
   # Checkpointing
-  checkpoint_dir: "./results/contamination_dolci/checkpoints"
+  checkpoint_dir: "./results/contamination_dolci_100pct/checkpoints"
 
   # CUDA optimizations
   cuda:
@@ -147,26 +143,26 @@ analysis:
     float32_matmul_precision: "high"
 
 # =============================================================================
-# Stage 5: Merge Configuration
+# Stage 5: Finalize Results Configuration
 # =============================================================================
-merge:
+finalize:
   # Input: output from analysis stage
-  input_dir: "./results/contamination_dolci"
+  input_dir: "./results/contamination_dolci_100pct"
 
-  # World size (must match analysis)
-  world_size: 8
+  # Corpus file (for adding corpus text)
+  corpus_file: "./data/dolci_conversations.jsonl"
 
 # =============================================================================
-# Stage 6: Aggregate and Plot Configuration
+# Stage 6: Aggregate and Plot Configuration (DEPRECATED - now in Stage 5)
 # =============================================================================
 aggregates:
-  # Input: merged results
-  input_dir: "./results/contamination_dolci"
+  # Input: results directory
+  input_dir: "./results/contamination_dolci_100pct"
 
   # World size (must match analysis)
   source_world_size: 8
-  world_size: 8
-
+  world_size: 1
+  dataset_name: "dolci"
   # Histogram configuration
   num_bins: 1000
   hist_range:
