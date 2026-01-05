@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 
 from sdtd.generate import generate_sds
 
+
+BASE_DIR = Path(__file__).parent.parent
+PROMPTS_DIR = BASE_DIR / "prompts"
+
 # Load environment variables from .env
 load_dotenv()
 
@@ -18,19 +22,19 @@ def generate(
         ...,
         "--dataset",
         "-d",
-        help="Dataset name: gsm8k, codeforces, allenai, or all",
+        help="Dataset name: gsm8k, codeforces, allenai, mbpp, humaneval, popqa, bigbenchhard, zebralogic, agieval, or all",
     ),
     level: str = typer.Option(
         ...,
         "--level",
         "-l",
-        help="Levels to generate (comma-separated): 1, 2, or 1,2",
+        help="Levels (e.g. '1', '2') OR specific variants (e.g. 'value_substitution'). Can be comma-separated list like '1,value_substitution'.",
     ),
-    output_dir: Path = typer.Option(
-        "outputs",
-        "--output-dir",
+    output_file: Path = typer.Option(
+        "outputs/output.parquet",
+        "--output",
         "-o",
-        help="Output directory for generated files",
+        help="Output parquet file path",
     ),
     limit: int = typer.Option(
         None,
@@ -49,6 +53,18 @@ def generate(
         "--no-checkpoint",
         help="Disable checkpoint/resume functionality (not recommended for large runs)",
     ),
+    input_file: Path = typer.Option(
+        None,
+        "--input",
+        "-i",
+        help="Input parquet file (optional, overrides default dataset loader, mainly for zebralogic)",
+    ),
+    workers: int = typer.Option(
+        4,
+        "--workers",
+        "-w",
+        help="Number of concurrent workers (default: 4)",
+    ),
 ) -> None:
     """Generate semantic duplicates for a dataset.
 
@@ -56,13 +72,21 @@ def generate(
     command and it will continue from where it left off. Errors are logged to
     generation_errors.log in the output directory.
 
+    Selection (--level / -l):
+    - "1": Run all variants in Level 1
+    - "value_substitution": Run specific variant (searches all levels)
+    - "1,condition_shuffle": Run all Level 1 variants AND condition_shuffle
+
     Examples:
 
         # Generate Level 1 SDs for GSM8K (test with 10 items)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10
 
-        # Generate both levels for Codeforces
-        uv run python -m sdtd generate -d codeforces -l 1,2 -n 5
+        # Generate specific variants
+        uv run python -m sdtd generate -d zebralogic -l "value_substitution,condition_shuffle"
+
+        # Generate Level 1 AND specific Level 2 variant
+        uv run python -m sdtd generate -d codeforces -l "1,fictional_setting"
 
         # Override model (uses this for ALL variants)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10 -m gpt-4-turbo
@@ -72,25 +96,27 @@ def generate(
 
         # Disable checkpointing (not recommended for large runs)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10 --no-checkpoint
-    """
-    # Parse levels
-    levels = [int(x.strip()) for x in level.split(",")]
 
-    # Validate levels
-    for lvl in levels:
-        if lvl not in [1, 2]:
-            typer.echo(f"Error: Invalid level {lvl}. Must be 1 or 2.", err=True)
-            raise typer.Exit(1)
+        # Generate SDs for ZebraLogic from a local file
+        uv run python -m sdtd generate -d zebralogic -l 2 -i datasets/my_zebralogic.parquet
+
+        # Run with 8 concurrent workers
+        uv run python -m sdtd generate -d gsm8k -l 1 -w 8
+    """
+    # Parse selection
+    selection = [x.strip() for x in level.split(",")]
 
     # Run generation
     try:
         generate_sds(
             dataset,
-            levels,
-            output_dir,
+            selection,
+            output_file,
             limit,
             model_override=model,
             checkpoint_enabled=not no_checkpoint,
+            input_file=input_file,
+            workers=workers,
         )
         typer.echo("\n✓ Generation complete!")
     except Exception as e:
@@ -100,9 +126,9 @@ def generate(
 
 @app.command()
 def dump(
-    input_file: Path = typer.Argument(
+    input_files: list[Path] = typer.Argument(
         ...,
-        help="Path to parquet file to dump",
+        help="Path to parquet file(s) to dump",
     ),
     output_file: Path = typer.Option(
         None,
@@ -110,156 +136,202 @@ def dump(
         "-o",
         help="Output markdown file (default: stdout)",
     ),
-    limit: int = typer.Option(
-        5,
-        "--limit",
+    samples: int = typer.Option(
+        3,
+        "--samples",
         "-n",
-        help="Number of samples to dump per variant",
+        help="Number of samples to show per dataset",
     ),
-    level: int = typer.Option(
+    dataset: str = typer.Option(
         None,
-        "--level",
-        "-l",
-        help="Filter by level (1 or 2)",
-    ),
-    variant: str = typer.Option(
-        None,
-        "--variant",
-        "-v",
-        help="Filter by specific variant name",
+        "--dataset",
+        "-d",
+        help="Filter by specific dataset name",
     ),
 ) -> None:
-    """Dump parquet file samples to readable markdown format.
+    """Create dataset overview with samples and transformations.
+
+    Organized as: dataset > sample > transformations (compact format).
+    Shows dataset descriptions from metadata and all transformations for each sample.
 
     Examples:
 
-        # Dump first 5 samples from each variant to stdout
-        uv run python -m sdtd.cli dump outputs/gsm8k_level1.parquet
+        # Overview with 3 samples per dataset
+        uv run python -m sdtd.cli dump outputs/gsm8k_level12.parquet
 
-        # Dump 3 samples to file
-        uv run python -m sdtd.cli dump outputs/gsm8k_level1.parquet -o review.md -n 3
+        # Multiple files with 5 samples each
+        uv run python -m sdtd.cli dump outputs/*.parquet -n 5 -o overview.md
 
-        # Dump only Level 1, abstractive_paraphrase variant
-        uv run python -m sdtd.cli dump outputs/gsm8k_level12.parquet -l 1 -v abstractive_paraphrase
+        # Filter to specific dataset
+        uv run python -m sdtd.cli dump outputs/*.parquet -d gsm8k -n 2
     """
     import polars as pl
     import json
+    import yaml
     from datetime import datetime
+    from collections import defaultdict
 
-    if not input_file.exists():
-        typer.echo(f"Error: File not found: {input_file}", err=True)
+    # Load dataset metadata
+    metadata_path = Path("datasets_metadata.yaml")
+    if metadata_path.exists():
+        with open(metadata_path) as f:
+            dataset_metadata = yaml.safe_load(f)
+    else:
+        typer.echo("Warning: datasets_metadata.yaml not found, proceeding without metadata", err=True)
+        dataset_metadata = {}
+
+    # Validate and read input files
+    valid_files = []
+    for f in input_files:
+        if not f.exists():
+            typer.echo(f"Warning: {f} not found, skipping", err=True)
+        else:
+            valid_files.append(f)
+
+    if not valid_files:
+        typer.echo("Error: No valid input files found", err=True)
         raise typer.Exit(1)
 
-    # Read parquet
-    try:
-        df = pl.read_parquet(input_file)
-    except Exception as e:
-        typer.echo(f"Error reading parquet: {e}", err=True)
-        raise typer.Exit(1)
+    # Read all parquet files and combine
+    dfs = []
+    for f in valid_files:
+        try:
+            dfs.append(pl.read_parquet(f))
+        except Exception as e:
+            typer.echo(f"Error reading {f}: {e}", err=True)
+            raise typer.Exit(1)
 
-    # Apply filters
-    if level is not None:
-        df = df.filter(pl.col("sd_level") == level)
-    if variant is not None:
-        df = df.filter(pl.col("sd_variant") == variant)
+    df = pl.concat(dfs) if len(dfs) > 1 else dfs[0]
+
+    # Apply dataset filter
+    if dataset is not None:
+        df = df.filter(pl.col("source_dataset") == dataset)
 
     if len(df) == 0:
         typer.echo("No data matches the filters.", err=True)
         raise typer.Exit(1)
 
+    # Organize data: dataset > sample index > transformations
+    # Group by dataset and original text to find all transformations
+    data_by_dataset = defaultdict(lambda: defaultdict(list))
+
+    for row in df.iter_rows(named=True):
+        ds = row["source_dataset"]
+        original = row["original_text"]
+        data_by_dataset[ds][original].append(row)
+
     # Build markdown output
     lines = []
-    lines.append(f"# Semantic Duplicates Sample Review")
-    lines.append(f"")
-    lines.append(f"**Source file**: `{input_file}`  ")
+    lines.append("# Semantic Duplicates Dataset Overview")
+    lines.append("")
     lines.append(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  ")
+    lines.append(f"**Source files**: {', '.join(f'`{f.name}`' for f in valid_files)}  ")
     lines.append(f"**Total records**: {len(df)}  ")
-    lines.append(f"**Filters**: Level={level if level else 'all'}, Variant={variant if variant else 'all'}  ")
-    lines.append(f"")
+    lines.append(f"**Datasets**: {', '.join(sorted(data_by_dataset.keys()))}  ")
+    lines.append("")
 
-    # Get unique combinations of level and variant
-    grouped = df.group_by(["sd_level", "sd_variant"]).agg([pl.len().alias("count")])
+    # Process each dataset
+    for ds_name in sorted(data_by_dataset.keys()):
+        lines.append("---")
+        lines.append("")
+        lines.append(f"## {ds_name.upper()}")
+        lines.append("")
 
-    for group_row in grouped.iter_rows(named=True):
-        group_level = group_row["sd_level"]
-        group_variant = group_row["sd_variant"]
-        count = group_row["count"]
+        # Add dataset description from metadata
+        if ds_name in dataset_metadata:
+            meta = dataset_metadata[ds_name]
+            lines.append(f"**{meta.get('full_name', meta['name'])}**")
+            lines.append("")
+            lines.append(meta.get("description", "No description available."))
+            lines.append("")
 
-        lines.append(f"")
-        lines.append(f"## Level {group_level}: {group_variant}")
-        lines.append(f"")
-        lines.append(f"**Total samples**: {count}  ")
-        lines.append(f"**Showing**: {min(limit, count)} samples  ")
-        lines.append(f"")
+            # Add source info
+            if "source" in meta:
+                src = meta["source"]
+                authors = src.get("authors", "Unknown")
+                year = src.get("year", "Unknown")
+                lines.append(f"*Source*: {src.get('organization', 'Unknown')} ({year})")
+                if "paper_url" in src:
+                    lines.append(f" | [Paper]({src['paper_url']})")
+                if "huggingface" in meta.get("urls", {}):
+                    lines.append(f" | [HuggingFace]({meta['urls']['huggingface']})")
+                lines.append("")
 
-        # Get samples for this group
-        group_df = df.filter(
-            (pl.col("sd_level") == group_level) &
-            (pl.col("sd_variant") == group_variant)
-        ).head(limit)
+            # Add size info
+            if "size" in meta:
+                size = meta["size"]
+                size_str = ", ".join(
+                    f"{k.replace('_', ' ')}: {v}" for k, v in size.items() if k != "avg_tests_per_problem"
+                )
+                lines.append(f"*Size*: {size_str}")
+                lines.append("")
 
-        for idx, row in enumerate(group_df.iter_rows(named=True), 1):
-            lines.append(f"### Sample {idx}")
-            lines.append(f"")
+        # Get sample original texts
+        originals = list(data_by_dataset[ds_name].keys())
+        num_samples = min(samples, len(originals))
+        lines.append(f"**Showing {num_samples} of {len(originals)} samples**")
+        lines.append("")
 
-            # Original text
-            lines.append(f"**Original text**:")
-            lines.append(f"```")
-            lines.append(row["original_text"])
-            lines.append(f"```")
-            lines.append(f"")
+        # Show samples with their transformations
+        for sample_idx, original_text in enumerate(originals[:num_samples], 1):
+            transformations = data_by_dataset[ds_name][original_text]
 
-            # SD text
-            lines.append(f"**Generated SD**:")
-            lines.append(f"```")
-            lines.append(row["sd_text"])
-            lines.append(f"```")
-            lines.append(f"")
+            lines.append(f"### Sample {sample_idx}")
+            lines.append("")
 
-            # Metadata
-            lines.append(f"**Metadata**:")
-            lines.append(f"- **Dataset**: {row['source_dataset']}")
-            lines.append(f"- **Model**: {row['model_used']}")
-            lines.append(f"- **Embedding Model**: {row['embedding_model']}")
-            lines.append(f"- **Timestamp**: {row['timestamp']}")
-            lines.append(f"")
+            # Original text (compact)
+            lines.append("**Original:**")
+            # Use more backticks if content contains triple backticks
+            backtick_count = 3
+            display_text = original_text if len(original_text) <= 500 else original_text[:500] + "..."
+            if "```" in display_text:
+                backtick_count = 4
+            backticks = "`" * backtick_count
+            lines.append(backticks)
+            lines.append(display_text)
+            lines.append(backticks)
+            lines.append("")
 
-            # Metrics
-            metrics = json.loads(row["metrics"])
-            lines.append(f"**Metrics**:")
-            lines.append(f"")
-            lines.append(f"| Metric | Value |")
-            lines.append(f"|--------|-------|")
-            lines.append(f"| Unigram overlap | {metrics['ngram_overlaps_pct'][0]:.2f}% |")
-            lines.append(f"| Bigram overlap | {metrics['ngram_overlaps_pct'][1]:.2f}% |")
-            lines.append(f"| Trigram overlap | {metrics['ngram_overlaps_pct'][2]:.2f}% |")
-            lines.append(f"| 4-gram overlap | {metrics['ngram_overlaps_pct'][3]:.2f}% |")
-            lines.append(f"| 5-gram overlap | {metrics['ngram_overlaps_pct'][4]:.2f}% |")
-            lines.append(f"| ROUGE-L F-measure | {metrics['rouge_l_f']:.4f} |")
-            lines.append(f"| Edit distance (norm) | {metrics['edit_distance_norm']:.4f} |")
-            lines.append(f"| TF-IDF cosine | {metrics['tfidf_cosine']:.4f} |")
-            lines.append(f"| Jaccard token | {metrics['jaccard_token']:.4f} |")
-            lines.append(f"| Embedding cosine | {metrics['cosine_similarity']:.4f} |")
-            lines.append(f"| Number preservation | {'✓' if metrics['number_preservation'] else '✗'} |")
-            lines.append(f"| Number precision | {metrics['number_precision']:.4f} |")
-            lines.append(f"| Number recall | {metrics['number_recall']:.4f} |")
-            lines.append(f"| Length ratio | {metrics['length_ratio']:.4f} |")
-            lines.append(f"")
+            # Group transformations by level
+            by_level = defaultdict(list)
+            for t in transformations:
+                by_level[t["sd_level"]].append(t)
 
-            # Additional info (collapsed)
-            if row.get("additional_info"):
-                additional = json.loads(row["additional_info"])
-                lines.append(f"<details>")
-                lines.append(f"<summary><b>Additional info</b> (click to expand)</summary>")
-                lines.append(f"")
-                lines.append(f"```json")
-                lines.append(json.dumps(additional, indent=2))
-                lines.append(f"```")
-                lines.append(f"</details>")
-                lines.append(f"")
+            # Show transformations organized by level
+            for level in sorted(by_level.keys()):
+                level_transforms = by_level[level]
+                lines.append(f"**Level {level} Transformations ({len(level_transforms)})**:")
+                lines.append("")
 
-            lines.append(f"---")
-            lines.append(f"")
+                for t in level_transforms:
+                    variant = t["sd_variant"]
+                    sd_text = t["sd_text"]
+                    model = t["model_used"]
+
+                    # Parse metrics
+                    metrics = json.loads(t["metrics"])
+                    bigram = metrics["ngram_overlaps_pct"][1]
+                    trigram = metrics["ngram_overlaps_pct"][2]
+                    cosine = metrics["cosine_similarity"]
+
+                    lines.append(f"*{variant}* (model: `{model}`)")
+
+                    # Show SD text (compact)
+                    display_sd = sd_text if len(sd_text) <= 400 else sd_text[:400] + "..."
+                    # Use more backticks if content contains triple backticks
+                    sd_backtick_count = 3
+                    if "```" in display_sd:
+                        sd_backtick_count = 4
+                    sd_backticks = "`" * sd_backtick_count
+                    lines.append(sd_backticks)
+                    lines.append(display_sd)
+                    lines.append(sd_backticks)
+
+                    # Compact metrics
+                    lines.append(f"↳ Metrics: 2-gram={bigram:.1f}%, 3-gram={trigram:.1f}%, cosine={cosine:.3f}")
+                    lines.append("")
+
+            lines.append("")
 
     # Output
     output_text = "\n".join(lines)
@@ -281,13 +353,177 @@ def info() -> None:
     typer.echo("  - gsm8k: Math word problems (7,473 train items)")
     typer.echo("  - codeforces: Programming problems (869 train items)")
     typer.echo("  - allenai: Educational text (~unknown items)")
+    typer.echo("  - mbpp: Python programming problems (427 sanitized train items)")
+    typer.echo("  - humaneval: Python code evaluation (164 test items)")
+    typer.echo("  - popqa: Question answering (14,000 test items)")
+    typer.echo("  - bigbenchhard: Challenging BIG-Bench tasks (6,511 items)")
+    typer.echo("  - zebralogic: Logic grid puzzles (1,000 puzzles)")
+    typer.echo("  - agieval: Human cognition & problem-solving exams (8,062 questions)")
     typer.echo("  - all: Process all datasets")
 
     typer.echo("\nPrompt files:")
     for level in [1, 2]:
-        path = Path(f"prompts/level{level}.yaml")
+        path = PROMPTS_DIR / f"level{level}.yaml"
         status = "✓" if path.exists() else "✗"
-        typer.echo(f"  {status} prompts/level{level}.yaml")
+        typer.echo(f"  {status} {PROMPTS_DIR}/level{level}.yaml")
+
+
+@app.command()
+def export_jsonl(
+    input_type: str = typer.Option(
+        ...,
+        "--type",
+        "-t",
+        help="Input type: 'zebralogic' for original dataset, 'parquet' for generated parquet file",
+    ),
+    input_file: Path = typer.Option(
+        None,
+        "--input",
+        "-i",
+        help="Input parquet file (required if type is 'parquet')",
+    ),
+    output_file: Path = typer.Option(
+        ...,
+        "--output",
+        "-o",
+        help="Output JSONL file path",
+    ),
+    template_name: str = typer.Option(
+        None,
+        "--template",
+        help="Template name from jsonl_templates.yaml (default: 'zebralogic_original' for zebralogic, 'zebralogic_generated' for parquet)",
+    ),
+    template_path: Path = typer.Option(
+        f"{PROMPTS_DIR}/jsonl_templates.yaml",
+        "--template-path",
+        help="Path to templates YAML file",
+    ),
+    limit: int = typer.Option(
+        None,
+        "--limit",
+        "-n",
+        help="Limit number of items to export (only for zebralogic type)",
+    ),
+    dataset_filter: str = typer.Option(
+        None,
+        "--dataset",
+        "-d",
+        help="Filter by dataset name (only for parquet type, e.g., 'zebralogic')",
+    ),
+    sd_variant: str = typer.Option(
+        None,
+        "--sd-variant",
+        "-v",
+        help="Filter by sd_variant (one or comma-separated list, e.g., 'value_substitution' or 'value_substitution,condition_shuffle')",
+    ),
+    sort_by_id: bool = typer.Option(
+        False,
+        "--sort-by-id",
+        help="Sort items by ID before exporting (useful for aligning generated files with originals)",
+    ),
+    sort_by_id_hash: bool = typer.Option(
+        False,
+        "--sort-by-id-hash",
+        help="Sort items by hash of ID for stable pseudo-randomization",
+    ),
+    debug: bool = typer.Option(
+        False,
+        "--debug",
+        help="Print IDs of exported samples to stdout",
+    ),
+) -> None:
+    """Export datasets to JSONL format for OpenAI fine-tuning.
+    
+    Converts either the original ZebraLogic dataset or generated parquet files
+    to JSONL format using templates defined in jsonl_templates.yaml.
+    
+    Examples:
+    
+        # Export original ZebraLogic dataset
+        uv run python -m sdtd export-jsonl -t zebralogic -o zebralogic_train.jsonl
+        
+        # Export sorted by ID to ensure alignment
+        uv run python -m sdtd export-jsonl -t zebralogic -o zebralogic_train.jsonl --sort-by-id
+
+        # Export with limit for testing
+        uv run python -m sdtd export-jsonl -t zebralogic -o test.jsonl -n 10
+        
+        # Export generated parquet file
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level12.parquet -o generated.jsonl
+        
+        # Export with dataset filter
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/all.parquet -o zebra.jsonl -d zebralogic
+        
+        # Export with sd_variant filter
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level2.parquet -o output.jsonl -v value_substitution
+        
+        # Export multiple variants
+        uv run python -m sdtd export-jsonl -t parquet -i outputs/zebralogic_level2.parquet -o output.jsonl -v value_substitution,condition_shuffle
+        
+        # Use custom template
+        uv run python -m sdtd export-jsonl -t zebralogic -o output.jsonl --template custom_template
+    """
+    from sdtd.export import export_zebralogic_to_jsonl, export_parquet_to_jsonl
+
+    if input_type == "zebralogic":
+        # Export original ZebraLogic dataset
+        if template_name is None:
+            template_name = "zebralogic_original"
+
+        try:
+            export_zebralogic_to_jsonl(
+                output_file=output_file,
+                template_name=template_name,
+                template_path=template_path,
+                limit=limit,
+                input_file=input_file,
+                sort_by_id=sort_by_id,
+                sort_by_id_hash=sort_by_id_hash,
+                debug=debug,
+            )
+            typer.echo(f"✓ Exported ZebraLogic dataset to {output_file}")
+        except Exception as e:
+            typer.echo(f"✗ Error: {e}", err=True)
+            raise typer.Exit(1)
+
+    elif input_type == "parquet":
+        # Export generated parquet file
+        if input_file is None:
+            typer.echo("Error: --input is required when type is 'parquet'", err=True)
+            raise typer.Exit(1)
+
+        if not input_file.exists():
+            typer.echo(f"Error: Input file {input_file} not found", err=True)
+            raise typer.Exit(1)
+
+        if template_name is None:
+            template_name = "zebralogic_generated"
+
+        # Parse sd_variant filter (comma-separated list)
+        variant_filter = None
+        if sd_variant:
+            variant_filter = [v.strip() for v in sd_variant.split(",")]
+
+        try:
+            export_parquet_to_jsonl(
+                input_file=input_file,
+                output_file=output_file,
+                template_name=template_name,
+                template_path=template_path,
+                dataset_filter=dataset_filter,
+                sd_variant_filter=variant_filter,
+                sort_by_id=sort_by_id,
+                sort_by_id_hash=sort_by_id_hash,
+                debug=debug,
+            )
+            typer.echo(f"✓ Exported parquet file to {output_file}")
+        except Exception as e:
+            typer.echo(f"✗ Error: {e}", err=True)
+            raise typer.Exit(1)
+
+    else:
+        typer.echo(f"Error: Invalid type '{input_type}'. Must be 'zebralogic' or 'parquet'", err=True)
+        raise typer.Exit(1)
 
 
 @app.command()
@@ -373,7 +609,7 @@ def plot(
             kde_levels=kde_levels,
             create_per_dataset=True,  # Always create both combined and per-dataset plots
         )
-        
+
         if isinstance(result, dict):
             # Multiple plots created
             typer.echo(f"✓ Created {len(result)} plot(s):")
@@ -388,6 +624,79 @@ def plot(
             typer.echo(f"✓ Saved plot to {output}")
     except Exception as e:
         typer.echo(f"✗ Error creating plot: {e}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
+def generate_reasoning(
+    input_file: Path = typer.Option(
+        ...,
+        "--input",
+        "-i",
+        help="Input parquet file with SDs",
+    ),
+    output_file: Path = typer.Option(
+        ...,
+        "--output",
+        "-o",
+        help="Output parquet file",
+    ),
+    model: str = typer.Option(
+        "claude-3-5-sonnet-20241022",
+        "--model",
+        "-m",
+        help="Model to use for reasoning",
+    ),
+    k: int = typer.Option(
+        3,
+        "--attempts",
+        "-k",
+        help="Max retry attempts",
+    ),
+    limit: int = typer.Option(
+        None,
+        "--limit",
+        "-n",
+        help="Limit number of items to process",
+    ),
+    no_checkpoint: bool = typer.Option(
+        False,
+        "--no-checkpoint",
+        help="Disable checkpointing",
+    ),
+) -> None:
+    """Enrich ZebraLogic SDs with correct reasoning traces.
+
+    Iterates through the input parquet file containing ZebraLogic SDs,
+    asks the model to solve each puzzle, checks the solution against the ground truth,
+    and retries up to k times if incorrect. Adds the correct reasoning trace to the output.
+
+    Examples:
+
+        # Generate reasoning for ZebraLogic SDs
+        uv run python -m sdtd generate-reasoning -i outputs/zebralogic_level2.parquet -o outputs/zebralogic_enriched.parquet
+
+        # Test with limit and specific model
+        uv run python -m sdtd generate-reasoning -i outputs/zebralogic_level2.parquet -o test.parquet -n 5 -m gpt-4o
+    """
+    from sdtd.reasoning import generate_reasoning_traces
+
+    if not input_file.exists():
+        typer.echo(f"Error: Input file {input_file} not found", err=True)
+        raise typer.Exit(1)
+
+    try:
+        generate_reasoning_traces(
+            input_file,
+            output_file,
+            model,
+            k,
+            limit,
+            checkpoint_enabled=not no_checkpoint,
+        )
+        typer.echo("\n✓ Reasoning generation complete!")
+    except Exception as e:
+        typer.echo(f"\n✗ Error: {e}", err=True)
         raise typer.Exit(1)
 
 
