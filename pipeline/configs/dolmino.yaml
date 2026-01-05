@@ -118,7 +118,7 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "/lambda/nfs/embeddings/embedding_folder"
+  corpus_dir: "./data/dolmino_embeddings"
 
   # Output directory for results
   output_dir: "./results/contamination_dolmino"
@@ -134,15 +134,15 @@ analysis:
     - name: "mbpp"
       mode: "input"
 
-  # Cluster configuration (8x A100 40GB)
+  # Cluster configuration (single GPU)
   cluster:
-    world_size: 8
+    world_size: 1
     gpu_batch_size: 8192
-    corpus_gpu_chunk: 12000000  # ~24GB in FP16
-    max_rows_per_block: 5000000
+    corpus_gpu_chunk: 12000000  # ~24GB in FP16 for 4096-dim
+    max_rows_per_block: 2000000  # Flush every 2M rows (~3GB buffer after hash_id fix)
     gpu_memory_threshold: 0.92
-    ram_memory_threshold: 0.88
-    prefetch_files: 3
+    ram_memory_threshold: 0.80  # Safe threshold after fixing hash_id duplication
+    prefetch_files: 2  # Re-enable prefetching for better I/O performance
     flush_stagger_delay: 0.5
 
   # Checkpointing
@@ -162,7 +162,7 @@ merge:
   input_dir: "./results/contamination_dolmino"
 
   # World size (must match analysis)
-  world_size: 8
+  world_size: 1
 
 # =============================================================================
 # Stage 6: Aggregate and Plot Configuration
@@ -172,8 +172,8 @@ aggregates:
   input_dir: "./results/contamination_dolmino"
 
   # World size (must match analysis)
-  source_world_size: 8
-  world_size: 8
+  source_world_size: 1
+  world_size: 1
 
   # Histogram configuration
   num_bins: 1000
