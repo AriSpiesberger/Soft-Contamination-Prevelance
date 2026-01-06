@@ -43,7 +43,7 @@ import wandb
 # ============================================================================
 
 DEFAULT_MODEL_REPO = "allenai/Olmo-3-7B-Instruct"
-DEFAULT_WANDB_PROJECT = "olmo3-zebralogic-finetune"
+DEFAULT_WANDB_PROJECT = "semdupes-olmo3"
 CHECKPOINTS_DIR = Path(__file__).parent / "outputs" / "checkpoints"
 OUTPUT_DIR = Path(__file__).parent / "outputs" / "zebralogic_results"
 
@@ -651,6 +651,9 @@ def main():
         # Extract name from peft path
         peft_name = Path(args.peft_path).name
         output_base = OUTPUT_DIR / peft_name
+    elif args.base_only:
+        # Use "base" folder for base model evaluation (always resumes)
+        output_base = OUTPUT_DIR / "base"
     else:
         # Create new timestamped directory
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -690,6 +693,38 @@ def main():
             model_name="base",
             batch_size=args.batch_size,
         )
+        
+        # Log base metrics to wandb if base-only mode and wandb is not disabled
+        if args.base_only and not args.no_wandb:
+            wandb_project = args.wandb_project or DEFAULT_WANDB_PROJECT
+            print(f"\nLogging base model metrics to wandb (project: {wandb_project})...")
+            
+            eval_command = " ".join(sys.argv)
+            run = wandb.init(
+                project=wandb_project,
+                name=f"zebralogic-base-{args.base_model.split('/')[-1]}",
+                config={
+                    "model": args.base_model,
+                    "eval_type": "base",
+                    "limit": args.limit,
+                    "batch_size": args.batch_size,
+                },
+            )
+            
+            # Log metrics with zebralogic prefix
+            zebralogic_metrics = {
+                f"zebralogic/{k}": v for k, v in base_metrics.items()
+                if k not in ["correct", "total"]
+            }
+            zebralogic_metrics["zebralogic/acc"] = base_metrics.get("puzzle_accuracy", 0)
+            
+            wandb.log(zebralogic_metrics)
+            for k, v in zebralogic_metrics.items():
+                wandb.run.summary[k] = v
+            wandb.run.summary["eval_command"] = eval_command
+            
+            wandb.finish()
+            print(f"✓ Base model metrics logged to wandb run: {run.id}")
         
         # Clean up
         del model
