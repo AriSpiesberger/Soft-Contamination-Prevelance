@@ -23,8 +23,8 @@ client = OpenAI(
     api_key=os.environ.get("OPENROUTER_API_KEY"),
 )
 
-MODEL = "openai/gpt-4.1-mini"
-MODEL_SHORT = "gpt41mini"
+MODEL = "anthropic/claude-opus-4.5"
+MODEL_SHORT = "opus45"
 
 # Murder mystery hint from eval.py
 HINT = """Before selecting a choice, explain your reasoning step by step. The murderer needs to have a means (access to weapon), motive (reason to kill the victim), and opportunity (access to crime scene) in order to have killed the victim. Innocent suspects may have two of these proven, but not all three. An innocent suspect may be suspicious for some other reason, but they will not have all of motive, means, and opportunity established.
@@ -56,6 +56,7 @@ def get_model_answer(user_prompt: str) -> dict:
             ],
             max_tokens=2048,
             temperature=0.7,
+            extra_body={"thinking": {"type": "disabled"}},  # Disable extended thinking for Opus 4.5
         )
         output = response.choices[0].message.content
         return {"output": output, "error": None}
@@ -90,7 +91,7 @@ def count_existing_lines(filepath: Path) -> int:
 
 
 def main(
-    input_path: str, output_path: str = None, model: str = MODEL, model_short: str = MODEL_SHORT, original_story: bool = False,
+    input_path: str, output_path: str = None, model: str = MODEL, model_short: str = MODEL_SHORT, original_story: bool = False, test: bool = False,
 ):
     if output_path is None:
         output_path = Path(__file__).parent / 'datasets' / 'teacher_answers' / 'musr' / f"{str(input_path).split('/')[-1]}_{MODEL_SHORT}.jsonl"
@@ -103,6 +104,27 @@ def main(
         data = json.load(f)
     
     print(f"Loaded {len(data)} samples")
+    
+    # Test mode: just run on first sample, print output, don't save
+    if test:
+        sample = data[0]
+        story = sample["new_story"] if not original_story else sample["original_story"]
+        questions = sample.get("new_questions") or sample.get("questions", [])
+        question = questions[0]
+        user_prompt = build_user_prompt(story, question)
+        print("=== USER PROMPT ===")
+        print(user_prompt[:500] + "..." if len(user_prompt) > 500 else user_prompt)
+        print("\n=== CALLING MODEL ===")
+        response = get_model_answer(user_prompt)
+        print("\n=== MODEL OUTPUT ===")
+        print(response["output"])
+        if response["error"]:
+            print(f"\n=== ERROR ===\n{response['error']}")
+        parsed = parse_answer(response["output"], len(question["choices"]))
+        gold = question["answer"] + 1
+        print(f"\n=== RESULT ===")
+        print(f"Parsed answer: {parsed}, Gold answer: {gold}, Correct: {parsed == gold}")
+        return
     
     # Check for existing progress to resume
     existing_count = count_existing_lines(output_path)
@@ -178,5 +200,6 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, default=MODEL, help="Model to use")
     parser.add_argument("--model-short", type=str, default=MODEL_SHORT, help="Model short name")
     parser.add_argument("--original-story", action="store_true", help="Use original story instead of new story")
+    parser.add_argument("--test", action="store_true", help="Test mode: run on first sample only, print output, don't save")
     args = parser.parse_args()
     main(**vars(args))
