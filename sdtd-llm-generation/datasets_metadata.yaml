@@ -1,0 +1,294 @@
+# Dataset Metadata for SDTD Project
+# Comprehensive information about all supported datasets
+
+gsm8k:
+  name: "GSM8K"
+  full_name: "Grade School Math 8K"
+  description: "A dataset of 8.5K high quality linguistically diverse grade school math word problems. Problems take between 2 and 8 steps to solve, and solutions primarily involve performing a sequence of elementary calculations using basic arithmetic operations."
+
+  source:
+    organization: "OpenAI"
+    authors: "Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, Christopher Hesse, John Schulman"
+    year: 2021
+    paper_title: "Training Verifiers to Solve Math Word Problems"
+    paper_url: "https://arxiv.org/abs/2110.14168"
+    arxiv_id: "2110.14168"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/openai/gsm8k"
+    github: "https://github.com/openai/grade-school-math"
+    paper: "https://arxiv.org/abs/2110.14168"
+
+  license: "MIT License"
+
+  size:
+    total_problems: 8792
+    train_split: 7473
+    test_split: 1319
+
+  characteristics:
+    domain: "Mathematics"
+    task_type: "Math Word Problems"
+    difficulty: "Grade School Level"
+    avg_steps: "2-8"
+    operations: ["addition", "subtraction", "multiplication", "division"]
+
+codeforces:
+  name: "Codeforces"
+  full_name: "Codeforces Programming Problems"
+  description: "Competitive programming problems from Codeforces contests. Contains over 10k unique problems covering contests from the earliest ones to 2025, including problem descriptions, test cases, editorials, and validated checker code."
+
+  source:
+    organization: "Hugging Face (Open-R1 Project)"
+    authors: "Hugging Face Open-R1 Team"
+    year: 2025
+    project: "Open-R1"
+    project_url: "https://github.com/huggingface/open-r1"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/open-r1/codeforces"
+    github: "https://github.com/huggingface/open-r1"
+
+  license: "Apache 2.0"
+
+  size:
+    total_problems: 10000
+    train_split: 869
+    test_split: 468
+    with_editorials: "~60%"
+
+  characteristics:
+    domain: "Computer Science"
+    task_type: "Competitive Programming"
+    difficulty: "Varies (Easy to Hard)"
+    languages: ["Python", "C++"]
+    features: ["problem descriptions", "test cases", "editorials", "checker code"]
+
+allenai:
+  name: "AllenAI MathCoder2"
+  full_name: "AllenAI Dolmino MathCoder2 (via SMolInstruct)"
+  description: "Educational math text content from the Dolmino-Mix dataset, incorporating MathCoder2 synthetic math data. Part of the OLMo 2 training data focusing on educational mathematical content for various audience levels."
+
+  source:
+    organization: "Allen Institute for AI"
+    project: "Dolmino / OLMo 2"
+    year: 2024
+    related_dataset: "SMolInstruct"
+    related_url: "https://huggingface.co/datasets/osunlp/SMolInstruct"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/allenai/dolmino-mix-1124"
+    related: "https://huggingface.co/datasets/osunlp/SMolInstruct"
+
+  license: "ODC-By v1.0 (Open Data Commons Attribution License)"
+
+  size:
+    total_texts: "Unknown (subset used)"
+    format: "JSONL"
+
+  characteristics:
+    domain: "Educational Mathematics"
+    task_type: "Educational Text"
+    audiences: ["grade_school_students", "college_students", "general_audience"]
+    formats: ["educational_piece", "textbook_narrative"]
+    content_types: ["auto_math_text", "synthetic_math"]
+
+mbpp:
+  name: "MBPP"
+  full_name: "Mostly Basic Python Problems"
+  description: "A dataset of 974 programming tasks designed to be solvable by entry-level programmers. Each problem includes a short Python function description, the function itself, and test cases to check for functional correctness. Covers programming fundamentals and standard library functionality."
+
+  source:
+    organization: "Google Research"
+    authors: "Jacob Austin, Augustus Odena, Maxwell Nye, Maarten Bosma, Henryk Michalewski, David Dohan, Ellen Jiang, Carrie Cai, Michael Terry, Quoc Le, Charles Sutton"
+    year: 2021
+    paper_title: "Program Synthesis with Large Language Models"
+    paper_url: "https://arxiv.org/abs/2108.07732"
+    arxiv_id: "2108.07732"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/google-research-datasets/mbpp"
+    github: "https://github.com/google-research/google-research/tree/master/mbpp"
+    paper: "https://arxiv.org/abs/2108.07732"
+
+  license: "CC-BY-4.0"
+
+  size:
+    total_problems: 974
+    train_split: 374  # Task IDs 601-974
+    validation_split: 90  # Task IDs 511-600
+    test_split: 500  # Task IDs 11-510
+    few_shot_examples: 10  # Task IDs 1-10
+    sanitized_train: 427
+
+  characteristics:
+    domain: "Computer Science"
+    task_type: "Python Programming"
+    difficulty: "Entry Level"
+    language: "Python"
+    avg_tests_per_problem: "~3"
+    features: ["function description", "reference solution", "test cases"]
+
+humaneval:
+  name: "HumanEval"
+  full_name: "OpenAI HumanEval"
+  description: "A benchmark dataset for evaluating the functional correctness of code generated by large language models. Contains 164 hand-written programming problems with function signatures, docstrings, reference implementations, and comprehensive unit tests. Each problem has an average of 7.7 tests."
+
+  source:
+    organization: "OpenAI"
+    authors: "Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde de Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, Alex Ray, Raul Puri, Gretchen Krueger, Michael Petrov, Heidy Khlaaf, Girish Sastry, Pamela Mishkin, Brooke Chan, Scott Gray, Nick Ryder, Mikhail Pavlov, Alethea Power, Lukasz Kaiser, Mohammad Bavarian, Clemens Winter, Philippe Tillet, Felipe Petroski Such, Dave Cummings, Matthias Plappert, Fotios Chantzis, Elizabeth Barnes, Ariel Herbert-Voss, William Hebgen Guss, Alex Nichol, Alex Paino, Nikolas Tezak, Jie Tang, Igor Babuschkin, Suchir Balaji, Shantanu Jain, William Saunders, Christopher Hesse, Andrew N. Carr, Jan Leike, Josh Achiam, Vedant Misra, Evan Morikawa, Alec Radford, Matthew Knight, Miles Brundage, Mira Murati, Katie Mayer, Peter Welinder, Bob McGrew, Dario Amodei, Sam McCandlish, Ilya Sutskever, Wojciech Zaremba"
+    year: 2021
+    month: "July"
+    paper_title: "Evaluating Large Language Models Trained on Code"
+    paper_url: "https://arxiv.org/abs/2107.03374"
+    arxiv_id: "2107.03374"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/openai/openai_humaneval"
+    github: "https://github.com/openai/human-eval"
+    paper: "https://arxiv.org/abs/2107.03374"
+
+  license: "MIT License"
+
+  size:
+    total_problems: 164
+    test_split: 164
+    avg_tests_per_problem: 7.7
+
+  characteristics:
+    domain: "Computer Science"
+    task_type: "Code Generation & Evaluation"
+    difficulty: "Varies"
+    language: "Python"
+    hand_written: true
+    features: ["function signature", "docstring with examples", "reference solution", "unit tests"]
+    evaluation_metric: "pass@k (functional correctness)"
+
+popqa:
+  name: "PopQA"
+  full_name: "Popular Question Answering"
+  description: "A large-scale open-domain question answering dataset consisting of 14,000 entity-centric QA pairs. Each question is created by converting a knowledge tuple retrieved from Wikidata using templates. The dataset associates subjects in question-answer pairs to their popularity, enabling analysis of how model performance varies with entity popularity."
+
+  source:
+    organization: "University of Washington / AI2"
+    authors: "Alex Mallen, Akari Asai, Victor Zhong, Rajarshi Das, Hannaneh Hajishirzi, Daniel Khashabi"
+    year: 2022
+    paper_title: "When Not to Trust Language Models: Investigating Effectiveness and Limitations of Parametric and Non-Parametric Memories"
+    paper_url: "https://arxiv.org/abs/2212.10511"
+    arxiv_id: "2212.10511"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/akariasai/PopQA"
+    github: "https://github.com/AlexTMallen/adaptive-retrieval"
+
+  license: "CC-BY-SA-4.0"
+
+  size:
+    total_questions: 14000
+    test_split: 14000
+
+  characteristics:
+    domain: "Knowledge / Question Answering"
+    task_type: "Open-Domain QA"
+    source_knowledge_base: "Wikidata"
+    question_generation: "Template-based from knowledge tuples"
+    features: ["entity popularity scores", "subject", "property", "answer"]
+    focus: "Entity-centric questions with popularity analysis"
+
+bigbenchhard:
+  name: "BigBenchHard"
+  full_name: "BIG-Bench Hard"
+  description: "A subset of 23 challenging tasks from the BIG-Bench evaluation suite, specifically selected for being particularly difficult for current language models. These are tasks where prior LM evaluations did not outperform the average human-rater. Tasks include boolean expressions, causal judgment, date understanding, disambiguation QA, formal fallacies, geometric shapes, logical deduction, and more."
+
+  source:
+    organization: "Multiple (BIG-Bench Collaboration / Stanford)"
+    authors: "Mirac Suzgun, Nathan Scales, Nathanael Schärli, Sebastian Gehrmann, Yi Tay, Hyung Won Chung, Aakanksha Chowdhery, Quoc V. Le, Ed H. Chi, Denny Zhou, Jason Wei"
+    year: 2022
+    paper_title: "Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them"
+    paper_url: "https://arxiv.org/abs/2210.09261"
+    arxiv_id: "2210.09261"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/maveriq/bigbenchhard"
+    github: "https://github.com/suzgunmirac/BIG-Bench-Hard"
+    paper: "https://arxiv.org/abs/2210.09261"
+
+  license: "Apache 2.0"
+
+  size:
+    total_examples: 6511
+    num_tasks: 23
+
+  characteristics:
+    domain: "Multi-domain Reasoning"
+    task_type: "Challenging Cognitive Tasks"
+    difficulty: "Hard (beyond current LM capabilities)"
+    tasks: ["boolean_expressions", "causal_judgement", "date_understanding", "disambiguation_qa", "formal_fallacies", "geometric_shapes", "hyperbaton", "logical_deduction", "movie_recommendation", "navigate", "object_counting", "penguins_in_a_table", "reasoning_about_colored_objects", "ruin_names", "salient_translation_error_detection", "snarks", "sports_understanding", "temporal_sequences", "tracking_shuffled_objects", "web_of_lies", "word_sorting"]
+    evaluation_focus: "Chain-of-thought reasoning capabilities"
+
+zebralogic:
+  name: "ZebraLogic"
+  full_name: "ZebraLogic Benchmark"
+  description: "A benchmark of 1,000 logic grid puzzles (Zebra Puzzles) spanning multiple complexity levels. Each puzzle involves N houses with M features, where solvers must deduce unique assignments based on logical clues. Designed to systematically evaluate LLMs' logical reasoning capabilities and reveal the 'curse of complexity' where performance dramatically declines as problem complexity increases."
+
+  source:
+    organization: "Allen Institute for AI (AI2) / University of Washington"
+    authors: "Bill Yuchen Lin, Yichong Xu, Zonglin Yang, Yang Deng, Wenting Zhao, Jena D. Hwang, Xiang Ren, Yejin Choi"
+    year: 2024
+    paper_title: "ZebraLogic: On the Scaling Limits of LLMs for Logical Reasoning"
+    paper_url: "https://arxiv.org/abs/2502.01100"
+    arxiv_id: "2502.01100"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/WildEval/ZebraLogic"
+    leaderboard: "https://huggingface.co/spaces/allenai/ZebraLogic"
+    paper: "https://arxiv.org/abs/2502.01100"
+
+  license: "Apache 2.0"
+
+  size:
+    total_puzzles: 1000
+    puzzles_per_size: 40
+    complexity_levels: 25
+
+  characteristics:
+    domain: "Logical Reasoning"
+    task_type: "Logic Grid Puzzles (Zebra Puzzles)"
+    difficulty: "Varies (N, M ∈ {2, 3, 4, 5, 6})"
+    puzzle_structure: "N houses × M features with logical clues"
+    features: ["systematic complexity scaling", "unique solution constraints"]
+    benchmark_focus: "Scaling limits and curse of complexity in LLM reasoning"
+    best_performance: "Claude 3.5 Sonnet: 33.4% overall, 12.4% on hard puzzles"
+
+agieval:
+  name: "AGIEval"
+  full_name: "AGIEval English"
+  description: "A human-centric benchmark designed to evaluate foundation models on tasks pertinent to human cognition and problem-solving. Derived from 20 official, public, high-standard admission and qualification exams including SAT, LSAT, GRE, GMAT, college entrance exams, law school admission tests, math competitions, lawyer qualification tests, and national civil service exams."
+
+  source:
+    organization: "Microsoft Research"
+    authors: "Wanjun Zhong, Ruixiang Cui, Yiduo Guo, Yaobo Liang, Shuai Lu, Yanlin Wang, Amin Saied, Weizhu Chen, Nan Duan"
+    year: 2023
+    paper_title: "AGIEval: A Human-Centric Benchmark for Evaluating Foundation Models"
+    paper_url: "https://arxiv.org/abs/2304.06364"
+    arxiv_id: "2304.06364"
+
+  urls:
+    huggingface: "https://huggingface.co/datasets/lighteval/agi_eval_en"
+    github: "https://github.com/microsoft/AGIEval"
+    paper: "https://arxiv.org/abs/2304.06364"
+
+  license: "MIT"
+
+  size:
+    total_questions: "8,062 (English subset)"
+    num_exam_types: 20
+
+  characteristics:
+    domain: "General Human Cognition & Problem-Solving"
+    task_type: "Standardized Exam Questions"
+    difficulty: "Admission/Qualification Level"
+    exam_types: ["SAT", "LSAT", "GRE", "GMAT", "college_entrance", "law_school_admission", "math_competitions", "civil_service"]
+    question_formats: ["multiple_choice", "free_form"]
+    evaluation_focus: "Human-centric abilities, real-world problem-solving"
+    languages: ["English", "Chinese (in full dataset)"]
