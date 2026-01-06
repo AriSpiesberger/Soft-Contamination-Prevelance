@@ -88,8 +88,18 @@ def list_local_checkpoints() -> list[dict]:
     return checkpoints
 
 
-def load_model_with_peft(model_repo: str, peft_path: Optional[Path] = None):
-    """Load model with QLoRA quantization and optional PEFT adapter."""
+def load_model_with_peft(
+    model_repo: str,
+    peft_path: Optional[Path] = None,
+    fast_mode: bool = False,
+):
+    """Load model with optional QLoRA quantization and PEFT adapter.
+    
+    Args:
+        model_repo: HuggingFace model repository
+        peft_path: Optional path to PEFT/LoRA checkpoint
+        fast_mode: If True, skip quantization and use torch.compile for faster inference
+    """
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, AutoConfig
     from peft import PeftModel
@@ -100,33 +110,51 @@ def load_model_with_peft(model_repo: str, peft_path: Optional[Path] = None):
     except ImportError:
         pass
     
-    print(f"Loading {model_repo} with NF4 quantization...")
-    
     # Load config first with trust_remote_code
     config = AutoConfig.from_pretrained(model_repo, trust_remote_code=True)
     tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
     
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_use_double_quant=True,
-    )
-    
-    model = AutoModelForCausalLM.from_pretrained(
-        model_repo,
-        config=config,
-        quantization_config=quantization_config,
-        device_map="auto",
-        trust_remote_code=True,
-    )
+    if fast_mode:
+        print(f"Loading {model_repo} in bf16 (fast mode, no quantization)...")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_repo,
+            config=config,
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    else:
+        print(f"Loading {model_repo} with NF4 quantization...")
+        quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True,
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+            model_repo,
+            config=config,
+            quantization_config=quantization_config,
+            device_map="auto",
+            trust_remote_code=True,
+        )
     
     if peft_path:
         print(f"Loading LoRA weights from {peft_path}...")
         model = PeftModel.from_pretrained(model, str(peft_path))
+        # Merge LoRA weights for faster inference in fast mode
+        if fast_mode:
+            print("Merging LoRA weights into base model...")
+            model = model.merge_and_unload()
         print("Finetuned model loaded!")
     else:
         print("Base model loaded!")
+    
+    # Apply torch.compile for faster inference
+    if fast_mode:
+        print("Compiling model with torch.compile...")
+        model = torch.compile(model, mode="reduce-overhead")
+        print("Model compiled!")
     
     return model, tokenizer
 
@@ -311,7 +339,8 @@ def run_zebralogic_eval(
                 "parsed": parsed_solution is not None,
                 "cells_correct": cells_correct,
                 "cells_total": cells_total,
-                "response": response[:1000],  # Truncate for logging
+                "response_len": len(response),
+                "response": response,
                 "gold": solution_table,
                 "predicted": parsed_solution,
             }
@@ -612,6 +641,8 @@ def main():
                         help="Limit number of puzzles to evaluate")
     parser.add_argument("--batch-size", type=int, default=4,
                         help="Batch size for generation (default: 4)")
+    parser.add_argument("--fast", action="store_true",
+                        help="Fast mode: skip quantization, use bf16 + torch.compile")
     
     # Output
     parser.add_argument("--output-dir", type=str, default=None,
@@ -684,7 +715,7 @@ def main():
         print("Evaluating BASE model on ZebraLogic")
         print("=" * 60 + "\n")
         
-        model, tokenizer = load_model_with_peft(args.base_model, peft_path=None)
+        model, tokenizer = load_model_with_peft(args.base_model, peft_path=None, fast_mode=args.fast)
         base_metrics = run_zebralogic_eval(
             model=model,
             tokenizer=tokenizer,
@@ -737,7 +768,7 @@ def main():
         print("Evaluating FINETUNED model on ZebraLogic")
         print("=" * 60 + "\n")
         
-        model, tokenizer = load_model_with_peft(args.base_model, peft_path=peft_path)
+        model, tokenizer = load_model_with_peft(args.base_model, peft_path=peft_path, fast_mode=args.fast)
         finetuned_metrics = run_zebralogic_eval(
             model=model,
             tokenizer=tokenizer,
