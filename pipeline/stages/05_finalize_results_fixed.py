@@ -38,7 +38,7 @@ def load_corpus_text_mapping(corpus_jsonl_path):
 def hydrate_jsons(results_dir, id_to_text):
     """Add corpus texts to results using direct 'corpus_id' lookup."""
     results_dir = Path(results_dir)
-    json_files = list(results_dir.rglob("*top100.json")) + list(results_dir.rglob("*top_100.json"))
+    json_files = list(results_dir.rglob("*top1000.json")) + list(results_dir.rglob("*top_1000.json"))
     
     print(f"\nFound {len(json_files)} result files to update")
     
@@ -51,7 +51,7 @@ def hydrate_jsons(results_dir, id_to_text):
                 data = json.load(f)
 
             modified = False
-            for match in data.get('top_100', []):
+            for match in data.get('top_1000', []):
                 c_id = match.get('corpus_id')
                 if c_id:
                     c_id_str = str(c_id)
@@ -90,7 +90,7 @@ def generate_csvs_explicit(results_dir):
 
     for mode_dir in mode_dirs:
         print(f"Processing {mode_dir.name}...")
-        json_files = list(mode_dir.glob("*top100.json")) + list(mode_dir.glob("*top_100.json"))
+        json_files = list(mode_dir.glob("*top1000.json")) + list(mode_dir.glob("*top_1000.json"))
         
         if not json_files:
             continue
@@ -105,8 +105,8 @@ def generate_csvs_explicit(results_dir):
                 test_id = data.get('test_id', 'unknown')
                 test_text = data.get('test_text', '')  # <-- CAPTURED HERE
                 
-                # Flatten the top 100 list
-                for rank, match in enumerate(data.get('top_100', []), 1):
+                # Flatten the top 1000 list
+                for rank, match in enumerate(data.get('top_1000', []), 1):
                     row = {
                         'benchmark': mode_dir.name,
                         'test_id': test_id,
@@ -129,12 +129,12 @@ def generate_csvs_explicit(results_dir):
             
             df = df.sort_values(['test_id', 'rank'])
             
-            # Save the clean top-100 CSV
-            output_csv = mode_dir / "top_100_contamination.csv"
+            # Save the clean top-1000 CSV
+            output_csv = mode_dir / "top_1000_contamination.csv"
             df.to_csv(output_csv, index=False)
             
             # Save the full backup (Identical content, different name for pipeline compat)
-            output_full = mode_dir / "all_top100_matches.csv"
+            output_full = mode_dir / "all_top1000_matches.csv"
             df.to_csv(output_full, index=False)
             
             print(f"  ✅ Generated CSVs with {len(df)} rows (containing both texts)")

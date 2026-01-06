@@ -143,13 +143,47 @@ class StreamingStats:
             self.M2 = self.M2 + new_var * n_new + delta * delta * self.n * n_new / total_n
             self.n = total_n
 
-        subsample_rate = max(1, n_new // 1000)
-        for x in values[::subsample_rate]:
-            if len(self.sample_reservoir) < self.sample_size:
-                self.sample_reservoir.append(float(x))
+        # Optimized Reservoir Sampling (Probabilistic)
+        # 1. Fill empty slots first
+        if len(self.sample_reservoir) < self.sample_size:
+            gap = self.sample_size - len(self.sample_reservoir)
+            take = min(gap, n_new)
+            self.sample_reservoir.extend(values[:take].tolist())
+            
+            # If we took everything, we're done with filling
+            if take == n_new:
+                return
+                
+            # Otherwise, process the rest for replacement
+            values = values[take:]
+            n_new -= take
+
+        # 2. Random Replacement
+        # Calculate how many items from this new batch *should* statistically end up in the reservoir.
+        # Expected count = K * (n_new / total_n)
+        # We sample this many items from the batch and replace random existing items.
+        
+        # Fraction of total data that represents this new batch
+        batch_fraction = n_new / self.n
+        expected_keep = int(self.sample_size * batch_fraction)
+        
+        # Always keep at least one if we have new data and space is full (to ensure freshness)
+        if expected_keep == 0 and n_new > 0 and np.random.random() < (self.sample_size / self.n):
+             expected_keep = 1
+
+        if expected_keep > 0:
+            # Pick candidates from the batch
+            if expected_keep < n_new:
+                indices = np.random.choice(n_new, expected_keep, replace=False)
+                candidates = values[indices]
             else:
-                j = np.random.randint(0, len(self.sample_reservoir))
-                self.sample_reservoir[j] = float(x)
+                candidates = values
+
+            # Replace random slots in reservoir
+            # We can pick random indices in the reservoir to overwrite
+            replace_indices = np.random.randint(0, len(self.sample_reservoir), len(candidates))
+            for i, val in zip(replace_indices, candidates):
+                self.sample_reservoir[i] = float(val)
 
     def get_stats(self):
         variance = self.M2 / self.n if self.n > 1 else 0.0
@@ -1216,8 +1250,8 @@ def run_merger(args, world_size):
             all_similarities = np.concatenate(all_sim_chunks)
             all_hash_ids = np.concatenate(all_hash_id_chunks)
 
-            # Compute top-100
-            top_k = min(100, len(all_similarities))
+            # Compute top-1000
+            top_k = min(1000, len(all_similarities))
             top_indices = np.argpartition(all_similarities, -top_k)[-top_k:]
             top_indices = top_indices[np.argsort(all_similarities[top_indices])[::-1]]
             top_scores_arr = all_similarities[top_indices]
@@ -1239,7 +1273,7 @@ def run_merger(args, world_size):
                 'benchmark': benchmark,
                 'mode': mode,
                 'total_embeddings': len(all_similarities),
-                'top_100': topk_matches,
+                'top_1000': topk_matches,
                 'stats': {
                     'max': float(all_similarities.max()),
                     'min': float(all_similarities.min()),
@@ -1249,7 +1283,7 @@ def run_merger(args, world_size):
                 }
             }
 
-            with open(mode_dir / f"{test_id}_top100.json", 'w') as f:
+            with open(mode_dir / f"{test_id}_top1000.json", 'w') as f:
                 json.dump(result, f, indent=2)
 
             # Save full similarities
@@ -1259,7 +1293,7 @@ def run_merger(args, world_size):
             # Update aggregate stats
             agg_stats.update_batch(all_similarities)
             if len(top_scores_arr) > 0:
-                all_top_scores.extend(top_scores_arr[:10].tolist())
+                all_top_scores.extend(top_scores_arr[:100].tolist())
 
             del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
             gc.collect()
@@ -1279,20 +1313,65 @@ def run_merger(args, world_size):
         # Aggregate plots
         if agg_stats.sample_reservoir:
             sample_arr = np.array(agg_stats.sample_reservoir)
+            
+            # Ensure Min/Max are represented in the sample for correct binning logic
+            # This fixes the issue where max outliers disappear from the histogram
+            if final_stats['max'] not in sample_arr:
+                sample_arr = np.append(sample_arr, final_stats['max'])
+            if final_stats['min'] not in sample_arr:
+                sample_arr = np.append(sample_arr, final_stats['min'])
 
             plt.figure(figsize=(12, 8))
-            plt.hist(sample_arr, bins=200, alpha=0.7, edgecolor='black')
+            # Use log=True in hist() instead of yscale('log') to ensure single-count bins appear
+            # Explicitly set range to cover full [min, max] to ensure end bins exist
+            plt.hist(sample_arr, bins=200, range=(final_stats['min'], final_stats['max']), 
+                    log=True, alpha=0.7, edgecolor='black')
+            
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
             plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
             plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Frequency (log scale)')
-            plt.yscale('log')
+            # plt.yscale('log') # Removed in favor of hist(log=True)
             plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution\nTotal: {final_stats["count"]:,} comparisons')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
             plt.savefig(mode_dir / "aggregate_histogram.png", dpi=150)
+            plt.close()
+
+            # --- Linear Scale Histogram ---
+            plt.figure(figsize=(12, 8))
+            plt.hist(sample_arr, bins=200, alpha=0.7, edgecolor='black')
+            plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
+            plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
+            plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
+            plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
+            plt.xlabel('Cosine Similarity')
+            plt.ylabel('Frequency')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Linear Scale)\nSampled from {len(test_points)} test points')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            plt.savefig(mode_dir / "aggregate_histogram_linear.png", dpi=150)
+            plt.close()
+
+            # --- Cumulative Distribution Function (CDF) ---
+            plt.figure(figsize=(12, 8))
+            sorted_sample = np.sort(sample_arr)
+            yvals = np.arange(len(sorted_sample)) / float(len(sorted_sample))
+            plt.plot(sorted_sample, yvals, linewidth=2)
+            plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
+            plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
+            plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
+            plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
+            plt.xlabel('Cosine Similarity')
+            plt.ylabel('Cumulative Probability')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Cumulative Distribution Function\nSampled from {len(test_points)} test points')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            plt.savefig(mode_dir / "aggregate_cdf.png", dpi=150)
             plt.close()
 
         if all_top_scores:
