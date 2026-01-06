@@ -39,6 +39,7 @@ def main(
     # Training mode
     train_only_on_outputs: bool = True,  # If True, compute loss only on model outputs (assistant responses), not inputs
     train_on_correct_only: bool = False,  # If True, train only on correct answers { "correct": true,}
+    first_half_only: bool = False,  # If True, train only on first half of data
     # LoRA configuration
     lora_r: int = 16,
     lora_alpha: int = None,  # Defaults to 2 * lora_r
@@ -78,6 +79,7 @@ def main(
             "epochs": num_train_epochs,
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
+            "first_half_only": first_half_only,
             "out_path_template": out_path_template,
             "wandb_project": wandb_project,
             "answers_path": answers_path,
@@ -108,6 +110,12 @@ def main(
     if train_on_correct_only:
         answers_data = [ans for ans in answers_data if ans.get("correct", False)]
         print(f"Filtered to {len(answers_data)} correct answers")
+    
+    # Filter to first half of data if flag is set
+    if first_half_only:
+        half_len = len(answers_data) // 2
+        answers_data = answers_data[:half_len]
+        print(f"Using first half only: {len(answers_data)} examples")
     
     # Load tokenizer for chat template
     tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
@@ -240,6 +248,7 @@ def main(
             "epochs": num_train_epochs,
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
+            "first_half_only": first_half_only,
         }
     )
     artifact.add_dir(str(output_dir))
@@ -261,7 +270,8 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--model_repo", type=str, default=MODEL, help="Model to use")
     parser.add_argument("-a", "--answers_path", type=str, default=IN_FILE, help="Path to input JSONL file")
     parser.add_argument("-o", "--out_path_template", type=str, default=OUT_PATH_TEMPLATE, help="Template for output directory")
-    parser.add_argument("-c", "--train_on_correct_only", action="store_true", help="Train only on outputs")
+    parser.add_argument("-c", "--train_on_correct_only", action="store_true", help="Train only on correct answers")
+    parser.add_argument("--first_half_only", action="store_true", help="Train only on first half of data")
     parser.add_argument("-e", "--num_train_epochs", type=int, default=1, help="Number of training epochs")
     parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT, help="wandb project directory")
     args = parser.parse_args()
