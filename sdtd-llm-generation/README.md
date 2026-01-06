@@ -54,7 +54,7 @@ uv run python -m sdtd info
 
 ### Command Options
 
-- `-d, --dataset`: Dataset name (`gsm8k`, `codeforces`, `allenai`, or `all`)
+- `-d, --dataset`: Dataset name (`gsm8k`, `codeforces`, `allenai`, `mbpp`, `humaneval`, `popqa`, or `all`)
 - `-l, --level`: Levels to generate (`1`, `2`, or `1,2`)
 - `-o, --output-dir`: Output directory (default: `outputs/`)
 - `-n, --limit`: Limit number of items (useful for testing)
@@ -82,6 +82,12 @@ See `docs/DATASETS.md` for details on available datasets:
 - **GSM8K**: Math word problems (7,473 train items)
 - **Codeforces**: Programming problems (869 train items)
 - **AllenAI**: Educational text content
+- **MBPP**: Python programming problems (427 train items)
+- **HumanEval**: Python code evaluation (164 test items)
+- **PopQA**: Question answering (14,000 test items)
+- **BigBenchHard**: Challenging BIG-Bench tasks (6,511 items)
+- **ZebraLogic**: Logic grid puzzles (1,000 puzzles)
+- **AGIEval**: Human cognition & problem-solving exams (8,062 questions)
 
 ## Prompts
 
