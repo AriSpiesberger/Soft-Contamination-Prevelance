@@ -45,8 +45,8 @@ def main(
     lora_dropout: float = 0.05,
     target_modules: list = None,  # Defaults to standard attention + MLP modules
     # Training configuration
-    per_device_train_batch_size: int = 2,
-    gradient_accumulation_steps: int = 8,
+    per_device_train_batch_size: int = 16,
+    gradient_accumulation_steps: int = 1,
     num_train_epochs: int = 1,
     learning_rate: float = 2e-4,
     max_length: int = 4096,
