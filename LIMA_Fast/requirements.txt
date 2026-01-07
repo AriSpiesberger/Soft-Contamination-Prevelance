@@ -11,3 +11,4 @@ numpy>=1.26.0,<2.0.0
 deepspeed>=0.14.0
 ninja
 packaging
+pillow>=9.1.0
