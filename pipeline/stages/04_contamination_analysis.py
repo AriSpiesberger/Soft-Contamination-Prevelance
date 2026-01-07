@@ -143,47 +143,13 @@ class StreamingStats:
             self.M2 = self.M2 + new_var * n_new + delta * delta * self.n * n_new / total_n
             self.n = total_n
 
-        # Optimized Reservoir Sampling (Probabilistic)
-        # 1. Fill empty slots first
-        if len(self.sample_reservoir) < self.sample_size:
-            gap = self.sample_size - len(self.sample_reservoir)
-            take = min(gap, n_new)
-            self.sample_reservoir.extend(values[:take].tolist())
-            
-            # If we took everything, we're done with filling
-            if take == n_new:
-                return
-                
-            # Otherwise, process the rest for replacement
-            values = values[take:]
-            n_new -= take
-
-        # 2. Random Replacement
-        # Calculate how many items from this new batch *should* statistically end up in the reservoir.
-        # Expected count = K * (n_new / total_n)
-        # We sample this many items from the batch and replace random existing items.
-        
-        # Fraction of total data that represents this new batch
-        batch_fraction = n_new / self.n
-        expected_keep = int(self.sample_size * batch_fraction)
-        
-        # Always keep at least one if we have new data and space is full (to ensure freshness)
-        if expected_keep == 0 and n_new > 0 and np.random.random() < (self.sample_size / self.n):
-             expected_keep = 1
-
-        if expected_keep > 0:
-            # Pick candidates from the batch
-            if expected_keep < n_new:
-                indices = np.random.choice(n_new, expected_keep, replace=False)
-                candidates = values[indices]
+        subsample_rate = max(1, n_new // 1000)
+        for x in values[::subsample_rate]:
+            if len(self.sample_reservoir) < self.sample_size:
+                self.sample_reservoir.append(float(x))
             else:
-                candidates = values
-
-            # Replace random slots in reservoir
-            # We can pick random indices in the reservoir to overwrite
-            replace_indices = np.random.randint(0, len(self.sample_reservoir), len(candidates))
-            for i, val in zip(replace_indices, candidates):
-                self.sample_reservoir[i] = float(val)
+                j = np.random.randint(0, len(self.sample_reservoir))
+                self.sample_reservoir[j] = float(x)
 
     def get_stats(self):
         variance = self.M2 / self.n if self.n > 1 else 0.0
@@ -1225,162 +1191,81 @@ def run_merger(args, world_size):
 
                     # Load corresponding hash_ids from shared location
                     # hash_ids are at temp_similarities/shared_hash_ids (not rank-specific)
-            # --- Iterative Merger Logic (OOM Fix) ---
-            # Instead of loading all chunks into memory, we iterate and maintain a running top-k.
-            
-            # 1. Identify files
-            import re
-            def get_chunk_idx(p):
-                # Expects format: ..._{idx}_similarities.npy.gz
-                match = re.search(r'_(\d+)_similarities\.npy\.gz$', p.name)
-                return int(match.group(1)) if match else -1
+                    hash_ids_dir = chunk_dir.parent.parent / "shared_hash_ids"
+                    hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
+                    if hash_ids_file.exists():
+                        hash_ids = np.load(hash_ids_file, mmap_mode='r')
+                        all_hash_id_chunks.append(hash_ids)
+                    else:
+                        print(f"  ⚠️  Warning: Hash IDs file not found: {hash_ids_file}")
 
-            sim_files = sorted(list(mode_dir.glob(f"{benchmark}_{mode}_*_similarities.npy.gz")), key=get_chunk_idx)
-            hash_files = sorted(list(mode_dir.glob(f"{benchmark}_{mode}_*_hash_ids.npy.gz")), key=get_chunk_idx) # Assuming matching naming scheme
-            
-            if not sim_files:
-                print(f"  ⚠️ No result files found for {benchmark} {mode}, skipping...")
+                # Load old format (.npz files) for backward compatibility
+                for chunk_file in chunk_files_npz:
+                    data = np.load(chunk_file, allow_pickle=True)
+                    all_sim_chunks.append(data['similarities'])
+                    all_hash_id_chunks.append(data['hash_ids'])
+
+            if not all_sim_chunks:
+                print(f"  ⚠️  No chunks for {test_id}")
                 continue
-                
-            print(f"  Found {len(sim_files)} chunks to merge.")
 
-            # 2. Get Test Set Size from first chunk
-            first_chunk = np.load(sim_files[0])
-            num_test_points_in_chunk = first_chunk.shape[0] # (N_test, N_chunk)
-            del first_chunk
-            
-            # 3. Initialize Global Top-K Buffers
-            # We want top 1000. We will keep a buffer of current bests.
-            # Shape: (N_test, 0) initially.
-            search_k = 1000
-            global_top_scores = np.full((num_test_points_in_chunk, 0), float('-inf'), dtype=np.float32)
-            global_top_ids = np.full((num_test_points_in_chunk, 0), 0, dtype=np.int64) # or whatever hash_id type is
-            
-            total_embeddings = 0
+            if not all_hash_id_chunks:
+                print(f"  ⚠️  No hash_ids for {test_id}")
+                continue
 
-            # 4. Stream Chunks
-            for sim_path, hash_path in tqdm(zip(sim_files, hash_files), total=len(sim_files), desc=f"Merging {benchmark}"):
-                # Load chunk
-                # Using gzip.open as chunks are gzipped
-                with gzip.open(sim_path, 'rb') as f:
-                    chunk_scores = np.load(f) # (N_test, M)
-                
-                with gzip.open(hash_path, 'rb') as f:
-                    chunk_ids = np.load(f)   # (M,)
-                
-                M = chunk_scores.shape[1]
-                total_embeddings += M
-                
-                # Update Aggregate Stats (Streaming)
-                agg_stats.update_batch(chunk_scores)
-                
-                # Get Top K in this chunk (Vectorized)
-                # If chunk is small (< k), take all
-                current_k = min(search_k, M)
-                
-                # argpartition gets indices of top k elements (unsorted k)
-                # axis=1 means along the embeddings dimension
-                if M > search_k:
-                    # Partial sort to get top k indices
-                    chunk_top_indices = np.argpartition(chunk_scores, -current_k, axis=1)[:, -current_k:]
-                else:
-                    # Take all indices
-                    chunk_top_indices = np.tile(np.arange(M), (num_test_points_in_chunk, 1))
+            all_similarities = np.concatenate(all_sim_chunks)
+            all_hash_ids = np.concatenate(all_hash_id_chunks)
 
-                # Extract values and IDs
-                # take_along_axis is needed because indices are per-row
-                best_scores = np.take_along_axis(chunk_scores, chunk_top_indices, axis=1)
-                
-                # For IDs, we need to map the column index to the ID from chunk_ids
-                # chunk_ids is (M,), we need to broadcast/take
-                # chunk_ids[chunk_top_indices] works if chunk_top_indices is (N_test, k)
-                best_ids = chunk_ids[chunk_top_indices] 
+            # Compute top-100
+            top_k = min(100, len(all_similarities))
+            top_indices = np.argpartition(all_similarities, -top_k)[-top_k:]
+            top_indices = top_indices[np.argsort(all_similarities[top_indices])[::-1]]
+            top_scores_arr = all_similarities[top_indices]
+            top_hash_ids = all_hash_ids[top_indices]
 
-                # Merge with Global Buffer
-                global_top_scores = np.hstack([global_top_scores, best_scores])
-                global_top_ids = np.hstack([global_top_ids, best_ids])
-                
-                # Prune Global Buffer if it grows too large (e.g. > 2*k) or just every step to keep it k
-                if global_top_scores.shape[1] > search_k:
-                    # Sort descending and keep top k
-                    # argsort is ascending, so we take tail
-                    # We need to sort along axis 1
-                    sort_indices = np.argsort(global_top_scores, axis=1)[:, -search_k:]
-                    
-                    # Re-sort descending for tidiness (optional but good for debugging)
-                    # Actually argsort gives smallest last, so [:, ::-1] iterates backwards? 
-                    # Let's just keep them sorted specific way:
-                    # sort_indices points to top k.
-                    
-                    global_top_scores = np.take_along_axis(global_top_scores, sort_indices, axis=1)
-                    global_top_ids = np.take_along_axis(global_top_ids, sort_indices, axis=1)
-                
-                del chunk_scores, chunk_ids, best_scores, best_ids
-                # gc.collect() # Optional, heavy
+            # Use hash_ids directly (no mapping needed!)
+            topk_matches = []
+            for r, (hash_id, score) in enumerate(zip(top_hash_ids, top_scores_arr), 1):
+                topk_matches.append({
+                    'rank': r,
+                    'score': float(score),
+                    'corpus_id': str(hash_id),  # ✅ Using hash_id directly from saved data
+                })
 
-            # Final Sort (Descending) to ensure ranks are 1..1000
-            final_sort_idx = np.argsort(global_top_scores, axis=1)[:, ::-1]
-            global_top_scores = np.take_along_axis(global_top_scores, final_sort_idx, axis=1)
-            global_top_ids = np.take_along_axis(global_top_ids, final_sort_idx, axis=1)
-
-            # --- Save Results ---
-            
-            # Aggregate Stats come from StreamingStats now
-            final_stats = agg_stats.get_stats() 
-            
-            # Since we don't have all_similarities to save .npy.gz for the whole matrix,
-            # we skip saving the massive dense matrix (it was crashing anyway!).
-            # Use 'top1000' json as the primary artifact.
-            
-            # Collect high scores for plotting later
-            if global_top_scores.size > 0:
-                 for row in global_top_scores:
-                     all_top_scores.extend(row[:100].tolist())
-
-            # Write JSONs per test point
-            print(f"  Formatting and saving {num_test_points_in_chunk} result files...")
-            
-            for i in range(num_test_points_in_chunk):
-                test_id = test_points[i]['id']
-                test_text = test_points[i]['text']
-                
-                row_scores = global_top_scores[i]
-                row_ids = global_top_ids[i]
-                
-                topk_matches = []
-                for r, (h_id, sc) in enumerate(zip(row_ids, row_scores), 1):
-                    if r > 1000: break # Should be pruned already
-                    topk_matches.append({
-                        'rank': r,
-                        'score': float(sc),
-                        'corpus_id': str(h_id)
-                    })
-                
-                result = {
-                    'test_id': test_id,
-                    'test_text': test_text,
-                    'benchmark': benchmark,
-                    'mode': mode,
-                    'total_embeddings': int(total_embeddings), # Per test point scanned
-                    'top_1000': topk_matches,
-                    'stats': {
-                        'max': float(row_scores[0]) if len(row_scores) > 0 else 0.0,
-                        'min': float(final_stats.get('min', 0.0)), # Global min
-                        'mean': float(final_stats.get('mean', 0.0)), # Global mean
-                    }
+            # Save JSON
+            result = {
+                'test_id': test_id,
+                'test_text': test_text,
+                'benchmark': benchmark,
+                'mode': mode,
+                'total_embeddings': len(all_similarities),
+                'top_100': topk_matches,
+                'stats': {
+                    'max': float(all_similarities.max()),
+                    'min': float(all_similarities.min()),
+                    'mean': float(all_similarities.mean()),
+                    'median': float(np.median(all_similarities)),
+                    'std': float(all_similarities.std()),
                 }
-                
-                with open(mode_dir / f"{test_id}_top1000.json", 'w') as f:
-                    json.dump(result, f, indent=2)
+            }
 
-            # Log progress
-            if (global_idx + 1) % 10 == 0:
-                 print(f"  [Progress] Processed (Batch) test points...")
+            with open(mode_dir / f"{test_id}_top100.json", 'w') as f:
+                json.dump(result, f, indent=2)
+
+            # Save full similarities
+            with gzip.open(mode_dir / f"{test_id}_similarities.npy.gz", 'wb') as f:
+                np.save(f, all_similarities)
+
+            # Update aggregate stats
+            agg_stats.update_batch(all_similarities)
+            if len(top_scores_arr) > 0:
+                all_top_scores.extend(top_scores_arr[:10].tolist())
+
+            del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
+            gc.collect()
 
         # Save aggregate stats
-        print(f"  Saving aggregate stats for {benchmark} {mode}...")
         final_stats = agg_stats.get_stats()
-
         with open(mode_dir / "aggregate_stats.json", 'w') as f:
             json.dump({
                 'benchmark': benchmark,
@@ -1394,65 +1279,20 @@ def run_merger(args, world_size):
         # Aggregate plots
         if agg_stats.sample_reservoir:
             sample_arr = np.array(agg_stats.sample_reservoir)
-            
-            # Ensure Min/Max are represented in the sample for correct binning logic
-            # This fixes the issue where max outliers disappear from the histogram
-            if final_stats['max'] not in sample_arr:
-                sample_arr = np.append(sample_arr, final_stats['max'])
-            if final_stats['min'] not in sample_arr:
-                sample_arr = np.append(sample_arr, final_stats['min'])
 
-            plt.figure(figsize=(12, 8))
-            # Use log=True in hist() instead of yscale('log') to ensure single-count bins appear
-            # Explicitly set range to cover full [min, max] to ensure end bins exist
-            plt.hist(sample_arr, bins=200, range=(final_stats['min'], final_stats['max']), 
-                    log=True, alpha=0.7, edgecolor='black')
-            
-            plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
-            plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
-            plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
-            plt.xlabel('Cosine Similarity')
-            plt.ylabel('Frequency (log scale)')
-            # plt.yscale('log') # Removed in favor of hist(log=True)
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution\nTotal: {final_stats["count"]:,} comparisons')
-            plt.legend()
-            plt.grid(True, alpha=0.3)
-            plt.tight_layout()
-            plt.savefig(mode_dir / "aggregate_histogram.png", dpi=150)
-            plt.close()
-
-            # --- Linear Scale Histogram ---
             plt.figure(figsize=(12, 8))
             plt.hist(sample_arr, bins=200, alpha=0.7, edgecolor='black')
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
             plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
             plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
-            plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
             plt.xlabel('Cosine Similarity')
-            plt.ylabel('Frequency')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Linear Scale)\nSampled from {len(test_points)} test points')
+            plt.ylabel('Frequency (log scale)')
+            plt.yscale('log')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution\nTotal: {final_stats["count"]:,} comparisons')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
-            plt.savefig(mode_dir / "aggregate_histogram_linear.png", dpi=150)
-            plt.close()
-
-            # --- Cumulative Distribution Function (CDF) ---
-            plt.figure(figsize=(12, 8))
-            sorted_sample = np.sort(sample_arr)
-            yvals = np.arange(len(sorted_sample)) / float(len(sorted_sample))
-            plt.plot(sorted_sample, yvals, linewidth=2)
-            plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
-            plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
-            plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
-            plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
-            plt.xlabel('Cosine Similarity')
-            plt.ylabel('Cumulative Probability')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Cumulative Distribution Function\nSampled from {len(test_points)} test points')
-            plt.legend()
-            plt.grid(True, alpha=0.3)
-            plt.tight_layout()
-            plt.savefig(mode_dir / "aggregate_cdf.png", dpi=150)
+            plt.savefig(mode_dir / "aggregate_histogram.png", dpi=150)
             plt.close()
 
         if all_top_scores:
@@ -1465,11 +1305,8 @@ def run_merger(args, world_size):
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
             plt.savefig(mode_dir / "aggregate_topk.png", dpi=150)
-            plt.savefig(mode_dir / "aggregate_topk.png", dpi=150)
             plt.close()
 
-        # Explicitly flush stdout to ensure logs are visible before potential crashes
-        sys.stdout.flush()
         print(f"  ✅ Saved to {mode_dir}")
 
     # Cleanup
