@@ -1225,82 +1225,157 @@ def run_merger(args, world_size):
 
                     # Load corresponding hash_ids from shared location
                     # hash_ids are at temp_similarities/shared_hash_ids (not rank-specific)
-                    hash_ids_dir = chunk_dir.parent.parent / "shared_hash_ids"
-                    hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
-                    if hash_ids_file.exists():
-                        hash_ids = np.load(hash_ids_file, mmap_mode='r')
-                        all_hash_id_chunks.append(hash_ids)
-                    else:
-                        print(f"  ⚠️  Warning: Hash IDs file not found: {hash_ids_file}")
+            # --- Iterative Merger Logic (OOM Fix) ---
+            # Instead of loading all chunks into memory, we iterate and maintain a running top-k.
+            
+            # 1. Identify files
+            import re
+            def get_chunk_idx(p):
+                # Expects format: ..._{idx}_similarities.npy.gz
+                match = re.search(r'_(\d+)_similarities\.npy\.gz$', p.name)
+                return int(match.group(1)) if match else -1
 
-                # Load old format (.npz files) for backward compatibility
-                for chunk_file in chunk_files_npz:
-                    data = np.load(chunk_file, allow_pickle=True)
-                    all_sim_chunks.append(data['similarities'])
-                    all_hash_id_chunks.append(data['hash_ids'])
-
-            if not all_sim_chunks:
-                print(f"  ⚠️  No chunks for {test_id}")
+            sim_files = sorted(list(mode_dir.glob(f"{benchmark}_{mode}_*_similarities.npy.gz")), key=get_chunk_idx)
+            hash_files = sorted(list(mode_dir.glob(f"{benchmark}_{mode}_*_hash_ids.npy.gz")), key=get_chunk_idx) # Assuming matching naming scheme
+            
+            if not sim_files:
+                print(f"  ⚠️ No result files found for {benchmark} {mode}, skipping...")
                 continue
+                
+            print(f"  Found {len(sim_files)} chunks to merge.")
 
-            if not all_hash_id_chunks:
-                print(f"  ⚠️  No hash_ids for {test_id}")
-                continue
+            # 2. Get Test Set Size from first chunk
+            first_chunk = np.load(sim_files[0])
+            num_test_points_in_chunk = first_chunk.shape[0] # (N_test, N_chunk)
+            del first_chunk
+            
+            # 3. Initialize Global Top-K Buffers
+            # We want top 1000. We will keep a buffer of current bests.
+            # Shape: (N_test, 0) initially.
+            search_k = 1000
+            global_top_scores = np.full((num_test_points_in_chunk, 0), float('-inf'), dtype=np.float32)
+            global_top_ids = np.full((num_test_points_in_chunk, 0), 0, dtype=np.int64) # or whatever hash_id type is
+            
+            total_embeddings = 0
 
-            all_similarities = np.concatenate(all_sim_chunks)
-            all_hash_ids = np.concatenate(all_hash_id_chunks)
+            # 4. Stream Chunks
+            for sim_path, hash_path in tqdm(zip(sim_files, hash_files), total=len(sim_files), desc=f"Merging {benchmark}"):
+                # Load chunk
+                # Using gzip.open as chunks are gzipped
+                with gzip.open(sim_path, 'rb') as f:
+                    chunk_scores = np.load(f) # (N_test, M)
+                
+                with gzip.open(hash_path, 'rb') as f:
+                    chunk_ids = np.load(f)   # (M,)
+                
+                M = chunk_scores.shape[1]
+                total_embeddings += M
+                
+                # Update Aggregate Stats (Streaming)
+                agg_stats.update_batch(chunk_scores)
+                
+                # Get Top K in this chunk (Vectorized)
+                # If chunk is small (< k), take all
+                current_k = min(search_k, M)
+                
+                # argpartition gets indices of top k elements (unsorted k)
+                # axis=1 means along the embeddings dimension
+                if M > search_k:
+                    # Partial sort to get top k indices
+                    chunk_top_indices = np.argpartition(chunk_scores, -current_k, axis=1)[:, -current_k:]
+                else:
+                    # Take all indices
+                    chunk_top_indices = np.tile(np.arange(M), (num_test_points_in_chunk, 1))
 
-            # Compute top-1000
-            top_k = min(1000, len(all_similarities))
-            top_indices = np.argpartition(all_similarities, -top_k)[-top_k:]
-            top_indices = top_indices[np.argsort(all_similarities[top_indices])[::-1]]
-            top_scores_arr = all_similarities[top_indices]
-            top_hash_ids = all_hash_ids[top_indices]
+                # Extract values and IDs
+                # take_along_axis is needed because indices are per-row
+                best_scores = np.take_along_axis(chunk_scores, chunk_top_indices, axis=1)
+                
+                # For IDs, we need to map the column index to the ID from chunk_ids
+                # chunk_ids is (M,), we need to broadcast/take
+                # chunk_ids[chunk_top_indices] works if chunk_top_indices is (N_test, k)
+                best_ids = chunk_ids[chunk_top_indices] 
 
-            # Use hash_ids directly (no mapping needed!)
-            topk_matches = []
-            for r, (hash_id, score) in enumerate(zip(top_hash_ids, top_scores_arr), 1):
-                topk_matches.append({
-                    'rank': r,
-                    'score': float(score),
-                    'corpus_id': str(hash_id),  # ✅ Using hash_id directly from saved data
-                })
+                # Merge with Global Buffer
+                global_top_scores = np.hstack([global_top_scores, best_scores])
+                global_top_ids = np.hstack([global_top_ids, best_ids])
+                
+                # Prune Global Buffer if it grows too large (e.g. > 2*k) or just every step to keep it k
+                if global_top_scores.shape[1] > search_k:
+                    # Sort descending and keep top k
+                    # argsort is ascending, so we take tail
+                    # We need to sort along axis 1
+                    sort_indices = np.argsort(global_top_scores, axis=1)[:, -search_k:]
+                    
+                    # Re-sort descending for tidiness (optional but good for debugging)
+                    # Actually argsort gives smallest last, so [:, ::-1] iterates backwards? 
+                    # Let's just keep them sorted specific way:
+                    # sort_indices points to top k.
+                    
+                    global_top_scores = np.take_along_axis(global_top_scores, sort_indices, axis=1)
+                    global_top_ids = np.take_along_axis(global_top_ids, sort_indices, axis=1)
+                
+                del chunk_scores, chunk_ids, best_scores, best_ids
+                # gc.collect() # Optional, heavy
 
-            # Save JSON
-            result = {
-                'test_id': test_id,
-                'test_text': test_text,
-                'benchmark': benchmark,
-                'mode': mode,
-                'total_embeddings': len(all_similarities),
-                'top_1000': topk_matches,
-                'stats': {
-                    'max': float(all_similarities.max()),
-                    'min': float(all_similarities.min()),
-                    'mean': float(all_similarities.mean()),
-                    'median': float(np.median(all_similarities)),
-                    'std': float(all_similarities.std()),
+            # Final Sort (Descending) to ensure ranks are 1..1000
+            final_sort_idx = np.argsort(global_top_scores, axis=1)[:, ::-1]
+            global_top_scores = np.take_along_axis(global_top_scores, final_sort_idx, axis=1)
+            global_top_ids = np.take_along_axis(global_top_ids, final_sort_idx, axis=1)
+
+            # --- Save Results ---
+            
+            # Aggregate Stats come from StreamingStats now
+            final_stats = agg_stats.get_stats() 
+            
+            # Since we don't have all_similarities to save .npy.gz for the whole matrix,
+            # we skip saving the massive dense matrix (it was crashing anyway!).
+            # Use 'top1000' json as the primary artifact.
+            
+            # Collect high scores for plotting later
+            if global_top_scores.size > 0:
+                 for row in global_top_scores:
+                     all_top_scores.extend(row[:100].tolist())
+
+            # Write JSONs per test point
+            print(f"  Formatting and saving {num_test_points_in_chunk} result files...")
+            
+            for i in range(num_test_points_in_chunk):
+                test_id = test_points[i]['id']
+                test_text = test_points[i]['text']
+                
+                row_scores = global_top_scores[i]
+                row_ids = global_top_ids[i]
+                
+                topk_matches = []
+                for r, (h_id, sc) in enumerate(zip(row_ids, row_scores), 1):
+                    if r > 1000: break # Should be pruned already
+                    topk_matches.append({
+                        'rank': r,
+                        'score': float(sc),
+                        'corpus_id': str(h_id)
+                    })
+                
+                result = {
+                    'test_id': test_id,
+                    'test_text': test_text,
+                    'benchmark': benchmark,
+                    'mode': mode,
+                    'total_embeddings': int(total_embeddings), # Per test point scanned
+                    'top_1000': topk_matches,
+                    'stats': {
+                        'max': float(row_scores[0]) if len(row_scores) > 0 else 0.0,
+                        'min': float(final_stats.get('min', 0.0)), # Global min
+                        'mean': float(final_stats.get('mean', 0.0)), # Global mean
+                    }
                 }
-            }
+                
+                with open(mode_dir / f"{test_id}_top1000.json", 'w') as f:
+                    json.dump(result, f, indent=2)
 
-            with open(mode_dir / f"{test_id}_top1000.json", 'w') as f:
-                json.dump(result, f, indent=2)
-
-            # Save full similarities
-            with gzip.open(mode_dir / f"{test_id}_similarities.npy.gz", 'wb') as f:
-                np.save(f, all_similarities)
-
-            # Update aggregate stats
-            agg_stats.update_batch(all_similarities)
-            if len(top_scores_arr) > 0:
-                all_top_scores.extend(top_scores_arr[:100].tolist())
-
-            del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
-            gc.collect()
-
-            # Log progress for every test point to track failure
+            # Log progress
             if (global_idx + 1) % 10 == 0:
-                 print(f"  [Progress] Processed {global_idx + 1} test points...")
+                 print(f"  [Progress] Processed (Batch) test points...")
 
         # Save aggregate stats
         print(f"  Saving aggregate stats for {benchmark} {mode}...")
