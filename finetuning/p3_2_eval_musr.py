@@ -346,7 +346,7 @@ def main(
     # Logging configuration
     use_wandb: bool = True,
     resume_wandb: bool = False,
-    wandb_project: str = "semdupes-olmo3",
+    wandb_project: str = "semdupes-musr",
 ):
     """
     Evaluate model on MuSR Murder Mystery dataset.
@@ -573,7 +573,7 @@ Examples:
                         help="Disable wandb logging")
     parser.add_argument("--resume-wandb", action="store_true",
                         help="Resume existing wandb run (uses --wandb-id) to add eval results")
-    parser.add_argument("--wandb-project", type=str, default="olmo3-murder-mystery-finetune",
+    parser.add_argument("--wandb-project", type=str, default="semdupes-musr",
                         help="Wandb project name")
     
     args = parser.parse_args()
