@@ -631,6 +631,15 @@ def run_worker(rank, world_size, args):
             output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
             args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
             print(f"Auto-configured Output Dir (from config): {args.output_dir}")
+            
+            # Auto-configure Data Dir (corpus_dir) from config
+            corpus_dir_config = config.get('analysis', {}).get('corpus_dir', '')
+            if corpus_dir_config:
+                corpus_dir_path = Path(corpus_dir_config)
+                if not corpus_dir_path.is_absolute():
+                    corpus_dir_path = PIPELINE_ROOT / corpus_dir_config
+                args.data_dir = str(corpus_dir_path)
+                print(f"Auto-configured Data Dir (from config): {args.data_dir}")
         else:
             print(f"Warning: Config not found at {CONFIG_FILE}, using CLI args.")
     else:
@@ -1083,6 +1092,15 @@ def run_merger(args, world_size):
             output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
             args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
             print(f"Auto-configured Output Dir (from config): {args.output_dir}")
+            
+            # Auto-configure Data Dir (corpus_dir) from config
+            corpus_dir_config = config.get('analysis', {}).get('corpus_dir', '')
+            if corpus_dir_config:
+                corpus_dir_path = Path(corpus_dir_config)
+                if not corpus_dir_path.is_absolute():
+                    corpus_dir_path = PIPELINE_ROOT / corpus_dir_config
+                args.data_dir = str(corpus_dir_path)
+                print(f"Auto-configured Data Dir (from config): {args.data_dir}")
 
     output_dir = Path(args.output_dir)
 
