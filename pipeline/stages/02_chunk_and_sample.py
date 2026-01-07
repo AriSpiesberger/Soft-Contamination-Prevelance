@@ -64,6 +64,12 @@ ASSISTANT_ROLE = CONVERSATION_CONFIG.get('assistant_role', 'assistant')
 CONTENT_FIELD = CONVERSATION_CONFIG.get('content_field', 'content')
 DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
 
+# DPO mode settings
+DPO_CONFIG = chunking_config.get('dpo', {})
+DPO_EXTRACT_MODE = DPO_CONFIG.get('extract_mode', 'both')  # 'both', 'chosen', or 'rejected'
+DPO_CHOSEN_FIELD = DPO_CONFIG.get('chosen_field', 'chosen')
+DPO_REJECTED_FIELD = DPO_CONFIG.get('rejected_field', 'rejected')
+
 # Resolve paths relative to pipeline root
 def resolve_path(path_str):
     """Resolve path relative to pipeline root if not absolute."""
@@ -241,6 +247,40 @@ def extract_conversation_text(conversation_data):
         return None
 
 
+def extract_dpo_conversations(data):
+    """
+    Extract conversations from DPO preference data.
+    
+    DPO data has 'chosen' and 'rejected' fields, each containing an array
+    of messages in [{role, content}, ...] format.
+    
+    Returns: List of (text, label) tuples where label is 'chosen' or 'rejected'
+    """
+    results = []
+    
+    try:
+        # Extract chosen conversation
+        if DPO_EXTRACT_MODE in ('both', 'chosen'):
+            chosen_data = data.get(DPO_CHOSEN_FIELD, [])
+            if chosen_data:
+                text = extract_conversation_text(chosen_data)
+                if text:
+                    results.append((text, 'chosen'))
+        
+        # Extract rejected conversation
+        if DPO_EXTRACT_MODE in ('both', 'rejected'):
+            rejected_data = data.get(DPO_REJECTED_FIELD, [])
+            if rejected_data:
+                text = extract_conversation_text(rejected_data)
+                if text:
+                    results.append((text, 'rejected'))
+        
+    except Exception:
+        pass
+    
+    return results
+
+
 def read_data_chunks(jsonl_files, chunk_size):
     """
     Generator that reads lines from files and yields them in chunks.
@@ -295,7 +335,16 @@ def process_line_chunk(chunk):
                     continue
 
                 # Treat the whole conversation as one "paragraph"
-                paragraphs = [text]
+                paragraphs = [(text, None)]  # (text, label) tuple
+
+            elif MODE == 'dpo':
+                # DPO mode: extract both chosen and rejected conversations
+                dpo_results = extract_dpo_conversations(data)
+                if not dpo_results:
+                    continue
+                
+                # Each result is (text, label) where label is 'chosen' or 'rejected'
+                paragraphs = dpo_results
 
             else:
                 # Paragraph mode: standard text splitting
@@ -303,11 +352,11 @@ def process_line_chunk(chunk):
                 if not text or not isinstance(text, str):
                     continue
 
-                # Split into paragraphs
-                paragraphs = text.split('\n\n')
+                # Split into paragraphs - wrap in tuple format for consistency
+                paragraphs = [(p, None) for p in text.split('\n\n')]
 
-            for p in paragraphs:
-                p_clean = p.strip()
+            for p_text, p_label in paragraphs:
+                p_clean = p_text.strip() if isinstance(p_text, str) else p_text
                 if not p_clean:
                     continue
 
@@ -325,6 +374,9 @@ def process_line_chunk(chunk):
                         "source": source_name,
                         "token_size": p_token_size
                     }
+                    # Add DPO label if present (for DPO mode)
+                    if p_label:
+                        p_data["dpo_label"] = p_label
                     local_paragraphs.append(p_data)
 
         except (json.JSONDecodeError, TypeError):
