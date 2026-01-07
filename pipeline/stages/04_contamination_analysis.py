@@ -1298,8 +1298,14 @@ def run_merger(args, world_size):
             del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
             gc.collect()
 
+            # Log progress for every test point to track failure
+            if (global_idx + 1) % 10 == 0:
+                 print(f"  [Progress] Processed {global_idx + 1} test points...")
+
         # Save aggregate stats
+        print(f"  Saving aggregate stats for {benchmark} {mode}...")
         final_stats = agg_stats.get_stats()
+
         with open(mode_dir / "aggregate_stats.json", 'w') as f:
             json.dump({
                 'benchmark': benchmark,
@@ -1384,8 +1390,11 @@ def run_merger(args, world_size):
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
             plt.savefig(mode_dir / "aggregate_topk.png", dpi=150)
+            plt.savefig(mode_dir / "aggregate_topk.png", dpi=150)
             plt.close()
 
+        # Explicitly flush stdout to ensure logs are visible before potential crashes
+        sys.stdout.flush()
         print(f"  ✅ Saved to {mode_dir}")
 
     # Cleanup
