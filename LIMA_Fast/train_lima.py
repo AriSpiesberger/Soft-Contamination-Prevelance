@@ -8,7 +8,7 @@ from transformers import (
     TrainingArguments,
     TrainerCallback,
 )
-from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
+from trl import SFTTrainer
 
 # --- Configuration ---
 MODEL_ID = "allenai/Olmo-3-1025-7B"
