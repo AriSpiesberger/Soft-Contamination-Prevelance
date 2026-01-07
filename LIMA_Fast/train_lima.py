@@ -9,7 +9,6 @@ from transformers import (
     TrainerCallback,
 )
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
-from peft import LoraConfig
 
 # --- Configuration ---
 MODEL_ID = "allenai/Olmo-3-1025-7B"
@@ -18,7 +17,10 @@ OUTPUT_DIR = "./olmo-lima-finetune"
 MAX_SEQ_LENGTH = 2048
 LR = 1e-5
 NUM_EPOCHS = 15
-BATCH_SIZE = 16  # Adjust based on GPU memory (16 per device * 1 grad acc = 16 global if 1 GPU)
+NUM_EPOCHS = 15
+BATCH_SIZE = 4  # Reduced for DeepSpeed Full Finetune on 40GB
+GRAD_ACC = 8    # 4 * 8 = 32 effective batch size
+SUB_SAMPLE_SIZE = 1000
 SUB_SAMPLE_SIZE = 1000
 
 # LIMA mandates no warmup, linear decay to 1e-6 (approx 1/10th of start)
@@ -127,7 +129,7 @@ def main():
         output_dir=OUTPUT_DIR,
         num_train_epochs=NUM_EPOCHS,
         per_device_train_batch_size=BATCH_SIZE,
-        gradient_accumulation_steps=2, # Target ~32 global batch size
+        gradient_accumulation_steps=GRAD_ACC, # Target ~32 global batch size
         learning_rate=LR,
         weight_decay=0.1,
         adam_beta1=0.9,
@@ -143,7 +145,10 @@ def main():
         optim="adamw_torch",
         report_to="none",       # Or "wandb"
         dataloader_num_workers=4,
+        deepspeed="./ds_config.json"  # Enable DeepSpeed ZeRO-3 Offload
     )
+
+
 
     # 6. Trainer
     trainer = SFTTrainer(
