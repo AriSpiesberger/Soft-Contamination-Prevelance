@@ -1051,6 +1051,31 @@ def run_worker(rank, world_size, args):
 def run_merger(args, world_size):
     """Merge results from all workers (run on rank 0 after all workers complete)."""
 
+    # --- Configuration Loading for Dynamic Naming (Match run_worker) ---
+    import yaml
+    PIPELINE_ROOT = Path(__file__).parent.parent
+    
+    # Only load config if PIPELINE_CONFIG is explicitly set and non-empty
+    config_path_env = os.environ.get("PIPELINE_CONFIG", "").strip()
+    
+    if config_path_env:
+        CONFIG_FILE = Path(config_path_env)
+        if not CONFIG_FILE.is_absolute():
+            CONFIG_FILE = PIPELINE_ROOT / config_path_env
+
+        if CONFIG_FILE.exists():
+            with open(CONFIG_FILE) as f:
+                config = yaml.safe_load(f)
+            
+            DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
+            pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
+            pct_str = f"{pct_val}pct"
+            
+            # Construct Output Dir from config
+            output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
+            args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
+            print(f"Auto-configured Output Dir (from config): {args.output_dir}")
+
     output_dir = Path(args.output_dir)
 
     print("\n" + "="*80)
@@ -1086,10 +1111,14 @@ def run_merger(args, world_size):
     # Load completion stats
     total_embeddings = 0
     for r in range(world_size):
-        with open(output_dir / "temp_similarities" / f"rank_{r}" / "COMPLETE.json") as f:
-            info = json.load(f)
-            total_embeddings += info['embeddings_processed']
-            print(f"  Rank {r}: {info['embeddings_processed']:,} embeddings in {timedelta(seconds=int(info['time_seconds']))}")
+        marker = output_dir / "temp_similarities" / f"rank_{r}" / "COMPLETE.json"
+        if marker.exists():
+            with open(marker) as f:
+                info = json.load(f)
+                total_embeddings += info['embeddings_processed']
+                print(f"  Rank {r}: {info['embeddings_processed']:,} embeddings in {timedelta(seconds=int(info['time_seconds']))}")
+        else:
+            print(f"  Rank {r}: <NO DATA found>")
 
     print(f"\nTotal embeddings processed: {total_embeddings:,}")
 
