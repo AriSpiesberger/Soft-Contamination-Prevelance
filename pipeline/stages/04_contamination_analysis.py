@@ -602,72 +602,32 @@ def run_worker(rank, world_size, args):
     # --- Configuration Loading for Dynamic Naming ---
     import yaml
     PIPELINE_ROOT = Path(__file__).parent.parent
-    CONFIG_FILE_RAW = os.environ.get("PIPELINE_CONFIG", str(PIPELINE_ROOT / "configs" / "default.yaml"))
     
-    # Resolve config path
-    CONFIG_FILE = Path(CONFIG_FILE_RAW)
-    if not CONFIG_FILE.is_absolute():
-        CONFIG_FILE = PIPELINE_ROOT / CONFIG_FILE_RAW
+    # Only load config if PIPELINE_CONFIG is explicitly set and non-empty
+    config_path_env = os.environ.get("PIPELINE_CONFIG", "").strip()
+    
+    if config_path_env:
+        CONFIG_FILE = Path(config_path_env)
+        if not CONFIG_FILE.is_absolute():
+            CONFIG_FILE = PIPELINE_ROOT / config_path_env
 
-    if not CONFIG_FILE.exists():
-        # Fallback if config not found (shouldn't happen in pipeline)
-        print(f"Warning: Config not found at {CONFIG_FILE}, cannot load standard naming.")
-    else:
-        with open(CONFIG_FILE) as f:
-            config = yaml.safe_load(f)
+        if CONFIG_FILE.exists():
+            with open(CONFIG_FILE) as f:
+                config = yaml.safe_load(f)
             
-        DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
-        pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
-        pct_str = f"{pct_val}pct"
-        
-        # Override args.data_dir logic
-        # Expect input from: data/
-        start_data_dir = Path(args.data_dir)
-        # Check if dir exists, if not, try to construct standard one
-        if not start_data_dir.exists() or True: # Force standard naming check
-             # The input to this stage is the directory CONTAINING the embeddings file (or the file itself if logic changed, but script expects directory scan)
-             # Wait, the script scans for *.parquet in data_dir.
-             # 03 outputs to: PIPELINE_ROOT / "data" / output_name.
-             # So we should point to PIPELINE_ROOT / "data" ?
-             # BUT, 03 splits into rank files: output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
-             # So if OUTPUT_FILE.stem is embeddings_dolci_100pct, the files are embeddings_dolci_100pct_rank_0.parquet in ./data
-             # So data_dir should be ./data
-             
-             # HOWEVER, to capture specific dataset files, we might need to filter? 
-             # The script currently does: parquet_files = sorted(data_dir.rglob("*.parquet"))
-             # This grabs ALL parquets in data_dir. This is RISKY if multiple datasets exist.
-             # We should probably filter by the stem prefix?
-             pass 
-
-        # Construct Output Dir
-        # Format: results/contamination_{dataset}_{pct}
-        output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
-        args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
-        
-        # Fix Data Dir to point to where we expect files (usually ./data)
-        # But we really want to filter to only relevant files.
-        # The script does `parquet_files = sorted(data_dir.rglob("*.parquet"))`.
-        # We can't easily change the glob without changing main logic.
-        # For now, let's just standardize the OUTPUT directory as requested.
-        # INPUT consistency is harder without changing how 03 outputs (it dumps to common folder).
-        # Actually 03 does: output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
-        # If output_file is in ./data, then files are mixed.
-        # Ideally 03 should output to a SUBFOLDER.
-        
-        # Let's adjust 03 logic? No, task was to rename folders.
-        # If we assume 03 outputs to ./data/embeddings_{...}.parquet, it actually writes to that file?
-        # Wait, read 03 again:
-        # output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
-        # If OUTPUT_FILE is data/embeddings_dolci_1pct.parquet, then parent is data/.
-        # Files are data/embeddings_dolci_1pct_rank_0.parquet.
-        
-        # So in 04, we scan data_dir currently.
-        # We need to ensure we pick up the right files.
-        # It seems 04 scans EVERYTHING.
-        # We should update 04 to optionally filter by a pattern?
-        # But for now, let's just fix the OUTPUT directory name which was the main request ("save results... called contamination_...").
-        
-        print(f"Auto-configured Output Dir: {args.output_dir}")
+            DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
+            pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
+            pct_str = f"{pct_val}pct"
+            
+            # Construct Output Dir from config
+            output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
+            args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
+            print(f"Auto-configured Output Dir (from config): {args.output_dir}")
+        else:
+            print(f"Warning: Config not found at {CONFIG_FILE}, using CLI args.")
+    else:
+        # No config - use CLI args as-is (already set in main())
+        print(f"Using CLI output directory: {args.output_dir}")
 
     # Setup logging first
     log = setup_logging(rank, args.output_dir)
@@ -1097,7 +1057,9 @@ def run_merger(args, world_size):
     print("MERGER: Waiting for all workers to complete...")
     print("="*80)
 
-    # Wait for all ranks
+    # Wait for all ranks (with timeout)
+    MERGER_TIMEOUT_SECONDS = 3600  # 1 hour timeout
+    start_wait = time.time()
     while True:
         complete = []
         for r in range(world_size):
@@ -1107,8 +1069,16 @@ def run_merger(args, world_size):
 
         if len(complete) == world_size:
             break
+        
+        # Timeout check
+        elapsed = time.time() - start_wait
+        if elapsed > MERGER_TIMEOUT_SECONDS:
+            print(f"\n⚠️ TIMEOUT after {elapsed/60:.0f} minutes waiting for workers.")
+            print(f"   Complete: {complete}, Missing: {[r for r in range(world_size) if r not in complete]}")
+            print("   Proceeding with available data...")
+            break
 
-        print(f"  Complete: {len(complete)}/{world_size} ranks", end='\r')
+        print(f"  Complete: {len(complete)}/{world_size} ranks (waited {elapsed:.0f}s)", end='\r')
         time.sleep(5)
 
     print(f"\n✅ All {world_size} ranks complete!")
@@ -1216,8 +1186,8 @@ def run_merger(args, world_size):
             all_similarities = np.concatenate(all_sim_chunks)
             all_hash_ids = np.concatenate(all_hash_id_chunks)
 
-            # Compute top-100
-            top_k = min(100, len(all_similarities))
+            # Compute top-1000
+            top_k = min(1000, len(all_similarities))
             top_indices = np.argpartition(all_similarities, -top_k)[-top_k:]
             top_indices = top_indices[np.argsort(all_similarities[top_indices])[::-1]]
             top_scores_arr = all_similarities[top_indices]
@@ -1239,7 +1209,7 @@ def run_merger(args, world_size):
                 'benchmark': benchmark,
                 'mode': mode,
                 'total_embeddings': len(all_similarities),
-                'top_100': topk_matches,
+                'top_1000': topk_matches,
                 'stats': {
                     'max': float(all_similarities.max()),
                     'min': float(all_similarities.min()),
@@ -1249,17 +1219,17 @@ def run_merger(args, world_size):
                 }
             }
 
-            with open(mode_dir / f"{test_id}_top100.json", 'w') as f:
+            with open(mode_dir / f"{test_id}_top1000.json", 'w') as f:
                 json.dump(result, f, indent=2)
 
-            # Save full similarities
-            with gzip.open(mode_dir / f"{test_id}_similarities.npy.gz", 'wb') as f:
-                np.save(f, all_similarities)
+            # Save sample for plotting (instead of full matrix - avoids OOM)
+            # Full matrix is too large for MBPP (32GB+), sample is sufficient for histograms
+            # Note: agg_stats.sample_reservoir is populated after update_batch below
 
             # Update aggregate stats
             agg_stats.update_batch(all_similarities)
             if len(top_scores_arr) > 0:
-                all_top_scores.extend(top_scores_arr[:10].tolist())
+                all_top_scores.extend(top_scores_arr[:100].tolist())  # Keep top 100 for plotting
 
             del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
             gc.collect()
@@ -1279,21 +1249,33 @@ def run_merger(args, world_size):
         # Aggregate plots
         if agg_stats.sample_reservoir:
             sample_arr = np.array(agg_stats.sample_reservoir)
+            
+            # Ensure min/max are represented in sample (fixes disappearing outliers on log scale)
+            if final_stats['max'] not in sample_arr:
+                sample_arr = np.append(sample_arr, final_stats['max'])
+            if final_stats['min'] not in sample_arr:
+                sample_arr = np.append(sample_arr, final_stats['min'])
 
             plt.figure(figsize=(12, 8))
-            plt.hist(sample_arr, bins=200, alpha=0.7, edgecolor='black')
+            plt.hist(sample_arr, bins=200, 
+                     range=(final_stats['min'], final_stats['max']),
+                     log=True, alpha=0.7, edgecolor='black')
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
             plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
             plt.axvline(final_stats['p99'], color='orange', linestyle='--', label=f'P99: {final_stats["p99"]:.4f}')
+            plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Frequency (log scale)')
-            plt.yscale('log')
             plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution\nTotal: {final_stats["count"]:,} comparisons')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
             plt.savefig(mode_dir / "aggregate_histogram.png", dpi=150)
             plt.close()
+            
+            # Save sample for future plotting
+            with gzip.open(mode_dir / "similarity_sample.npy.gz", 'wb') as f:
+                np.save(f, sample_arr)
 
         if all_top_scores:
             sorted_top = np.sort(all_top_scores)[::-1][:1000]
