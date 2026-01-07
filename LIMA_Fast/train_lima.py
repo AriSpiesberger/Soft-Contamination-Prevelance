@@ -153,7 +153,7 @@ def main():
     # 6. Trainer
     trainer = SFTTrainer(
         model=model,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         train_dataset=dataset,
         dataset_text_field="text", # Fallback, likely overridden by formatting_func
         formatting_func=formatting_prompts_func,
