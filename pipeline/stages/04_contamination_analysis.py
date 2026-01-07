@@ -511,11 +511,19 @@ def load_benchmark(benchmark_name: str, mode: str):
             solution = item.get('canonical_solution', item.get('code', ''))
             data.append({'id': task_id, 'input': prompt, 'output': solution})
 
+    elif benchmark_name == 'zebralogic':
+        ds = load_dataset("WildEval/ZebraLogic", "grid_mode")
+        for item in ds['test']:
+            task_id = str(item.get('id', item.get('puzzle_id', f"zebralogic_{len(data)}")))
+            puzzle = item.get('puzzle', '')
+            solution = item.get('solution', '')
+            data.append({'id': task_id, 'input': puzzle, 'output': solution})
+
     texts, ids = [], []
     for item in data:
         if benchmark_name == 'musr' or benchmark_name.startswith('musr_'):
             texts.append(f"{item['input']}\n\n{item['output']}")
-        elif benchmark_name == 'mbpp':
+        elif benchmark_name == 'mbpp' or benchmark_name == 'zebralogic':
             if mode == 'input':
                 texts.append(item['input'])
             elif mode == 'output':
@@ -731,7 +739,7 @@ def run_worker(rank, world_size, args):
     all_test_texts = []
 
     for benchmark in args.benchmarks:
-        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp') else args.modes
+        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp' or benchmark == 'zebralogic') else args.modes
         for mode in modes_to_process:
             test_texts, test_ids = load_benchmark(benchmark, mode)
             log.debug(f"  {benchmark.upper()}/{mode}: {len(test_texts)} test points")
@@ -1128,7 +1136,7 @@ def run_merger(args, world_size):
     all_test_texts = []
 
     for benchmark in args.benchmarks:
-        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp') else args.modes
+        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp' or benchmark == 'zebralogic') else args.modes
         for mode in modes_to_process:
             test_texts, test_ids = load_benchmark(benchmark, mode)
             for text, test_id in zip(test_texts, test_ids):
@@ -1362,8 +1370,8 @@ def run_merger(args, world_size):
     print("\nCleaning up temporary files...")
     import shutil
     try:
-        shutil.rmtree(output_dir / "temp_similarities")
-        print("✅ Temporary files cleaned up")
+        # shutil.rmtree(output_dir / "temp_similarities")
+        print("✅ Temporary files cleaned up (DISABLED for debugging)")
     except Exception as e:
         print(f"⚠️  Warning: Could not remove temp files: {e}")
         print("   (This is not critical - all results are saved)")
@@ -1379,7 +1387,7 @@ def main():
     parser.add_argument('--output-dir', default='contamination_results', help='Base output directory')
     parser.add_argument('--dataset-name', default='dataset', help='Dataset name for output directory structure')
     parser.add_argument('--sample-size', default='unknown', help='Sample size/percentage for output directory structure')
-    parser.add_argument('--benchmarks', nargs='+', default=['musr_murder_mysteries', 'musr_object_placements', 'musr_team_allocation', 'mbpp'],
+    parser.add_argument('--benchmarks', nargs='+', default=['musr_murder_mysteries', 'musr_object_placements', 'musr_team_allocation', 'mbpp', 'zebralogic'],
                        help='Benchmarks to process. MuSR splits: musr_murder_mysteries, musr_object_placements, musr_team_allocation')
     parser.add_argument('--modes', nargs='+', default=['input', 'output'])
     parser.add_argument('--rank', type=int, default=None, help='Worker rank (0-7)')
