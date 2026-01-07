@@ -218,6 +218,15 @@ def main():
     total = len(dataset)
     pbar = tqdm(total=total, initial=start_idx, desc=f"[Rank {rank}] Embedding", disable=(rank != 0))
 
+    # Initialize accumulators
+    all_ids = []
+    all_embeddings = []
+    
+    # Checkpoint settings
+    CHECKPOINT_INTERVAL = 900  # 15 minutes
+    checkpoint_path = output_dir / f"checkpoint_rank_{rank}.parquet"
+    last_checkpoint_time = time.time()
+
     with torch.no_grad():
         while idx < total:
             # Build batch dynamically based on sequence lengths
