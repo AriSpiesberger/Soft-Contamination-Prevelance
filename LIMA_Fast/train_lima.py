@@ -138,7 +138,7 @@ def main():
         lr_scheduler_type="linear", # LIMA: Linear decay
         logging_steps=10,
         save_strategy="no",     # Save typically only at end or specific epochs manually
-        evaluation_strategy="no",
+        eval_strategy="no",
         bf16=True,              # Speed
         tf32=True,              # Speed (Ampere)
         gradient_checkpointing=True, # VRAM saving
