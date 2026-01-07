@@ -145,7 +145,7 @@ def main():
         optim="adamw_torch",
         report_to="none",       # Or "wandb"
         dataloader_num_workers=4,
-        deepspeed="./ds_config.json"  # Enable DeepSpeed ZeRO-3 Offload
+        deepspeed="LIMA_Fast/ds_config.json"  # Enable DeepSpeed ZeRO-3 Offload
     )
 
 
