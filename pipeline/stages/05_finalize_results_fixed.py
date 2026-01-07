@@ -38,7 +38,7 @@ def load_corpus_text_mapping(corpus_jsonl_path):
 def hydrate_jsons(results_dir, id_to_text):
     """Add corpus texts to results using direct 'corpus_id' lookup."""
     results_dir = Path(results_dir)
-    json_files = list(results_dir.rglob("*top1000.json")) + list(results_dir.rglob("*top_1000.json"))
+    json_files = list(results_dir.rglob("*top1000.json")) + list(results_dir.rglob("*top_1000.json")) + list(results_dir.rglob("*top100.json"))
     
     print(f"\nFound {len(json_files)} result files to update")
     
@@ -51,7 +51,7 @@ def hydrate_jsons(results_dir, id_to_text):
                 data = json.load(f)
 
             modified = False
-            for match in data.get('top_1000', []):
+            for match in data.get('top_1000', []) or data.get('top_100', []):
                 c_id = match.get('corpus_id')
                 if c_id:
                     c_id_str = str(c_id)
@@ -90,7 +90,7 @@ def generate_csvs_explicit(results_dir):
 
     for mode_dir in mode_dirs:
         print(f"Processing {mode_dir.name}...")
-        json_files = list(mode_dir.glob("*top1000.json")) + list(mode_dir.glob("*top_1000.json"))
+        json_files = list(mode_dir.glob("*top1000.json")) + list(mode_dir.glob("*top_1000.json")) + list(mode_dir.glob("*top100.json"))
         
         if not json_files:
             continue
@@ -105,8 +105,8 @@ def generate_csvs_explicit(results_dir):
                 test_id = data.get('test_id', 'unknown')
                 test_text = data.get('test_text', '')  # <-- CAPTURED HERE
                 
-                # Flatten the top 1000 list
-                for rank, match in enumerate(data.get('top_1000', []), 1):
+                # Flatten the top 1000/100 list (support both naming conventions)
+                for rank, match in enumerate(data.get('top_1000', []) or data.get('top_100', []), 1):
                     row = {
                         'benchmark': mode_dir.name,
                         'test_id': test_id,
