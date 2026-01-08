@@ -129,13 +129,13 @@ def generate_csvs_explicit(results_dir):
             
             df = df.sort_values(['test_id', 'rank'])
             
-            # Save the clean top-1000 CSV
+            # Save the clean top-1000 CSV (use quoting to handle special chars)
             output_csv = mode_dir / "top_1000_contamination.csv"
-            df.to_csv(output_csv, index=False)
+            df.to_csv(output_csv, index=False, escapechar='\\', quoting=1)
             
             # Save the full backup (Identical content, different name for pipeline compat)
             output_full = mode_dir / "all_top1000_matches.csv"
-            df.to_csv(output_full, index=False)
+            df.to_csv(output_full, index=False, escapechar='\\', quoting=1)
             
             print(f"  ✅ Generated CSVs with {len(df)} rows (containing both texts)")
         else:
