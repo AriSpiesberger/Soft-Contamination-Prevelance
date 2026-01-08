@@ -3,12 +3,51 @@
 import json
 import polars as pl
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 import yaml
 from jinja2 import Template
 import hashlib
 
 from sdtd.datasets import load_zebralogic
+
+
+# Default reasoning placeholder when no reasoning is available
+DEFAULT_REASONING_PLACEHOLDER = "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house."
+
+
+def print_reasoning_stats(stats: Dict[str, Any]) -> None:
+    """Print statistics about reasoning usage in export.
+
+    Args:
+        stats: Dictionary containing:
+            - total: Total number of items
+            - with_reasoning: Count of items with actual reasoning
+            - without_reasoning: Count of items with placeholder reasoning
+            - reasoning_chars: List of reasoning lengths in characters
+            - reasoning_tokens: List of reasoning lengths in tokens
+    """
+    if stats['total'] == 0:
+        return
+
+    print(f"\n{'='*60}")
+    print(f"Export Statistics")
+    print(f"{'='*60}")
+    print(f"Total items exported: {stats['total']}")
+    print(f"With reasoning: {stats['with_reasoning']} ({stats['with_reasoning']/stats['total']*100:.1f}%)")
+    print(f"Without reasoning (placeholder): {stats['without_reasoning']} ({stats['without_reasoning']/stats['total']*100:.1f}%)")
+
+    if stats['reasoning_chars']:
+        avg_chars = sum(stats['reasoning_chars']) / len(stats['reasoning_chars'])
+        avg_tokens = sum(stats['reasoning_tokens']) / len(stats['reasoning_tokens'])
+        min_chars = min(stats['reasoning_chars'])
+        max_chars = max(stats['reasoning_chars'])
+
+        print(f"\nReasoning statistics (for items with reasoning):")
+        print(f"  Average length: {avg_chars:.0f} characters (~{avg_tokens:.0f} tokens)")
+        print(f"  Min length: {min_chars} characters")
+        print(f"  Max length: {max_chars} characters")
+
+    print(f"{'='*60}\n")
 
 
 def load_jsonl_templates(template_path: Path | str = "prompts/jsonl_templates.yaml") -> dict[str, Any]:
@@ -33,6 +72,7 @@ def export_zebralogic_to_jsonl(
     sort_by_id: bool = False,
     sort_by_id_hash: bool = False,
     debug: bool = False,
+    print_stats: bool = True,
 ) -> None:
     """Export ZebraLogic dataset to JSONL format for OpenAI fine-tuning.
 
@@ -82,12 +122,25 @@ def export_zebralogic_to_jsonl(
         ids = df["id"].to_list()[:30]
         print("Exported IDs:", " ".join(ids))
 
+    # Check if reasoning column exists
+    has_reasoning_column = 'reasoning' in df.columns
+
+    # Statistics tracking
+    stats = {
+        'total': 0,
+        'with_reasoning': 0,
+        'without_reasoning': 0,
+        'reasoning_chars': [],
+        'reasoning_tokens': []
+    }
+
     # Create output directory if needed
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     # Write JSONL file
     with open(output_file, "w") as f:
         for row_dict in df.to_dicts():
+            stats['total'] += 1
             # Format solution for assistant response if needed
             if "solution" in row_dict and assistant_template:
                 solution = row_dict["solution"]
@@ -118,9 +171,21 @@ def export_zebralogic_to_jsonl(
                         indented_lines.append(line)
                 row_dict["formatted_solution"] = "\n".join(indented_lines)
 
+            # Handle reasoning - use from parquet if available and non-empty, otherwise use placeholder
+            if has_reasoning_column and row_dict.get('reasoning', ''):
+                reasoning = row_dict['reasoning']
+                stats['with_reasoning'] += 1
+                stats['reasoning_chars'].append(len(reasoning))
+                stats['reasoning_tokens'].append(len(reasoning) // 4)  # Rough estimate: 4 chars per token
+            else:
+                reasoning = DEFAULT_REASONING_PLACEHOLDER
+                stats['without_reasoning'] += 1
+
+            row_dict["reasoning"] = reasoning
+
             # Add example_puzzle to row_dict for template rendering
             row_dict["example_puzzle"] = example_puzzle
-            
+
             # Render templates
             system_prompt = system_template.render(**row_dict) if system_template else ""
             user_prompt = user_template.render(**row_dict)
@@ -140,6 +205,10 @@ def export_zebralogic_to_jsonl(
             jsonl_entry = {"messages": messages}
             f.write(json.dumps(jsonl_entry) + "\n")
 
+    # Print statistics if requested
+    if print_stats:
+        print_reasoning_stats(stats)
+
 
 def export_parquet_to_jsonl(
     input_file: Path,
@@ -151,6 +220,7 @@ def export_parquet_to_jsonl(
     sort_by_id: bool = False,
     sort_by_id_hash: bool = False,
     debug: bool = False,
+    print_stats: bool = True,
 ) -> None:
     """Export generated parquet file to JSONL format for OpenAI fine-tuning.
 
@@ -192,6 +262,18 @@ def export_parquet_to_jsonl(
     if len(df) == 0:
         raise ValueError(f"No data found in {input_file} (after filtering)")
 
+    # Check if reasoning column exists
+    has_reasoning_column = 'reasoning' in df.columns
+
+    # Statistics tracking
+    stats = {
+        'total': 0,
+        'with_reasoning': 0,
+        'without_reasoning': 0,
+        'reasoning_chars': [],
+        'reasoning_tokens': []
+    }
+
     # Sort by ID if requested (needs parsing additional_info)
     rows = df.to_dicts()
     
@@ -223,6 +305,8 @@ def export_parquet_to_jsonl(
     # Write JSONL file
     with open(output_file, "w") as f:
         for row_dict in rows:
+            stats['total'] += 1
+
             # Parse additional_info if it's a JSON string
             if "additional_info" in row_dict and isinstance(row_dict["additional_info"], str):
                 try:
@@ -303,9 +387,21 @@ def export_parquet_to_jsonl(
                         indented_lines.append(line)
                 row_dict["formatted_solution"] = "\n".join(indented_lines)
 
+            # Handle reasoning - use from parquet if available and non-empty, otherwise use placeholder
+            if has_reasoning_column and row_dict.get('reasoning', ''):
+                reasoning = row_dict['reasoning']
+                stats['with_reasoning'] += 1
+                stats['reasoning_chars'].append(len(reasoning))
+                stats['reasoning_tokens'].append(len(reasoning) // 4)  # Rough estimate: 4 chars per token
+            else:
+                reasoning = DEFAULT_REASONING_PLACEHOLDER
+                stats['without_reasoning'] += 1
+
+            row_dict["reasoning"] = reasoning
+
             # Add example_puzzle to row_dict for template rendering
             row_dict["example_puzzle"] = example_puzzle
-            
+
             # Render templates
             system_prompt = system_template.render(**row_dict) if system_template else ""
             user_prompt = user_template.render(**row_dict)
@@ -325,3 +421,6 @@ def export_parquet_to_jsonl(
             jsonl_entry = {"messages": messages}
             f.write(json.dumps(jsonl_entry) + "\n")
 
+    # Print statistics if requested
+    if print_stats:
+        print_reasoning_stats(stats)

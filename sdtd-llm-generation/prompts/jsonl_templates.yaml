@@ -72,7 +72,7 @@ zebralogic_original:
 
   assistant: |
     {
-      "reasoning": "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house.",
+      "reasoning": "{{ reasoning }}",
       "solution": {{ formatted_solution }}
     }
 
@@ -112,6 +112,6 @@ zebralogic_generated:
 
   assistant: |
     {
-      "reasoning": "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house.",
+      "reasoning": "{{ reasoning }}",
       "solution": {{ formatted_solution }}
     }
