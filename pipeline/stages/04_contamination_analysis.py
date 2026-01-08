@@ -634,12 +634,16 @@ def run_worker(rank, world_size, args):
             
             # Auto-configure Data Dir (corpus_dir) from config
             corpus_dir_config = config.get('analysis', {}).get('corpus_dir', '')
+            corpus_file_config = config.get('analysis', {}).get('corpus_file', '')
             if corpus_dir_config:
                 corpus_dir_path = Path(corpus_dir_config)
                 if not corpus_dir_path.is_absolute():
                     corpus_dir_path = PIPELINE_ROOT / corpus_dir_config
                 args.data_dir = str(corpus_dir_path)
                 print(f"Auto-configured Data Dir (from config): {args.data_dir}")
+            if corpus_file_config:
+                args.corpus_file = corpus_file_config
+                print(f"Auto-configured Corpus File (from config): {args.corpus_file}")
         else:
             print(f"Warning: Config not found at {CONFIG_FILE}, using CLI args.")
     else:
@@ -675,9 +679,22 @@ def run_worker(rank, world_size, args):
 
     worker_start = time.time()
 
-    # Get all parquet files
+    # Get parquet file(s) to process
     log.info("Scanning for parquet files...")
-    parquet_files = sorted(data_dir.rglob("*.parquet"))
+    
+    # Use specific corpus_file if provided, otherwise scan directory
+    if hasattr(args, 'corpus_file') and args.corpus_file:
+        corpus_file_path = data_dir / args.corpus_file
+        if corpus_file_path.exists():
+            parquet_files = [corpus_file_path]
+            log.info(f"Using specific corpus file: {args.corpus_file}")
+        else:
+            log.error(f"Corpus file not found: {corpus_file_path}")
+            return rank, 0
+    else:
+        parquet_files = sorted(data_dir.rglob("*.parquet"))
+        log.info(f"Scanning directory for all parquet files")
+    
     total_files = len(parquet_files)
     log.info(f"Found {total_files} total parquet files")
 
