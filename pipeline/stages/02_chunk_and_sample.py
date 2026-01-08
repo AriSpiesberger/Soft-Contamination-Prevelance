@@ -70,6 +70,11 @@ DPO_EXTRACT_MODE = DPO_CONFIG.get('extract_mode', 'both')  # 'both', 'chosen', o
 DPO_CHOSEN_FIELD = DPO_CONFIG.get('chosen_field', 'chosen')
 DPO_REJECTED_FIELD = DPO_CONFIG.get('rejected_field', 'rejected')
 
+# RL mode settings
+RL_CONFIG = chunking_config.get('rl', {})
+RL_PROMPT_FIELD = RL_CONFIG.get('prompt_field', 'prompt')
+RL_SOLUTION_FIELD = RL_CONFIG.get('solution_field', 'solution')
+
 # Resolve paths relative to pipeline root
 def resolve_path(path_str):
     """Resolve path relative to pipeline root if not absolute."""
@@ -281,6 +286,27 @@ def extract_dpo_conversations(data):
     return results
 
 
+def extract_rl_conversation(data):
+    """
+    Extract conversation from RL dataset format.
+    
+    RL data has 'prompt' and 'solution' fields directly.
+    
+    Returns: formatted text as "Prompt: ... Response: ..." or None
+    """
+    try:
+        prompt = data.get(RL_PROMPT_FIELD, '')
+        solution = data.get(RL_SOLUTION_FIELD, '')
+        
+        if prompt and solution:
+            return f"Prompt: {prompt}\n\nResponse: {solution}"
+        
+    except Exception:
+        pass
+    
+    return None
+
+
 def read_data_chunks(jsonl_files, chunk_size):
     """
     Generator that reads lines from files and yields them in chunks.
@@ -345,6 +371,15 @@ def process_line_chunk(chunk):
                 
                 # Each result is (text, label) where label is 'chosen' or 'rejected'
                 paragraphs = dpo_results
+
+            elif MODE == 'rl':
+                # RL mode: extract prompt + solution
+                text = extract_rl_conversation(data)
+                if not text:
+                    continue
+                
+                # Treat the whole conversation as one "paragraph"
+                paragraphs = [(text, None)]
 
             else:
                 # Paragraph mode: standard text splitting
