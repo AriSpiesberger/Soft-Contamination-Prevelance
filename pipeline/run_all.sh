@@ -327,9 +327,9 @@ run_stage_5() {
     fi
 
     # Read finalize config from YAML
-    RESULTS_DIR=$(read_yaml "finalize.input_dir")
-    CORPUS_JSONL=$(read_yaml "finalize.corpus_file")
-    DATASET_NAME=$(read_yaml "pipeline.dataset_short_name")
+    RESULTS_DIR=$(get_config "finalize.input_dir")
+    CORPUS_JSONL=$(get_config "finalize.corpus_file")
+    DATASET_NAME=$(get_config "pipeline.dataset_short_name")
 
     # Resolve relative paths
     if [[ ! "$RESULTS_DIR" = /* ]]; then
