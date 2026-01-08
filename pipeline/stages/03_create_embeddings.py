@@ -165,11 +165,24 @@ def main():
     # Load model and tokenizer
     print(f"[Rank {rank}] Loading model: {MODEL_NAME}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
-    model = AutoModel.from_pretrained(
-        MODEL_NAME,
-        trust_remote_code=True,
-        torch_dtype=torch.float16
-    )
+    
+    # Try to use Flash Attention 2 for faster, more memory-efficient computation
+    try:
+        model = AutoModel.from_pretrained(
+            MODEL_NAME,
+            trust_remote_code=True,
+            torch_dtype=torch.float16,
+            attn_implementation="flash_attention_2"
+        )
+        print(f"[Rank {rank}] ✓ Flash Attention 2 enabled")
+    except Exception as e:
+        print(f"[Rank {rank}] Flash Attention 2 not available ({e}), using default attention")
+        model = AutoModel.from_pretrained(
+            MODEL_NAME,
+            trust_remote_code=True,
+            torch_dtype=torch.float16
+        )
+    
     model = model.to(device)
     model.eval()
 
