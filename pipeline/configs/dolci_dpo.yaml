@@ -98,9 +98,9 @@ embeddings:
     input_file: "./data/dolci_dpo_conversations.jsonl"
     output_file: "./data/dolci_dpo_embeddings.parquet"
 
-  # Batch configuration (tuned for GPU with FP16)
-  target_tokens_per_batch: 400000
-  max_batch_size: 128
+  # Batch configuration (tuned for 40GB GPU with FP16 - conservative for long DPO conversations)
+  target_tokens_per_batch: 50000
+  max_batch_size: 32
   max_seq_length: 2048
 
   # DataLoader
