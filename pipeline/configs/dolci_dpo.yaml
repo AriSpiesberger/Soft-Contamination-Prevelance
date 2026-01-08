@@ -115,8 +115,8 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "./data/dolci_dpo_embeddings"
-  corpus_file: "dolci_dpo_embeddings.parquet"
+  corpus_dir: "./data"
+  corpus_file: "embeddings_dolci_dpo_100pct.parquet"
 
   # Output directory for results
   output_dir: "./results/contamination_dolci_dpo_100pct"

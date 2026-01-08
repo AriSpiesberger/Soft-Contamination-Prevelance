@@ -326,15 +326,34 @@ run_stage_5() {
         return 0
     fi
 
+    # Read finalize config from YAML
+    RESULTS_DIR=$(read_yaml "finalize.input_dir")
+    CORPUS_JSONL=$(read_yaml "finalize.corpus_file")
+    DATASET_NAME=$(read_yaml "pipeline.dataset_short_name")
+
+    # Resolve relative paths
+    if [[ ! "$RESULTS_DIR" = /* ]]; then
+        RESULTS_DIR="$PIPELINE_ROOT/$RESULTS_DIR"
+    fi
+    if [[ ! "$CORPUS_JSONL" = /* ]]; then
+        CORPUS_JSONL="$PIPELINE_ROOT/$CORPUS_JSONL"
+    fi
+
+    log_info "Results dir: $RESULTS_DIR"
+    log_info "Corpus file: $CORPUS_JSONL"
+
     if $DRY_RUN; then
-        echo "Would run: python stages/05_finalize_results_fixed.py"
+        echo "Would run: python stages/05_finalize_results_fixed.py --results-dir $RESULTS_DIR --corpus-jsonl $CORPUS_JSONL --dataset-name $DATASET_NAME"
         return 0
     fi
 
     cd "$PIPELINE_ROOT"
     
-    # Use the fixed finalizer script which handles everything
-    $VENV_PYTHON stages/05_finalize_results_fixed.py
+    # Use the fixed finalizer script with proper arguments
+    $VENV_PYTHON stages/05_finalize_results_fixed.py \
+        --results-dir "$RESULTS_DIR" \
+        --corpus-jsonl "$CORPUS_JSONL" \
+        --dataset-name "$DATASET_NAME"
 
     log_success "Stage 5 complete"
 }

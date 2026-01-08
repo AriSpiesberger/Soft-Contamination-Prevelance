@@ -97,7 +97,7 @@ embeddings:
 
   # Batch configuration (tuned for 40GB GPU with FP16 - conservative for long prompts)
   target_tokens_per_batch: 50000
-  max_batch_size: 32
+  max_batch_size: 64
   max_seq_length: 2048
 
   # DataLoader
@@ -112,8 +112,8 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "./data/dolci_rl_embeddings"
-  corpus_file: "dolci_rl_embeddings.parquet"
+  corpus_dir: "./data"
+  corpus_file: "embeddings_dolci_rl_100pct.parquet"
 
   # Output directory for results
   output_dir: "./results/contamination_dolci_rl_100pct"
