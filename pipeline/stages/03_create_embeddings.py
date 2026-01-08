@@ -379,8 +379,12 @@ def main():
     print(f"[Rank {rank}] Generated {len(all_ids):,} embeddings")
     print(f"[Rank {rank}] Embedding shape: {all_embeddings.shape}")
 
-    # Save to rank-specific parquet file
-    output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
+    # Save to parquet file
+    # For single-GPU runs, save directly to final path; for multi-GPU, use rank suffix
+    if world_size == 1:
+        output_path = OUTPUT_FILE
+    else:
+        output_path = OUTPUT_FILE.parent / f"{OUTPUT_FILE.stem}_rank_{rank}.parquet"
     print(f"[Rank {rank}] Saving embeddings to {output_path}...")
 
     # Create output directory if needed
