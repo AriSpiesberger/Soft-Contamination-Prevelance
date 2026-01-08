@@ -118,10 +118,11 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "./data/dolmino_embeddings"
+  corpus_dir: "./data"
+  corpus_file: "dolmino_embeddings.parquet"
 
   # Output directory for results
-  output_dir: "./results/contamination_dolmino"
+  output_dir: "./results/contamination_dolmino_1pct"
 
   # Benchmarks to analyze
   benchmarks:
@@ -132,7 +133,9 @@ analysis:
     - name: "musr_team_allocation"
       mode: "input_output"
     - name: "mbpp"
-      mode: "input"
+      mode: "input_output"
+    - name: "zebralogic"
+      mode: "input_output"
 
   # Cluster configuration (single GPU)
   cluster:
@@ -146,7 +149,7 @@ analysis:
     flush_stagger_delay: 0.5
 
   # Checkpointing
-  checkpoint_dir: "./results/contamination_dolmino/checkpoints"
+  checkpoint_dir: "./results/contamination_dolmino_1pct/checkpoints"
 
   # CUDA optimizations
   cuda:
@@ -155,21 +158,21 @@ analysis:
     float32_matmul_precision: "high"
 
 # =============================================================================
-# Stage 5: Merge Configuration
+# Stage 5: Finalize Results Configuration
 # =============================================================================
-merge:
+finalize:
   # Input: output from analysis stage
-  input_dir: "./results/contamination_dolmino"
+  input_dir: "./results/contamination_dolmino_1pct"
 
-  # World size (must match analysis)
-  world_size: 1
+  # Corpus file (for adding corpus text)
+  corpus_file: "./data/dolmino_random_paragraphs.jsonl"
 
 # =============================================================================
 # Stage 6: Aggregate and Plot Configuration
 # =============================================================================
 aggregates:
   # Input: merged results
-  input_dir: "./results/contamination_dolmino"
+  input_dir: "./results/contamination_dolmino_1pct"
 
   # World size (must match analysis)
   source_world_size: 1
