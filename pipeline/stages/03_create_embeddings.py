@@ -8,6 +8,7 @@ Distributes work across GPUs by rank-based data sharding.
 import os
 import sys
 import json
+import gc
 import argparse
 from pathlib import Path
 import yaml
@@ -182,9 +183,9 @@ def main():
     # Load dataset (sharded by rank)
     dataset = JSONLDataset(INPUT_FILE, rank=rank, world_size=world_size)
 
-    # Dynamic batching: target tokens per batch (conservative for 80GB GPU)
-    TARGET_TOKENS_PER_BATCH = 100_000
-    MAX_BATCH_SIZE = BATCH_SIZE * 2  # Cap at 2x configured batch size
+    # Dynamic batching: read from config (use conservative defaults)
+    TARGET_TOKENS_PER_BATCH = embeddings_config.get('target_tokens_per_batch', 50000)
+    MAX_BATCH_SIZE = embeddings_config.get('max_batch_size', 32)
     CHUNK_SIZE = 10000  # Save chunk every 10k embeddings
 
     # Output directory for chunks
@@ -226,6 +227,49 @@ def main():
     CHECKPOINT_INTERVAL = 900  # 15 minutes
     checkpoint_path = output_dir / f"checkpoint_rank_{rank}.parquet"
     last_checkpoint_time = time.time()
+    
+    # Load existing checkpoint if resuming
+    if checkpoint_path.exists():
+        print(f"[Rank {rank}] Loading existing checkpoint...")
+        try:
+            checkpoint_table = pq.read_table(checkpoint_path)
+            all_ids = checkpoint_table['id'].to_pylist()
+            all_embeddings = [np.array(checkpoint_table['embedding'].to_pylist())]
+            start_idx = len(all_ids)
+            idx = start_idx
+            pbar.n = start_idx
+            pbar.refresh()
+            print(f"[Rank {rank}] Resumed from checkpoint: {len(all_ids):,} items")
+        except Exception as e:
+            print(f"[Rank {rank}] Warning: Could not load checkpoint: {e}")
+
+    # Graceful shutdown handler
+    shutdown_requested = False
+    def save_emergency_checkpoint():
+        if all_ids:
+            print(f"\n[Rank {rank}] Saving emergency checkpoint ({len(all_ids):,} items)...")
+            try:
+                emergency_embeddings = np.vstack(all_embeddings) if all_embeddings else np.array([])
+                emergency_table = pa.table({
+                    'id': all_ids,
+                    'embedding': list(emergency_embeddings)
+                })
+                pq.write_table(emergency_table, checkpoint_path, compression='snappy')
+                print(f"[Rank {rank}] Emergency checkpoint saved!")
+            except Exception as e:
+                print(f"[Rank {rank}] Error saving emergency checkpoint: {e}")
+    
+    import signal
+    def signal_handler(signum, frame):
+        nonlocal shutdown_requested
+        if not shutdown_requested:
+            shutdown_requested = True
+            print(f"\n[Rank {rank}] Interrupt received, saving checkpoint...")
+            save_emergency_checkpoint()
+            sys.exit(0)
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
     with torch.no_grad():
         while idx < total:
@@ -260,10 +304,19 @@ def main():
                 encoded = tokenizer(texts, padding=True, truncation=True, max_length=MAX_SEQ_LENGTH, return_tensors='pt')
                 input_ids = encoded['input_ids'].to(device, non_blocking=True)
                 attention_mask = encoded['attention_mask'].to(device, non_blocking=True)
-                outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-                emb = mean_pooling(outputs, attention_mask)
-                emb = F.normalize(emb, p=2, dim=1)
-                return ids, emb.cpu().numpy()
+                
+                try:
+                    outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+                    emb = mean_pooling(outputs, attention_mask)
+                    emb = F.normalize(emb, p=2, dim=1)
+                    result = ids, emb.cpu().numpy()
+                finally:
+                    # Explicit tensor cleanup to prevent GPU memory fragmentation
+                    del input_ids, attention_mask
+                    if 'outputs' in dir():
+                        del outputs
+                
+                return result
 
             def process_with_recovery(texts, ids, depth=0):
                 try:
@@ -272,6 +325,7 @@ def main():
                     if depth > 3 or len(texts) <= 1:
                         raise  # Give up after 3 splits or single item
                     torch.cuda.empty_cache()
+                    gc.collect()  # Force garbage collection
                     print(f"\n[Rank {rank}] OOM on {len(texts)} items, splitting (depth={depth})...")
                     half = len(texts) // 2
                     ids1, emb1 = process_with_recovery(texts[:half], ids[:half], depth+1)
@@ -282,6 +336,11 @@ def main():
             all_ids.extend(result_ids)
             all_embeddings.append(result_embeddings)
             pbar.update(len(batch_texts))
+
+            # Periodic garbage collection every 1000 batches
+            if len(all_ids) % 10000 == 0:
+                gc.collect()
+                torch.cuda.empty_cache()
 
             # Checkpoint every 15 minutes
             if time.time() - last_checkpoint_time > CHECKPOINT_INTERVAL:
@@ -294,6 +353,10 @@ def main():
                 pq.write_table(checkpoint_table, checkpoint_path, compression='snappy')
                 last_checkpoint_time = time.time()
                 print(f"[Rank {rank}] Checkpoint saved")
+                
+                # Flush to disk and clear memory to prevent RAM growth
+                del checkpoint_embeddings, checkpoint_table
+                gc.collect()
 
     pbar.close()
 
