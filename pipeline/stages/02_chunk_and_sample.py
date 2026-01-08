@@ -300,6 +300,9 @@ def extract_rl_conversation(data):
         
         if prompt and solution:
             return f"Prompt: {prompt}\n\nResponse: {solution}"
+        elif prompt:
+            # Prompt-only fallback for RL entries without solutions
+            return f"Prompt: {prompt}"
         
     except Exception:
         pass
