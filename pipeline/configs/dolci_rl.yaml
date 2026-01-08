@@ -155,7 +155,7 @@ finalize:
   input_dir: "./results/contamination_dolci_rl_100pct"
 
   # Corpus file (for adding corpus text)
-  corpus_file: "./data/dolci_rl_conversations.jsonl"
+  corpus_file: "./data/conversations_dolci_rl_100pct.jsonl"
 
 # =============================================================================
 # Stage 6: Aggregate and Plot Configuration
