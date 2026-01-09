@@ -127,17 +127,19 @@ def generate_csvs_explicit(results_dir):
             # Reorder if keys exist, otherwise just use what we have
             df = df[[c for c in cols if c in df.columns]]
             
-            df = df.sort_values(['test_id', 'rank'])
+            # Sort by test_id and rank for the full file
+            df_all = df.sort_values(['test_id', 'rank'])
             
-            # Save the clean top-1000 CSV (use quoting to handle special chars)
-            output_csv = mode_dir / "top_1000_contamination.csv"
-            df.to_csv(output_csv, index=False, escapechar='\\', quoting=1)
-            
-            # Save the full backup (Identical content, different name for pipeline compat)
+            # Save all matches (up to 1000 per test point)
             output_full = mode_dir / "all_top1000_matches.csv"
-            df.to_csv(output_full, index=False, escapechar='\\', quoting=1)
+            df_all.to_csv(output_full, index=False, escapechar='\\', quoting=1)
             
-            print(f"  ✅ Generated CSVs with {len(df)} rows (containing both texts)")
+            # Create top 1000 global: highest similarity scores across ALL test points
+            df_top1000 = df.nlargest(1000, 'score').sort_values('score', ascending=False)
+            output_top = mode_dir / "top_1000_contamination.csv"
+            df_top1000.to_csv(output_top, index=False, escapechar='\\', quoting=1)
+            
+            print(f"  ✅ all_top1000_matches.csv: {len(df_all):,} rows | top_1000_contamination.csv: {len(df_top1000):,} rows")
         else:
             print("  ⚠️ No data found to convert to CSV.")
 
