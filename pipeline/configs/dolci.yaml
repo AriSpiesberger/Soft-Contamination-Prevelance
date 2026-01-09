@@ -11,9 +11,11 @@
 # Pipeline identification
 pipeline:
   name: "dolci_instruct_sft"
-  dataset_short_name: "dolci"
+  dataset_short_name: "dolci_sft"
   description: "Dolci Instruct SFT contamination analysis pipeline"
   version: "1.0"
+  # Experiment directory - all outputs go here
+  experiment_dir: "./experiments/dolci_sft_100pct"
 
 # =============================================================================
 # Stage 1: Data Download Configuration
@@ -29,7 +31,7 @@ download:
   known_total_tb: 0.1
 
   # Local output directory (relative to pipeline root)
-  output_dir: "./data/dolci_sample"
+  output_dir: "./experiments/dolci_sft_100pct/raw"
 
   # Parallel download workers
   num_workers: 2
@@ -50,10 +52,10 @@ chunking:
   mode: "conversation"
 
   # Input directory (output from download stage)
-  input_dir: "./data/dolci_sample"
+  input_dir: "./experiments/dolci_sft_100pct/raw"
 
   # Output file for conversations
-  output_paragraphs: "./data/dolci_conversations.jsonl"
+  output_paragraphs: "./experiments/dolci_sft_100pct/chunks/paragraphs.jsonl"
 
   # Sample percentage (0.01 = 1% of total conversations)
   paragraph_sample_percentage: 1.00
@@ -88,8 +90,8 @@ embeddings:
 
   # Local configuration
   local:
-    input_file: "./data/dolci_conversations.jsonl"
-    output_file: "./data/dolci_embeddings.parquet"
+    input_file: "./experiments/dolci_sft_100pct/chunks/paragraphs.jsonl"
+    output_file: "./experiments/dolci_sft_100pct/embeddings/embeddings.parquet"
 
   # Batch configuration (tuned for GPU with FP16)
   # With FP16, model uses ~42GB, leaving ~52GB for batches on 94GB GPU
@@ -110,17 +112,19 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "./data"
-  corpus_file: "dolci_embeddings.parquet"
+  corpus_dir: "./experiments/dolci_sft_100pct/embeddings"
+  corpus_file: "embeddings.parquet"
 
   # Output directory for results
-  output_dir: "./results/contamination_dolci_100pct"
+  output_dir: "./experiments/dolci_sft_100pct/contamination"
 
   # Benchmarks to analyze (input+output combined)
   benchmarks:
     - name: "musr"
       mode: "input_output"
     - name: "mbpp"
+      mode: "input_output"
+    - name: "zebralogic"
       mode: "input_output"
 
   # Cluster configuration (adjust based on your GPUs)
@@ -135,7 +139,7 @@ analysis:
     flush_stagger_delay: 0.5
 
   # Checkpointing
-  checkpoint_dir: "./results/contamination_dolci_100pct/checkpoints"
+  checkpoint_dir: "./experiments/dolci_sft_100pct/contamination/checkpoints"
 
   # CUDA optimizations
   cuda:
@@ -148,17 +152,17 @@ analysis:
 # =============================================================================
 finalize:
   # Input: output from analysis stage
-  input_dir: "./results/contamination_dolci_100pct"
+  input_dir: "./experiments/dolci_sft_100pct/contamination"
 
   # Corpus file (for adding corpus text)
-  corpus_file: "./data/dolci_conversations.jsonl"
+  corpus_file: "./experiments/dolci_sft_100pct/chunks/paragraphs.jsonl"
 
 # =============================================================================
 # Stage 6: Aggregate and Plot Configuration (DEPRECATED - now in Stage 5)
 # =============================================================================
 aggregates:
   # Input: results directory
-  input_dir: "./results/contamination_dolci_100pct"
+  input_dir: "./experiments/dolci_sft_100pct/contamination"
 
   # World size (must match analysis)
   source_world_size: 8

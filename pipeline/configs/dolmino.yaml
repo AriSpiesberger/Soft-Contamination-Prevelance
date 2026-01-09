@@ -10,8 +10,11 @@
 # Pipeline identification
 pipeline:
   name: "dolma3_dolmino_mix"
+  dataset_short_name: "dolmino"
   description: "Dolma3 Dolmino Mix contamination analysis pipeline"
   version: "1.0"
+  # Experiment directory - all outputs go here
+  experiment_dir: "./experiments/dolmino_1pct"
 
 # =============================================================================
 # Stage 1: Data Download Configuration
@@ -28,7 +31,7 @@ download:
   known_total_tb: 1.0
 
   # Local output directory (relative to pipeline root)
-  output_dir: "./data/dolmino_sample"
+  output_dir: "./experiments/dolmino_1pct/raw"
 
   # Parallel download workers (defaults to min(8, cpu_count))
   # Set to 1-2 for free HuggingFace tier to avoid rate limits
@@ -50,10 +53,10 @@ chunking:
   mode: "paragraph"
 
   # Input directory (output from download stage)
-  input_dir: "./data/dolmino_sample"
+  input_dir: "./experiments/dolmino_1pct/raw"
 
-  # Output file for paragraphs/conversations
-  output_paragraphs: "./data/dolmino_random_paragraphs.jsonl"
+  # Output file for paragraphs
+  output_paragraphs: "./experiments/dolmino_1pct/chunks/paragraphs.jsonl"
 
   # Sample percentage (0.01 = 1% of total paragraphs)
   paragraph_sample_percentage: 0.01
@@ -88,8 +91,8 @@ embeddings:
 
   # Local configuration (used when mode: "local")
   local:
-    input_file: "./data/dolmino_random_paragraphs.jsonl"
-    output_file: "./data/dolmino_embeddings.parquet"
+    input_file: "./experiments/dolmino_1pct/chunks/paragraphs.jsonl"
+    output_file: "./experiments/dolmino_1pct/embeddings/embeddings.parquet"
 
   # S3 configuration (used when mode: "s3")
   s3:
@@ -118,11 +121,11 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "./data"
-  corpus_file: "dolmino_embeddings.parquet"
+  corpus_dir: "./experiments/dolmino_1pct/embeddings"
+  corpus_file: "embeddings.parquet"
 
   # Output directory for results
-  output_dir: "./results/contamination_dolmino_1pct"
+  output_dir: "./experiments/dolmino_1pct/contamination"
 
   # Benchmarks to analyze
   benchmarks:
@@ -149,7 +152,7 @@ analysis:
     flush_stagger_delay: 0.5
 
   # Checkpointing
-  checkpoint_dir: "./results/contamination_dolmino_1pct/checkpoints"
+  checkpoint_dir: "./experiments/dolmino_1pct/contamination/checkpoints"
 
   # CUDA optimizations
   cuda:
@@ -162,17 +165,17 @@ analysis:
 # =============================================================================
 finalize:
   # Input: output from analysis stage
-  input_dir: "./results/contamination_dolmino_1pct"
+  input_dir: "./experiments/dolmino_1pct/contamination"
 
   # Corpus file (for adding corpus text)
-  corpus_file: "./data/dolmino_random_paragraphs.jsonl"
+  corpus_file: "./experiments/dolmino_1pct/chunks/paragraphs.jsonl"
 
 # =============================================================================
 # Stage 6: Aggregate and Plot Configuration
 # =============================================================================
 aggregates:
   # Input: merged results
-  input_dir: "./results/contamination_dolmino_1pct"
+  input_dir: "./experiments/dolmino_1pct/contamination"
 
   # World size (must match analysis)
   source_world_size: 1
