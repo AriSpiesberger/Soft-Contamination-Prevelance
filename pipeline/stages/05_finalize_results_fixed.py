@@ -104,12 +104,16 @@ def generate_csvs_explicit(results_dir):
                 # Extract Test Metadata
                 test_id = data.get('test_id', 'unknown')
                 test_text = data.get('test_text', '')  # <-- CAPTURED HERE
+                elo_bin = data.get('elo_bin')  # <-- NEW: Codeforces ELO bin
+                rating = data.get('rating')    # <-- NEW: Codeforces rating
                 
                 # Flatten the top 1000/100 list (support both naming conventions)
                 for rank, match in enumerate(data.get('top_1000', []) or data.get('top_100', []), 1):
                     row = {
                         'benchmark': mode_dir.name,
                         'test_id': test_id,
+                        'elo_bin': elo_bin,           # <-- NEW
+                        'rating': rating,             # <-- NEW
                         'test_text': test_text,       # <-- ADDED
                         'rank': rank,
                         'score': match.get('score'),
@@ -123,7 +127,7 @@ def generate_csvs_explicit(results_dir):
         if all_rows:
             df = pd.DataFrame(all_rows)
             # Define specific column order for readability
-            cols = ['benchmark', 'test_id', 'test_text', 'rank', 'score', 'corpus_id', 'corpus_text']
+            cols = ['benchmark', 'test_id', 'elo_bin', 'rating', 'test_text', 'rank', 'score', 'corpus_id', 'corpus_text']
             # Reorder if keys exist, otherwise just use what we have
             df = df[[c for c in cols if c in df.columns]]
             
