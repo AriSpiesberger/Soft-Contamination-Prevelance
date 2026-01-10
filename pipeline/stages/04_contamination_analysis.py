@@ -519,7 +519,37 @@ def load_benchmark(benchmark_name: str, mode: str):
             solution = item.get('solution', '')
             data.append({'id': task_id, 'input': puzzle, 'output': solution})
 
-    texts, ids = [], []
+    elif benchmark_name == 'codeforces':
+        import pandas as pd
+        # Load from codeforces_uniform_recent.csv in project root
+        csv_path = Path(__file__).parent.parent.parent / 'codeforces_uniform_recent.csv'
+        if not csv_path.exists():
+            raise FileNotFoundError(f"Codeforces CSV not found at {csv_path}")
+        
+        df = pd.read_csv(csv_path)
+        print(f"  Loading {len(df)} Codeforces problems...")
+        
+        for _, row in df.iterrows():
+            problem_id = str(row['id'])
+            
+            # Concatenate problem text: description + input_format + output_format
+            parts = []
+            for col in ['description', 'input_format', 'output_format']:
+                val = row.get(col, '')
+                if pd.notna(val) and str(val).strip() and str(val).lower() != 'nan':
+                    parts.append(str(val))
+            text = '\n\n'.join(parts)
+            
+            data.append({
+                'id': problem_id,
+                'input': text,
+                'output': '',
+                'elo_bin': row.get('elo_bin'),
+                'rating': row.get('rating')
+            })
+
+    # Build return values
+    texts, ids, metadata = [], [], {}
     for item in data:
         if benchmark_name == 'musr' or benchmark_name.startswith('musr_'):
             texts.append(f"{item['input']}\n\n{item['output']}")
@@ -530,9 +560,21 @@ def load_benchmark(benchmark_name: str, mode: str):
                 texts.append(item['output'])
             else:
                 texts.append(f"{item['input']}\n\n{item['output']}")
+        elif benchmark_name == 'codeforces':
+            texts.append(item['input'])  # Already concatenated
+        else:
+            texts.append(f"{item['input']}\n\n{item['output']}")
+        
         ids.append(item['id'])
+        
+        # Store metadata if present (for codeforces)
+        if 'elo_bin' in item or 'rating' in item:
+            metadata[item['id']] = {
+                'elo_bin': item.get('elo_bin'),
+                'rating': item.get('rating')
+            }
 
-    return texts, ids
+    return texts, ids, metadata
 
 
 def flush_buffers(test_results, num_tests, shared_hash_id_buffer, rank=None):
@@ -765,17 +807,20 @@ def run_worker(rank, world_size, args):
     all_test_texts = []
 
     for benchmark in args.benchmarks:
-        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp' or benchmark == 'zebralogic') else args.modes
+        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp' or benchmark == 'zebralogic' or benchmark == 'codeforces') else args.modes
         for mode in modes_to_process:
-            test_texts, test_ids = load_benchmark(benchmark, mode)
+            test_texts, test_ids, test_metadata = load_benchmark(benchmark, mode)
             log.debug(f"  {benchmark.upper()}/{mode}: {len(test_texts)} test points")
             for text, test_id in zip(test_texts, test_ids):
+                meta = test_metadata.get(test_id, {})
                 all_test_data.append({
                     'benchmark': benchmark,
                     'mode': mode,
                     'test_id': test_id,
                     'text': text,
-                    'global_idx': len(all_test_texts)
+                    'global_idx': len(all_test_texts),
+                    'elo_bin': meta.get('elo_bin'),
+                    'rating': meta.get('rating'),
                 })
                 all_test_texts.append(text)
 
@@ -1171,16 +1216,19 @@ def run_merger(args, world_size):
     all_test_texts = []
 
     for benchmark in args.benchmarks:
-        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp' or benchmark == 'zebralogic') else args.modes
+        modes_to_process = ['input_output'] if (benchmark == 'musr' or benchmark.startswith('musr_') or benchmark == 'mbpp' or benchmark == 'zebralogic' or benchmark == 'codeforces') else args.modes
         for mode in modes_to_process:
-            test_texts, test_ids = load_benchmark(benchmark, mode)
+            test_texts, test_ids, test_metadata = load_benchmark(benchmark, mode)
             for text, test_id in zip(test_texts, test_ids):
+                meta = test_metadata.get(test_id, {})
                 all_test_data.append({
                     'benchmark': benchmark,
                     'mode': mode,
                     'test_id': test_id,
                     'text': text,
-                    'global_idx': len(all_test_texts)
+                    'global_idx': len(all_test_texts),
+                    'elo_bin': meta.get('elo_bin'),
+                    'rating': meta.get('rating'),
                 })
                 all_test_texts.append(text)
 
@@ -1280,6 +1328,8 @@ def run_merger(args, world_size):
                 'test_text': test_text,
                 'benchmark': benchmark,
                 'mode': mode,
+                'elo_bin': test_data.get('elo_bin'),
+                'rating': test_data.get('rating'),
                 'total_embeddings': len(all_similarities),
                 'top_1000': topk_matches,
                 'stats': {
