@@ -65,6 +65,11 @@ def generate(
         "-w",
         help="Number of concurrent workers (default: 4)",
     ),
+    skip_embeddings: bool = typer.Option(
+        False,
+        "--skip-embeddings",
+        help="Skip generating embeddings (store None in embedding columns)",
+    ),
 ) -> None:
     """Generate semantic duplicates for a dataset.
 
@@ -117,6 +122,7 @@ def generate(
             checkpoint_enabled=not no_checkpoint,
             input_file=input_file,
             workers=workers,
+            skip_embeddings=skip_embeddings,
         )
         typer.echo("\n✓ Generation complete!")
     except Exception as e:

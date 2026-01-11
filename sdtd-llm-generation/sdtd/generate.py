@@ -532,14 +532,14 @@ def cosine_similarity(vec1: list[float], vec2: list[float]) -> float:
 
 
 def calculate_all_metrics(original_text: str, sd_text: str,
-                         original_embedding: list[float], sd_embedding: list[float]) -> dict:
+                         original_embedding: list[float] | None, sd_embedding: list[float] | None) -> dict:
     """Calculate all similarity metrics.
 
     Args:
         original_text: Original text
         sd_text: Semantic duplicate text
-        original_embedding: Original text embedding
-        sd_embedding: SD text embedding
+        original_embedding: Original text embedding (or None to skip)
+        sd_embedding: SD text embedding (or None to skip)
 
     Returns:
         Dictionary of all metrics
@@ -565,7 +565,11 @@ def calculate_all_metrics(original_text: str, sd_text: str,
 
     num_preservation = check_number_preservation(original_text, sd_text)
 
-    embedding_cosine = round(cosine_similarity(original_embedding, sd_embedding), 4)
+    # Calculate embedding cosine similarity if embeddings are provided
+    if original_embedding is not None and sd_embedding is not None:
+        embedding_cosine = round(cosine_similarity(original_embedding, sd_embedding), 4)
+    else:
+        embedding_cosine = None
 
     return {
         'ngram_overlaps_pct': ngram_overlaps,
@@ -590,9 +594,10 @@ def process_item(
     variants: list[tuple[int, str, dict]], # (level, variant_name, prompt_config)
     output_path: Path,
     model_override: str | None = None,
+    skip_embeddings: bool = False,
 ) -> list[dict]:
     """Process a single item for multiple variants.
-    
+
     Args:
         item_idx: Index of item in dataset
         row: Data row
@@ -600,7 +605,8 @@ def process_item(
         variants: List of variants to process for this item
         output_path: Output file path to check/write
         model_override: Model override
-        
+        skip_embeddings: If True, skip embedding generation and store None
+
     Returns:
         List of generated SD result dictionaries
     """
@@ -686,9 +692,13 @@ def process_item(
                 sd_text = generate_single(row, prompt_config, dataset_name, model_override)
                 transformed_solution = None
 
-            # Get embeddings
-            original_embedding = get_embedding(original_text)
-            sd_embedding = get_embedding(sd_text)
+            # Get embeddings (or skip if requested)
+            if skip_embeddings:
+                original_embedding = None
+                sd_embedding = None
+            else:
+                original_embedding = get_embedding(original_text)
+                sd_embedding = get_embedding(sd_text)
 
             # Calculate metrics
             metrics = calculate_all_metrics(original_text, sd_text,
@@ -761,6 +771,7 @@ def generate_sds(
     checkpoint_enabled: bool = True, # Ignored, kept for compatibility
     input_file: Path | None = None,
     workers: int = 4,
+    skip_embeddings: bool = False,
 ) -> None:
     """Generate semantic duplicates for a dataset with parallel workers.
 
@@ -772,6 +783,7 @@ def generate_sds(
         model_override: Optional model override
         checkpoint_enabled: Deprecated, ignored (always resumes via file check)
         input_file: Optional input parquet file
+        skip_embeddings: If True, skip embedding generation and store None
         workers: Number of concurrent workers
     """
     output_file = Path(output_file)
@@ -872,13 +884,14 @@ def _generate_for_dataset_parallel(
         for idx, row in enumerate(df.iter_rows(named=True)):
             futures.append(
                 executor.submit(
-                    process_item, 
-                    idx, 
-                    row, 
-                    dataset_name, 
-                    variants_to_process, 
-                    output_path, 
-                    model_override
+                    process_item,
+                    idx,
+                    row,
+                    dataset_name,
+                    variants_to_process,
+                    output_path,
+                    model_override,
+                    skip_embeddings
                 )
             )
             
