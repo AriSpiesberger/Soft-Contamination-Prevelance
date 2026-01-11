@@ -262,8 +262,8 @@ def export_parquet_to_jsonl(
     if len(df) == 0:
         raise ValueError(f"No data found in {input_file} (after filtering)")
 
-    # Check if reasoning column exists
-    has_reasoning_column = 'reasoning' in df.columns
+    # Check if sd_reasoning column exists
+    has_sd_reasoning_column = 'sd_reasoning' in df.columns
 
     # Statistics tracking
     stats = {
@@ -369,7 +369,7 @@ def export_parquet_to_jsonl(
                         # Handle solution already in House dict format
                         elif isinstance(solution, dict):
                             solution_dict = solution
-                
+
                 # Only format the solution dict, reasoning will be in template
                 # Add 2 extra spaces of indentation for template embedding (except first line)
                 solution_json = json.dumps(solution_dict, indent=2)
@@ -387,9 +387,11 @@ def export_parquet_to_jsonl(
                         indented_lines.append(line)
                 row_dict["formatted_solution"] = "\n".join(indented_lines)
 
-            # Handle reasoning - use from parquet if available and non-empty, otherwise use placeholder
-            if has_reasoning_column and row_dict.get('reasoning', ''):
-                reasoning = row_dict['reasoning']
+            # Handle reasoning - use sd_reasoning from top-level column
+            reasoning = row_dict.get('sd_reasoning', '') if has_sd_reasoning_column else ''
+
+            # Use reasoning if found and non-empty, otherwise use placeholder
+            if reasoning:
                 stats['with_reasoning'] += 1
                 stats['reasoning_chars'].append(len(reasoning))
                 stats['reasoning_tokens'].append(len(reasoning) // 4)  # Rough estimate: 4 chars per token

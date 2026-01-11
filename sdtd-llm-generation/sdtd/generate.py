@@ -711,13 +711,16 @@ def process_item(
                     additional_info["original_solution"] = original_solution
                 if transformed_solution is not None:
                     additional_info["sd_solution"] = transformed_solution
-                if substitution_map:
-                    additional_info["value_category_map"] = substitution_map
-                # Add reasoning fields if present
-                if original_reasoning:
-                    additional_info["original_reasoning"] = original_reasoning
-                if sd_reasoning:
-                    additional_info["sd_reasoning"] = sd_reasoning
+                # Handle transformation metadata (value maps and clue permutations)
+                if substitution_map and isinstance(substitution_map, dict):
+                    # New format: dict with specific keys for clue_perm and/or value_map
+                    if "clue_permutation" in substitution_map:
+                        additional_info["clue_permutation"] = substitution_map["clue_permutation"]
+                    if "value_category_map" in substitution_map:
+                        additional_info["value_category_map"] = substitution_map["value_category_map"]
+                    # Backward compat: if it's just a value map dict (old category_substitution format)
+                    if not any(k in substitution_map for k in ["clue_permutation", "value_category_map"]):
+                        additional_info["value_category_map"] = substitution_map
             elif transformed_solution is not None:
                 additional_info["solution"] = transformed_solution
 
@@ -728,6 +731,8 @@ def process_item(
                 "model_used": model,
                 "original_text": original_text,
                 "sd_text": sd_text,
+                "original_reasoning": original_reasoning,  # NEW: top-level column
+                "sd_reasoning": sd_reasoning,  # NEW: top-level column
                 "original_embedding": original_embedding,
                 "sd_embedding": sd_embedding,
                 "embedding_model": EMBEDDING_MODEL,

@@ -551,6 +551,15 @@ def transform_condition_shuffle(puzzle: str, original_reasoning: str = "") -> tu
     shuffled_conditions = conditions.copy()
     random.shuffle(shuffled_conditions)
 
+    # Build clue permutation mapping: old_clue_num -> new_clue_num
+    clue_permutation = {}
+    for old_idx, (old_num, old_text, _, _) in enumerate(conditions):
+        # Find where this condition ended up in shuffled list
+        for new_idx, (_, shuffled_text, _, _) in enumerate(shuffled_conditions):
+            if old_text.strip() == shuffled_text.strip():
+                clue_permutation[int(old_num)] = new_idx + 1
+                break
+
     # Rebuild clues section with new numbering
     new_clues = []
     for i, (_, condition_text, _, _) in enumerate(shuffled_conditions, 1):
@@ -572,7 +581,7 @@ def transform_condition_shuffle(puzzle: str, original_reasoning: str = "") -> tu
         original_reasoning, conditions, shuffled_conditions
     ) if original_reasoning else ""
 
-    return transformed_puzzle, None, None, sd_reasoning
+    return transformed_puzzle, None, {"clue_permutation": clue_permutation}, sd_reasoning
 
 
 def transform_shuffle_and_substitute(
@@ -606,7 +615,7 @@ def transform_shuffle_and_substitute(
         model = default_config.get("model", SMALL_MODEL)
 
     # First, shuffle conditions
-    shuffled_puzzle, _, _, shuffled_reasoning = transform_condition_shuffle(puzzle, original_reasoning)
+    shuffled_puzzle, _, perm_dict, shuffled_reasoning = transform_condition_shuffle(puzzle, original_reasoning)
 
     # Then, apply category substitution
     # Note: we pass None to let it fetch its own prompt config
@@ -614,7 +623,14 @@ def transform_shuffle_and_substitute(
         shuffled_puzzle, solution, shuffled_reasoning, model, temperature, level, None
     )
 
-    return transformed_puzzle, transformed_solution, substitution_plan, sd_reasoning
+    # Merge clue_permutation and value_category_map into one dict
+    merged_dict = {}
+    if perm_dict and "clue_permutation" in perm_dict:
+        merged_dict["clue_permutation"] = perm_dict["clue_permutation"]
+    if substitution_plan:
+        merged_dict["value_category_map"] = substitution_plan
+
+    return transformed_puzzle, transformed_solution, merged_dict, sd_reasoning
 
 
 def transform_shuffle_and_paraphrase(
@@ -648,7 +664,7 @@ def transform_shuffle_and_paraphrase(
         model = default_config.get("model", SMALL_MODEL)
 
     # First, shuffle conditions
-    shuffled_puzzle, _, _, shuffled_reasoning = transform_condition_shuffle(puzzle, original_reasoning)
+    shuffled_puzzle, _, perm_dict, shuffled_reasoning = transform_condition_shuffle(puzzle, original_reasoning)
 
     # Then, paraphrase
     # Note: paraphrase doesn't return a plan or change the solution
@@ -657,7 +673,8 @@ def transform_shuffle_and_paraphrase(
         shuffled_puzzle, shuffled_reasoning, model, temperature, level, None
     )
 
-    return transformed_puzzle, None, None, sd_reasoning
+    # Return clue permutation from shuffle step
+    return transformed_puzzle, None, perm_dict, sd_reasoning
 
 
 def transform_shuffle_and_substitute_and_paraphrase(
@@ -696,7 +713,7 @@ def transform_shuffle_and_substitute_and_paraphrase(
         model = default_config.get("model", SMALL_MODEL)
 
     # 1. Shuffle
-    shuffled_puzzle, _, _, shuffled_reasoning = transform_condition_shuffle(puzzle, original_reasoning)
+    shuffled_puzzle, _, perm_dict, shuffled_reasoning = transform_condition_shuffle(puzzle, original_reasoning)
 
     # 2. Substitute
     # This uses the 'category_substitution' prompts (handled inside transform_category_substitution)
@@ -718,7 +735,14 @@ def transform_shuffle_and_substitute_and_paraphrase(
         None,  # Let it fetch its own prompt config
     )
 
-    return final_puzzle, subst_solution, subst_plan, final_reasoning
+    # Merge clue_permutation and value_category_map
+    merged_dict = {}
+    if perm_dict and "clue_permutation" in perm_dict:
+        merged_dict["clue_permutation"] = perm_dict["clue_permutation"]
+    if subst_plan:
+        merged_dict["value_category_map"] = subst_plan
+
+    return final_puzzle, subst_solution, merged_dict, final_reasoning
 
 
 def transform_paraphrase(
