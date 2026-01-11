@@ -649,36 +649,38 @@ def process_item(
                 
                 puzzle = row.get("puzzle", "")
                 solution = row.get("solution", {})
-                
+                original_reasoning = row.get("reasoning", "")
+
                 if variant_name == "category_substitution":
-                    sd_text, transformed_solution, substitution_map = transform_category_substitution(
-                        puzzle, solution, model, prompt_config.get("temperature"), level=level
+                    sd_text, transformed_solution, substitution_map, sd_reasoning = transform_category_substitution(
+                        puzzle, solution, original_reasoning, model, prompt_config.get("temperature"), level=level
                     )
                 elif variant_name == "condition_shuffle":
-                    sd_text = transform_condition_shuffle(puzzle)
-                    transformed_solution = solution  # Solution unchanged for shuffle-only
+                    sd_text, transformed_solution, substitution_map, sd_reasoning = transform_condition_shuffle(
+                        puzzle, original_reasoning
+                    )
                 elif variant_name == "shuffle_and_substitute":
                     # Combined shuffle + category substitution
-                    sd_text, transformed_solution, substitution_map = transform_shuffle_and_substitute(
-                        puzzle, solution, model, prompt_config.get("temperature"), level=level
+                    sd_text, transformed_solution, substitution_map, sd_reasoning = transform_shuffle_and_substitute(
+                        puzzle, solution, original_reasoning, model, prompt_config.get("temperature"), level=level, prompt_template=prompt_config
                     )
                 elif variant_name == "paraphrase":
-                    sd_text = transform_paraphrase(
-                        puzzle, model, prompt_config.get("temperature"), level=level, prompt_template=prompt_config
+                    sd_text, transformed_solution, substitution_map, sd_reasoning = transform_paraphrase(
+                        puzzle, original_reasoning, model, prompt_config.get("temperature"), level=level, prompt_template=prompt_config
                     )
-                    transformed_solution = solution # Solution unchanged for paraphrase
                 elif variant_name == "shuffle_and_paraphrase":
-                    sd_text, transformed_solution, _ = transform_shuffle_and_paraphrase(
-                        puzzle, solution, model, prompt_config.get("temperature"), level=level
+                    sd_text, transformed_solution, substitution_map, sd_reasoning = transform_shuffle_and_paraphrase(
+                        puzzle, solution, original_reasoning, model, prompt_config.get("temperature"), level=level, prompt_template=prompt_config
                     )
                 elif variant_name == "shuffle_and_substitute_and_paraphrase":
-                    sd_text, transformed_solution, substitution_map = transform_shuffle_and_substitute_and_paraphrase(
-                        puzzle, solution, model, prompt_config.get("temperature"), level=level
+                    sd_text, transformed_solution, substitution_map, sd_reasoning = transform_shuffle_and_substitute_and_paraphrase(
+                        puzzle, solution, original_reasoning, model, prompt_config.get("temperature"), level=level, prompt_template=prompt_config
                     )
                 else:
                     # Fallback to regular generation if not a specific logical transform
                     sd_text = generate_single(row, prompt_config, dataset_name, model_override)
                     transformed_solution = None
+                    sd_reasoning = ""
             else:
                 # Regular generation
                 sd_text = generate_single(row, prompt_config, dataset_name, model_override)
@@ -711,6 +713,11 @@ def process_item(
                     additional_info["sd_solution"] = transformed_solution
                 if substitution_map:
                     additional_info["value_category_map"] = substitution_map
+                # Add reasoning fields if present
+                if original_reasoning:
+                    additional_info["original_reasoning"] = original_reasoning
+                if sd_reasoning:
+                    additional_info["sd_reasoning"] = sd_reasoning
             elif transformed_solution is not None:
                 additional_info["solution"] = transformed_solution
 

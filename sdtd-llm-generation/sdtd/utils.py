@@ -55,24 +55,28 @@ def _load_prompts_cached(path: str) -> dict[str, Any]:
 
 def get_variant_config(dataset: str, level: int, variant: str) -> dict:
     """Get prompt configuration for a specific variant.
-    
+
     Uses caching to avoid repeated file reads.
-    
+
     Args:
         dataset: Dataset name
         level: Level number
         variant: Variant name
-        
+
     Returns:
         Configuration dictionary for the variant
     """
-    path = Path(f"prompts/level{level}.yaml")
+    # Resolve path relative to this file's directory (sdtd/)
+    # This ensures it works regardless of current working directory
+    module_dir = Path(__file__).parent.parent
+    path = module_dir / f"prompts/level{level}.yaml"
+
     if not path.exists():
         return {}
-        
+
     # Use cached loader (convert Path to str for lru_cache)
     data = _load_prompts_cached(str(path))
-    
+
     return data.get(dataset, {}).get(variant, {})
 
 

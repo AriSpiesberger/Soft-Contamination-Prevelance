@@ -12,7 +12,7 @@ from sdtd.datasets import load_zebralogic
 
 
 # Default reasoning placeholder when no reasoning is available
-DEFAULT_REASONING_PLACEHOLDER = "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house."
+DEFAULT_REASONING_PLACEHOLDER = "I'll solve this puzzle step by step by analyzing the clues and deducing the unique assignments for each house. [...]"
 
 
 def print_reasoning_stats(stats: Dict[str, Any]) -> None:

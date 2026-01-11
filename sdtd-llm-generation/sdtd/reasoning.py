@@ -2,14 +2,10 @@
 
 import json
 import logging
-import os
 import polars as pl
 from pathlib import Path
-from typing import Any
-import time
 
-from openai import OpenAI
-from sdtd.generate import retry_with_backoff, load_checkpoint, save_checkpoint, save_partial_results
+from sdtd.generate import load_checkpoint, save_checkpoint, save_partial_results
 from sdtd.utils import get_client
 
 # Template for ZebraLogic

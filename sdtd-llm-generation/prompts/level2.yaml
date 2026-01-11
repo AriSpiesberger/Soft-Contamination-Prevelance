@@ -18,7 +18,7 @@
 
 gsm8k:
   number_substitution:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE of a math word problem by changing numerical values.
 
@@ -84,7 +84,7 @@ gsm8k:
       Generate ONE number substitution variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no labels, no explanation, just the problem.
 
   object_substitution:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE by replacing objects and names.
 
@@ -158,7 +158,7 @@ gsm8k:
       Generate ONE domain-preserving object substitution variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation.
 
   domain_transfer:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE by transferring the problem to a different domain/context.
 
@@ -224,7 +224,7 @@ gsm8k:
       Generate ONE domain transfer variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem.
 
   compositional:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE using MULTIPLE parameter changes simultaneously.
 
@@ -305,7 +305,7 @@ gsm8k:
       Generate ONE compositional variant applying 2-3 transformations. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem.
 
   fictional_setting:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE by placing a math word problem into a fictional or fantastical setting with added narrative details.
 
@@ -371,7 +371,7 @@ gsm8k:
 
 codeforces:
   number_substitution:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE of a competitive programming problem by changing numerical constraints.
 
@@ -668,7 +668,7 @@ allenai:
 
 mbpp:
   parameter_substitution:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE of a Python programming problem by changing parameters and examples.
 
@@ -867,7 +867,7 @@ humaneval:
       Generate ONE parameter substitution variant. OUTPUT ONLY THE FUNCTION WITH DOCSTRING - no preamble, no explanation, just the function signature and docstring.
 
   domain_transfer:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE by changing the semantic domain of a Python function while preserving its algorithmic structure.
 
@@ -930,7 +930,7 @@ humaneval:
 
 popqa:
   entity_substitution:
-    model: "openrouter/anthropic/claude-sonnet-4.5"
+    model: "claude-4.5-sonnet/anthropic"
     user: |
       You are generating a STRUCTURAL DUPLICATE of a knowledge question by substituting the entity while keeping the relationship type IDENTICAL.
 
@@ -1012,7 +1012,7 @@ popqa:
 
 zebralogic:
   category_substitution:
-    model: "claude-4.5-haiku"
+    model: "claude-4.5-haiku/anthropic"
     # Two-step prompts used by zebralogic_transforms.py
     step1_plan:
       system: |
@@ -1089,7 +1089,7 @@ zebralogic:
     user: null
 
   paraphrase:
-    model: "claude-4.5-sonnet"
+    model: "claude-4.5-sonnet/anthropic"
     system: |
       You are an expert editor tasked with rewriting logic grid puzzles while exactly preserving the logical structure and semantics.
     user: |
