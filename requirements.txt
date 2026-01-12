@@ -1,0 +1,18 @@
+# MuSR Top-1000 Semantic Duplicate Analysis
+# Python Dependencies
+
+# Anthropic API client for Claude Opus 4.5
+anthropic>=0.18.0
+
+# Data handling
+pandas>=2.0.0
+
+# Environment variable loading
+python-dotenv>=1.0.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Rate limiting
+tenacity>=8.2.0
+
