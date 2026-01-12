@@ -1,0 +1,37 @@
+{
+  "task_id": 274,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a positive integer n and finds the sum of even index binomial coefficients.",
+  "python_code": "import math  \ndef even_binomial_Coeff_Sum( n): \n    return (1 << (n - 1)) ",
+  "test_list": [
+    "assert even_binomial_Coeff_Sum(4) == 8",
+    "assert even_binomial_Coeff_Sum(6) == 32",
+    "assert even_binomial_Coeff_Sum(2) == 2"
+  ],
+  "code_rust": "pub fn even_binomial_Coeff_Sum(n: i32) -> i32 {\n    1 << (n - 1)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert even_binomial_Coeff_Sum(4) == 8",
+      "generated_test": "let result = even_binomial_Coeff_Sum(4);\nlet expected = 8;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert even_binomial_Coeff_Sum(6) == 32",
+      "generated_test": "let result = even_binomial_Coeff_Sum(6);\nlet expected = 32;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert even_binomial_Coeff_Sum(2) == 2",
+      "generated_test": "let result = even_binomial_Coeff_Sum(2);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

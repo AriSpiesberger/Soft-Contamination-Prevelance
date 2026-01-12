@@ -1,0 +1,37 @@
+{
+  "task_id": 123,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum all amicable numbers from 1 to a specified number.",
+  "python_code": "def amicable_numbers_sum(limit):\n    if not isinstance(limit, int):\n        return \"Input is not an integer!\"\n    if limit < 1:\n        return \"Input must be bigger than 0!\"\n    amicables = set()\n    for num in range(2, limit+1):\n        if num in amicables:\n            continue\n        sum_fact = sum([fact for fact in range(1, num) if num % fact == 0])\n        sum_fact2 = sum([fact for fact in range(1, sum_fact) if sum_fact % fact == 0])\n        if num == sum_fact2 and num != sum_fact:\n            amicables.add(num)\n            amicables.add(sum_fact2)\n    return sum(amicables)",
+  "test_list": [
+    "assert amicable_numbers_sum(999)==504",
+    "assert amicable_numbers_sum(9999)==31626",
+    "assert amicable_numbers_sum(99)==0"
+  ],
+  "code_javascript": "function amicable_numbers_sum(limit) {\n    if (!Number.isInteger(limit)) {\n        return \"Input is not an integer!\";\n    }\n    if (limit < 1) {\n        return \"Input must be bigger than 0!\";\n    }\n    const amicables = new Set();\n    for (let num = 2; num <= limit; num++) {\n        if (amicables.has(num)) {\n            continue;\n        }\n        let sum_fact = 0;\n        for (let fact = 1; fact < num; fact++) {\n            if (num % fact === 0) {\n                sum_fact += fact;\n            }\n        }\n        let sum_fact2 = 0;\n        for (let fact = 1; fact < sum_fact; fact++) {\n            if (sum_fact % fact === 0) {\n                sum_fact2 += fact;\n            }\n        }\n        if (num === sum_fact2 && num !== sum_fact) {\n            amicables.add(num);\n            amicables.add(sum_fact2);\n        }\n    }\n    let total = 0;\n    for (const val of amicables) {\n        total += val;\n    }\n    return total;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert amicable_numbers_sum(999)==504",
+      "generated_test": "const result = amicable_numbers_sum(999);\nconst expected = 504;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(9999)==31626",
+      "generated_test": "const result = amicable_numbers_sum(9999);\nconst expected = 31626;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(99)==0",
+      "generated_test": "const result = amicable_numbers_sum(99);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

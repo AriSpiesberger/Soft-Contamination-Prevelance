@@ -1,0 +1,37 @@
+{
+  "task_id": 257,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two numbers and returns a tuple with the second number and then the first number.",
+  "python_code": "def swap_numbers(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)",
+  "test_list": [
+    "assert swap_numbers(10,20)==(20,10)",
+    "assert swap_numbers(15,17)==(17,15)",
+    "assert swap_numbers(100,200)==(200,100)"
+  ],
+  "code_go": "package main\n\nfunc swap_numbers(a, b int) [2]int {\n\ttemp := a\n\ta = b\n\tb = temp\n\treturn [2]int{a, b}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert swap_numbers(10,20)==(20,10)",
+      "generated_test": "result := swap_numbers(10, 20)\nexpected := [2]int{20, 10}\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_numbers(15,17)==(17,15)",
+      "generated_test": "result := swap_numbers(15, 17)\nexpected := [2]int{17, 15}\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_numbers(100,200)==(200,100)",
+      "generated_test": "result := swap_numbers(100, 200)\nexpected := [2]int{200, 100}\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

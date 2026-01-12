@@ -1,0 +1,37 @@
+{
+  "task_id": 131,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse only the vowels of a given string (where y is not a vowel).",
+  "python_code": "def reverse_vowels(str1):\n\tvowels = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tvowels += char\n\tresult_string = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tresult_string += vowels[-1]\n\t\t\tvowels = vowels[:-1]\n\t\telse:\n\t\t\tresult_string += char\n\treturn result_string",
+  "test_list": [
+    "assert reverse_vowels(\"Python\") == \"Python\"",
+    "assert reverse_vowels(\"USA\") == \"ASU\"",
+    "assert reverse_vowels(\"ab\") == \"ab\""
+  ],
+  "code_javascript": "function reverse_vowels(str1) {\n\tlet vowels = \"\";\n\tfor (let char of str1) {\n\t\tif (\"aeiouAEIOU\".includes(char)) {\n\t\t\tvowels += char;\n\t\t}\n\t}\n\tlet result_string = \"\";\n\tfor (let char of str1) {\n\t\tif (\"aeiouAEIOU\".includes(char)) {\n\t\t\tresult_string += vowels[vowels.length - 1];\n\t\t\tvowels = vowels.slice(0, -1);\n\t\t} else {\n\t\t\tresult_string += char;\n\t\t}\n\t}\n\treturn result_string;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert reverse_vowels(\"Python\") == \"Python\"",
+      "generated_test": "const result = reverse_vowels(\"Python\");\nconst expected = \"Python\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"USA\") == \"ASU\"",
+      "generated_test": "const result = reverse_vowels(\"USA\");\nconst expected = \"ASU\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"ab\") == \"ab\"",
+      "generated_test": "const result = reverse_vowels(\"ab\");\nconst expected = \"ab\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

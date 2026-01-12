@@ -1,0 +1,44 @@
+{
+  "task_id": 773,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the occurrence and position of the substrings within a string. Return None if there is no match.",
+  "python_code": "import re\ndef occurance_substring(text,pattern):\n for match in re.finditer(pattern, text):\n    s = match.start()\n    e = match.end()\n    return (text[s:e], s, e)",
+  "test_list": [
+    "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+    "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+    "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+    "assert occurance_substring('c++ programming, c++ language','python')==None"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc occurance_substring(text, pattern string) interface{} {\n\tre := regexp.MustCompile(pattern)\n\tmatch := re.FindStringIndex(text)\n\tif match == nil {\n\t\treturn nil\n\t}\n\ts := match[0]\n\te := match[1]\n\treturn []interface{}{text[s:e], s, e}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+      "generated_test": "result := occurance_substring(\"python programming, python language\", \"python\")\n\nexpected := []interface{}{\"python\", 0, 6}\n\npass := false\nif resultSlice, ok := result.([]interface{}); ok {\n\tif len(resultSlice) == 3 {\n\t\tif str, ok1 := resultSlice[0].(string); ok1 {\n\t\t\tif start, ok2 := resultSlice[1].(int); ok2 {\n\t\t\t\tif end, ok3 := resultSlice[2].(int); ok3 {\n\t\t\t\t\tif str == expected[0].(string) && start == expected[1].(int) && end == expected[2].(int) {\n\t\t\t\t\t\tpass = true\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+      "generated_test": "result := occurance_substring(\"python programming,programming language\", \"programming\")\nexpected := []interface{}{\"programming\", 7, 18}\n\npass := true\nif result == nil {\n\tpass = false\n} else if arr, ok := result.([]interface{}); ok {\n\tif len(arr) != 3 {\n\t\tpass = false\n\t} else {\n\t\tif arr[0] != expected[0] {\n\t\t\tpass = false\n\t\t}\n\t\tif arr[1] != expected[1] {\n\t\t\tpass = false\n\t\t}\n\t\tif arr[2] != expected[2] {\n\t\t\tpass = false\n\t\t}\n\t}\n} else {\n\tpass = false\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+      "generated_test": "result := occurance_substring(\"python programming,programming language\", \"language\")\n\nexpected := []interface{}{\"language\", 31, 39}\n\npass := false\nif resultSlice, ok := result.([]interface{}); ok {\n\tif len(resultSlice) == len(expected) {\n\t\tif resultSlice[0] == expected[0] && resultSlice[1] == expected[1] && resultSlice[2] == expected[2] {\n\t\t\tpass = true\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('c++ programming, c++ language','python')==None",
+      "generated_test": "result := occurance_substring(\"c++ programming, c++ language\", \"python\")\nexpected := interface{}(nil)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

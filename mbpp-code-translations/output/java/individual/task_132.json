@@ -1,0 +1,37 @@
+{
+  "task_id": 132,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a tuple to a string.",
+  "python_code": "def tup_string(tup1):\n  str =  ''.join(tup1)\n  return str",
+  "test_list": [
+    "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+    "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+    "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static String tup_string(String[] tup1) {\n        StringBuilder str = new StringBuilder();\n        for (String s : tup1) {\n            str.append(s);\n        }\n        return str.toString();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+      "generated_test": "String[] input = new String[]{\"e\", \"x\", \"e\", \"r\", \"c\", \"i\", \"s\", \"e\", \"s\"};\nString result = tup_string(input);\nString expected = \"exercises\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+      "generated_test": "String[] input = new String[]{\"p\", \"y\", \"t\", \"h\", \"o\", \"n\"};\nString expected = \"python\";\nString result = tup_string(input);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")",
+      "generated_test": "String[] input = new String[]{\"p\", \"r\", \"o\", \"g\", \"r\", \"a\", \"m\"};\nString expected = \"program\";\nString result = tup_string(input);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 787,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by three 'b'.",
+  "python_code": "import re\ndef text_match_three(text):\n        patterns = 'ab{3}?'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert not text_match_three(\"ac\")",
+    "assert not text_match_three(\"dc\")",
+    "assert text_match_three(\"abbbba\")",
+    "assert text_match_three(\"caacabbbba\")"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc text_match_three(text string) bool {\n\tpattern := `ab{3}`\n\tre := regexp.MustCompile(pattern)\n\treturn re.MatchString(text)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert not text_match_three(\"ac\")",
+      "generated_test": "result := text_match_three(\"ac\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_match_three(\"dc\")",
+      "generated_test": "result := text_match_three(\"dc\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"abbbba\")",
+      "generated_test": "result := text_match_three(\"abbbba\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"caacabbbba\")",
+      "generated_test": "result := text_match_three(\"caacabbbba\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

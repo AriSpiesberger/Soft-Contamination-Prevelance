@@ -1,0 +1,37 @@
+{
+  "task_id": 776,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count those characters which have vowels as their neighbors in the given string.",
+  "python_code": "def count_vowels(test_str):\n  res = 0\n  vow_list = ['a', 'e', 'i', 'o', 'u']\n  for idx in range(1, len(test_str) - 1):\n    if test_str[idx] not in vow_list and (test_str[idx - 1] in vow_list or test_str[idx + 1] in vow_list):\n      res += 1\n  if test_str[0] not in vow_list and test_str[1] in vow_list:\n    res += 1\n  if test_str[-1] not in vow_list and test_str[-2] in vow_list:\n    res += 1\n  return (res) ",
+  "test_list": [
+    "assert count_vowels('bestinstareels') == 7",
+    "assert count_vowels('partofthejourneyistheend') == 12",
+    "assert count_vowels('amazonprime') == 5"
+  ],
+  "code_ruby": "def count_vowels(test_str)\n  res = 0\n  vow_list = ['a', 'e', 'i', 'o', 'u']\n  \n  (1...(test_str.length - 1)).each do |idx|\n    if !vow_list.include?(test_str[idx]) && (vow_list.include?(test_str[idx - 1]) || vow_list.include?(test_str[idx + 1]))\n      res += 1\n    end\n  end\n  \n  if !vow_list.include?(test_str[0]) && vow_list.include?(test_str[1])\n    res += 1\n  end\n  \n  if !vow_list.include?(test_str[-1]) && vow_list.include?(test_str[-2])\n    res += 1\n  end\n  \n  res\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert count_vowels('bestinstareels') == 7",
+      "generated_test": "result = count_vowels('bestinstareels')\nexpected = 7\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_vowels('partofthejourneyistheend') == 12",
+      "generated_test": "result = count_vowels('partofthejourneyistheend')\nexpected = 12\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_vowels('amazonprime') == 5",
+      "generated_test": "result = count_vowels('amazonprime')\nexpected = 5\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

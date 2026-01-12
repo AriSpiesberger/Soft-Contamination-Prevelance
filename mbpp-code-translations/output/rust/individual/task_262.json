@@ -1,0 +1,37 @@
+{
+  "task_id": 262,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer L and splits the given list into two parts where the length of the first part of the list is L, and returns the resulting lists in a tuple.",
+  "python_code": "def split_two_parts(list1, L):\n    return list1[:L], list1[L:]",
+  "test_list": [
+    "assert split_two_parts([1,1,2,3,4,4,5,1],3)==([1, 1, 2], [3, 4, 4, 5, 1])",
+    "assert split_two_parts(['a', 'b', 'c', 'd'],2)==(['a', 'b'], ['c', 'd'])",
+    "assert split_two_parts(['p', 'y', 't', 'h', 'o', 'n'],4)==(['p', 'y', 't', 'h'], ['o', 'n'])"
+  ],
+  "code_rust": "pub fn split_two_parts<T: Clone>(list1: Vec<T>, l: usize) -> (Vec<T>, Vec<T>) {\n    let first = list1[..l].to_vec();\n    let second = list1[l..].to_vec();\n    (first, second)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert split_two_parts([1,1,2,3,4,4,5,1],3)==([1, 1, 2], [3, 4, 4, 5, 1])",
+      "generated_test": "let result = split_two_parts(vec![1, 1, 2, 3, 4, 4, 5, 1], 3);\nlet expected = (vec![1, 1, 2], vec![3, 4, 4, 5, 1]);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split_two_parts(['a', 'b', 'c', 'd'],2)==(['a', 'b'], ['c', 'd'])",
+      "generated_test": "let result = split_two_parts(vec![\"a\", \"b\", \"c\", \"d\"], 2);\nlet expected = (vec![\"a\", \"b\"], vec![\"c\", \"d\"]);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split_two_parts(['p', 'y', 't', 'h', 'o', 'n'],4)==(['p', 'y', 't', 'h'], ['o', 'n'])",
+      "generated_test": "let result = split_two_parts(vec!['p', 'y', 't', 'h', 'o', 'n'], 4);\nlet expected = (vec!['p', 'y', 't', 'h'], vec!['o', 'n']);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

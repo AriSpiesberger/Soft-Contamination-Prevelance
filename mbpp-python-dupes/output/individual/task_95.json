@@ -1,0 +1,27 @@
+{
+  "task_id": 95,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the smallest list in a list of lists.",
+  "code_python": "def Find_Min_Length(lst):  \n    minLength = min(len(x) for x in lst )\n    return minLength ",
+  "test_list": [
+    "assert Find_Min_Length([[1],[1,2]]) == 1",
+    "assert Find_Min_Length([[1,2],[1,2,3],[1,2,3,4]]) == 2",
+    "assert Find_Min_Length([[3,3,3],[4,4,4,4]]) == 3"
+  ],
+  "python_1": "def Find_Min_Length(lst):  \n    # Use map to apply len function to each sublist, creating an iterator of lengths\n    lengths = map(len, lst)\n    # Convert the map object to a list for explicit length values\n    lengths_list = list(lengths)\n    # Sort the list of lengths in ascending order to put smallest first\n    lengths_list.sort()\n    # Return the first element which is the minimum after sorting\n    return lengths_list[0]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def Find_Min_Length(lst):  \n    # Initialize minimum length to infinity to ensure any real length is smaller\n    min_len = float('inf')\n    # Loop through each sublist using index-based iteration\n    for i in range(len(lst)):\n        # Calculate the length of the current sublist at index i\n        current_len = len(lst[i])\n        # Compare current length against tracked minimum using conditional expression\n        min_len = current_len if current_len < min_len else min_len\n    # Return the smallest length found after examining all sublists\n    return min_len",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def Find_Min_Length(lst):  \n    # Use reduce to accumulate the minimum length across all sublists\n    from functools import reduce\n    # Define a lambda that compares accumulated minimum with current sublist's length\n    min_length = reduce(lambda acc, sublist: acc if acc < len(sublist) else len(sublist), lst, float('inf'))\n    # Return the final reduced minimum value\n    return min_length",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def Find_Min_Length(lst):  \n    # Build a list of all sublist lengths using list comprehension\n    all_lengths = [len(sublist) for sublist in lst]\n    # Use recursion helper to find minimum without built-in min function\n    def find_min_recursive(lengths, index, current_min):\n        # Base case: when we've checked all lengths, return the minimum found\n        if index >= len(lengths):\n            return current_min\n        # Update current minimum if this length is smaller\n        new_min = lengths[index] if lengths[index] < current_min else current_min\n        # Recursive call to process the next element in the lengths list\n        return find_min_recursive(lengths, index + 1, new_min)\n    # Start recursion with first element as initial minimum\n    return find_min_recursive(all_lengths, 1, all_lengths[0])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def Find_Min_Length(lst):  \n    # Use a while loop to pop and compare lengths, simulating stack-based processing\n    lengths_stack = [len(sublist) for sublist in lst]\n    # Continue reducing the stack until only one element (the minimum) remains\n    while len(lengths_stack) > 1:\n        # Pop the last two lengths from the stack for comparison\n        first = lengths_stack.pop()\n        # Pop another element to compare against the first\n        second = lengths_stack.pop()\n        # Push back the smaller of the two lengths onto the stack\n        lengths_stack.append(first if first < second else second)\n    # The sole remaining element is the minimum length across all sublists\n    return lengths_stack[0]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

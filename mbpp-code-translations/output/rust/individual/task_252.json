@@ -1,0 +1,37 @@
+{
+  "task_id": 252,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert complex numbers to polar coordinates.",
+  "python_code": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num) ",
+  "test_list": [
+    "assert convert(1) == (1.0, 0.0)",
+    "assert convert(4) == (4.0,0.0)",
+    "assert convert(5) == (5.0,0.0)"
+  ],
+  "code_rust": "use std::f64::consts::PI;\n\npub fn convert(number: f64) -> (f64, f64) {\n    let r = number.abs();\n    let theta = if number >= 0.0 { 0.0 } else { PI };\n    (r, theta)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert convert(1) == (1.0, 0.0)",
+      "generated_test": "let result = convert(1.0);\nlet expected = (1.0, 0.0);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(4) == (4.0,0.0)",
+      "generated_test": "let result = convert(4.0);\nlet expected = (4.0, 0.0);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(5) == (5.0,0.0)",
+      "generated_test": "let result = convert(5.0);\nlet expected = (5.0, 0.0);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

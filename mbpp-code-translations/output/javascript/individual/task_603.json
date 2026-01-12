@@ -1,0 +1,37 @@
+{
+  "task_id": 603,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get all lucid numbers smaller than or equal to a given integer.",
+  "python_code": "def get_ludic(n):\n\tludics = []\n\tfor i in range(1, n + 1):\n\t\tludics.append(i)\n\tindex = 1\n\twhile(index != len(ludics)):\n\t\tfirst_ludic = ludics[index]\n\t\tremove_index = index + first_ludic\n\t\twhile(remove_index < len(ludics)):\n\t\t\tludics.remove(ludics[remove_index])\n\t\t\tremove_index = remove_index + first_ludic - 1\n\t\tindex += 1\n\treturn ludics",
+  "test_list": [
+    "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+    "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+    "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]"
+  ],
+  "code_javascript": "function get_ludic(n) {\n\tlet ludics = [];\n\tfor (let i = 1; i <= n; i++) {\n\t\tludics.push(i);\n\t}\n\tlet index = 1;\n\twhile (index !== ludics.length) {\n\t\tlet first_ludic = ludics[index];\n\t\tlet remove_index = index + first_ludic;\n\t\twhile (remove_index < ludics.length) {\n\t\t\tludics.splice(remove_index, 1);\n\t\t\tremove_index = remove_index + first_ludic - 1;\n\t\t}\n\t\tindex += 1;\n\t}\n\treturn ludics;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+      "generated_test": "const result = get_ludic(10);\nconst expected = [1, 2, 3, 5, 7];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+      "generated_test": "const result = JSON.stringify(get_ludic(25));\nconst expected = JSON.stringify([1, 2, 3, 5, 7, 11, 13, 17, 23, 25]);\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]",
+      "generated_test": "const result = get_ludic(45);\nconst expected = [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

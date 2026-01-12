@@ -1,0 +1,37 @@
+{
+  "task_id": 475,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a dictionary by value.",
+  "python_code": "from collections import Counter\ndef sort_counter(dict1):\n x = Counter(dict1)\n sort_counter=x.most_common()\n return sort_counter",
+  "test_list": [
+    "assert sort_counter({'Math':81, 'Physics':83, 'Chemistry':87})==[('Chemistry', 87), ('Physics', 83), ('Math', 81)]",
+    "assert sort_counter({'Math':400, 'Physics':300, 'Chemistry':250})==[('Math', 400), ('Physics', 300), ('Chemistry', 250)]",
+    "assert sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250})==[('Chemistry', 1250), ('Physics', 1000), ('Math', 900)]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<List<Object>> sort_counter(Map<String, Integer> dict1) {\n        List<Map.Entry<String, Integer>> entries = new ArrayList<>(dict1.entrySet());\n        \n        // Sort by value in descending order\n        Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {\n            @Override\n            public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {\n                return Integer.compare(b.getValue(), a.getValue());\n            }\n        });\n        \n        // Convert to list of lists (like Python tuples)\n        List<List<Object>> result = new ArrayList<>();\n        for (Map.Entry<String, Integer> entry : entries) {\n            List<Object> tuple = new ArrayList<>();\n            tuple.add(entry.getKey());\n            tuple.add(entry.getValue());\n            result.add(tuple);\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 8,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sort_counter({'Math':81, 'Physics':83, 'Chemistry':87})==[('Chemistry', 87), ('Physics', 83), ('Math', 81)]",
+      "generated_test": "Map<String, Integer> input = new HashMap<>();\ninput.put(\"Math\", 81);\ninput.put(\"Physics\", 83);\ninput.put(\"Chemistry\", 87);\n\nList<List<Object>> result = sort_counter(input);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> tuple1 = new ArrayList<>();\ntuple1.add(\"Chemistry\");\ntuple1.add(87);\nexpected.add(tuple1);\nList<Object> tuple2 = new ArrayList<>();\ntuple2.add(\"Physics\");\ntuple2.add(83);\nexpected.add(tuple2);\nList<Object> tuple3 = new ArrayList<>();\ntuple3.add(\"Math\");\ntuple3.add(81);\nexpected.add(tuple3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_counter({'Math':400, 'Physics':300, 'Chemistry':250})==[('Math', 400), ('Physics', 300), ('Chemistry', 250)]",
+      "generated_test": "Map<String, Integer> input = new LinkedHashMap<>();\ninput.put(\"Math\", 400);\ninput.put(\"Physics\", 300);\ninput.put(\"Chemistry\", 250);\n\nList<List<Object>> result = sort_counter(input);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> tuple1 = new ArrayList<>();\ntuple1.add(\"Math\");\ntuple1.add(400);\nexpected.add(tuple1);\nList<Object> tuple2 = new ArrayList<>();\ntuple2.add(\"Physics\");\ntuple2.add(300);\nexpected.add(tuple2);\nList<Object> tuple3 = new ArrayList<>();\ntuple3.add(\"Chemistry\");\ntuple3.add(250);\nexpected.add(tuple3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250})==[('Chemistry', 1250), ('Physics', 1000), ('Math', 900)]",
+      "generated_test": "Map<String, Integer> input = new HashMap<>();\ninput.put(\"Math\", 900);\ninput.put(\"Physics\", 1000);\ninput.put(\"Chemistry\", 1250);\n\nList<List<Object>> result = sort_counter(input);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> tuple1 = new ArrayList<>();\ntuple1.add(\"Chemistry\");\ntuple1.add(1250);\nexpected.add(tuple1);\nList<Object> tuple2 = new ArrayList<>();\ntuple2.add(\"Physics\");\ntuple2.add(1000);\nexpected.add(tuple2);\nList<Object> tuple3 = new ArrayList<>();\ntuple3.add(\"Math\");\ntuple3.add(900);\nexpected.add(tuple3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

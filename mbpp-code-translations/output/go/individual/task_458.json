@@ -1,0 +1,37 @@
+{
+  "task_id": 458,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the area of a rectangle.",
+  "python_code": "def rectangle_area(l,b):\n  area=l*b\n  return area",
+  "test_list": [
+    "assert rectangle_area(10,20)==200",
+    "assert rectangle_area(10,5)==50",
+    "assert rectangle_area(4,2)==8"
+  ],
+  "code_go": "package main\n\nfunc rectangle_area(l, b int) int {\n\tarea := l * b\n\treturn area\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert rectangle_area(10,20)==200",
+      "generated_test": "result := rectangle_area(10, 20)\nexpected := 200\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rectangle_area(10,5)==50",
+      "generated_test": "result := rectangle_area(10, 5)\nexpected := 50\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rectangle_area(4,2)==8",
+      "generated_test": "result := rectangle_area(4, 2)\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

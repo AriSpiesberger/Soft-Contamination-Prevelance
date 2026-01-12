@@ -1,0 +1,37 @@
+{
+  "task_id": 585,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n most expensive items in a given dataset.",
+  "python_code": "import heapq\ndef expensive_items(items,n):\n  expensive_items = heapq.nlargest(n, items, key=lambda s: s['price'])\n  return expensive_items",
+  "test_list": [
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]"
+  ],
+  "code_javascript": "function expensive_items(items, n) {\n  const sorted = [...items].sort((a, b) => b.price - a.price);\n  return sorted.slice(0, n);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "const result = expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}], 1);\nconst expected = [{'name': 'Item-2', 'price': 555.22}];\n\nconst areEqual = JSON.stringify(result) === JSON.stringify(expected);\n\nif (areEqual) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+      "generated_test": "const result = expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}], 2);\nconst expected = [{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "const result = expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}], 1);\nconst expected = [{'name': 'Item-2', 'price': 555.22}];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 117,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert all possible convertible elements in a list of lists to floats.",
+  "python_code": "def list_to_float(test_list):\n  res = []\n  for tup in test_list:\n    temp = []\n    for ele in tup:\n      if ele.isalpha():\n        temp.append(ele)\n      else:\n        temp.append(float(ele))\n    res.append((temp[0],temp[1])) \n  return res",
+  "test_list": [
+    "assert list_to_float( [(\"3\", \"4\"), (\"1\", \"26.45\"), (\"7.32\", \"8\"), (\"4\", \"8\")] ) == [(3.0, 4.0), (1.0, 26.45), (7.32, 8.0), (4.0, 8.0)]",
+    "assert list_to_float( [(\"4\", \"4\"), (\"2\", \"27\"), (\"4.12\", \"9\"), (\"7\", \"11\")] ) == [(4.0, 4.0), (2.0, 27.0), (4.12, 9.0), (7.0, 11.0)]",
+    "assert list_to_float( [(\"6\", \"78\"), (\"5\", \"26.45\"), (\"1.33\", \"4\"), (\"82\", \"13\")] ) == [(6.0, 78.0), (5.0, 26.45), (1.33, 4.0), (82.0, 13.0)]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Object[]> list_to_float(String[][] test_list) {\n        ArrayList<Object[]> res = new ArrayList<>();\n        for (String[] tup : test_list) {\n            ArrayList<Object> temp = new ArrayList<>();\n            for (String ele : tup) {\n                if (isAlpha(ele)) {\n                    temp.add(ele);\n                } else {\n                    temp.add(Double.parseDouble(ele));\n                }\n            }\n            res.add(new Object[]{temp.get(0), temp.get(1)});\n        }\n        return res;\n    }\n    \n    private static boolean isAlpha(String s) {\n        if (s == null || s.isEmpty()) {\n            return false;\n        }\n        for (char c : s.toCharArray()) {\n            if (!Character.isLetter(c)) {\n                return false;\n            }\n        }\n        return true;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert list_to_float( [(\"3\", \"4\"), (\"1\", \"26.45\"), (\"7.32\", \"8\"), (\"4\", \"8\")] ) == [(3.0, 4.0), (1.0, 26.45), (7.32, 8.0), (4.0, 8.0)]",
+      "generated_test": "String[][] input = new String[][]{{\"3\", \"4\"}, {\"1\", \"26.45\"}, {\"7.32\", \"8\"}, {\"4\", \"8\"}};\nArrayList<Object[]> result = list_to_float(input);\n\nDouble[][] expected = new Double[][]{{3.0, 4.0}, {1.0, 26.45}, {7.32, 8.0}, {4.0, 8.0}};\n\nboolean pass = true;\nif (result.size() != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        Object[] resultPair = result.get(i);\n        Double[] expectedPair = expected[i];\n        if (!resultPair[0].equals(expectedPair[0]) || !resultPair[1].equals(expectedPair[1])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        Object[] pair = result.get(i);\n        gotStr.append(\"(\").append(pair[0]).append(\", \").append(pair[1]).append(\")\");\n        if (i < result.size() - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [(3.0, 4.0), (1.0, 26.45), (7.32, 8.0), (4.0, 8.0)]\");\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert list_to_float( [(\"4\", \"4\"), (\"2\", \"27\"), (\"4.12\", \"9\"), (\"7\", \"11\")] ) == [(4.0, 4.0), (2.0, 27.0), (4.12, 9.0), (7.0, 11.0)]",
+      "generated_test": "String[][] input = new String[][]{{\"4\", \"4\"}, {\"2\", \"27\"}, {\"4.12\", \"9\"}, {\"7\", \"11\"}};\nArrayList<Object[]> result = list_to_float(input);\n\nObject[][] expected = new Object[][]{{4.0, 4.0}, {2.0, 27.0}, {4.12, 9.0}, {7.0, 11.0}};\n\nboolean pass = true;\nif (result.size() != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        Object[] resArr = result.get(i);\n        Object[] expArr = expected[i];\n        if (resArr.length != expArr.length) {\n            pass = false;\n            break;\n        }\n        for (int j = 0; j < expArr.length; j++) {\n            if (!resArr[j].equals(expArr[j])) {\n                pass = false;\n                break;\n            }\n        }\n        if (!pass) break;\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        Object[] arr = result.get(i);\n        gotStr.append(\"(\").append(arr[0]).append(\", \").append(arr[1]).append(\")\");\n        if (i < result.size() - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    StringBuilder expStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        Object[] arr = expected[i];\n        expStr.append(\"(\").append(arr[0]).append(\", \").append(arr[1]).append(\")\");\n        if (i < expected.length - 1) expStr.append(\", \");\n    }\n    expStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert list_to_float( [(\"6\", \"78\"), (\"5\", \"26.45\"), (\"1.33\", \"4\"), (\"82\", \"13\")] ) == [(6.0, 78.0), (5.0, 26.45), (1.33, 4.0), (82.0, 13.0)]",
+      "generated_test": "String[][] input = {{\"6\", \"78\"}, {\"5\", \"26.45\"}, {\"1.33\", \"4\"}, {\"82\", \"13\"}};\nArrayList<Object[]> result = list_to_float(input);\n\ndouble[][] expected = {{6.0, 78.0}, {5.0, 26.45}, {1.33, 4.0}, {82.0, 13.0}};\n\nboolean pass = true;\nif (result.size() != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        Object[] resultPair = result.get(i);\n        if (resultPair.length != 2) {\n            pass = false;\n            break;\n        }\n        double r0 = (Double) resultPair[0];\n        double r1 = (Double) resultPair[1];\n        if (r0 != expected[i][0] || r1 != expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[(\");\n    for (int i = 0; i < expected.length; i++) {\n        if (i > 0) expectedStr.append(\", (\");\n        expectedStr.append(expected[i][0]).append(\", \").append(expected[i][1]).append(\")\");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        if (i > 0) gotStr.append(\", \");\n        Object[] pair = result.get(i);\n        gotStr.append(\"(\").append(pair[0]).append(\", \").append(pair[1]).append(\")\");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr);\n    System.out.println(\"  Got: \" + gotStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

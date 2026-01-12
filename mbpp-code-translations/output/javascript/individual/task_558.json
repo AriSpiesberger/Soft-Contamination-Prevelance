@@ -1,0 +1,37 @@
+{
+  "task_id": 558,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the per-digit difference between two integers.",
+  "python_code": "def digit_distance_nums(n1, n2):\n         return sum(map(int,str(abs(n1-n2))))",
+  "test_list": [
+    "assert digit_distance_nums(1,2) == 1",
+    "assert digit_distance_nums(23,56) == 6",
+    "assert digit_distance_nums(123,256) == 7"
+  ],
+  "code_javascript": "function digit_distance_nums(n1, n2) {\n    return String(Math.abs(n1 - n2)).split('').reduce((sum, digit) => sum + parseInt(digit), 0);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert digit_distance_nums(1,2) == 1",
+      "generated_test": "const result = digit_distance_nums(1, 2);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert digit_distance_nums(23,56) == 6",
+      "generated_test": "const result = digit_distance_nums(23, 56);\nconst expected = 6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert digit_distance_nums(123,256) == 7",
+      "generated_test": "const result = digit_distance_nums(123, 256);\nconst expected = 7;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

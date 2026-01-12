@@ -1,0 +1,17 @@
+{
+  "task_id": 392,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum sum possible by using the given equation f(n) = max( (f(n/2) + f(n/3) + f(n/4) + f(n/5)), n).",
+  "python_code": "def get_max_sum (n):\n\tres = list()\n\tres.append(0)\n\tres.append(1)\n\ti = 2\n\twhile i<n + 1:\n\t\tres.append(max(i, (res[int(i / 2)] \n\t\t\t\t\t\t+ res[int(i / 3)] +\n\t\t\t\t\t\t\tres[int(i / 4)]\n\t\t\t\t\t\t+ res[int(i / 5)])))\n\t\ti = i + 1\n\treturn res[n]",
+  "test_list": [
+    "assert get_max_sum(60) == 106",
+    "assert get_max_sum(10) == 12",
+    "assert get_max_sum(2) == 2"
+  ],
+  "code_typescript": "function get_max_sum(n: number): number {\n    const res: number[] = [];\n    res.push(0);\n    res.push(1);\n    let i: number = 2;\n    while (i < n + 1) {\n        res.push(Math.max(i, (res[Math.floor(i / 2)] \n                            + res[Math.floor(i / 3)] \n                            + res[Math.floor(i / 4)] \n                            + res[Math.floor(i / 5)])));\n        i = i + 1;\n    }\n    return res[n];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

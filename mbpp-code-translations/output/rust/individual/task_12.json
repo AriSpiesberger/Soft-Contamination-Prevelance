@@ -1,0 +1,37 @@
+{
+  "task_id": 12,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a given matrix in ascending order according to the sum of its rows.",
+  "python_code": "def sort_matrix(M):\n    result = sorted(M, key=sum)\n    return result",
+  "test_list": [
+    "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+    "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+    "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]"
+  ],
+  "code_rust": "pub fn sort_matrix(m: Vec<Vec<i32>>) -> Vec<Vec<i32>> {\n    let mut result = m;\n    result.sort_by_key(|row| row.iter().sum::<i32>());\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+      "generated_test": "let input = vec![vec![1, 2, 3], vec![2, 4, 5], vec![1, 1, 1]];\nlet expected = vec![vec![1, 1, 1], vec![1, 2, 3], vec![2, 4, 5]];\nlet result = sort_matrix(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+      "generated_test": "let input = vec![vec![1, 2, 3], vec![-2, 4, -5], vec![1, -1, 1]];\nlet expected = vec![vec![-2, 4, -5], vec![1, -1, 1], vec![1, 2, 3]];\nlet result = sort_matrix(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]",
+      "generated_test": "let input = vec![vec![5, 8, 9], vec![6, 4, 3], vec![2, 1, 4]];\nlet expected = vec![vec![2, 1, 4], vec![6, 4, 3], vec![5, 8, 9]];\nlet result = sort_matrix(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

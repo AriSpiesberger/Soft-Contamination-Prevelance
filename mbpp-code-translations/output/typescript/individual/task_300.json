@@ -1,0 +1,17 @@
+{
+  "task_id": 300,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the count of all binary sequences of length 2n such that sum of first n bits is same as sum of last n bits.",
+  "python_code": "def count_binary_seq(n): \n\tnCr = 1\n\tres = 1\n\tfor r in range(1, n + 1): \n\t\tnCr = (nCr * (n + 1 - r)) / r \n\t\tres += nCr * nCr \n\treturn res ",
+  "test_list": [
+    "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)"
+  ],
+  "code_typescript": "function count_binary_seq(n: number): number {\n    let nCr: number = 1;\n    let res: number = 1;\n    for (let r = 1; r <= n; r++) {\n        nCr = (nCr * (n + 1 - r)) / r;\n        res += nCr * nCr;\n    }\n    return res;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

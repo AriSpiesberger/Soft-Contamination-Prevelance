@@ -1,0 +1,27 @@
+{
+  "task_id": 82,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a sphere.",
+  "code_python": "import math\ndef volume_sphere(r):\n  volume=(4/3)*math.pi*r*r*r\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)",
+    "assert math.isclose(volume_sphere(25), 65449.84694978735, rel_tol=0.001)",
+    "assert math.isclose(volume_sphere(20), 33510.32163829113, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef volume_sphere(r):\n    # Use the power operator for cleaner exponentiation of radius\n    radius_cubed = r ** 3\n    # Calculate the coefficient 4/3 as a separate multiplier for clarity\n    coefficient = 4 / 3\n    # Combine all components using the sphere volume formula V = (4/3)\u03c0r\u00b3\n    volume = coefficient * math.pi * radius_cubed\n    # Return the computed spherical volume\n    return volume",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef volume_sphere(r):\n    # Use math.pow for explicit floating-point exponentiation of the radius\n    r_cubed = math.pow(r, 3)\n    # Multiply pi by the cubed radius first to group geometric terms\n    pi_r_cubed = math.pi * r_cubed\n    # Apply the 4/3 coefficient last using multiplication and division operators\n    volume = 4 * pi_r_cubed / 3\n    # Return the final volume result\n    return volume",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef volume_sphere(r):\n    # Define a lambda function encapsulating the sphere volume formula for functional style\n    sphere_formula = lambda radius: (4/3) * math.pi * pow(radius, 3)\n    # Invoke the lambda with the input radius to compute volume\n    result = sphere_formula(r)\n    # Return the computed volume from the lambda application\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef volume_sphere(r):\n    # Utilize reduce-style accumulation by starting with the base coefficient ratio\n    from functools import reduce\n    # Create a list of all multiplicative factors needed for sphere volume\n    factors = [4, math.pi, r, r, r]\n    # Apply reduce to multiply all factors together in a single pass\n    product = reduce(lambda acc, x: acc * x, factors, 1)\n    # Divide by 3 at the end to complete the (4/3) fraction calculation\n    volume = product / 3\n    # Return the accumulated and divided result as final volume\n    return volume",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef volume_sphere(r):\n    # Leverage numpy-style approach using a generator expression for the cubic term\n    cubic_gen = (r for _ in range(3))\n    # Import operator module for functional multiplication approach\n    import operator\n    # Reduce the generator to compute r*r*r using operator.mul\n    from functools import reduce\n    r_cubed = reduce(operator.mul, cubic_gen)\n    # Compute numerator by chaining multiplications: 4 * pi * r^3\n    numerator = operator.mul(4, operator.mul(math.pi, r_cubed))\n    # Use true division operator function to divide by 3 for cleaner functional style\n    volume = operator.truediv(numerator, 3)\n    # Return the sphere volume computed through operator module functions\n    return volume",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 573,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to calculate the product of the unique numbers in a given list.",
+  "code_python": "def unique_product(list_data):\n    temp = list(set(list_data))\n    p = 1\n    for i in temp:\n        p *= i\n    return p",
+  "test_list": [
+    "assert unique_product([10, 20, 30, 40, 20, 50, 60, 40]) ==  720000000",
+    "assert unique_product([1, 2, 3, 1,]) == 6",
+    "assert unique_product([7, 8, 9, 0, 1, 1]) == 0"
+  ],
+  "python_1": "from functools import reduce\n\ndef unique_product(list_data):\n    # Extract only unique elements by converting to set\n    unique_elements = set(list_data)\n    # Use reduce to multiply all unique numbers together, starting with identity 1\n    result = reduce(lambda accumulator, num: accumulator * num, unique_elements, 1)\n    # Return the final product of all unique values\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef unique_product(list_data):\n    # Convert list to set to eliminate duplicate values efficiently\n    unique_set = set(list_data)\n    # Check if zero exists in the set, which would make the entire product zero\n    if 0 in unique_set:\n        # Early return optimization when zero is present\n        return 0\n    # Use math.prod to compute product of all unique elements in one call\n    product = math.prod(unique_set)\n    # Return the computed product of unique numbers\n    return product",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def unique_product(list_data):\n    # Build a dictionary to track which numbers we've seen, keys are automatically unique\n    seen = {}\n    # Process each number in the input list\n    for num in list_data:\n        # Use the number as a key, value doesn't matter since we only care about uniqueness\n        seen[num] = True\n    # Initialize product accumulator to multiplicative identity\n    product = 1\n    # Iterate through dictionary keys which represent unique numbers only\n    for unique_num in seen.keys():\n        # Multiply running product by current unique number\n        product = product * unique_num\n    # Return the accumulated product of all distinct values\n    return product",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def unique_product(list_data):\n    # Use a while loop with index to manually iterate and build unique collection\n    unique_nums = []\n    # Index variable for traversing the input list\n    i = 0\n    # Continue processing until we've examined every element in the list\n    while i < len(list_data):\n        # Extract the current element at position i\n        current = list_data[i]\n        # Check if this number hasn't been added to our unique collection yet\n        if current not in unique_nums:\n            # Append the first occurrence of each number to preserve uniqueness\n            unique_nums.append(current)\n        # Move to the next position in the input list\n        i += 1\n    # Start with multiplicative identity for computing the product\n    result = 1\n    # Use another index-based while loop to multiply all unique values\n    j = 0\n    # Process each unique number one by one using index access\n    while j < len(unique_nums):\n        # Multiply the result by the unique number at current index\n        result *= unique_nums[j]\n        # Advance to next unique number\n        j += 1\n    # Return the final product of all distinct numbers\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def unique_product(list_data):\n    # Use list comprehension with enumerate to filter duplicates by checking previous occurrences\n    unique_nums = [x for idx, x in enumerate(list_data) if x not in list_data[:idx]]\n    # Handle empty list edge case by returning 1 as multiplicative identity\n    if not unique_nums:\n        return 1\n    # Pop the first element to use as initial accumulator value\n    result = unique_nums[0]\n    # Slice remaining elements to multiply with the initial value\n    remaining = unique_nums[1:]\n    # Recursively-style iteration using pop to process elements from the list\n    while remaining:\n        # Remove and retrieve the last element from remaining list\n        next_num = remaining.pop()\n        # Accumulate product by multiplying current result with popped value\n        result = result * next_num\n    # Return the computed product of all first-occurrence elements\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

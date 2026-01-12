@@ -1,0 +1,37 @@
+{
+  "task_id": 232,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and returns a list containing the n largest items from the list.",
+  "python_code": "import heapq\ndef larg_nnum(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest",
+  "test_list": [
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static ArrayList<Integer> larg_nnum(ArrayList<Integer> list1, int n) {\n        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());\n        maxHeap.addAll(list1);\n        \n        ArrayList<Integer> largest = new ArrayList<>();\n        for (int i = 0; i < n && !maxHeap.isEmpty(); i++) {\n            largest.add(maxHeap.poll());\n        }\n        \n        return largest;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\nint[] inputArr = new int[]{10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100};\nfor (int val : inputArr) {\n    input.add(val);\n}\n\nArrayList<Integer> result = larg_nnum(input, 2);\nSet<Integer> resultSet = new HashSet<>(result);\n\nSet<Integer> expectedSet = new HashSet<>();\nexpectedSet.add(100);\nexpectedSet.add(90);\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\nint[] inputArray = {10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100};\nfor (int val : inputArray) {\n    input.add(val);\n}\n\nArrayList<Integer> result = larg_nnum(input, 5);\n\nSet<Integer> resultSet = new HashSet<>(result);\nSet<Integer> expectedSet = new HashSet<>();\nint[] expectedArray = {100, 90, 80, 70, 60};\nfor (int val : expectedArray) {\n    expectedSet.add(val);\n}\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\nint[] inputArr = {10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100};\nfor (int num : inputArr) {\n    input.add(num);\n}\n\nArrayList<Integer> result = larg_nnum(input, 3);\n\nSet<Integer> resultSet = new HashSet<>(result);\nSet<Integer> expectedSet = new HashSet<>();\nexpectedSet.add(100);\nexpectedSet.add(90);\nexpectedSet.add(80);\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

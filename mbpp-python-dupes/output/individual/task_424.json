@@ -1,0 +1,27 @@
+{
+  "task_id": 424,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract only the rear index element of each string in the given tuple.",
+  "code_python": "def extract_rear(test_tuple):\n  res = list(sub[len(sub) - 1] for sub in test_tuple)\n  return (res) ",
+  "test_list": [
+    "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+    "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+    "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']"
+  ],
+  "python_1": "def extract_rear(test_tuple):\n    # Initialize an empty list to collect the last characters\n    result = []\n    # Loop through each string element in the input tuple\n    for string in test_tuple:\n        # Use negative indexing to grab the final character efficiently\n        last_char = string[-1]\n        # Append the extracted character to our result collection\n        result.append(last_char)\n    # Return the list of rear characters from all strings\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def extract_rear(test_tuple):\n    # Use map function to apply a lambda that extracts last character from each string\n    mapped_result = map(lambda s: s[-1], test_tuple)\n    # Convert the map object to a list for the expected output format\n    return list(mapped_result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def extract_rear(test_tuple):\n    # Use list comprehension with negative indexing for a clean one-liner approach\n    result = [word[-1] for word in test_tuple]\n    # Return the constructed list containing all final characters\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def extract_rear(test_tuple):\n    # Import reduce function for functional programming approach\n    from functools import reduce\n    # Define accumulator function that takes running list and current string\n    def accumulator(acc, current_string):\n        # Extract the rightmost character using slice notation [start:end]\n        rear_char = current_string[-1:]\n        # Concatenate the character to our accumulated list\n        return acc + [rear_char]\n    # Apply reduce to fold over tuple, starting with empty list as initial value\n    result = reduce(accumulator, test_tuple, [])\n    # Return the accumulated list of rear index elements\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def extract_rear(test_tuple):\n    # Import operator module to use itemgetter for index-based access\n    from operator import itemgetter\n    # Create a helper function that gets the last character using reversed iteration\n    def get_last(s):\n        # Convert string to reversed iterator and grab first element (which is last char)\n        return next(reversed(s))\n    # Build result using a generator expression with our custom extraction function\n    rear_elements = (get_last(element) for element in test_tuple)\n    # Materialize the generator into a list to match expected output format\n    final_list = list(rear_elements)\n    # Return the collected rear characters as a list\n    return final_list",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

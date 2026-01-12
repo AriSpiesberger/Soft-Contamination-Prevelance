@@ -1,0 +1,37 @@
+{
+  "task_id": 12,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a given matrix in ascending order according to the sum of its rows.",
+  "python_code": "def sort_matrix(M):\n    result = sorted(M, key=sum)\n    return result",
+  "test_list": [
+    "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+    "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+    "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\nfunc sort_matrix(M [][]int) [][]int {\n\tif M == nil {\n\t\treturn nil\n\t}\n\tif len(M) == 0 {\n\t\treturn [][]int{}\n\t}\n\t\n\tresult := make([][]int, len(M))\n\tfor i := range M {\n\t\tif M[i] == nil {\n\t\t\tresult[i] = nil\n\t\t} else {\n\t\t\tresult[i] = make([]int, len(M[i]))\n\t\t\tcopy(result[i], M[i])\n\t\t}\n\t}\n\t\n\tsort.SliceStable(result, func(i, j int) bool {\n\t\treturn rowSum(result[i]) < rowSum(result[j])\n\t})\n\t\n\treturn result\n}\n\nfunc rowSum(row []int) int {\n\tif row == nil {\n\t\treturn 0\n\t}\n\tsum := 0\n\tfor _, v := range row {\n\t\tsum += v\n\t}\n\treturn sum\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 4,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+      "generated_test": "input := [][]int{{1, 2, 3}, {2, 4, 5}, {1, 1, 1}}\nexpected := [][]int{{1, 1, 1}, {1, 2, 3}, {2, 4, 5}}\ngot := sort_matrix(input)\n\npass := true\nif len(got) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(got[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif got[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+      "generated_test": "input := [][]int{{1, 2, 3}, {-2, 4, -5}, {1, -1, 1}}\nexpected := [][]int{{-2, 4, -5}, {1, -1, 1}, {1, 2, 3}}\nresult := sort_matrix(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]",
+      "generated_test": "input := [][]int{{5, 8, 9}, {6, 4, 3}, {2, 1, 4}}\nexpected := [][]int{{2, 1, 4}, {6, 4, 3}, {5, 8, 9}}\nresult := sort_matrix(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

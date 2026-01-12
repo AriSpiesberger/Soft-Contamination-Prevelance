@@ -1,0 +1,37 @@
+{
+  "task_id": 565,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a string into characters.",
+  "python_code": "def split(word): \n    return [char for char in word] ",
+  "test_list": [
+    "assert split('python') == ['p','y','t','h','o','n']",
+    "assert split('Name') == ['N','a','m','e']",
+    "assert split('program') == ['p','r','o','g','r','a','m']"
+  ],
+  "code_ruby": "def split(word)\n  word.chars\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert split('python') == ['p','y','t','h','o','n']",
+      "generated_test": "result = split('python')\nexpected = ['p', 'y', 't', 'h', 'o', 'n']\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split('Name') == ['N','a','m','e']",
+      "generated_test": "result = split('Name')\nexpected = ['N', 'a', 'm', 'e']\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split('program') == ['p','r','o','g','r','a','m']",
+      "generated_test": "result = split('program')\nexpected = ['p','r','o','g','r','a','m']\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 415,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find a pair with highest product from a given array of integers.",
+  "python_code": "def max_Product(arr): \n    arr_len = len(arr) \n    if (arr_len < 2): \n        return (\"No pairs exists\")           \n    x = arr[0]; y = arr[1]      \n    for i in range(0,arr_len): \n        for j in range(i + 1,arr_len): \n            if (arr[i] * arr[j] > x * y): \n                x = arr[i]; y = arr[j] \n    return x,y    ",
+  "test_list": [
+    "assert max_Product([1,2,3,4,7,0,8,4]) == (7,8)",
+    "assert max_Product([0,-1,-2,-4,5,0,-6]) == (-4,-6)",
+    "assert max_Product([1,2,3]) == (2,3)"
+  ],
+  "code_go": "package main\n\nfunc max_Product(arr []int) (interface{}, interface{}) {\n\tarr_len := len(arr)\n\tif arr_len < 2 {\n\t\treturn \"No pairs exists\", nil\n\t}\n\tx := arr[0]\n\ty := arr[1]\n\tfor i := 0; i < arr_len; i++ {\n\t\tfor j := i + 1; j < arr_len; j++ {\n\t\t\tif arr[i]*arr[j] > x*y {\n\t\t\t\tx = arr[i]\n\t\t\t\ty = arr[j]\n\t\t\t}\n\t\t}\n\t}\n\treturn x, y\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_Product([1,2,3,4,7,0,8,4]) == (7,8)",
+      "generated_test": "x, y := max_Product([]int{1, 2, 3, 4, 7, 0, 8, 4})\nexpectedX, expectedY := 7, 8\nif x == expectedX && y == expectedY {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %d)\\n\", expectedX, expectedY)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", x, y)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Product([0,-1,-2,-4,5,0,-6]) == (-4,-6)",
+      "generated_test": "arr := []int{0, -1, -2, -4, 5, 0, -6}\nresult1, result2 := max_Product(arr)\nexpected1, expected2 := -4, -6\nif result1 == expected1 && result2 == expected2 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expected1, expected2)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", result1, result2)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Product([1,2,3]) == (2,3)",
+      "generated_test": "arr := []int{1, 2, 3}\nresult1, result2 := max_Product(arr)\nexpected1, expected2 := 2, 3\nif result1 == expected1 && result2 == expected2 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expected1, expected2)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", result1, result2)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

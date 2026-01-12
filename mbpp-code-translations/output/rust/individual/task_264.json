@@ -1,0 +1,37 @@
+{
+  "task_id": 264,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate a dog's age in dog's years.",
+  "python_code": "def dog_age(h_age):\n if h_age < 0:\n \texit()\n elif h_age <= 2:\n\t d_age = h_age * 10.5\n else:\n\t d_age = 21 + (h_age - 2)*4\n return d_age",
+  "test_list": [
+    "assert dog_age(12)==61",
+    "assert dog_age(15)==73",
+    "assert dog_age(24)==109"
+  ],
+  "code_rust": "pub fn dog_age(h_age: i32) -> f64 {\n    if h_age < 0 {\n        std::process::exit(1);\n    } else if h_age <= 2 {\n        h_age as f64 * 10.5\n    } else {\n        21.0 + (h_age - 2) as f64 * 4.0\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert dog_age(12)==61",
+      "generated_test": "let result = dog_age(12);\nlet expected = 61.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dog_age(15)==73",
+      "generated_test": "let result = dog_age(15);\nlet expected = 73.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dog_age(24)==109",
+      "generated_test": "let result = dog_age(24);\nlet expected = 109.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

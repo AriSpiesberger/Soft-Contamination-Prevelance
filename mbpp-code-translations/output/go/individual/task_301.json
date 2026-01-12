@@ -1,0 +1,37 @@
+{
+  "task_id": 301,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the depth of a dictionary.",
+  "python_code": "def dict_depth(d):\n    if isinstance(d, dict):\n        return 1 + (max(map(dict_depth, d.values())) if d else 0)\n    return 0",
+  "test_list": [
+    "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+    "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+    "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3"
+  ],
+  "code_go": "package main\n\nfunc dict_depth(d interface{}) int {\n\tif m, ok := d.(map[string]interface{}); ok {\n\t\tif len(m) == 0 {\n\t\t\treturn 1\n\t\t}\n\t\tmaxDepth := 0\n\t\tfor _, v := range m {\n\t\t\tdepth := dict_depth(v)\n\t\t\tif depth > maxDepth {\n\t\t\t\tmaxDepth = depth\n\t\t\t}\n\t\t}\n\t\treturn 1 + maxDepth\n\t}\n\treturn 0\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+      "generated_test": "result := dict_depth(map[string]interface{}{\"a\": 1, \"b\": map[string]interface{}{\"c\": map[string]interface{}{\"d\": map[string]interface{}{}}}})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+      "generated_test": "result := dict_depth(map[string]interface{}{\"a\": 1, \"b\": map[string]interface{}{\"c\": \"python\"}})\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3",
+      "generated_test": "result := dict_depth(map[string]interface{}{\"1\": \"Sun\", \"2\": map[string]interface{}{\"3\": map[string]interface{}{\"4\": \"Mon\"}}})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

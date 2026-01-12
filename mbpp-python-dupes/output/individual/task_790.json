@@ -1,0 +1,27 @@
+{
+  "task_id": 790,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether every even index contains even numbers of a given list.",
+  "code_python": "def even_position(nums):\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))",
+  "test_list": [
+    "assert even_position([3,2,1]) == False",
+    "assert even_position([1,2,3]) == False",
+    "assert even_position([2,1,4]) == True"
+  ],
+  "python_1": "def even_position(nums):\n    # Start iteration index at 0 to check each position\n    i = 0\n    # Loop through each index in the list using while loop\n    while i < len(nums):\n        # Check if current index is even (0, 2, 4, ...)\n        if i % 2 == 0:\n            # For even indices, verify the number itself is also even\n            if nums[i] % 2 != 0:\n                # Immediately return False if even index has odd number\n                return False\n        # Move to the next index position\n        i += 1\n    # All even indices passed the check, return True\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def even_position(nums):\n    # Extract only elements at even indices using slice notation [start:stop:step]\n    even_index_elements = nums[::2]\n    # Check if every element from even positions is divisible by 2 (even number)\n    for element in even_index_elements:\n        # Test divisibility by 2 to determine if number is even\n        if element % 2 != 0:\n            # Found an odd number at an even index, fail immediately\n            return False\n    # All elements at even indices were confirmed to be even numbers\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def even_position(nums):\n    # Use enumerate to get both index and value in a single pass\n    for idx, value in enumerate(nums):\n        # Only examine positions where index is divisible by 2\n        if idx % 2 == 0:\n            # Bitwise AND with 1 checks last bit - 0 means even number\n            if value & 1:\n                # Odd number found at even index, return failure\n                return False\n    # Successfully verified all even indices contain even numbers\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def even_position(nums):\n    # Use filter with lambda to identify indices where the even-index-even-number rule is violated\n    violations = filter(lambda i: i % 2 == 0 and nums[i] % 2 != 0, range(len(nums)))\n    # Convert filter object to list to count violations\n    violation_list = list(violations)\n    # Return True only when no violations exist (empty list is falsy)\n    return len(violation_list) == 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def even_position(nums):\n    # Use list comprehension to gather boolean results for each even index check\n    even_checks = [nums[i] % 2 == 0 for i in range(0, len(nums), 2)]\n    # Reduce the boolean list using built-in sum - True counts as 1, False as 0\n    count_passing = sum(even_checks)\n    # Calculate total number of even indices that need to be checked\n    total_even_indices = (len(nums) + 1) // 2\n    # Return True only if every even index passed the evenness test\n    return count_passing == total_even_indices",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

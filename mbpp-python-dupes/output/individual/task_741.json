@@ -1,0 +1,27 @@
+{
+  "task_id": 741,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether all the characters are same or not.",
+  "code_python": "def all_Characters_Same(s) :\n    n = len(s)\n    for i in range(1,n) :\n        if s[i] != s[0] :\n            return False\n    return True",
+  "test_list": [
+    "assert all_Characters_Same(\"python\") == False",
+    "assert all_Characters_Same(\"aaa\") == True",
+    "assert all_Characters_Same(\"data\") == False"
+  ],
+  "python_1": "def all_Characters_Same(s) :\n    # Handle edge case of empty string by returning True\n    if len(s) == 0:\n        return True\n    # Convert string to a set which removes duplicate characters\n    unique_chars = set(s)\n    # If all characters are same, set will have exactly one element\n    return len(unique_chars) == 1",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def all_Characters_Same(s) :\n    # Return True for empty string as edge case\n    if not s:\n        return True\n    # Multiply the first character by string length to create comparison string\n    repeated_first_char = s[0] * len(s)\n    # Compare original string with string made of first char repeated\n    return s == repeated_first_char",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def all_Characters_Same(s) :\n    # Handle empty string edge case - vacuously true that all chars are same\n    if len(s) == 0:\n        return True\n    # Use count method to tally occurrences of the first character\n    first_char_count = s.count(s[0])\n    # If first char appears exactly len(s) times, all characters must be identical\n    return first_char_count == len(s)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def all_Characters_Same(s) :\n    # Guard clause: empty strings trivially satisfy the condition\n    if not s:\n        return True\n    # Use all() with generator expression to check each char against first\n    # This is a functional approach using Python's built-in higher-order function\n    return all(char == s[0] for char in s)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def all_Characters_Same(s) :\n    # Early return for strings with 0 or 1 characters - trivially all same\n    if len(s) <= 1:\n        return True\n    # Use min and max to find lexicographically smallest and largest chars\n    smallest_char = min(s)\n    # Find the lexicographically largest character in the string\n    largest_char = max(s)\n    # If min equals max, every character must be identical\n    return smallest_char == largest_char",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

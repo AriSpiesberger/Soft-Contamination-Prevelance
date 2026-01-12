@@ -1,0 +1,17 @@
+{
+  "task_id": 2,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the shared elements from the given two lists.",
+  "python_code": "def similar_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) & set(test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))",
+    "assert set(similar_elements((1, 2, 3, 4),(5, 4, 3, 7))) == set((3, 4))",
+    "assert set(similar_elements((11, 12, 14, 13),(17, 15, 14, 13))) == set((13, 14))"
+  ],
+  "code_typescript": "function similar_elements<T>(test_tup1: T[], test_tup2: T[]): T[] {\n  const set1 = new Set(test_tup1);\n  const set2 = new Set(test_tup2);\n  const intersection: T[] = [];\n  \n  for (const item of set1) {\n    if (set2.has(item)) {\n      intersection.push(item);\n    }\n  }\n  \n  return intersection;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

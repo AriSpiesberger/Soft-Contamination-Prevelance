@@ -1,0 +1,37 @@
+{
+  "task_id": 461,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the upper case characters in a given string.",
+  "python_code": "def upper_ctr(str):\n    upper_ctr = 0\n    for i in range(len(str)):\n          if str[i] >= 'A' and str[i] <= 'Z': upper_ctr += 1\n          return upper_ctr",
+  "test_list": [
+    "assert upper_ctr('PYthon') == 1",
+    "assert upper_ctr('BigData') == 1",
+    "assert upper_ctr('program') == 0"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int upper_ctr(String str) {\n        int upper_ctr = 0;\n        for (int i = 0; i < str.length(); i++) {\n            if (str.charAt(i) >= 'A' && str.charAt(i) <= 'Z') {\n                upper_ctr += 1;\n            }\n            return upper_ctr;\n        }\n        return upper_ctr;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert upper_ctr('PYthon') == 1",
+      "generated_test": "int result = upper_ctr(\"PYthon\");\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert upper_ctr('BigData') == 1",
+      "generated_test": "int result = upper_ctr(\"BigData\");\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert upper_ctr('program') == 0",
+      "generated_test": "int result = upper_ctr(\"program\");\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

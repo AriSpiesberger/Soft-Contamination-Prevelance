@@ -1,0 +1,37 @@
+{
+  "task_id": 411,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given snake case string to camel case string.",
+  "python_code": "import re\ndef snake_to_camel(word):\n  return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('android_tv') == 'AndroidTv'",
+    "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+    "assert snake_to_camel('apple_watch') == 'AppleWatch'"
+  ],
+  "code_rust": "pub fn snake_to_camel(word: &str) -> String {\n    word.split('_')\n        .map(|x| {\n            if x.is_empty() {\n                \"_\".to_string()\n            } else {\n                let mut chars = x.chars();\n                match chars.next() {\n                    None => String::new(),\n                    Some(first) => {\n                        first.to_uppercase().collect::<String>() + chars.as_str()\n                    }\n                }\n            }\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert snake_to_camel('android_tv') == 'AndroidTv'",
+      "generated_test": "let result = snake_to_camel(\"android_tv\");\nlet expected = \"AndroidTv\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+      "generated_test": "let result = snake_to_camel(\"google_pixel\");\nlet expected = \"GooglePixel\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('apple_watch') == 'AppleWatch'",
+      "generated_test": "let result = snake_to_camel(\"apple_watch\");\nlet expected = \"AppleWatch\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

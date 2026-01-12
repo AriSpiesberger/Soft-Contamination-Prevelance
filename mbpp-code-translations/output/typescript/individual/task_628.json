@@ -1,0 +1,17 @@
+{
+  "task_id": 628,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all spaces in the given string with '%20'.",
+  "python_code": "def replace_spaces(string):\n  return string.replace(\" \", \"%20\")",
+  "test_list": [
+    "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+    "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+    "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'"
+  ],
+  "code_typescript": "function replace_spaces(string: string): string {\n  return string.replace(/ /g, \"%20\");\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

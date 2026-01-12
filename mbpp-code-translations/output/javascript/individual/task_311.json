@@ -1,0 +1,37 @@
+{
+  "task_id": 311,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to set the left most unset bit.",
+  "python_code": "def set_left_most_unset_bit(n): \n    if not (n & (n + 1)): \n        return n \n    pos, temp, count = 0, n, 0 \n    while temp: \n        if not (temp & 1): \n            pos = count      \n        count += 1; temp>>=1\n    return (n | (1 << (pos))) ",
+  "test_list": [
+    "assert set_left_most_unset_bit(10) == 14",
+    "assert set_left_most_unset_bit(12) == 14",
+    "assert set_left_most_unset_bit(15) == 15"
+  ],
+  "code_javascript": "function set_left_most_unset_bit(n) {\n    if (!(n & (n + 1))) {\n        return n;\n    }\n    let pos = 0, temp = n, count = 0;\n    while (temp) {\n        if (!(temp & 1)) {\n            pos = count;\n        }\n        count += 1;\n        temp >>= 1;\n    }\n    return (n | (1 << pos));\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert set_left_most_unset_bit(10) == 14",
+      "generated_test": "const result = set_left_most_unset_bit(10);\nconst expected = 14;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(12) == 14",
+      "generated_test": "const result = set_left_most_unset_bit(12);\nconst expected = 14;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(15) == 15",
+      "generated_test": "const result = set_left_most_unset_bit(15);\nconst expected = 15;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 619,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to move all the numbers to the end of the given string.",
+  "python_code": "def move_num(test_str):\n  res = ''\n  dig = ''\n  for ele in test_str:\n    if ele.isdigit():\n      dig += ele\n    else:\n      res += ele\n  res += dig\n  return (res) ",
+  "test_list": [
+    "assert move_num('I1love143you55three3000thousand') == 'Iloveyouthreethousand1143553000'",
+    "assert move_num('Avengers124Assemble') == 'AvengersAssemble124'",
+    "assert move_num('Its11our12path13to14see15things16do17things') == 'Itsourpathtoseethingsdothings11121314151617'"
+  ],
+  "code_typescript": "function move_num(test_str: string): string {\n  let res: string = '';\n  let dig: string = '';\n  for (const ele of test_str) {\n    if (/\\d/.test(ele)) {\n      dig += ele;\n    } else {\n      res += ele;\n    }\n  }\n  res += dig;\n  return res;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

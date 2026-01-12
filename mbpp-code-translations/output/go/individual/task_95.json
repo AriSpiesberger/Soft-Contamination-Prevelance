@@ -1,0 +1,37 @@
+{
+  "task_id": 95,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the smallest list in a list of lists.",
+  "python_code": "def Find_Min_Length(lst):  \n    minLength = min(len(x) for x in lst )\n    return minLength ",
+  "test_list": [
+    "assert Find_Min_Length([[1],[1,2]]) == 1",
+    "assert Find_Min_Length([[1,2],[1,2,3],[1,2,3,4]]) == 2",
+    "assert Find_Min_Length([[3,3,3],[4,4,4,4]]) == 3"
+  ],
+  "code_go": "package main\n\nfunc Find_Min_Length(lst [][]int) int {\n\tif len(lst) == 0 {\n\t\treturn 0\n\t}\n\t\n\tminLength := len(lst[0])\n\tfor _, x := range lst {\n\t\tif len(x) < minLength {\n\t\t\tminLength = len(x)\n\t\t}\n\t}\n\treturn minLength\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert Find_Min_Length([[1],[1,2]]) == 1",
+      "generated_test": "result := Find_Min_Length([][]int{{1}, {1, 2}})\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min_Length([[1,2],[1,2,3],[1,2,3,4]]) == 2",
+      "generated_test": "result := Find_Min_Length([][]int{{1, 2}, {1, 2, 3}, {1, 2, 3, 4}})\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min_Length([[3,3,3],[4,4,4,4]]) == 3",
+      "generated_test": "result := Find_Min_Length([][]int{{3, 3, 3}, {4, 4, 4, 4}})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

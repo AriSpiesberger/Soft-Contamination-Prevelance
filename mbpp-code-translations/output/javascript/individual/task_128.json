@@ -1,0 +1,37 @@
+{
+  "task_id": 128,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find words that are longer than n characters from a given list of words.",
+  "python_code": "def long_words(n, str):\n    word_len = []\n    txt = str.split(\" \")\n    for x in txt:\n        if len(x) > n:\n            word_len.append(x)\n    return word_len\t",
+  "test_list": [
+    "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+    "assert long_words(2,\"writing a program\")==['writing','program']",
+    "assert long_words(5,\"sorting list\")==['sorting']"
+  ],
+  "code_javascript": "function long_words(n, str) {\n    const word_len = [];\n    const txt = str.split(\" \");\n    for (const x of txt) {\n        if (x.length > n) {\n            word_len.push(x);\n        }\n    }\n    return word_len;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+      "generated_test": "const result = long_words(3, \"python is a programming language\");\nconst expected = ['python', 'programming', 'language'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(2,\"writing a program\")==['writing','program']",
+      "generated_test": "const result = long_words(2, \"writing a program\");\nconst expected = ['writing', 'program'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(5,\"sorting list\")==['sorting']",
+      "generated_test": "const result = long_words(5, \"sorting list\");\nconst expected = [\"sorting\"];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

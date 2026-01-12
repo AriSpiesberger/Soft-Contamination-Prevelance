@@ -1,0 +1,37 @@
+{
+  "task_id": 62,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find smallest number in a list.",
+  "python_code": "def smallest_num(xs):\n  return min(xs)\n",
+  "test_list": [
+    "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+    "assert smallest_num([1, 2, 3]) == 1",
+    "assert smallest_num([45, 46, 50, 60]) == 45"
+  ],
+  "code_javascript": "function smallest_num(xs) {\n  return Math.min(...xs);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+      "generated_test": "const result = smallest_num([10, 20, 1, 45, 99]);\nconst expected = 1;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert smallest_num([1, 2, 3]) == 1",
+      "generated_test": "const result = smallest_num([1, 2, 3]);\nconst expected = 1;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert smallest_num([45, 46, 50, 60]) == 45",
+      "generated_test": "const result = smallest_num([45, 46, 50, 60]);\nconst expected = 45;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

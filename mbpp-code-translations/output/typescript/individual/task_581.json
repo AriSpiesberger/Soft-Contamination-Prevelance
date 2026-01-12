@@ -1,0 +1,17 @@
+{
+  "task_id": 581,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the surface area of a square pyramid with a given base edge and height.",
+  "python_code": "def surface_Area(b,s): \n    return 2 * b * s + pow(b,2) ",
+  "test_list": [
+    "assert surface_Area(3,4) == 33",
+    "assert surface_Area(4,5) == 56",
+    "assert surface_Area(1,2) == 5"
+  ],
+  "code_typescript": "function surface_Area(b: number, s: number): number {\n    return 2 * b * s + Math.pow(b, 2);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

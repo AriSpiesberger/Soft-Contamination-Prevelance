@@ -1,0 +1,37 @@
+{
+  "task_id": 269,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ascii value of a character.",
+  "python_code": "def ascii_value(k):\n  ch=k\n  return ord(ch)",
+  "test_list": [
+    "assert ascii_value('A')==65",
+    "assert ascii_value('R')==82",
+    "assert ascii_value('S')==83"
+  ],
+  "code_go": "package main\n\nfunc ascii_value(k rune) int {\n\treturn int(k)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert ascii_value('A')==65",
+      "generated_test": "result := ascii_value('A')\nexpected := 65\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert ascii_value('R')==82",
+      "generated_test": "result := ascii_value('R')\nexpected := 82\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert ascii_value('S')==83",
+      "generated_test": "result := ascii_value('S')\nexpected := 83\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

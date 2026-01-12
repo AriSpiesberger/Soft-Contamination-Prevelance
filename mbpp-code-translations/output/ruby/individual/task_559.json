@@ -1,0 +1,37 @@
+{
+  "task_id": 559,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the sum of the largest contiguous sublist in the given list.",
+  "python_code": "def max_sub_array_sum(a, size):\n  max_so_far = 0\n  max_ending_here = 0\n  for i in range(0, size):\n    max_ending_here = max_ending_here + a[i]\n    if max_ending_here < 0:\n      max_ending_here = 0\n    elif (max_so_far < max_ending_here):\n      max_so_far = max_ending_here\n  return max_so_far",
+  "test_list": [
+    "assert max_sub_array_sum([-2, -3, 4, -1, -2, 1, 5, -3], 8) == 7",
+    "assert max_sub_array_sum([-3, -4, 5, -2, -3, 2, 6, -4], 8) == 8",
+    "assert max_sub_array_sum([-4, -5, 6, -3, -4, 3, 7, -5], 8) == 10"
+  ],
+  "code_ruby": "def max_sub_array_sum(a, size)\n  max_so_far = 0\n  max_ending_here = 0\n  \n  (0...size).each do |i|\n    max_ending_here = max_ending_here + a[i]\n    if max_ending_here < 0\n      max_ending_here = 0\n    elsif max_so_far < max_ending_here\n      max_so_far = max_ending_here\n    end\n  end\n  \n  max_so_far\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_sub_array_sum([-2, -3, 4, -1, -2, 1, 5, -3], 8) == 7",
+      "generated_test": "result = max_sub_array_sum([-2, -3, 4, -1, -2, 1, 5, -3], 8)\nexpected = 7\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sub_array_sum([-3, -4, 5, -2, -3, 2, 6, -4], 8) == 8",
+      "generated_test": "result = max_sub_array_sum([-3, -4, 5, -2, -3, 2, 6, -4], 8)\nexpected = 8\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sub_array_sum([-4, -5, 6, -3, -4, 3, 7, -5], 8) == 10",
+      "generated_test": "result = max_sub_array_sum([-4, -5, 6, -3, -4, 3, 7, -5], 8)\nexpected = 10\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

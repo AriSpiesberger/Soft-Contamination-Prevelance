@@ -1,0 +1,37 @@
+{
+  "task_id": 753,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum k records from tuple list. https://www.geeksforgeeks.org/python-find-minimum-k-records-from-tuple-list/ - in this case a verbatim copy of test cases",
+  "python_code": "def min_k(test_list, K):\n  res = sorted(test_list, key = lambda x: x[1])[:K]\n  return (res) ",
+  "test_list": [
+    "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+    "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+    "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\ntype Tuple struct {\n\tFirst  string\n\tSecond int\n}\n\nfunc min_k(test_list []Tuple, K int) []Tuple {\n\tif len(test_list) == 0 || K <= 0 {\n\t\treturn []Tuple{}\n\t}\n\n\tcopied := make([]Tuple, len(test_list))\n\tcopy(copied, test_list)\n\n\tsort.Slice(copied, func(i, j int) bool {\n\t\treturn copied[i].Second < copied[j].Second\n\t})\n\n\tif K > len(copied) {\n\t\tK = len(copied)\n\t}\n\n\treturn copied[:K]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+      "generated_test": "input := []Tuple{\n\t{\"Manjeet\", 10},\n\t{\"Akshat\", 4},\n\t{\"Akash\", 2},\n\t{\"Nikhil\", 8},\n}\nexpected := []Tuple{\n\t{\"Akash\", 2},\n\t{\"Akshat\", 4},\n}\n\nresult := min_k(input, 2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i].First != expected[i].First || result[i].Second != expected[i].Second {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+      "generated_test": "input := []Tuple{{\"Sanjeev\", 11}, {\"Angat\", 5}, {\"Akash\", 3}, {\"Nepin\", 9}}\nexpected := []Tuple{{\"Akash\", 3}, {\"Angat\", 5}, {\"Nepin\", 9}}\nresult := min_k(input, 3)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i].First != expected[i].First || result[i].Second != expected[i].Second {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]",
+      "generated_test": "input := []Tuple{{\"tanmay\", 14}, {\"Amer\", 11}, {\"Ayesha\", 9}, {\"SKD\", 16}}\nexpected := []Tuple{{\"Ayesha\", 9}}\nresult := min_k(input, 1)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i].First != expected[i].First || result[i].Second != expected[i].Second {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

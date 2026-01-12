@@ -1,0 +1,37 @@
+{
+  "task_id": 88,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the frequency of all the elements in a list, returned as a dictionary.",
+  "python_code": "import collections\ndef freq_count(list1):\n  freq_count= collections.Counter(list1)\n  return freq_count",
+  "test_list": [
+    "assert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})",
+    "assert freq_count([1,2,3,4,3,2,4,1,3,1,4])==({1:3, 2:2,3:3,4:3})",
+    "assert freq_count([5,6,7,4,9,10,4,5,6,7,9,5])==({10:1,5:3,6:2,7:2,4:2,9:2})"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn freq_count(list1: Vec<i32>) -> HashMap<i32, i32> {\n    let mut freq_map: HashMap<i32, i32> = HashMap::new();\n    for item in list1 {\n        *freq_map.entry(item).or_insert(0) += 1;\n    }\n    freq_map\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})",
+      "generated_test": "let result = freq_count(vec![10,10,10,10,20,20,20,20,40,40,50,50,30]);\nlet mut expected: HashMap<i32, i32> = HashMap::new();\nexpected.insert(10, 4);\nexpected.insert(20, 4);\nexpected.insert(40, 2);\nexpected.insert(50, 2);\nexpected.insert(30, 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert freq_count([1,2,3,4,3,2,4,1,3,1,4])==({1:3, 2:2,3:3,4:3})",
+      "generated_test": "let result = freq_count(vec![1, 2, 3, 4, 3, 2, 4, 1, 3, 1, 4]);\nlet mut expected: HashMap<i32, i32> = HashMap::new();\nexpected.insert(1, 3);\nexpected.insert(2, 2);\nexpected.insert(3, 3);\nexpected.insert(4, 3);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert freq_count([5,6,7,4,9,10,4,5,6,7,9,5])==({10:1,5:3,6:2,7:2,4:2,9:2})",
+      "generated_test": "let result = freq_count(vec![5,6,7,4,9,10,4,5,6,7,9,5]);\nlet mut expected: HashMap<i32, i32> = HashMap::new();\nexpected.insert(10, 1);\nexpected.insert(5, 3);\nexpected.insert(6, 2);\nexpected.insert(7, 2);\nexpected.insert(4, 2);\nexpected.insert(9, 2);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

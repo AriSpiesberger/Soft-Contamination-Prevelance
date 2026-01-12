@@ -1,0 +1,17 @@
+{
+  "task_id": 100,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the next smallest palindrome of a specified integer, returned as an integer.",
+  "python_code": "import sys\ndef next_smallest_palindrome(num):\n    numstr = str(num)\n    for i in range(num+1,sys.maxsize):\n        if str(i) == str(i)[::-1]:\n            return i",
+  "test_list": [
+    "assert next_smallest_palindrome(99)==101",
+    "assert next_smallest_palindrome(1221)==1331",
+    "assert next_smallest_palindrome(120)==121"
+  ],
+  "code_typescript": "function next_smallest_palindrome(num: number): number {\n    for (let i = num + 1; ; i++) {\n        const str = i.toString();\n        const reversed = str.split('').reverse().join('');\n        if (str === reversed) {\n            return i;\n        }\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

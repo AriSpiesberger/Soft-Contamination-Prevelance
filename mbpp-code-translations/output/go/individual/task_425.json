@@ -1,0 +1,37 @@
+{
+  "task_id": 425,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of sublists containing a particular element.",
+  "python_code": "def count_element_in_list(list1, x): \n    ctr = 0\n    for i in range(len(list1)): \n        if x in list1[i]: \n            ctr+= 1          \n    return ctr",
+  "test_list": [
+    "assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3",
+    "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'A')==3",
+    "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'E')==1"
+  ],
+  "code_go": "package main\n\nfunc count_element_in_list(list1 [][]interface{}, x interface{}) int {\n\tctr := 0\n\tfor i := 0; i < len(list1); i++ {\n\t\tfor _, elem := range list1[i] {\n\t\t\tif elem == x {\n\t\t\t\tctr++\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t}\n\treturn ctr\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3",
+      "generated_test": "list1 := [][]interface{}{\n\t{1, 3},\n\t{5, 7},\n\t{1, 11},\n\t{1, 15, 7},\n}\nresult := count_element_in_list(list1, 1)\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'A')==3",
+      "generated_test": "input := [][]interface{}{{\"A\", \"B\"}, {\"A\", \"C\"}, {\"A\", \"D\", \"E\"}, {\"B\", \"C\", \"D\"}}\nresult := count_element_in_list(input, \"A\")\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'E')==1",
+      "generated_test": "input := [][]interface{}{{\"A\", \"B\"}, {\"A\", \"C\"}, {\"A\", \"D\", \"E\"}, {\"B\", \"C\", \"D\"}}\nresult := count_element_in_list(input, \"E\")\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

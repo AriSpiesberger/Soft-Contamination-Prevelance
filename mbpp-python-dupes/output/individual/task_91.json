@@ -1,0 +1,27 @@
+{
+  "task_id": 91,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string is present as a substring in a given list of string values.",
+  "code_python": "def find_substring(str1, sub_str):\n   if any(sub_str in s for s in str1):\n       return True\n   return False",
+  "test_list": [
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ack\")==True",
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"abc\")==False",
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ange\")==True"
+  ],
+  "python_1": "def find_substring(str1, sub_str):\n    # Use a traditional for loop to iterate through each string in the list\n    for s in str1:\n        # Check if the substring exists within the current string\n        if sub_str in s:\n            # Return True immediately upon finding the first match\n            return True\n    # Return False only after exhausting all strings without finding a match\n    return False",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_substring(str1, sub_str):\n    # Concatenate all strings with a unique delimiter that won't appear in normal strings\n    delimiter = \"\\x00\"\n    # Join the list into a single searchable string with null byte separators\n    combined = delimiter.join(str1)\n    # Search for substring in the combined string - works because delimiter prevents false matches across boundaries\n    found = sub_str in combined\n    # Return the boolean result of the substring search\n    return found",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_substring(str1, sub_str):\n    # Use filter to create an iterator of strings containing the substring\n    matches = filter(lambda s: sub_str in s, str1)\n    # Convert filtered results to a list to check if any matches exist\n    match_list = list(matches)\n    # Return True if the list has at least one element, False otherwise\n    return len(match_list) > 0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_substring(str1, sub_str):\n    # Use map to transform each string into a boolean indicating substring presence\n    presence_map = map(lambda s: sub_str in s, str1)\n    # Convert the map object to a tuple for evaluation\n    presence_tuple = tuple(presence_map)\n    # Check if True exists anywhere in the tuple using the 'in' operator\n    result = True in presence_tuple\n    # Return whether any string contained the substring\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_substring(str1, sub_str):\n    # Use recursion by defining the base case for an empty list\n    if len(str1) == 0:\n        # No strings left to check means substring was never found\n        return False\n    # Extract the first string from the list to examine\n    first_string = str1[0]\n    # Check if our target substring exists within this first string\n    if sub_str in first_string:\n        # Found a match, no need to continue searching\n        return True\n    # Recursively search the remaining strings by slicing off the first element\n    return find_substring(str1[1:], sub_str)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

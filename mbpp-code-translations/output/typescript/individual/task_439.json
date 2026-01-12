@@ -1,0 +1,17 @@
+{
+  "task_id": 439,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to join a list of multiple integers into a single integer.",
+  "python_code": "def multiple_to_single(L):\n  x = int(\"\".join(map(str, L)))\n  return x",
+  "test_list": [
+    "assert multiple_to_single([11, 33, 50])==113350",
+    "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+    "assert multiple_to_single([10,15,20,25])==10152025"
+  ],
+  "code_typescript": "function multiple_to_single(L: number[]): number {\n  if (L.length === 0) {\n    return 0;\n  }\n  \n  // Handle negative first element\n  const isNegative = L[0] < 0;\n  const absL = L.map((n, i) => i === 0 ? Math.abs(n) : n);\n  \n  const joined = absL.map(n => String(n)).join(\"\");\n  const result = parseInt(joined, 10);\n  \n  return isNegative ? -result : result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

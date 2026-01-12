@@ -1,0 +1,17 @@
+{
+  "task_id": 627,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the smallest missing number from a sorted list of natural numbers.",
+  "python_code": "def find_First_Missing(array,start=0,end=None):\n    if end is None:\n      end = len(array) - 1   \n    if (start > end): \n        return end + 1\n    if (start != array[start]): \n        return start; \n    mid = int((start + end) / 2) \n    if (array[mid] == mid): \n        return find_First_Missing(array,mid+1,end) \n    return find_First_Missing(array,start,mid) ",
+  "test_list": [
+    "assert find_First_Missing([0,1,2,3]) == 4",
+    "assert find_First_Missing([0,1,2,6,9]) == 3",
+    "assert find_First_Missing([2,3,5,8,9]) == 0"
+  ],
+  "code_typescript": "function find_First_Missing(array: number[], start: number = 0, end: number | null = null): number {\n    if (end === null) {\n        end = array.length - 1;\n    }\n    if (start > end) {\n        return end + 1;\n    }\n    if (start !== array[start]) {\n        return start;\n    }\n    const mid = Math.floor((start + end) / 2);\n    if (array[mid] === mid) {\n        return find_First_Missing(array, mid + 1, end);\n    }\n    return find_First_Missing(array, start, mid);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

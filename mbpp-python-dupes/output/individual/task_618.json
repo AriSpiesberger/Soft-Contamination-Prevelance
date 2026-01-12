@@ -1,0 +1,27 @@
+{
+  "task_id": 618,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to divide two lists element wise.",
+  "code_python": "def div_list(nums1,nums2):\n  result = map(lambda x, y: x / y, nums1, nums2)\n  return list(result)",
+  "test_list": [
+    "assert div_list([4,5,6],[1, 2, 3])==[4.0,2.5,2.0]",
+    "assert div_list([3,2],[1,4])==[3.0, 0.5]",
+    "assert div_list([90,120],[50,70])==[1.8, 1.7142857142857142]"
+  ],
+  "python_1": "def div_list(nums1,nums2):\n  # Initialize empty list to store division results\n  result = []\n  # Iterate through paired elements using zip for parallel traversal\n  for n1, n2 in zip(nums1, nums2):\n    # Perform division and append quotient to result list\n    result.append(n1 / n2)\n  # Return the list containing all element-wise division results\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def div_list(nums1,nums2):\n  # Use list comprehension with zip to create paired tuples for simultaneous iteration\n  # This approach combines iteration and list creation in a single expression\n  return [a / b for a, b in zip(nums1, nums2)]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def div_list(nums1,nums2):\n  # Use index-based iteration to access elements by position\n  i = 0\n  # Create empty list to accumulate quotients\n  result = []\n  # Continue while index is within bounds of both lists\n  while i < len(nums1) and i < len(nums2):\n    # Compute division using direct index access to both lists\n    quotient = nums1[i] / nums2[i]\n    # Store the computed quotient in result list\n    result.append(quotient)\n    # Advance to next position in both lists\n    i += 1\n  # Return accumulated division results\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def div_list(nums1,nums2):\n  # Import operator module to access the division function as a callable object\n  import operator\n  # Apply truediv function pairwise across both lists using map with operator\n  # This avoids lambda by using the built-in division operator directly\n  divided = map(operator.truediv, nums1, nums2)\n  # Materialize the map iterator into a list for the final result\n  return list(divided)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def div_list(nums1,nums2):\n  # Use enumerate to get both index and value from first list\n  # This approach combines index tracking with direct element access\n  return [nums1[idx] / nums2[idx] for idx, _ in enumerate(nums1)]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

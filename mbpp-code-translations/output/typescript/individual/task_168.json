@@ -1,0 +1,17 @@
+{
+  "task_id": 168,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurrences of a number in a given list.",
+  "python_code": "def frequency(a,x): \n    count = 0  \n    for i in a: \n      if i == x: \n        count += 1\n\n    return count ",
+  "test_list": [
+    "assert frequency([1,2,3], 4) == 0",
+    "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+    "assert frequency([0,1,2,3,1,2], 1) == 2"
+  ],
+  "code_typescript": "function frequency<T>(a: T[], x: T): number {\n    let count = 0;\n    for (const i of a) {\n        if (i === x) {\n            count += 1;\n        }\n    }\n    return count;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

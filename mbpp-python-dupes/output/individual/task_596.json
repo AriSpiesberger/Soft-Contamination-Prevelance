@@ -1,0 +1,27 @@
+{
+  "task_id": 596,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the size in bytes of the given tuple.",
+  "code_python": "import sys \ndef tuple_size(tuple_list):\n  return (sys.getsizeof(tuple_list)) ",
+  "test_list": [
+    "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+    "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+    "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))"
+  ],
+  "python_1": "import sys\n\ndef tuple_size(tuple_list):\n    # Use object's __sizeof__ dunder method directly instead of sys.getsizeof\n    # This accesses the internal size method that getsizeof wraps\n    raw_size = tuple_list.__sizeof__()\n    # Calculate garbage collector overhead which sys.getsizeof includes\n    # For tuples, we need to add the gc header size (typically 16 bytes on 64-bit)\n    gc_overhead = sys.getsizeof(tuple_list) - tuple_list.__sizeof__()\n    # Combine raw object size with garbage collector tracking overhead\n    total_size = raw_size + gc_overhead\n    # Return the complete memory footprint matching sys.getsizeof behavior\n    return total_size",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import sys\n\ndef tuple_size(tuple_list):\n    # Define a helper function that wraps the getsizeof call for functional approach\n    get_size = lambda obj: sys.getsizeof(obj)\n    # Apply the size-getting function to our tuple argument and capture result\n    size_result = get_size(tuple_list)\n    # Return the computed byte size of the tuple object\n    return size_result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import sys\n\ndef tuple_size(tuple_list):\n    # Store reference to the built-in getsizeof function from sys module\n    size_func = getattr(sys, 'getsizeof')\n    # Invoke the stored function reference with tuple as argument\n    computed_size = size_func(tuple_list)\n    # Package the result into a single-element list for extraction\n    result_container = [computed_size]\n    # Unpack and return the size value from the container\n    return result_container[0]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import sys\n\ndef tuple_size(tuple_list):\n    # Create a dictionary mapping method names to their callable implementations\n    method_registry = {'size_calculator': sys.getsizeof}\n    # Extract the size calculation function from our registry using key lookup\n    calculator = method_registry.get('size_calculator')\n    # Build argument tuple to pass into the calculator via unpacking\n    args_tuple = (tuple_list,)\n    # Invoke calculator by unpacking the arguments tuple using * operator\n    byte_size = calculator(*args_tuple)\n    # Use ternary expression to validate and return the positive size value\n    return byte_size if byte_size >= 0 else 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import sys\n\ndef tuple_size(tuple_list):\n    # Create a class that encapsulates size calculation behavior\n    class SizeCalculator:\n        # Define instance method that delegates to sys.getsizeof\n        def compute(self, obj):\n            # Return the memory footprint by calling system function\n            return sys.getsizeof(obj)\n    \n    # Instantiate the calculator class to create a working object\n    calculator_instance = SizeCalculator()\n    # Invoke the compute method on our tuple through the instance\n    result = calculator_instance.compute(tuple_list)\n    # Hand back the calculated byte size to the caller\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

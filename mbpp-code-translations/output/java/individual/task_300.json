@@ -1,0 +1,37 @@
+{
+  "task_id": 300,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the count of all binary sequences of length 2n such that sum of first n bits is same as sum of last n bits.",
+  "python_code": "def count_binary_seq(n): \n\tnCr = 1\n\tres = 1\n\tfor r in range(1, n + 1): \n\t\tnCr = (nCr * (n + 1 - r)) / r \n\t\tres += nCr * nCr \n\treturn res ",
+  "test_list": [
+    "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double count_binary_seq(int n) {\n        double nCr = 1;\n        double res = 1;\n        for (int r = 1; r <= n; r++) {\n            nCr = (nCr * (n + 1 - r)) / r;\n            res += nCr * nCr;\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+      "generated_test": "double result = count_binary_seq(1);\ndouble expected = 2.0;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+      "generated_test": "double result = count_binary_seq(2);\ndouble expected = 6.0;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)",
+      "generated_test": "double result = count_binary_seq(3);\ndouble expected = 20.0;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

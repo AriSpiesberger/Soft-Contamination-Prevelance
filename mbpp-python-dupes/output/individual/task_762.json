@@ -1,0 +1,27 @@
+{
+  "task_id": 762,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given month number contains 30 days or not. Months are given as number from 1 to 12.",
+  "code_python": "def check_monthnumber_number(monthnum3):\n  return monthnum3==4 or monthnum3==6 or monthnum3==9 or monthnum3==11",
+  "test_list": [
+    "assert check_monthnumber_number(6)==True",
+    "assert check_monthnumber_number(2)==False",
+    "assert check_monthnumber_number(12)==False"
+  ],
+  "python_1": "# Define list containing all months that have exactly 30 days\nthirty_day_months = [4, 6, 9, 11]\n\ndef check_monthnumber_number(monthnum3):\n    # Check if the input month exists in our predefined 30-day months list\n    return monthnum3 in thirty_day_months",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_monthnumber_number(monthnum3):\n    # Create a dictionary mapping each month number to its day count\n    days_in_month = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}\n    # Look up the month and compare its day count to 30\n    return days_in_month.get(monthnum3, 0) == 30",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_monthnumber_number(monthnum3):\n    # Use a set for O(1) lookup performance on 30-day months\n    thirty_day_set = {4, 6, 9, 11}\n    # Return True if month is in the set, False otherwise\n    return monthnum3 in thirty_day_set",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_monthnumber_number(monthnum3):\n    # Use a tuple of 30-day months and leverage tuple membership testing\n    thirty_day_tuple = (4, 6, 9, 11)\n    # Apply a filter to find if the input month matches any 30-day month\n    matching_months = list(filter(lambda x: x == monthnum3, thirty_day_tuple))\n    # Return True if filter found exactly one match, False if empty list\n    return len(matching_months) == 1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_monthnumber_number(monthnum3):\n    # Use bitwise operations: encode 30-day months as bits in a bitmask\n    # Bit positions 4, 6, 9, 11 are set to 1 (binary representation)\n    bitmask = (1 << 4) | (1 << 6) | (1 << 9) | (1 << 11)\n    # Shift 1 left by the month number and check if that bit is set in mask\n    month_bit = 1 << monthnum3\n    # Perform bitwise AND to see if the month's bit position exists in bitmask\n    result = bitmask & month_bit\n    # Convert non-zero result to boolean True, zero to False\n    return result != 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

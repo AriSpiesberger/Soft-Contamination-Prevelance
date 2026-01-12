@@ -1,0 +1,17 @@
+{
+  "task_id": 479,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first digit of a given number.",
+  "python_code": "def first_Digit(n) :  \n    while n >= 10:  \n        n = n / 10 \n    return int(n) ",
+  "test_list": [
+    "assert first_Digit(123) == 1",
+    "assert first_Digit(456) == 4",
+    "assert first_Digit(12) == 1"
+  ],
+  "code_typescript": "function first_Digit(n: number): number {\n    n = Math.abs(n);\n    while (n >= 10) {\n        n = n / 10;\n    }\n    return Math.floor(n);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 72,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given number can be represented as the difference of two squares or not.",
+  "python_code": "def dif_Square(n): \n    if (n % 4 != 2): \n        return True\n    return False",
+  "test_list": [
+    "assert dif_Square(5) == True",
+    "assert dif_Square(10) == False",
+    "assert dif_Square(15) == True"
+  ],
+  "code_typescript": "function dif_Square(n: number): boolean {\n    if (n % 4 !== 2) {\n        return true;\n    }\n    return false;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

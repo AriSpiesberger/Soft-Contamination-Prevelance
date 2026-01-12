@@ -1,0 +1,27 @@
+{
+  "task_id": 770,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of fourth power of first n odd natural numbers.",
+  "code_python": "def odd_num_sum(n) : \n    j = 0\n    sm = 0\n    for i in range(1,n + 1) : \n        j = (2*i-1) \n        sm = sm + (j*j*j*j)   \n    return sm ",
+  "test_list": [
+    "assert odd_num_sum(2) == 82",
+    "assert odd_num_sum(3) == 707",
+    "assert odd_num_sum(4) == 3108"
+  ],
+  "python_1": "def odd_num_sum(n):\n    # Generate the sequence of first n odd numbers using list comprehension\n    odd_numbers = [2*i - 1 for i in range(1, n + 1)]\n    # Use sum() with a generator expression to compute fourth powers and accumulate\n    total = sum(x ** 4 for x in odd_numbers)\n    # Return the computed sum of fourth powers\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def odd_num_sum(n):\n    # Use reduce to accumulate the sum through functional programming approach\n    from functools import reduce\n    # Create range object representing indices 1 through n inclusive\n    indices = range(1, n + 1)\n    # Apply reduce with lambda that converts index to odd number and adds its fourth power\n    result = reduce(lambda acc, i: acc + (2*i - 1) ** 4, indices, 0)\n    # Return the accumulated sum of fourth powers\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 2,
+  "python_3": "def odd_num_sum(n):\n    # Use a recursive approach with base case for n=0\n    if n == 0:\n        # Return zero when no odd numbers to sum\n        return 0\n    # Calculate the nth odd number (1st odd is 1, 2nd is 3, etc.)\n    nth_odd = 2 * n - 1\n    # Compute fourth power of current odd number\n    fourth_power = nth_odd ** 4\n    # Recursively sum: current fourth power plus sum of previous (n-1) odd numbers' fourth powers\n    return fourth_power + odd_num_sum(n - 1)",
+  "python_3_status": "success",
+  "python_3_attempts": 2,
+  "python_4": "def odd_num_sum(n):\n    # Use map to transform indices into fourth powers of odd numbers\n    fourth_powers = map(lambda i: (2*i - 1) ** 4, range(1, n + 1))\n    # Convert the map iterator to a list for aggregation\n    powers_list = list(fourth_powers)\n    # Aggregate all fourth powers using built-in sum on the list\n    return sum(powers_list)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def odd_num_sum(n):\n    # Use closed-form mathematical formula derived from sum of fourth powers\n    # Formula: n(2n+1)(2n-1)(2n^2-1)/15 simplified for odd numbers\n    # The sum of fourth powers of first n odd numbers = n(2n-1)(2n+1)(24n^2-12n-1)/15\n    # Actually using direct calculation via numpy-style array operations with filter\n    \n    # Create a generator that yields odd numbers directly by stepping by 2\n    odd_gen = (num for num in range(1, 2*n, 2))\n    # Accumulate sum using while loop with iterator protocol\n    total = 0\n    # Use iter() to ensure we have an explicit iterator object\n    iterator = iter(odd_gen)\n    # Track how many odd numbers we've processed\n    count = 0\n    # Continue until we've processed exactly n odd numbers\n    while count < n:\n        # Fetch the next odd number from our generator using next()\n        odd = next(iterator)\n        # Raise to fourth power using exponentiation and add to running total\n        total += odd * odd * odd * odd\n        # Increment our processed count\n        count += 1\n    # Return the accumulated sum of fourth powers\n    return total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

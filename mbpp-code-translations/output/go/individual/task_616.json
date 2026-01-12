@@ -1,0 +1,37 @@
+{
+  "task_id": 616,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which takes two tuples of the same length and performs the element wise modulo.",
+  "python_code": "def tuple_modulo(test_tup1, test_tup2):\n  res = tuple(ele1 % ele2 for ele1, ele2 in zip(test_tup1, test_tup2)) \n  return (res) ",
+  "test_list": [
+    "assert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)",
+    "assert tuple_modulo((11, 5, 6, 7), (6, 7, 8, 6)) == (5, 5, 6, 1)",
+    "assert tuple_modulo((12, 6, 7, 8), (7, 8, 9, 7)) == (5, 6, 7, 1)"
+  ],
+  "code_go": "package main\n\nfunc tuple_modulo(test_tup1, test_tup2 []int) []int {\n\tres := make([]int, len(test_tup1))\n\tfor i := 0; i < len(test_tup1); i++ {\n\t\tres[i] = test_tup1[i] % test_tup2[i]\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)",
+      "generated_test": "result := tuple_modulo([]int{10, 4, 5, 6}, []int{5, 6, 7, 5})\nexpected := []int{0, 4, 5, 1}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_modulo((11, 5, 6, 7), (6, 7, 8, 6)) == (5, 5, 6, 1)",
+      "generated_test": "result := tuple_modulo([]int{11, 5, 6, 7}, []int{6, 7, 8, 6})\nexpected := []int{5, 5, 6, 1}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_modulo((12, 6, 7, 8), (7, 8, 9, 7)) == (5, 6, 7, 1)",
+      "generated_test": "result := tuple_modulo([]int{12, 6, 7, 8}, []int{7, 8, 9, 7})\nexpected := []int{5, 6, 7, 1}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

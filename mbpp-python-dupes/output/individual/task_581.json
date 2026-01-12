@@ -1,0 +1,27 @@
+{
+  "task_id": 581,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the surface area of a square pyramid with a given base edge and height.",
+  "code_python": "def surface_Area(b,s): \n    return 2 * b * s + pow(b,2) ",
+  "test_list": [
+    "assert surface_Area(3,4) == 33",
+    "assert surface_Area(4,5) == 56",
+    "assert surface_Area(1,2) == 5"
+  ],
+  "python_1": "def surface_Area(b,s): \n    # Calculate the area of the square base (side squared)\n    base_area = b * b\n    # Calculate the area of one triangular face (0.5 * base * slant height)\n    triangle_area = 0.5 * b * s\n    # Multiply by 4 since a square pyramid has exactly 4 triangular faces\n    lateral_area = 4 * triangle_area\n    # Sum the base area and total lateral surface area for complete surface\n    total_surface_area = base_area + lateral_area\n    # Return the computed total surface area as final result\n    return total_surface_area",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def surface_Area(b,s): \n    # Use list comprehension to create a list containing the two surface components\n    components = [b * b, 2 * b * s]\n    # Aggregate both components using built-in sum function for total surface area\n    return sum(components)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def surface_Area(b,s): \n    # Import reduce to perform cumulative computation on area components\n    from functools import reduce\n    # Define a lambda that computes base area using exponentiation operator\n    base_area_fn = lambda x: x ** 2\n    # Define a lambda that computes lateral surface area from base and slant height\n    lateral_area_fn = lambda base, slant: base * slant * 2\n    # Invoke the base area function to get the square base surface\n    base_component = base_area_fn(b)\n    # Invoke the lateral area function to get all four triangular faces combined\n    lateral_component = lateral_area_fn(b, s)\n    # Use reduce with addition operator to combine both surface area components\n    total = reduce(lambda acc, val: acc + val, [base_component, lateral_component], 0)\n    # Return the aggregated total surface area of the pyramid\n    return total",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def surface_Area(b,s): \n    # Initialize an accumulator variable to build up the total surface area\n    result = 0\n    # Add the area contribution from the first side of the square base\n    result = result + b\n    # Multiply by the second side to complete the square base area calculation\n    result = result * b\n    # Store the base area separately to add lateral area incrementally\n    base_area = result\n    # Loop through each of the four triangular faces of the pyramid\n    for i in range(4):\n        # Calculate area of single triangular face: (1/2) * base * slant height\n        single_triangle = (b * s) / 2\n        # Accumulate each triangle's contribution to the total surface\n        result = result + single_triangle\n    # Convert to integer since all test cases expect whole numbers\n    return int(result)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def surface_Area(b,s): \n    # Use a dictionary to store named surface area components for clarity\n    areas = {}\n    # Calculate base area using multiplication and store with descriptive key\n    areas['base'] = b * b\n    # Calculate perimeter of the square base for lateral area formula\n    perimeter = b + b + b + b\n    # Compute lateral surface area as half perimeter times slant height\n    areas['lateral'] = (perimeter * s) / 2\n    # Extract all area values from dictionary into a tuple for processing\n    area_values = tuple(areas.values())\n    # Unpack tuple elements and add them together for final surface area\n    final_area = area_values[0] + area_values[1]\n    # Round to nearest integer to handle any floating point imprecision\n    return round(final_area)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 800,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from a string.",
+  "python_code": "import re\ndef remove_all_spaces(text):\n return (re.sub(r'\\s+', '',text))",
+  "test_list": [
+    "assert remove_all_spaces('python  program')==('pythonprogram')",
+    "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+    "assert remove_all_spaces('python                     program')==('pythonprogram')",
+    "assert remove_all_spaces('   python                     program')=='pythonprogram'"
+  ],
+  "code_javascript": "function remove_all_spaces(text) {\n    return text.replace(/\\s+/g, '');\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert remove_all_spaces('python  program')==('pythonprogram')",
+      "generated_test": "const result = remove_all_spaces('python  program');\nconst expected = 'pythonprogram';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+      "generated_test": "const result = remove_all_spaces('python   programming    language');\nconst expected = 'pythonprogramminglanguage';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python                     program')==('pythonprogram')",
+      "generated_test": "const result = remove_all_spaces('python                     program');\nconst expected = 'pythonprogram';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('   python                     program')=='pythonprogram'",
+      "generated_test": "const result = remove_all_spaces('   python                     program');\nconst expected = 'pythonprogram';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

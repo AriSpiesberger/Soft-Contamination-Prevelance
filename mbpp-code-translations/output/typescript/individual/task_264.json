@@ -1,0 +1,17 @@
+{
+  "task_id": 264,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate a dog's age in dog's years.",
+  "python_code": "def dog_age(h_age):\n if h_age < 0:\n \texit()\n elif h_age <= 2:\n\t d_age = h_age * 10.5\n else:\n\t d_age = 21 + (h_age - 2)*4\n return d_age",
+  "test_list": [
+    "assert dog_age(12)==61",
+    "assert dog_age(15)==73",
+    "assert dog_age(24)==109"
+  ],
+  "code_typescript": "function dog_age(h_age: number): number {\n    if (h_age < 0) {\n        process.exit();\n    } else if (h_age <= 2) {\n        return h_age * 10.5;\n    } else {\n        return 21 + (h_age - 2) * 4;\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

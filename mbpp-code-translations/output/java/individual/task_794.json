@@ -1,0 +1,37 @@
+{
+  "task_id": 794,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.",
+  "python_code": "import re\ndef text_starta_endb(text):\n        patterns = 'a.*?b$'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert text_starta_endb(\"aabbbb\")",
+    "assert not text_starta_endb(\"aabAbbbc\")",
+    "assert not text_starta_endb(\"accddbbjjj\")"
+  ],
+  "code_java": "import java.util.regex.Pattern;\nimport java.util.regex.Matcher;\n\npublic class Solution {\n    public static Matcher text_starta_endb(String text) {\n        String patterns = \"a.*?b$\";\n        Pattern pattern = Pattern.compile(patterns);\n        Matcher matcher = pattern.matcher(text);\n        if (matcher.find()) {\n            return matcher;\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert text_starta_endb(\"aabbbb\")",
+      "generated_test": "Object result = text_starta_endb(\"aabbbb\");\nboolean passed = result != null;\nif (passed) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: non-null (truthy)\");\n    System.out.println(\"  Got: null\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"aabAbbbc\")",
+      "generated_test": "Matcher result = text_starta_endb(\"aabAbbbc\");\nboolean expected = false;\nboolean got = (result != null);\nif (got == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"accddbbjjj\")",
+      "generated_test": "Matcher result = text_starta_endb(\"accddbbjjj\");\nif (result == null) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: null\");\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

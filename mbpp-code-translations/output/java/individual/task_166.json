@@ -1,0 +1,37 @@
+{
+  "task_id": 166,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that counts the number of pairs of integers in a list that xor to an even number.",
+  "python_code": "def find_even_pair(A): \n  count = 0\n  for i in range(0, len(A)): \n    for j in range(i+1, len(A)): \n        if ((A[i] ^ A[j]) % 2 == 0): \n          count += 1\n\n  return count",
+  "test_list": [
+    "assert find_even_pair([5, 4, 7, 2, 1]) == 4",
+    "assert find_even_pair([7, 2, 8, 1, 0, 5, 11]) == 9",
+    "assert find_even_pair([1, 2, 3]) == 1"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int find_even_pair(ArrayList<Integer> A) {\n        int count = 0;\n        for (int i = 0; i < A.size(); i++) {\n            for (int j = i + 1; j < A.size(); j++) {\n                if ((A.get(i) ^ A.get(j)) % 2 == 0) {\n                    count += 1;\n                }\n            }\n        }\n        return count;\n    }\n    \n    public static int find_even_pair(int[] A) {\n        int count = 0;\n        for (int i = 0; i < A.length; i++) {\n            for (int j = i + 1; j < A.length; j++) {\n                if ((A[i] ^ A[j]) % 2 == 0) {\n                    count += 1;\n                }\n            }\n        }\n        return count;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_even_pair([5, 4, 7, 2, 1]) == 4",
+      "generated_test": "int[] input = new int[]{5, 4, 7, 2, 1};\nint expected = 4;\nint result = find_even_pair(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_even_pair([7, 2, 8, 1, 0, 5, 11]) == 9",
+      "generated_test": "int result = find_even_pair(new int[]{7, 2, 8, 1, 0, 5, 11});\nint expected = 9;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_even_pair([1, 2, 3]) == 1",
+      "generated_test": "int result = find_even_pair(new int[]{1, 2, 3});\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

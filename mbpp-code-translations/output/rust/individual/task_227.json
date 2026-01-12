@@ -1,0 +1,37 @@
+{
+  "task_id": 227,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum of three numbers.",
+  "python_code": "def min_of_three(a,b,c): \n      if (a <= b) and (a <= c): \n        smallest = a \n      elif (b <= a) and (b <= c): \n        smallest = b \n      else: \n        smallest = c \n      return smallest ",
+  "test_list": [
+    "assert min_of_three(10,20,0)==0",
+    "assert min_of_three(19,15,18)==15",
+    "assert min_of_three(-10,-20,-30)==-30"
+  ],
+  "code_rust": "pub fn min_of_three(a: i32, b: i32, c: i32) -> i32 {\n    if a <= b && a <= c {\n        a\n    } else if b <= a && b <= c {\n        b\n    } else {\n        c\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert min_of_three(10,20,0)==0",
+      "generated_test": "let result = min_of_three(10, 20, 0);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_of_three(19,15,18)==15",
+      "generated_test": "let result = min_of_three(19, 15, 18);\nlet expected = 15;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_of_three(-10,-20,-30)==-30",
+      "generated_test": "let result = min_of_three(-10, -20, -30);\nlet expected = -30;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

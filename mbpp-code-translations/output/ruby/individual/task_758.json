@@ -1,0 +1,44 @@
+{
+  "task_id": 758,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count lists within a list. The function should return a dictionary where every list is converted to a tuple and the value of such tuple is the number of its occurencies in the original list.",
+  "python_code": "def unique_sublists(list1):\n    result ={}\n    for l in  list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+    "assert unique_sublists([['john']])=={('john',): 1}"
+  ],
+  "code_ruby": "def unique_sublists(list1)\n  result = {}\n  list1.each do |l|\n    key = l.to_a\n    result[key] ||= []\n    result[key] << 1\n  end\n  result.each do |a, b|\n    result[a] = b.sum\n  end\n  result\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 4,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+      "generated_test": "result = unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]])\nexpected = {[1, 3] => 2, [5, 7] => 2, [13, 15, 17] => 1, [9, 11] => 1}\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+      "generated_test": "result = unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])\nexpected = {['green', 'orange'] => 2, ['black'] => 1, ['white'] => 1}\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+      "generated_test": "result = unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])\nexpected = {[10, 20, 30, 40] => 1, [60, 70, 50, 50] => 1, [90, 100, 200] => 1}\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['john']])=={('john',): 1}",
+      "generated_test": "result = unique_sublists([['john']])\nexpected = {['john'] => 1}\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

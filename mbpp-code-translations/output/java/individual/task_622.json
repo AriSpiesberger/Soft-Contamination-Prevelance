@@ -1,0 +1,37 @@
+{
+  "task_id": 622,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median of two sorted lists of same size.",
+  "python_code": "def get_median(arr1, arr2, n):\n  i = 0\n  j = 0\n  m1 = -1\n  m2 = -1\n  count = 0\n  while count < n + 1:\n    count += 1\n    if i == n:\n      m1 = m2\n      m2 = arr2[0]\n      break\n    elif j == n:\n      m1 = m2\n      m2 = arr1[0]\n      break\n    if arr1[i] <= arr2[j]:\n      m1 = m2\n      m2 = arr1[i]\n      i += 1\n    else:\n      m1 = m2\n      m2 = arr2[j]\n      j += 1\n  return (m1 + m2)/2",
+  "test_list": [
+    "assert get_median([1, 12, 15, 26, 38], [2, 13, 17, 30, 45], 5) == 16.0",
+    "assert get_median([2, 4, 8, 9], [7, 13, 19, 28], 4) == 8.5",
+    "assert get_median([3, 6, 14, 23, 36, 42], [2, 18, 27, 39, 49, 55], 6) == 25.0"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double get_median(ArrayList<Integer> arr1, ArrayList<Integer> arr2, int n) {\n        int i = 0;\n        int j = 0;\n        int m1 = -1;\n        int m2 = -1;\n        int count = 0;\n        while (count < n + 1) {\n            count += 1;\n            if (i == n) {\n                m1 = m2;\n                m2 = arr2.get(0);\n                break;\n            } else if (j == n) {\n                m1 = m2;\n                m2 = arr1.get(0);\n                break;\n            }\n            if (arr1.get(i) <= arr2.get(j)) {\n                m1 = m2;\n                m2 = arr1.get(i);\n                i += 1;\n            } else {\n                m1 = m2;\n                m2 = arr2.get(j);\n                j += 1;\n            }\n        }\n        return (m1 + m2) / 2.0;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert get_median([1, 12, 15, 26, 38], [2, 13, 17, 30, 45], 5) == 16.0",
+      "generated_test": "ArrayList<Integer> arr1 = new ArrayList<Integer>();\narr1.add(1);\narr1.add(12);\narr1.add(15);\narr1.add(26);\narr1.add(38);\n\nArrayList<Integer> arr2 = new ArrayList<Integer>();\narr2.add(2);\narr2.add(13);\narr2.add(17);\narr2.add(30);\narr2.add(45);\n\ndouble result = get_median(arr1, arr2, 5);\ndouble expected = 16.0;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_median([2, 4, 8, 9], [7, 13, 19, 28], 4) == 8.5",
+      "generated_test": "ArrayList<Integer> arr1 = new ArrayList<>();\narr1.add(2);\narr1.add(4);\narr1.add(8);\narr1.add(9);\n\nArrayList<Integer> arr2 = new ArrayList<>();\narr2.add(7);\narr2.add(13);\narr2.add(19);\narr2.add(28);\n\ndouble result = get_median(arr1, arr2, 4);\ndouble expected = 8.5;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_median([3, 6, 14, 23, 36, 42], [2, 18, 27, 39, 49, 55], 6) == 25.0",
+      "generated_test": "ArrayList<Integer> arr1 = new ArrayList<>();\narr1.add(3);\narr1.add(6);\narr1.add(14);\narr1.add(23);\narr1.add(36);\narr1.add(42);\n\nArrayList<Integer> arr2 = new ArrayList<>();\narr2.add(2);\narr2.add(18);\narr2.add(27);\narr2.add(39);\narr2.add(49);\narr2.add(55);\n\ndouble result = get_median(arr1, arr2, 6);\ndouble expected = 25.0;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

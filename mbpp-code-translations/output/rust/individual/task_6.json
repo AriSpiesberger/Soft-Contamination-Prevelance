@@ -1,0 +1,58 @@
+{
+  "task_id": 6,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the two numbers differ at one bit position only or not.",
+  "python_code": "def is_Power_Of_Two (x): \n    return x and (not(x & (x - 1))) \ndef differ_At_One_Bit_Pos(a,b): \n    return is_Power_Of_Two(a ^ b)",
+  "test_list": [
+    "assert differ_At_One_Bit_Pos(13,9) == True",
+    "assert differ_At_One_Bit_Pos(15,8) == False",
+    "assert differ_At_One_Bit_Pos(2,4) == False",
+    "assert differ_At_One_Bit_Pos(2, 3) == True",
+    "assert differ_At_One_Bit_Pos(5, 1) == True",
+    "assert differ_At_One_Bit_Pos(1, 5) == True"
+  ],
+  "code_rust": "pub fn is_Power_Of_Two(x: i32) -> bool {\n    x != 0 && (x & (x - 1)) == 0\n}\n\npub fn differ_At_One_Bit_Pos(a: i32, b: i32) -> bool {\n    is_Power_Of_Two(a ^ b)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 6,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(13,9) == True",
+      "generated_test": "let result = differ_At_One_Bit_Pos(13, 9);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(15,8) == False",
+      "generated_test": "let result = differ_At_One_Bit_Pos(15, 8);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(2,4) == False",
+      "generated_test": "let result = differ_At_One_Bit_Pos(2, 4);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(2, 3) == True",
+      "generated_test": "let result = differ_At_One_Bit_Pos(2, 3);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(5, 1) == True",
+      "generated_test": "let result = differ_At_One_Bit_Pos(5, 1);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(1, 5) == True",
+      "generated_test": "let result = differ_At_One_Bit_Pos(1, 5);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

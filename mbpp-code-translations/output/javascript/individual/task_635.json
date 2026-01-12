@@ -1,0 +1,37 @@
+{
+  "task_id": 635,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort the given list.",
+  "python_code": "import heapq as hq\ndef heap_sort(iterable):\n    h = []\n    for value in iterable:\n        hq.heappush(h, value)\n    return [hq.heappop(h) for i in range(len(h))]",
+  "test_list": [
+    "assert heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+    "assert heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])==[14, 22, 25, 25, 35, 58, 65, 75, 85]",
+    "assert heap_sort( [7, 1, 9, 5])==[1,5,7,9]"
+  ],
+  "code_javascript": "function heap_sort(iterable) {\n    const h = [];\n    \n    function heappush(heap, value) {\n        heap.push(value);\n        let i = heap.length - 1;\n        while (i > 0) {\n            const parent = Math.floor((i - 1) / 2);\n            if (heap[parent] <= heap[i]) break;\n            [heap[parent], heap[i]] = [heap[i], heap[parent]];\n            i = parent;\n        }\n    }\n    \n    function heappop(heap) {\n        if (heap.length === 0) return undefined;\n        if (heap.length === 1) return heap.pop();\n        \n        const result = heap[0];\n        heap[0] = heap.pop();\n        let i = 0;\n        const length = heap.length;\n        \n        while (true) {\n            const left = 2 * i + 1;\n            const right = 2 * i + 2;\n            let smallest = i;\n            \n            if (left < length && heap[left] < heap[smallest]) {\n                smallest = left;\n            }\n            if (right < length && heap[right] < heap[smallest]) {\n                smallest = right;\n            }\n            \n            if (smallest === i) break;\n            \n            [heap[i], heap[smallest]] = [heap[smallest], heap[i]];\n            i = smallest;\n        }\n        \n        return result;\n    }\n    \n    for (const value of iterable) {\n        heappush(h, value);\n    }\n    \n    const result = [];\n    const length = h.length;\n    for (let i = 0; i < length; i++) {\n        result.push(heappop(h));\n    }\n    \n    return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+      "generated_test": "const result = heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0]);\nconst expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])==[14, 22, 25, 25, 35, 58, 65, 75, 85]",
+      "generated_test": "const result = heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58]);\nconst expected = [14, 22, 25, 25, 35, 58, 65, 75, 85];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert heap_sort( [7, 1, 9, 5])==[1,5,7,9]",
+      "generated_test": "const result = heap_sort([7, 1, 9, 5]);\nconst expected = [1, 5, 7, 9];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

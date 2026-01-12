@@ -1,0 +1,37 @@
+{
+  "task_id": 68,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given array is monotonic or not.",
+  "python_code": "def is_Monotonic(A): \n    return (all(A[i] <= A[i + 1] for i in range(len(A) - 1)) or\n            all(A[i] >= A[i + 1] for i in range(len(A) - 1))) ",
+  "test_list": [
+    "assert is_Monotonic([6, 5, 4, 4]) == True",
+    "assert is_Monotonic([1, 2, 2, 3]) == True",
+    "assert is_Monotonic([1, 3, 2]) == False"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static boolean is_Monotonic(int[] A) {\n        if (A.length <= 1) {\n            return true;\n        }\n        \n        boolean increasing = true;\n        boolean decreasing = true;\n        \n        for (int i = 0; i < A.length - 1; i++) {\n            if (A[i] > A[i + 1]) {\n                increasing = false;\n            }\n            if (A[i] < A[i + 1]) {\n                decreasing = false;\n            }\n        }\n        \n        return increasing || decreasing;\n    }\n    \n    public static boolean is_Monotonic(ArrayList<Integer> A) {\n        if (A.size() <= 1) {\n            return true;\n        }\n        \n        boolean increasing = true;\n        boolean decreasing = true;\n        \n        for (int i = 0; i < A.size() - 1; i++) {\n            if (A.get(i) > A.get(i + 1)) {\n                increasing = false;\n            }\n            if (A.get(i) < A.get(i + 1)) {\n                decreasing = false;\n            }\n        }\n        \n        return increasing || decreasing;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert is_Monotonic([6, 5, 4, 4]) == True",
+      "generated_test": "int[] input = new int[]{6, 5, 4, 4};\nboolean expected = true;\nboolean result = is_Monotonic(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 2, 2, 3]) == True",
+      "generated_test": "int[] input = new int[]{1, 2, 2, 3};\nboolean expected = true;\nboolean result = is_Monotonic(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 3, 2]) == False",
+      "generated_test": "boolean result = is_Monotonic(new int[]{1, 3, 2});\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

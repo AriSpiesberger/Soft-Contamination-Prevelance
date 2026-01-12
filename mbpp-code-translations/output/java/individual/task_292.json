@@ -1,0 +1,37 @@
+{
+  "task_id": 292,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find quotient of two numbers (rounded down to the nearest integer).",
+  "python_code": "def find(n,m):  \n    q = n//m \n    return (q)",
+  "test_list": [
+    "assert find(10,3) == 3",
+    "assert find(4,2) == 2",
+    "assert find(20,5) == 4"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int find(int n, int m) {\n        return Math.floorDiv(n, m);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find(10,3) == 3",
+      "generated_test": "int result = find(10, 3);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find(4,2) == 2",
+      "generated_test": "int result = find(4, 2);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find(20,5) == 4",
+      "generated_test": "int result = find(20, 5);\nint expected = 4;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 465,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to drop empty items from a given dictionary.",
+  "python_code": "def drop_empty(dict1):\n  dict1 = {key:value for (key, value) in dict1.items() if value is not None}\n  return dict1",
+  "test_list": [
+    "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+    "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+    "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}"
+  ],
+  "code_java": "import java.util.HashMap;\n\npublic class Solution {\n    public static HashMap<String, String> drop_empty(HashMap<String, String> dict1) {\n        HashMap<String, String> result = new HashMap<>();\n        for (String key : dict1.keySet()) {\n            String value = dict1.get(key);\n            if (value != null) {\n                result.put(key, value);\n            }\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+      "generated_test": "HashMap<String, String> input = new HashMap<>();\ninput.put(\"c1\", \"Red\");\ninput.put(\"c2\", \"Green\");\ninput.put(\"c3\", null);\n\nHashMap<String, String> expected = new HashMap<>();\nexpected.put(\"c1\", \"Red\");\nexpected.put(\"c2\", \"Green\");\n\nHashMap<String, String> result = drop_empty(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+      "generated_test": "HashMap<String, String> input = new HashMap<>();\ninput.put(\"c1\", \"Red\");\ninput.put(\"c2\", null);\ninput.put(\"c3\", null);\n\nHashMap<String, String> expected = new HashMap<>();\nexpected.put(\"c1\", \"Red\");\n\nHashMap<String, String> result = drop_empty(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}",
+      "generated_test": "HashMap<String, String> input = new HashMap<>();\ninput.put(\"c1\", null);\ninput.put(\"c2\", \"Green\");\ninput.put(\"c3\", null);\n\nHashMap<String, String> expected = new HashMap<>();\nexpected.put(\"c2\", \"Green\");\n\nHashMap<String, String> result = drop_empty(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

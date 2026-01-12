@@ -1,0 +1,37 @@
+{
+  "task_id": 239,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in positive integers m and n and finds the number of possible sequences of length n, such that each element is a positive integer and is greater than or equal to twice the previous element but less than or equal to m.",
+  "python_code": "def get_total_number_of_sequences(m,n): \n\tT=[[0 for i in range(n+1)] for i in range(m+1)] \n\tfor i in range(m+1): \n\t\tfor j in range(n+1): \n\t\t\tif i==0 or j==0: \n\t\t\t\tT[i][j]=0\n\t\t\telif i<j: \n\t\t\t\tT[i][j]=0\n\t\t\telif j==1: \n\t\t\t\tT[i][j]=i \n\t\t\telse: \n\t\t\t\tT[i][j]=T[i-1][j]+T[i//2][j-1] \n\treturn T[m][n]",
+  "test_list": [
+    "assert get_total_number_of_sequences(10, 4) == 4",
+    "assert get_total_number_of_sequences(5, 2) == 6",
+    "assert get_total_number_of_sequences(16, 3) == 84"
+  ],
+  "code_go": "package main\n\nfunc get_total_number_of_sequences(m, n int) int {\n\tT := make([][]int, m+1)\n\tfor i := range T {\n\t\tT[i] = make([]int, n+1)\n\t}\n\n\tfor i := 0; i <= m; i++ {\n\t\tfor j := 0; j <= n; j++ {\n\t\t\tif i == 0 || j == 0 {\n\t\t\t\tT[i][j] = 0\n\t\t\t} else if i < j {\n\t\t\t\tT[i][j] = 0\n\t\t\t} else if j == 1 {\n\t\t\t\tT[i][j] = i\n\t\t\t} else {\n\t\t\t\tT[i][j] = T[i-1][j] + T[i/2][j-1]\n\t\t\t}\n\t\t}\n\t}\n\treturn T[m][n]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert get_total_number_of_sequences(10, 4) == 4",
+      "generated_test": "result := get_total_number_of_sequences(10, 4)\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_total_number_of_sequences(5, 2) == 6",
+      "generated_test": "result := get_total_number_of_sequences(5, 2)\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_total_number_of_sequences(16, 3) == 84",
+      "generated_test": "result := get_total_number_of_sequences(16, 3)\nexpected := 84\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

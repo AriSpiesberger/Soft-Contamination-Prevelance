@@ -1,0 +1,44 @@
+{
+  "task_id": 752,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth jacobsthal number. https://www.geeksforgeeks.org/jacobsthal-and-jacobsthal-lucas-numbers/ 0, 1, 1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, ...",
+  "python_code": "def jacobsthal_num(n): \n\tdp = [0] * (n + 1) \n\tdp[0] = 0\n\tdp[1] = 1\n\tfor i in range(2, n+1): \n\t\tdp[i] = dp[i - 1] + 2 * dp[i - 2] \n\treturn dp[n]",
+  "test_list": [
+    "assert jacobsthal_num(5) == 11",
+    "assert jacobsthal_num(2) == 1",
+    "assert jacobsthal_num(4) == 5",
+    "assert jacobsthal_num(13) == 2731"
+  ],
+  "code_rust": "pub fn jacobsthal_num(n: usize) -> i64 {\n    if n == 0 {\n        return 0;\n    }\n    if n == 1 {\n        return 1;\n    }\n    \n    let mut dp: Vec<i64> = vec![0; n + 1];\n    dp[0] = 0;\n    dp[1] = 1;\n    \n    for i in 2..=n {\n        dp[i] = dp[i - 1] + 2 * dp[i - 2];\n    }\n    \n    dp[n]\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert jacobsthal_num(5) == 11",
+      "generated_test": "let result = jacobsthal_num(5);\nlet expected = 11;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert jacobsthal_num(2) == 1",
+      "generated_test": "let result = jacobsthal_num(2);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert jacobsthal_num(4) == 5",
+      "generated_test": "let result = jacobsthal_num(4);\nlet expected: i64 = 5;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert jacobsthal_num(13) == 2731",
+      "generated_test": "let result = jacobsthal_num(13);\nlet expected: i64 = 2731;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

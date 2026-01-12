@@ -1,0 +1,37 @@
+{
+  "task_id": 171,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the perimeter of a regular pentagon from the length of its sides.",
+  "python_code": "import math\ndef perimeter_pentagon(a):\n  perimeter=(5*a)\n  return perimeter",
+  "test_list": [
+    "assert perimeter_pentagon(5) == 25",
+    "assert perimeter_pentagon(10) == 50",
+    "assert perimeter_pentagon(15) == 75"
+  ],
+  "code_javascript": "function perimeter_pentagon(a) {\n  const perimeter = 5 * a;\n  return perimeter;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert perimeter_pentagon(5) == 25",
+      "generated_test": "const result = perimeter_pentagon(5);\nconst expected = 25;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perimeter_pentagon(10) == 50",
+      "generated_test": "const result = perimeter_pentagon(10);\nconst expected = 50;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perimeter_pentagon(15) == 75",
+      "generated_test": "const result = perimeter_pentagon(15);\nconst expected = 75;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

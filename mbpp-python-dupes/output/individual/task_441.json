@@ -1,0 +1,27 @@
+{
+  "task_id": 441,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cube of a given size.",
+  "code_python": "def surfacearea_cube(l):\n  surfacearea= 6*l*l\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cube(5)==150",
+    "assert surfacearea_cube(3)==54",
+    "assert surfacearea_cube(10)==600"
+  ],
+  "python_1": "def surfacearea_cube(l):\n    # Calculate area of one face by multiplying side length by itself\n    single_face_area = l ** 2\n    # Cube has 6 identical faces, so multiply single face area by 6\n    total_surface_area = single_face_area * 6\n    # Return the computed total surface area\n    return total_surface_area",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def surfacearea_cube(l):\n    # Define the number of faces that make up a cube's exterior\n    num_faces = 6\n    # Use sum to accumulate the area of each individual face\n    total_area = sum(l * l for _ in range(num_faces))\n    # Return the aggregated surface area from all six faces\n    return total_area",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def surfacearea_cube(l):\n    # Import reduce to perform functional-style aggregation\n    from functools import reduce\n    # Create a list representing each of the 6 faces of the cube\n    faces = [l] * 6\n    # Use reduce with lambda to compute running sum of face areas\n    surface_area = reduce(lambda acc, side: acc + side * l, faces, 0)\n    # Return the fully computed surface area of the cube\n    return surface_area",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def surfacearea_cube(l):\n    # Use recursion base case: when size is at the last face (face 1), return its area\n    def calculate_faces(face_count, side_length):\n        # Base case terminates recursion when all faces have been counted\n        if face_count == 0:\n            return 0\n        # Recursively add current face area and process remaining faces\n        return (side_length * side_length) + calculate_faces(face_count - 1, side_length)\n    # Invoke recursive helper with 6 faces (standard cube geometry)\n    result = calculate_faces(6, l)\n    # Return the recursively accumulated surface area\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def surfacearea_cube(l):\n    # Import numpy for array-based mathematical operations\n    import numpy as np\n    # Create an array with 6 elements, each representing a face's side length\n    face_sides = np.array([l, l, l, l, l, l])\n    # Square each element to get individual face areas using vectorized operation\n    face_areas = np.square(face_sides)\n    # Sum all face areas using numpy's efficient aggregation\n    total_surface = np.sum(face_areas)\n    # Convert numpy scalar back to native Python int for return\n    return int(total_surface)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

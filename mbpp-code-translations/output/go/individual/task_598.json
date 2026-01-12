@@ -1,0 +1,37 @@
+{
+  "task_id": 598,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is armstrong or not.",
+  "python_code": "def armstrong_number(number):\n sum = 0\n times = 0\n temp = number\n while temp > 0:\n           times = times + 1\n           temp = temp // 10\n temp = number\n while temp > 0:\n           reminder = temp % 10\n           sum = sum + (reminder ** times)\n           temp //= 10\n if number == sum:\n           return True\n else:\n           return False",
+  "test_list": [
+    "assert armstrong_number(153)==True",
+    "assert armstrong_number(259)==False",
+    "assert armstrong_number(4458)==False"
+  ],
+  "code_go": "package main\n\nfunc armstrong_number(number int) bool {\n\tsum := 0\n\ttimes := 0\n\ttemp := number\n\t\n\tfor temp > 0 {\n\t\ttimes = times + 1\n\t\ttemp = temp / 10\n\t}\n\t\n\ttemp = number\n\tfor temp > 0 {\n\t\treminder := temp % 10\n\t\tsum = sum + power(reminder, times)\n\t\ttemp = temp / 10\n\t}\n\t\n\tif number == sum {\n\t\treturn true\n\t} else {\n\t\treturn false\n\t}\n}\n\nfunc power(base, exp int) int {\n\tresult := 1\n\tfor i := 0; i < exp; i++ {\n\t\tresult *= base\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert armstrong_number(153)==True",
+      "generated_test": "result := armstrong_number(153)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert armstrong_number(259)==False",
+      "generated_test": "result := armstrong_number(259)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert armstrong_number(4458)==False",
+      "generated_test": "result := armstrong_number(4458)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

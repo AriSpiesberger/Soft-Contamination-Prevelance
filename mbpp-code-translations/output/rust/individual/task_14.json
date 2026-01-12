@@ -1,0 +1,37 @@
+{
+  "task_id": 14,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the volume of a triangular prism.",
+  "python_code": "def find_Volume(l,b,h) : \n    return ((l * b * h) / 2) ",
+  "test_list": [
+    "assert find_Volume(10,8,6) == 240",
+    "assert find_Volume(3,2,2) == 6",
+    "assert find_Volume(1,2,1) == 1"
+  ],
+  "code_rust": "pub fn find_Volume(l: f64, b: f64, h: f64) -> f64 {\n    (l * b * h) / 2.0\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_Volume(10,8,6) == 240",
+      "generated_test": "let result = find_Volume(10.0, 8.0, 6.0);\nlet expected = 240.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Volume(3,2,2) == 6",
+      "generated_test": "let result = find_Volume(3.0, 2.0, 2.0);\nlet expected = 6.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Volume(1,2,1) == 1",
+      "generated_test": "let result = find_Volume(1.0, 2.0, 1.0);\nlet expected = 1.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 133,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum of the negative numbers of a given list of numbers.",
+  "python_code": "def sum_negativenum(nums):\n  sum_negativenum = list(filter(lambda nums:nums<0,nums))\n  return sum(sum_negativenum)",
+  "test_list": [
+    "assert sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17])==-32",
+    "assert sum_negativenum([10,15,-14,13,-18,12,-20])==-52",
+    "assert sum_negativenum([19, -65, 57, 39, 152,-639, 121, 44, 90, -190])==-894"
+  ],
+  "code_javascript": "function sum_negativenum(nums) {\n  return nums.filter(num => num < 0).reduce((sum, num) => sum + num, 0);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17])==-32",
+      "generated_test": "const result = sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17]);\nconst expected = -32;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_negativenum([10,15,-14,13,-18,12,-20])==-52",
+      "generated_test": "const result = sum_negativenum([10, 15, -14, 13, -18, 12, -20]);\nconst expected = -52;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_negativenum([19, -65, 57, 39, 152,-639, 121, 44, 90, -190])==-894",
+      "generated_test": "const result = sum_negativenum([19, -65, 57, 39, 152, -639, 121, 44, 90, -190]);\nconst expected = -894;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

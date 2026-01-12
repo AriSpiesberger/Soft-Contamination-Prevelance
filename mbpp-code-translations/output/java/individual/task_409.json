@@ -1,0 +1,37 @@
+{
+  "task_id": 409,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum product from the pairs of tuples within a given list.",
+  "python_code": "def min_product_tuple(list1):\n    result_min = min([abs(x * y) for x, y in list1] )\n    return result_min",
+  "test_list": [
+    "assert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8",
+    "assert min_product_tuple([(10,20), (15,2), (5,10)] )==30",
+    "assert min_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==100"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static int min_product_tuple(List<int[]> list1) {\n        int result_min = Integer.MAX_VALUE;\n        for (int[] pair : list1) {\n            int product = Math.abs(pair[0] * pair[1]);\n            if (product < result_min) {\n                result_min = product;\n            }\n        }\n        return result_min;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8",
+      "generated_test": "List<int[]> input = new ArrayList<>();\ninput.add(new int[]{2, 7});\ninput.add(new int[]{2, 6});\ninput.add(new int[]{1, 8});\ninput.add(new int[]{4, 9});\n\nint expected = 8;\nint result = min_product_tuple(input);\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_product_tuple([(10,20), (15,2), (5,10)] )==30",
+      "generated_test": "List<int[]> input = new ArrayList<>();\ninput.add(new int[]{10, 20});\ninput.add(new int[]{15, 2});\ninput.add(new int[]{5, 10});\n\nint expected = 30;\nint result = min_product_tuple(input);\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==100",
+      "generated_test": "List<int[]> input = new ArrayList<>();\ninput.add(new int[]{11, 44});\ninput.add(new int[]{10, 15});\ninput.add(new int[]{20, 5});\ninput.add(new int[]{12, 9});\n\nint expected = 100;\nint result = min_product_tuple(input);\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

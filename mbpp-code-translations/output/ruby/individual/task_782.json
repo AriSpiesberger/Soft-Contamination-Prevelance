@@ -1,0 +1,37 @@
+{
+  "task_id": 782,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of all odd length subarrays. https://www.geeksforgeeks.org/sum-of-all-odd-length-subarrays/",
+  "python_code": "def odd_length_sum(arr):\n    Sum = 0\n    l = len(arr)\n    for i in range(l):\n        Sum += ((((i + 1) *(l - i) + 1) // 2) * arr[i])\n    return Sum",
+  "test_list": [
+    "assert odd_length_sum([1,2,4]) == 14",
+    "assert odd_length_sum([1,2,1,2]) == 15",
+    "assert odd_length_sum([1,7]) == 8"
+  ],
+  "code_ruby": "def odd_length_sum(arr)\n  sum = 0\n  l = arr.length\n  (0...l).each do |i|\n    sum += (((i + 1) * (l - i) + 1) / 2) * arr[i]\n  end\n  sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert odd_length_sum([1,2,4]) == 14",
+      "generated_test": "result = odd_length_sum([1, 2, 4])\nexpected = 14\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_length_sum([1,2,1,2]) == 15",
+      "generated_test": "result = odd_length_sum([1, 2, 1, 2])\nexpected = 15\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_length_sum([1,7]) == 8",
+      "generated_test": "result = odd_length_sum([1, 7])\nexpected = 8\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

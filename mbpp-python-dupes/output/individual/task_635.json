@@ -1,0 +1,27 @@
+{
+  "task_id": 635,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort the given list.",
+  "code_python": "import heapq as hq\ndef heap_sort(iterable):\n    h = []\n    for value in iterable:\n        hq.heappush(h, value)\n    return [hq.heappop(h) for i in range(len(h))]",
+  "test_list": [
+    "assert heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+    "assert heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])==[14, 22, 25, 25, 35, 58, 65, 75, 85]",
+    "assert heap_sort( [7, 1, 9, 5])==[1,5,7,9]"
+  ],
+  "python_1": "import heapq as hq\n\ndef heap_sort(iterable):\n    # Convert the input iterable to a list to allow in-place heapification\n    heap_list = list(iterable)\n    # Transform the list into a min-heap in-place using linear time algorithm\n    hq.heapify(heap_list)\n    # Initialize empty result list to collect sorted elements\n    sorted_result = []\n    # Continue extracting minimum elements until heap is exhausted\n    while heap_list:\n        # Pop the smallest element from heap and append to result\n        sorted_result.append(hq.heappop(heap_list))\n    # Return the fully sorted list in ascending order\n    return sorted_result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import heapq as hq\n\ndef heap_sort(iterable):\n    # Use heapify on a copy to avoid modifying original input\n    h = list(iterable)\n    # Transform list into heap structure with O(n) complexity\n    hq.heapify(h)\n    # Leverage nsmallest to extract all elements in sorted order at once\n    # This internally uses a heap-based selection algorithm\n    return hq.nsmallest(len(h), h)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import heapq as hq\n\ndef heap_sort(iterable):\n    # Create a generator expression that will lazily process heap extraction\n    def sorted_generator(heap):\n        # Keep yielding minimum elements while heap has items\n        while heap:\n            # Extract and yield the smallest element from the min-heap\n            yield hq.heappop(heap)\n    \n    # Build the heap structure by heapifying a copy of the input\n    heap_copy = list(iterable)\n    # Transform the list into a valid min-heap in linear time\n    hq.heapify(heap_copy)\n    # Materialize the generator into a list by consuming all yielded values\n    return list(sorted_generator(heap_copy))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import heapq as hq\n\ndef heap_sort(iterable):\n    # Convert input to list and heapify to establish heap invariant\n    data = list(iterable)\n    hq.heapify(data)\n    # Use merge to combine single-element heaps extracted sequentially\n    # This leverages the fact that heappop gives elements in sorted order\n    extracted = []\n    # Determine total count before we start depleting the heap\n    total = len(data)\n    # Use a recursive helper approach with accumulator pattern\n    def extract_all(heap, accumulator):\n        # Base case: empty heap means all elements have been extracted\n        if not heap:\n            return accumulator\n        # Extract minimum element and add to our accumulator list\n        smallest = hq.heappop(heap)\n        accumulator.append(smallest)\n        # Recursively process remaining heap elements\n        return extract_all(heap, accumulator)\n    # Invoke recursive extraction starting with empty accumulator\n    result = extract_all(data, extracted)\n    # Return the accumulated sorted elements\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import heapq as hq\n\ndef heap_sort(iterable):\n    # Use heapq.merge which is designed for merging sorted iterables using heaps\n    # First, transform each element into a single-element list (trivially sorted)\n    single_element_iterables = [[x] for x in iterable]\n    # If the input is empty, return an empty list immediately\n    if not single_element_iterables:\n        return []\n    # Merge all single-element sorted lists using heap-based k-way merge algorithm\n    # heapq.merge maintains a heap internally to efficiently merge multiple sorted inputs\n    merged_iterator = hq.merge(*single_element_iterables)\n    # Consume the lazy iterator and materialize into a concrete sorted list\n    sorted_list = list(merged_iterator)\n    # Return the fully sorted result produced by the heap-based merge\n    return sorted_list",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

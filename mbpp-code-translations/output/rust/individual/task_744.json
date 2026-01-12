@@ -1,0 +1,37 @@
+{
+  "task_id": 744,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuple has any none value or not.",
+  "python_code": "def check_none(test_tup):\n  res = any(map(lambda ele: ele is None, test_tup))\n  return res ",
+  "test_list": [
+    "assert check_none((10, 4, 5, 6, None)) == True",
+    "assert check_none((7, 8, 9, 11, 14)) == False",
+    "assert check_none((1, 2, 3, 4, None)) == True"
+  ],
+  "code_rust": "pub fn check_none(test_tup: &[Option<i32>]) -> bool {\n    test_tup.iter().any(|ele| ele.is_none())\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_none((10, 4, 5, 6, None)) == True",
+      "generated_test": "let input = [Some(10), Some(4), Some(5), Some(6), None];\nlet result = check_none(&input);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_none((7, 8, 9, 11, 14)) == False",
+      "generated_test": "let test_tup: &[Option<i32>] = &[Some(7), Some(8), Some(9), Some(11), Some(14)];\nlet result = check_none(test_tup);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_none((1, 2, 3, 4, None)) == True",
+      "generated_test": "let input = [Some(1), Some(2), Some(3), Some(4), None];\nlet result = check_none(&input);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

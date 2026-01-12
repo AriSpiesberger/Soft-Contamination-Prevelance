@@ -1,0 +1,37 @@
+{
+  "task_id": 597,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find kth element from the given two sorted arrays.",
+  "python_code": "def find_kth(arr1, arr2, k):\n\tm = len(arr1)\n\tn = len(arr2)\n\tsorted1 = [0] * (m + n)\n\ti = 0\n\tj = 0\n\td = 0\n\twhile (i < m and j < n):\n\t\tif (arr1[i] < arr2[j]):\n\t\t\tsorted1[d] = arr1[i]\n\t\t\ti += 1\n\t\telse:\n\t\t\tsorted1[d] = arr2[j]\n\t\t\tj += 1\n\t\td += 1\n\twhile (i < m):\n\t\tsorted1[d] = arr1[i]\n\t\td += 1\n\t\ti += 1\n\twhile (j < n):\n\t\tsorted1[d] = arr2[j]\n\t\td += 1\n\t\tj += 1\n\treturn sorted1[k - 1]",
+  "test_list": [
+    "assert find_kth([2, 3, 6, 7, 9], [1, 4, 8, 10], 5) == 6",
+    "assert find_kth([100, 112, 256, 349, 770], [72, 86, 113, 119, 265, 445, 892], 7) == 256",
+    "assert find_kth([3, 4, 7, 8, 10], [2, 5, 9, 11], 6) == 8"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int find_kth(int[] arr1, int[] arr2, int k) {\n        int m = arr1.length;\n        int n = arr2.length;\n        int[] sorted1 = new int[m + n];\n        int i = 0;\n        int j = 0;\n        int d = 0;\n        while (i < m && j < n) {\n            if (arr1[i] < arr2[j]) {\n                sorted1[d] = arr1[i];\n                i += 1;\n            } else {\n                sorted1[d] = arr2[j];\n                j += 1;\n            }\n            d += 1;\n        }\n        while (i < m) {\n            sorted1[d] = arr1[i];\n            d += 1;\n            i += 1;\n        }\n        while (j < n) {\n            sorted1[d] = arr2[j];\n            d += 1;\n            j += 1;\n        }\n        return sorted1[k - 1];\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_kth([2, 3, 6, 7, 9], [1, 4, 8, 10], 5) == 6",
+      "generated_test": "int[] arr1 = new int[]{2, 3, 6, 7, 9};\nint[] arr2 = new int[]{1, 4, 8, 10};\nint result = find_kth(arr1, arr2, 5);\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_kth([100, 112, 256, 349, 770], [72, 86, 113, 119, 265, 445, 892], 7) == 256",
+      "generated_test": "int[] arr1 = new int[]{100, 112, 256, 349, 770};\nint[] arr2 = new int[]{72, 86, 113, 119, 265, 445, 892};\nint result = find_kth(arr1, arr2, 7);\nint expected = 256;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_kth([3, 4, 7, 8, 10], [2, 5, 9, 11], 6) == 8",
+      "generated_test": "int[] arr1 = new int[]{3, 4, 7, 8, 10};\nint[] arr2 = new int[]{2, 5, 9, 11};\nint result = find_kth(arr1, arr2, 6);\nint expected = 8;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

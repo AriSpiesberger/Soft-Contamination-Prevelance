@@ -1,0 +1,37 @@
+{
+  "task_id": 61,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of substrings with the sum of digits equal to their length.",
+  "python_code": "from collections import defaultdict\ndef count_Substrings(s):\n    n = len(s)\n    count,sum = 0,0\n    mp = defaultdict(lambda : 0)\n    mp[0] += 1\n    for i in range(n):\n        sum += ord(s[i]) - ord('0')\n        count += mp[sum - (i + 1)]\n        mp[sum - (i + 1)] += 1\n    return count",
+  "test_list": [
+    "assert count_Substrings('112112') == 6",
+    "assert count_Substrings('111') == 6",
+    "assert count_Substrings('1101112') == 12"
+  ],
+  "code_go": "package main\n\nfunc count_Substrings(s string) int {\n\tn := len(s)\n\tcount := 0\n\tsum := 0\n\tmp := make(map[int]int)\n\tmp[0] = 1\n\tfor i := 0; i < n; i++ {\n\t\tsum += int(s[i] - '0')\n\t\tkey := sum - (i + 1)\n\t\tcount += mp[key]\n\t\tmp[key]++\n\t}\n\treturn count\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_Substrings('112112') == 6",
+      "generated_test": "result := count_Substrings(\"112112\")\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Substrings('111') == 6",
+      "generated_test": "result := count_Substrings(\"111\")\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Substrings('1101112') == 12",
+      "generated_test": "result := count_Substrings(\"1101112\")\nexpected := 12\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

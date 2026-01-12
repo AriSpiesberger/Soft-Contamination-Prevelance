@@ -1,0 +1,37 @@
+{
+  "task_id": 115,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether all dictionaries in a list are empty or not.",
+  "python_code": "def empty_dit(list1):\n empty_dit=all(not d for d in list1)\n return empty_dit",
+  "test_list": [
+    "assert empty_dit([{},{},{}])==True",
+    "assert empty_dit([{1,2},{},{}])==False",
+    "assert empty_dit({})==True"
+  ],
+  "code_javascript": "function empty_dit(list1) {\n  if (Array.isArray(list1)) {\n    return list1.every(d => {\n      if (d instanceof Set) {\n        return d.size === 0;\n      }\n      if (typeof d === 'object' && d !== null) {\n        return Object.keys(d).length === 0;\n      }\n      return !d;\n    });\n  }\n  if (typeof list1 === 'object' && list1 !== null) {\n    return Object.keys(list1).length === 0;\n  }\n  return !list1;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert empty_dit([{},{},{}])==True",
+      "generated_test": "const result = empty_dit([{},{},{}]);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit([{1,2},{},{}])==False",
+      "generated_test": "const result = empty_dit([new Set([1, 2]), new Set(), new Set()]);\nconst expected = false;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit({})==True",
+      "generated_test": "const result = empty_dit({});\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

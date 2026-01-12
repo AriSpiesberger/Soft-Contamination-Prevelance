@@ -1,0 +1,27 @@
+{
+  "task_id": 557,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to toggle the case of all characters in a string.",
+  "code_python": "def toggle_string(string):\n string1 = string.swapcase()\n return string1",
+  "test_list": [
+    "assert toggle_string(\"Python\")==(\"pYTHON\")",
+    "assert toggle_string(\"Pangram\")==(\"pANGRAM\")",
+    "assert toggle_string(\"LIttLE\")==(\"liTTle\")"
+  ],
+  "python_1": "def toggle_string(string):\n    # Create empty list to accumulate toggled characters\n    result = []\n    # Process each character in the input string one by one\n    for char in string:\n        # Check if current character is uppercase\n        if char.isupper():\n            # Convert uppercase to lowercase and append to result\n            result.append(char.lower())\n        # Handle case where character is lowercase or non-alphabetic\n        else:\n            # Convert lowercase to uppercase (non-letters stay unchanged)\n            result.append(char.upper())\n    # Join all characters in list into final string and return\n    return ''.join(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def toggle_string(string):\n    # Use list comprehension with conditional expression for concise character transformation\n    toggled_chars = [char.lower() if char.isupper() else char.upper() for char in string]\n    # Concatenate the transformed character list back into a single string\n    return ''.join(toggled_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def toggle_string(string):\n    # Use map function to apply toggle transformation to each character functionally\n    toggled_iterator = map(lambda c: c.lower() if c.isupper() else c.upper(), string)\n    # Convert the map iterator directly to string using str.join for efficiency\n    return ''.join(toggled_iterator)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def toggle_string(string):\n    # Initialize empty string to build result character by character\n    result = \"\"\n    # Set up index variable for while loop iteration\n    i = 0\n    # Use while loop instead of for loop to traverse string\n    while i < len(string):\n        # Extract current character at position i\n        current_char = string[i]\n        # Check ASCII value to determine if uppercase (65-90)\n        if ord(current_char) >= 65 and ord(current_char) <= 90:\n            # Add 32 to ASCII value converts uppercase to lowercase\n            result = result + chr(ord(current_char) + 32)\n        # Check ASCII value to determine if lowercase (97-122)\n        elif ord(current_char) >= 97 and ord(current_char) <= 122:\n            # Subtract 32 from ASCII value converts lowercase to uppercase\n            result = result + chr(ord(current_char) - 32)\n        # Handle non-alphabetic characters\n        else:\n            # Keep non-letter characters unchanged in output\n            result = result + current_char\n        # Advance index to process next character\n        i = i + 1\n    # Return the fully constructed toggled string\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 2,
+  "python_5": "def toggle_string(string):\n    # Use XOR bitwise operation on ASCII - XORing with 32 flips case bit\n    def toggle_char(c):\n        # Check if character falls within alphabetic ASCII range\n        if c.isalpha():\n            # XOR with 32 toggles bit 5, switching between upper/lower case\n            return chr(ord(c) ^ 32)\n        # Return non-alphabetic characters without modification\n        return c\n    # Apply toggle_char to each character using generator expression inside join\n    return ''.join(toggle_char(c) for c in string)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

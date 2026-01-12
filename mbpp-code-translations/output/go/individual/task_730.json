@@ -1,0 +1,44 @@
+{
+  "task_id": 730,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove consecutive duplicates of a given list.",
+  "python_code": "from itertools import groupby\ndef consecutive_duplicates(nums):\n    return [key for key, group in groupby(nums)] ",
+  "test_list": [
+    "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+    "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']"
+  ],
+  "code_go": "package main\n\nfunc consecutive_duplicates[T comparable](nums []T) []T {\n\tif len(nums) == 0 {\n\t\treturn []T{}\n\t}\n\n\tresult := []T{nums[0]}\n\tfor i := 1; i < len(nums); i++ {\n\t\tif nums[i] != nums[i-1] {\n\t\t\tresult = append(result, nums[i])\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+      "generated_test": "input := []int{0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4}\nexpected := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4}\nresult := consecutive_duplicates(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+      "generated_test": "input := []int{10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10}\nexpected := []int{10, 15, 19, 18, 17, 26, 17, 18, 10}\nresult := consecutive_duplicates(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+      "generated_test": "result := consecutive_duplicates([]string{\"a\", \"a\", \"b\", \"c\", \"d\", \"d\"})\nexpected := []string{\"a\", \"b\", \"c\", \"d\"}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']",
+      "generated_test": "input := []string{\"a\", \"a\", \"b\", \"c\", \"d\", \"d\", \"a\", \"a\"}\nexpected := []string{\"a\", \"b\", \"c\", \"d\", \"a\"}\nresult := consecutive_duplicates(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

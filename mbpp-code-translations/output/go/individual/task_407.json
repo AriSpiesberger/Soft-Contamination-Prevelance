@@ -1,0 +1,37 @@
+{
+  "task_id": 407,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create the next bigger number by rearranging the digits of a given number.",
+  "python_code": "def rearrange_bigger(n):\n    nums = list(str(n))\n    for i in range(len(nums)-2,-1,-1):\n        if nums[i] < nums[i+1]:\n            z = nums[i:]\n            y = min(filter(lambda x: x > z[0], z))\n            z.remove(y)\n            z.sort()\n            nums[i:] = [y] + z\n            return int(\"\".join(nums))\n    return False",
+  "test_list": [
+    "assert rearrange_bigger(12)==21",
+    "assert rearrange_bigger(10)==False",
+    "assert rearrange_bigger(102)==120"
+  ],
+  "code_go": "package main\n\nimport \"sort\"\n\nfunc rearrange_bigger(n int) interface{} {\n\t// Convert number to slice of digits (as bytes/runes)\n\tnumStr := \"\"\n\ttemp := n\n\tif temp == 0 {\n\t\tnumStr = \"0\"\n\t} else {\n\t\tfor temp > 0 {\n\t\t\tnumStr = string(rune('0'+temp%10)) + numStr\n\t\t\ttemp /= 10\n\t\t}\n\t}\n\tnums := []byte(numStr)\n\n\t// Find the first digit from right that is smaller than the digit to its right\n\tfor i := len(nums) - 2; i >= 0; i-- {\n\t\tif nums[i] < nums[i+1] {\n\t\t\t// z = nums[i:]\n\t\t\tz := make([]byte, len(nums)-i)\n\t\t\tcopy(z, nums[i:])\n\n\t\t\t// Find minimum digit in z that is greater than z[0]\n\t\t\ty := byte(255)\n\t\t\tfor _, x := range z {\n\t\t\t\tif x > z[0] && x < y {\n\t\t\t\t\ty = x\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t// Remove first occurrence of y from z\n\t\t\tnewZ := make([]byte, 0, len(z)-1)\n\t\t\tremoved := false\n\t\t\tfor _, x := range z {\n\t\t\t\tif x == y && !removed {\n\t\t\t\t\tremoved = true\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tnewZ = append(newZ, x)\n\t\t\t}\n\n\t\t\t// Sort newZ\n\t\t\tsort.Slice(newZ, func(a, b int) bool {\n\t\t\t\treturn newZ[a] < newZ[b]\n\t\t\t})\n\n\t\t\t// nums[i:] = [y] + newZ\n\t\t\tresult := make([]byte, len(nums))\n\t\t\tcopy(result[:i], nums[:i])\n\t\t\tresult[i] = y\n\t\t\tcopy(result[i+1:], newZ)\n\n\t\t\t// Convert back to int\n\t\t\tnum := 0\n\t\t\tfor _, d := range result {\n\t\t\t\tnum = num*10 + int(d-'0')\n\t\t\t}\n\t\t\treturn num\n\t\t}\n\t}\n\treturn false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert rearrange_bigger(12)==21",
+      "generated_test": "result := rearrange_bigger(12)\nexpected := 21\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(10)==False",
+      "generated_test": "result := rearrange_bigger(10)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(102)==120",
+      "generated_test": "result := rearrange_bigger(102)\nexpected := 120\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

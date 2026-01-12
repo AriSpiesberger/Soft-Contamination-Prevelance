@@ -1,0 +1,37 @@
+{
+  "task_id": 400,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the number of unique tuples in the given list.",
+  "python_code": "def extract_freq(test_list):\n  res = len(list(set(tuple(sorted(sub)) for sub in test_list)))\n  return (res)",
+  "test_list": [
+    "assert extract_freq([(3, 4), (1, 2), (4, 3), (5, 6)] ) == 3",
+    "assert extract_freq([(4, 15), (2, 3), (5, 4), (6, 7)] ) == 4",
+    "assert extract_freq([(5, 16), (2, 3), (6, 5), (6, 9)] ) == 4"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\nfunc extract_freq(test_list [][]int) int {\n\tseen := make(map[string]bool)\n\t\n\tfor _, sub := range test_list {\n\t\t// Create a copy and sort it\n\t\tsorted := make([]int, len(sub))\n\t\tcopy(sorted, sub)\n\t\tsort.Ints(sorted)\n\t\t\n\t\t// Convert to string key for map\n\t\tkey := intsToKey(sorted)\n\t\tseen[key] = true\n\t}\n\t\n\treturn len(seen)\n}\n\nfunc intsToKey(nums []int) string {\n\tif len(nums) == 0 {\n\t\treturn \"\"\n\t}\n\t\n\tresult := \"\"\n\tfor i, n := range nums {\n\t\tif i > 0 {\n\t\t\tresult += \",\"\n\t\t}\n\t\tresult += intToString(n)\n\t}\n\treturn result\n}\n\nfunc intToString(n int) string {\n\tif n == 0 {\n\t\treturn \"0\"\n\t}\n\t\n\tnegative := false\n\tif n < 0 {\n\t\tnegative = true\n\t\tn = -n\n\t}\n\t\n\tdigits := \"\"\n\tfor n > 0 {\n\t\tdigits = string(rune('0'+n%10)) + digits\n\t\tn /= 10\n\t}\n\t\n\tif negative {\n\t\tdigits = \"-\" + digits\n\t}\n\treturn digits\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_freq([(3, 4), (1, 2), (4, 3), (5, 6)] ) == 3",
+      "generated_test": "result := extract_freq([][]int{{3, 4}, {1, 2}, {4, 3}, {5, 6}})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_freq([(4, 15), (2, 3), (5, 4), (6, 7)] ) == 4",
+      "generated_test": "result := extract_freq([][]int{{4, 15}, {2, 3}, {5, 4}, {6, 7}})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_freq([(5, 16), (2, 3), (6, 5), (6, 9)] ) == 4",
+      "generated_test": "result := extract_freq([][]int{{5, 16}, {2, 3}, {6, 5}, {6, 9}})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

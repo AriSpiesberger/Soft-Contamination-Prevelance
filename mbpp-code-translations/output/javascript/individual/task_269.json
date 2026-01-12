@@ -1,0 +1,37 @@
+{
+  "task_id": 269,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ascii value of a character.",
+  "python_code": "def ascii_value(k):\n  ch=k\n  return ord(ch)",
+  "test_list": [
+    "assert ascii_value('A')==65",
+    "assert ascii_value('R')==82",
+    "assert ascii_value('S')==83"
+  ],
+  "code_javascript": "function ascii_value(k) {\n  return k.charCodeAt(0);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert ascii_value('A')==65",
+      "generated_test": "const result = ascii_value('A');\nconst expected = 65;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert ascii_value('R')==82",
+      "generated_test": "const result = ascii_value('R');\nconst expected = 82;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert ascii_value('S')==83",
+      "generated_test": "const result = ascii_value('S');\nconst expected = 83;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

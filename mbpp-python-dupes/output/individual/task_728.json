@@ -1,0 +1,27 @@
+{
+  "task_id": 728,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function takes as input two lists [a_1,...,a_n], [b_1,...,b_n] and returns [a_1+b_1,...,a_n+b_n].",
+  "code_python": "def sum_list(lst1,lst2):\n  res_list = [lst1[i] + lst2[i] for i in range(len(lst1))] \n  return res_list",
+  "test_list": [
+    "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+    "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+    "assert sum_list([15,20,30],[15,45,75])==[30,65,105]"
+  ],
+  "python_1": "def sum_list(lst1,lst2):\n  # Use zip to pair corresponding elements from both lists\n  paired_elements = zip(lst1, lst2)\n  # Apply addition to each pair using map with lambda function\n  summed_pairs = map(lambda pair: pair[0] + pair[1], paired_elements)\n  # Convert the map object to a list for the final result\n  return list(summed_pairs)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_list(lst1,lst2):\n  # Initialize an empty list to accumulate pairwise sums\n  result = []\n  # Use zip to create an iterator of paired elements from both lists simultaneously\n  for a, b in zip(lst1, lst2):\n    # Compute the sum of current pair and append directly to result\n    result.append(a + b)\n  # Return the fully constructed list of element-wise sums\n  return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_list(lst1,lst2):\n  # Import operator module to access the add function as a callable\n  import operator\n  # Use map with operator.add to perform element-wise addition on paired elements\n  # This avoids lambda overhead by using the built-in addition operator directly\n  result = map(operator.add, lst1, lst2)\n  # Convert the lazy map iterator into a concrete list for the return value\n  return list(result)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_list(lst1,lst2):\n  # Use numpy-style approach with list comprehension over zipped pairs\n  return [x + y for x, y in zip(lst1, lst2)]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_list(lst1,lst2):\n  # Use a traditional while loop with index tracking for explicit iteration control\n  index = 0\n  # Create empty container to hold the computed sums\n  result = []\n  # Continue processing until we've handled all elements based on first list's length\n  while index < len(lst1):\n    # Calculate sum of elements at current position from both input lists\n    current_sum = lst1[index] + lst2[index]\n    # Store the computed sum in our result container\n    result.append(current_sum)\n    # Advance to the next position in both lists\n    index += 1\n  # Deliver the complete list of pairwise sums\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

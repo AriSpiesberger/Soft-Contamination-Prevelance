@@ -1,0 +1,37 @@
+{
+  "task_id": 439,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to join a list of multiple integers into a single integer.",
+  "python_code": "def multiple_to_single(L):\n  x = int(\"\".join(map(str, L)))\n  return x",
+  "test_list": [
+    "assert multiple_to_single([11, 33, 50])==113350",
+    "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+    "assert multiple_to_single([10,15,20,25])==10152025"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc multiple_to_single(L []int) int {\n\tif len(L) == 0 {\n\t\treturn 0\n\t}\n\n\tvar parts []string\n\tnegative := false\n\n\tfor i, num := range L {\n\t\tif i == 0 && num < 0 {\n\t\t\tnegative = true\n\t\t\tnum = -num\n\t\t}\n\t\tparts = append(parts, strconv.Itoa(num))\n\t}\n\n\tjoined := strings.Join(parts, \"\")\n\tresult, _ := strconv.Atoi(joined)\n\n\tif negative {\n\t\tresult = -result\n\t}\n\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert multiple_to_single([11, 33, 50])==113350",
+      "generated_test": "result := multiple_to_single([]int{11, 33, 50})\nexpected := 113350\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+      "generated_test": "result := multiple_to_single([]int{-1, 2, 3, 4, 5, 6})\nexpected := -123456\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiple_to_single([10,15,20,25])==10152025",
+      "generated_test": "result := multiple_to_single([]int{10, 15, 20, 25})\nexpected := 10152025\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

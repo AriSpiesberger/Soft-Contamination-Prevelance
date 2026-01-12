@@ -1,0 +1,37 @@
+{
+  "task_id": 135,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth hexagonal number.",
+  "python_code": "def hexagonal_num(n): \n\treturn n*(2*n - 1) ",
+  "test_list": [
+    "assert hexagonal_num(10) == 190",
+    "assert hexagonal_num(5) == 45",
+    "assert hexagonal_num(7) == 91"
+  ],
+  "code_go": "package main\n\nfunc hexagonal_num(n int) int {\n\treturn n * (2*n - 1)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert hexagonal_num(10) == 190",
+      "generated_test": "result := hexagonal_num(10)\nexpected := 190\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert hexagonal_num(5) == 45",
+      "generated_test": "result := hexagonal_num(5)\nexpected := 45\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert hexagonal_num(7) == 91",
+      "generated_test": "result := hexagonal_num(7)\nexpected := 91\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

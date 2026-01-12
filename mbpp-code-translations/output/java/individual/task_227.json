@@ -1,0 +1,37 @@
+{
+  "task_id": 227,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum of three numbers.",
+  "python_code": "def min_of_three(a,b,c): \n      if (a <= b) and (a <= c): \n        smallest = a \n      elif (b <= a) and (b <= c): \n        smallest = b \n      else: \n        smallest = c \n      return smallest ",
+  "test_list": [
+    "assert min_of_three(10,20,0)==0",
+    "assert min_of_three(19,15,18)==15",
+    "assert min_of_three(-10,-20,-30)==-30"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int min_of_three(int a, int b, int c) {\n        int smallest;\n        if ((a <= b) && (a <= c)) {\n            smallest = a;\n        } else if ((b <= a) && (b <= c)) {\n            smallest = b;\n        } else {\n            smallest = c;\n        }\n        return smallest;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert min_of_three(10,20,0)==0",
+      "generated_test": "int result = min_of_three(10, 20, 0);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_of_three(19,15,18)==15",
+      "generated_test": "int result = min_of_three(19, 15, 18);\nint expected = 15;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_of_three(-10,-20,-30)==-30",
+      "generated_test": "int result = min_of_three(-10, -20, -30);\nint expected = -30;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

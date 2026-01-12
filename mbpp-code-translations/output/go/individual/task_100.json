@@ -1,0 +1,37 @@
+{
+  "task_id": 100,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the next smallest palindrome of a specified integer, returned as an integer.",
+  "python_code": "import sys\ndef next_smallest_palindrome(num):\n    numstr = str(num)\n    for i in range(num+1,sys.maxsize):\n        if str(i) == str(i)[::-1]:\n            return i",
+  "test_list": [
+    "assert next_smallest_palindrome(99)==101",
+    "assert next_smallest_palindrome(1221)==1331",
+    "assert next_smallest_palindrome(120)==121"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc next_smallest_palindrome(num int) int {\n\tfor i := num + 1; i < math.MaxInt64; i++ {\n\t\tif isPalindrome(i) {\n\t\t\treturn i\n\t\t}\n\t}\n\treturn -1\n}\n\nfunc isPalindrome(n int) bool {\n\ts := intToString(n)\n\tlength := len(s)\n\tfor i := 0; i < length/2; i++ {\n\t\tif s[i] != s[length-1-i] {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nfunc intToString(n int) string {\n\tif n == 0 {\n\t\treturn \"0\"\n\t}\n\t\n\tnegative := false\n\tif n < 0 {\n\t\tnegative = true\n\t\tn = -n\n\t}\n\t\n\tvar digits []byte\n\tfor n > 0 {\n\t\tdigits = append([]byte{byte('0' + n%10)}, digits...)\n\t\tn /= 10\n\t}\n\t\n\tif negative {\n\t\tdigits = append([]byte{'-'}, digits...)\n\t}\n\t\n\treturn string(digits)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert next_smallest_palindrome(99)==101",
+      "generated_test": "result := next_smallest_palindrome(99)\nexpected := 101\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(1221)==1331",
+      "generated_test": "result := next_smallest_palindrome(1221)\nexpected := 1331\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(120)==121",
+      "generated_test": "result := next_smallest_palindrome(120)\nexpected := 121\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

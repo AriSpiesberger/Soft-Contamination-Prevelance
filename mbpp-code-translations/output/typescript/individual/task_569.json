@@ -1,0 +1,17 @@
+{
+  "task_id": 569,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "python_code": "def sort_sublists(list1):\n    result = list(map(sorted,list1)) \n    return result",
+  "test_list": [
+    "assert sort_sublists([['green', 'orange'], ['black', 'white'], ['white', 'black', 'orange']])==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])==[['green', 'orange'], ['black'], ['green', 'orange'], ['white']]",
+    "assert sort_sublists([['a','b'],['d','c'],['g','h'] , ['f','e']])==[['a', 'b'], ['c', 'd'], ['g', 'h'], ['e', 'f']]"
+  ],
+  "code_typescript": "function sort_sublists(list1: string[][]): string[][] {\n    return list1.map(sublist => [...sublist].sort());\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 476,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the largest and smallest value in a given array.",
+  "code_python": "def big_sum(nums):\n      sum= max(nums)+min(nums)\n      return sum",
+  "test_list": [
+    "assert big_sum([1,2,3]) == 4",
+    "assert big_sum([-1,2,3,4]) == 3",
+    "assert big_sum([2,3,6]) == 8"
+  ],
+  "python_1": "def big_sum(nums):\n    # Sort the array to position smallest at start and largest at end\n    sorted_nums = sorted(nums)\n    # Access first element which is the minimum after sorting\n    smallest = sorted_nums[0]\n    # Access last element which is the maximum after sorting\n    largest = sorted_nums[-1]\n    # Compute and return the sum of extremes\n    return smallest + largest",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def big_sum(nums):\n    # Initialize both min and max trackers with the first element\n    smallest = nums[0]\n    # Use same starting point for largest to handle any range of values\n    largest = nums[0]\n    # Traverse through each number in the array using manual iteration\n    for num in nums:\n        # Update smallest if current number is lower than tracked minimum\n        if num < smallest:\n            smallest = num\n        # Update largest if current number exceeds tracked maximum\n        if num > largest:\n            largest = num\n    # Combine the extreme values found during single-pass traversal\n    result = smallest + largest\n    # Return the computed sum of minimum and maximum\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def big_sum(nums):\n    # Use reduce to find minimum by comparing pairs across the array\n    from functools import reduce\n    # Lambda compares two values and keeps the smaller one throughout reduction\n    smallest = reduce(lambda a, b: a if a < b else b, nums)\n    # Lambda compares two values and keeps the larger one throughout reduction\n    largest = reduce(lambda a, b: a if a > b else b, nums)\n    # Add the two extreme values found via functional reduction\n    return smallest + largest",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def big_sum(nums):\n    # Convert the list to a heap structure to efficiently extract extremes\n    import heapq\n    # Create a min-heap by heapifying a copy of the input array\n    min_heap = nums.copy()\n    # Transform the list into a valid min-heap in-place\n    heapq.heapify(min_heap)\n    # Extract the smallest element which sits at the root of min-heap\n    smallest = heapq.nsmallest(1, min_heap)[0]\n    # Extract the largest element using nlargest which internally handles max extraction\n    largest = heapq.nlargest(1, min_heap)[0]\n    # Combine the heap-derived minimum and maximum values\n    return smallest + largest",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def big_sum(nums):\n    # Use recursion base case: single element is both min and max\n    if len(nums) == 1:\n        # When only one element exists, it contributes twice to sum of extremes\n        return nums[0] + nums[0]\n    # Use recursion base case for two elements: simply add them as they form the extremes\n    if len(nums) == 2:\n        # With two elements, one must be min and other max, so sum is their total\n        return nums[0] + nums[1]\n    # Calculate midpoint to divide array into two halves for divide-and-conquer\n    mid = len(nums) // 2\n    # Recursively find min and max candidates from left portion of array\n    left_half = nums[:mid]\n    # Recursively find min and max candidates from right portion of array\n    right_half = nums[mid:]\n    # Extract minimum from left subarray using built-in after recursive split\n    left_min = min(left_half)\n    # Extract maximum from left subarray\n    left_max = max(left_half)\n    # Extract minimum from right subarray\n    right_min = min(right_half)\n    # Extract maximum from right subarray\n    right_max = max(right_half)\n    # Global minimum is the smaller of the two subarray minimums\n    global_min = left_min if left_min < right_min else right_min\n    # Global maximum is the larger of the two subarray maximums\n    global_max = left_max if left_max > right_max else right_max\n    # Combine the discovered global extremes from both halves\n    return global_min + global_max",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

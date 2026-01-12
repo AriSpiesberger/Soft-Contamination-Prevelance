@@ -1,0 +1,27 @@
+{
+  "task_id": 244,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the next perfect square greater than a given number.",
+  "code_python": "import math  \ndef next_Perfect_Square(N): \n    nextN = math.floor(math.sqrt(N)) + 1\n    return nextN * nextN ",
+  "test_list": [
+    "assert next_Perfect_Square(35) == 36",
+    "assert next_Perfect_Square(6) == 9",
+    "assert next_Perfect_Square(9) == 16"
+  ],
+  "python_1": "def next_Perfect_Square(N): \n    # Start checking from the next integer after N\n    candidate = N + 1\n    # Keep searching until we find a perfect square\n    while True:\n        # Compute the integer square root of the candidate\n        root = int(candidate ** 0.5)\n        # Check if squaring the root gives back the candidate (perfect square test)\n        if root * root == candidate:\n            # Found a perfect square, return it immediately\n            return candidate\n        # Also check root+1 in case of floating point truncation issues\n        if (root + 1) * (root + 1) == candidate:\n            # The candidate is a perfect square with the next root\n            return candidate\n        # Move to the next number to check\n        candidate += 1",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef next_Perfect_Square(N):\n    # Use ceiling of square root to handle both perfect and non-perfect square inputs\n    sqrt_val = math.ceil(math.sqrt(N))\n    # Check if N itself is a perfect square by comparing square of ceiling to N\n    if sqrt_val * sqrt_val == N:\n        # N is already a perfect square, so we need the next one (sqrt + 1)^2\n        return (sqrt_val + 1) * (sqrt_val + 1)\n    else:\n        # N is not a perfect square, ceiling squared gives the next perfect square\n        return sqrt_val * sqrt_val",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def next_Perfect_Square(N): \n    # Use integer square root via exponentiation to avoid floating point issues\n    root = int(N ** 0.5)\n    # Calculate what would be the perfect square at this root level\n    current_square = root * root\n    # Determine the starting root for the next perfect square\n    if current_square <= N:\n        # If current square is at or below N, we need root + 1 as our base\n        next_root = root + 1\n    else:\n        # Edge case handling if int() rounded up somehow\n        next_root = root\n    # Compute the next perfect square by squaring the determined root\n    result = next_root * next_root\n    # Verify result is strictly greater than N, otherwise increment root\n    if result <= N:\n        # Safety check: bump up the root if our calculation was too small\n        next_root += 1\n        # Recompute the square with the corrected root value\n        result = next_root * next_root\n    # Return the computed next perfect square\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def next_Perfect_Square(N): \n    # Generate an infinite sequence of integers starting from 1\n    root = 1\n    # Iterate through potential square roots until we find the answer\n    while True:\n        # Compute the square of the current root candidate\n        square = root * root\n        # Check if this square exceeds the input number N\n        if square > N:\n            # This is the first perfect square greater than N, return it\n            return square\n        # Increment root to check the next perfect square in sequence\n        root += 1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def next_Perfect_Square(N): \n    # Use integer square root calculation via Newton's method approximation\n    x = N\n    # Handle edge case where N is 0 to avoid division issues\n    if x == 0:\n        # The next perfect square after 0 is 1\n        return 1\n    # Refine the estimate using integer Newton-Raphson iteration\n    y = (x + 1) // 2\n    # Continue until convergence to the integer square root\n    while y < x:\n        # Update x to the current best estimate\n        x = y\n        # Newton-Raphson step: average of x and N/x for square root\n        y = (x + N // x) // 2\n    # x now holds the integer square root (floor) of N\n    int_sqrt = x\n    # Compute the square of this integer root to check if N is perfect square\n    current_perfect = int_sqrt * int_sqrt\n    # Determine which root value gives us the next perfect square above N\n    if current_perfect > N:\n        # Our int_sqrt squared already exceeds N, so that's our answer\n        return current_perfect\n    # Otherwise we need the square of the next integer\n    next_root = int_sqrt + 1\n    # Compute and return the next perfect square by squaring next_root\n    return next_root * next_root",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

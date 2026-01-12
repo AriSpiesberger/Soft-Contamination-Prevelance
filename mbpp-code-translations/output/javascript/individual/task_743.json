@@ -1,0 +1,37 @@
+{
+  "task_id": 743,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to rotate a given list by specified number of items to the right direction. https://www.geeksforgeeks.org/python-program-right-rotate-list-n/",
+  "python_code": "def rotate_right(list, m):\n  result =  list[-m:] + list[:-m]\n  return result",
+  "test_list": [
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]"
+  ],
+  "code_javascript": "function rotate_right(list, m) {\n  const result = list.slice(-m).concat(list.slice(0, -m));\n  return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+      "generated_test": "const result = rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3);\nconst expected = [8, 9, 10, 1, 2, 3, 4, 5, 6, 7];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+      "generated_test": "const result = rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);\nconst expected = [9, 10, 1, 2, 3, 4, 5, 6, 7, 8];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]",
+      "generated_test": "const result = rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5);\nconst expected = [6, 7, 8, 9, 10, 1, 2, 3, 4, 5];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 635,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort the given list.",
+  "python_code": "import heapq as hq\ndef heap_sort(iterable):\n    h = []\n    for value in iterable:\n        hq.heappush(h, value)\n    return [hq.heappop(h) for i in range(len(h))]",
+  "test_list": [
+    "assert heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+    "assert heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])==[14, 22, 25, 25, 35, 58, 65, 75, 85]",
+    "assert heap_sort( [7, 1, 9, 5])==[1,5,7,9]"
+  ],
+  "code_ruby": "def heap_sort(iterable)\n  h = iterable.dup\n  result = []\n  \n  # Build min heap\n  n = h.length\n  \n  # Heapify helper - sift down\n  heapify_down = ->(arr, i, size) {\n    smallest = i\n    left = 2 * i + 1\n    right = 2 * i + 2\n    \n    smallest = left if left < size && arr[left] < arr[smallest]\n    smallest = right if right < size && arr[right] < arr[smallest]\n    \n    if smallest != i\n      arr[i], arr[smallest] = arr[smallest], arr[i]\n      heapify_down.call(arr, smallest, size)\n    end\n  }\n  \n  # Build heap (heapify)\n  ((n / 2) - 1).downto(0) do |i|\n    heapify_down.call(h, i, n)\n  end\n  \n  # Extract elements one by one\n  while h.length > 0\n    # Move root to end\n    h[0], h[-1] = h[-1], h[0]\n    result << h.pop\n    heapify_down.call(h, 0, h.length)\n  end\n  \n  result\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+      "generated_test": "result = heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])\nexpected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])==[14, 22, 25, 25, 35, 58, 65, 75, 85]",
+      "generated_test": "result = heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])\nexpected = [14, 22, 25, 25, 35, 58, 65, 75, 85]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert heap_sort( [7, 1, 9, 5])==[1,5,7,9]",
+      "generated_test": "result = heap_sort([7, 1, 9, 5])\nexpected = [1, 5, 7, 9]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

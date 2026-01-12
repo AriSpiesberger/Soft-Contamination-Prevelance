@@ -1,0 +1,27 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "code_python": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "python_1": "def colon_tuplex(tuplex,m,n):\n  # Convert the input tuple to a list so we can modify its elements\n  result_list = list(tuplex)\n  # Create a new list by copying the existing list at position m and adding n\n  new_inner_list = list(result_list[m]) + [n]\n  # Replace the element at position m with our newly constructed list\n  result_list[m] = new_inner_list\n  # Convert the modified list back to a tuple and return it\n  return tuple(result_list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def colon_tuplex(tuplex,m,n):\n  # Use tuple unpacking with slicing to separate the tuple into parts before, at, and after index m\n  before_m = tuplex[:m]\n  # Extract the mutable list at position m that we need to modify\n  element_at_m = tuplex[m]\n  # Capture all elements that come after position m\n  after_m = tuplex[m+1:]\n  # Create a brand new list containing original elements plus the new value n\n  modified_list = [*element_at_m, n]\n  # Reconstruct the tuple by concatenating: elements before m, the modified list wrapped in tuple, and elements after m\n  result = before_m + (modified_list,) + after_m\n  # Return the newly constructed tuple with the appended value\n  return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import copy\ndef colon_tuplex(tuplex,m,n):\n  # Use a generator expression to iterate through each index and element pair\n  def transform_element(idx, elem):\n    # Check if current index matches the target position m\n    if idx == m:\n      # Make a shallow copy of the mutable element to avoid modifying original\n      new_elem = copy.copy(elem)\n      # Append the new value n to the copied list\n      new_elem.append(n)\n      # Return the modified copy\n      return new_elem\n    # For non-target indices, return element unchanged\n    return elem\n  # Build the result tuple using a generator that transforms only the element at index m\n  result = tuple(transform_element(i, e) for i, e in enumerate(tuplex))\n  # Return the newly constructed tuple with the modification applied\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def colon_tuplex(tuplex,m,n):\n  # Use map with lambda to apply transformation across all tuple positions\n  def mapper(index_elem_pair):\n    # Unpack the index and element from the enumerated pair\n    index, elem = index_elem_pair\n    # When we hit the target index, create modified list with n appended\n    if index == m:\n      # Spread existing list elements and add n using unpacking syntax\n      return [*elem, n]\n    # Non-target elements pass through unchanged\n    return elem\n  # Apply mapping function to enumerated tuple and collect results as tuple\n  return tuple(map(mapper, enumerate(tuplex)))",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import json\ndef colon_tuplex(tuplex,m,n):\n  # Use JSON serialization to create a deep copy of mutable nested structures\n  # First convert tuple to list for JSON compatibility\n  as_list = list(tuplex)\n  # Serialize the target mutable element to JSON string for deep copying\n  serialized = json.dumps(as_list[m])\n  # Deserialize back to get a fresh independent list object\n  copied_list = json.loads(serialized)\n  # Append the new value to our independently copied list\n  copied_list.append(n)\n  # Build result tuple by reconstructing with modified element at position m\n  # Use comprehension that conditionally swaps in modified list at target index\n  reconstructed = tuple(copied_list if i == m else elem for i, elem in enumerate(tuplex))\n  # Return the newly assembled tuple containing the modification\n  return reconstructed",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

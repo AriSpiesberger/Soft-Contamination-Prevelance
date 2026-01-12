@@ -1,0 +1,37 @@
+{
+  "task_id": 266,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cube given its side length.",
+  "python_code": "def lateralsurface_cube(l):\n  LSA = 4 * (l * l)\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cube(5)==100",
+    "assert lateralsurface_cube(9)==324",
+    "assert lateralsurface_cube(10)==400"
+  ],
+  "code_javascript": "function lateralsurface_cube(l) {\n  const LSA = 4 * (l * l);\n  return LSA;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert lateralsurface_cube(5)==100",
+      "generated_test": "const result = lateralsurface_cube(5);\nconst expected = 100;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cube(9)==324",
+      "generated_test": "const result = lateralsurface_cube(9);\nconst expected = 324;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cube(10)==400",
+      "generated_test": "const result = lateralsurface_cube(10);\nconst expected = 400;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

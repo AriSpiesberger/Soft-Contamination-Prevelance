@@ -1,0 +1,37 @@
+{
+  "task_id": 16,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.",
+  "python_code": "import re\ndef text_lowercase_underscore(text):\n        patterns = '^[a-z]+_[a-z]+$'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+    "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+    "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)"
+  ],
+  "code_javascript": "function text_lowercase_underscore(text) {\n    const patterns = /^[a-z]+_[a-z]+$/;\n    if (patterns.test(text)) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+      "generated_test": "const result = text_lowercase_underscore(\"aab_cbbbc\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+      "generated_test": "const result = text_lowercase_underscore(\"aab_Abbbc\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)",
+      "generated_test": "const result = text_lowercase_underscore(\"Aaab_abbbc\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

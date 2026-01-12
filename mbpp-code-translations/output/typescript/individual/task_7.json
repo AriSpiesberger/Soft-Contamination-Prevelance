@@ -1,0 +1,17 @@
+{
+  "task_id": 7,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find all words which are at least 4 characters long in a string.",
+  "python_code": "import re\ndef find_char_long(text):\n  return (re.findall(r\"\\b\\w{4,}\\b\", text))",
+  "test_list": [
+    "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+    "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+    "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])"
+  ],
+  "code_typescript": "function find_char_long(text: string): string[] {\n  const regex = /\\b\\w{4,}\\b/g;\n  const matches = text.match(regex);\n  return matches ? matches : [];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

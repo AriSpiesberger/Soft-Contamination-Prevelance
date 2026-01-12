@@ -1,0 +1,37 @@
+{
+  "task_id": 564,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function which takes a list of integers and counts the number of possible unordered pairs where both elements are unequal.",
+  "python_code": "def count_Pairs(arr,n): \n    cnt = 0; \n    for i in range(n): \n        for j in range(i + 1,n): \n            if (arr[i] != arr[j]): \n                cnt += 1; \n    return cnt; ",
+  "test_list": [
+    "assert count_Pairs([1,2,1],3) == 2",
+    "assert count_Pairs([1,1,1,1],4) == 0",
+    "assert count_Pairs([1,2,3,4,5],5) == 10"
+  ],
+  "code_rust": "pub fn count_Pairs(arr: &[i32], n: usize) -> i32 {\n    let mut cnt = 0;\n    for i in 0..n {\n        for j in (i + 1)..n {\n            if arr[i] != arr[j] {\n                cnt += 1;\n            }\n        }\n    }\n    cnt\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_Pairs([1,2,1],3) == 2",
+      "generated_test": "let arr = [1, 2, 1];\nlet result = count_Pairs(&arr, 3);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Pairs([1,1,1,1],4) == 0",
+      "generated_test": "let arr = [1, 1, 1, 1];\nlet result = count_Pairs(&arr, 4);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Pairs([1,2,3,4,5],5) == 10",
+      "generated_test": "let arr = [1, 2, 3, 4, 5];\nlet result = count_Pairs(&arr, 5);\nlet expected = 10;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

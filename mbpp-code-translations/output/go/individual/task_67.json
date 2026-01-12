@@ -1,0 +1,37 @@
+{
+  "task_id": 67,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the number of ways to partition a set of Bell numbers.",
+  "python_code": "def bell_number(n):   \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1): \n        bell[i][0] = bell[i-1][i-1]  \n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1]   \n    return bell[n][0] ",
+  "test_list": [
+    "assert bell_number(2)==2",
+    "assert bell_number(10)==115975",
+    "assert bell_number(56)==6775685320645824322581483068371419745979053216268760300"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math/big\"\n)\n\nfunc bell_number(n int) *big.Int {\n\tbell := make([][]*big.Int, n+1)\n\tfor i := range bell {\n\t\tbell[i] = make([]*big.Int, n+1)\n\t\tfor j := range bell[i] {\n\t\t\tbell[i][j] = big.NewInt(0)\n\t\t}\n\t}\n\t\n\tbell[0][0] = big.NewInt(1)\n\t\n\tfor i := 1; i <= n; i++ {\n\t\tbell[i][0] = new(big.Int).Set(bell[i-1][i-1])\n\t\tfor j := 1; j <= i; j++ {\n\t\t\tbell[i][j] = new(big.Int).Add(bell[i-1][j-1], bell[i][j-1])\n\t\t}\n\t}\n\t\n\treturn bell[n][0]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert bell_number(2)==2",
+      "generated_test": "expected := big.NewInt(2)\nresult := bell_number(2)\nif result.Cmp(expected) == 0 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bell_number(10)==115975",
+      "generated_test": "expected := big.NewInt(115975)\nresult := bell_number(10)\nif result.Cmp(expected) == 0 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bell_number(56)==6775685320645824322581483068371419745979053216268760300",
+      "generated_test": "expected := new(big.Int)\nexpected.SetString(\"6775685320645824322581483068371419745979053216268760300\", 10)\n\nresult := bell_number(56)\n\nif result.Cmp(expected) == 0 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected.String())\n\tfmt.Println(\"  Got:\", result.String())\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

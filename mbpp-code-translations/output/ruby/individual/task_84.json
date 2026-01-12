@@ -1,0 +1,37 @@
+{
+  "task_id": 84,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth number in the newman conway sequence.",
+  "python_code": "def sequence(n): \n\tif n == 1 or n == 2: \n\t\treturn 1\n\telse: \n\t\treturn sequence(sequence(n-1)) + sequence(n-sequence(n-1))",
+  "test_list": [
+    "assert sequence(10) == 6",
+    "assert sequence(2) == 1",
+    "assert sequence(3) == 2"
+  ],
+  "code_ruby": "def sequence(n)\n  if n == 1 || n == 2\n    1\n  else\n    sequence(sequence(n - 1)) + sequence(n - sequence(n - 1))\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sequence(10) == 6",
+      "generated_test": "result = sequence(10)\nexpected = 6\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sequence(2) == 1",
+      "generated_test": "result = sequence(2)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sequence(3) == 2",
+      "generated_test": "result = sequence(3)\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

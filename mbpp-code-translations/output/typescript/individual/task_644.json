@@ -1,0 +1,17 @@
+{
+  "task_id": 644,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse an array upto a given position.",
+  "python_code": "def reverse_Array_Upto_K(input, k): \n  return (input[k-1::-1] + input[k:]) ",
+  "test_list": [
+    "assert reverse_Array_Upto_K([1, 2, 3, 4, 5, 6],4) == [4, 3, 2, 1, 5, 6]",
+    "assert reverse_Array_Upto_K([4, 5, 6, 7], 2) == [5, 4, 6, 7]",
+    "assert reverse_Array_Upto_K([9, 8, 7, 6, 5],3) == [7, 8, 9, 6, 5]"
+  ],
+  "code_typescript": "function reverse_Array_Upto_K<T>(input: T[], k: number): T[] {\n  return [...input.slice(0, k).reverse(), ...input.slice(k)];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 800,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from a string.",
+  "python_code": "import re\ndef remove_all_spaces(text):\n return (re.sub(r'\\s+', '',text))",
+  "test_list": [
+    "assert remove_all_spaces('python  program')==('pythonprogram')",
+    "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+    "assert remove_all_spaces('python                     program')==('pythonprogram')",
+    "assert remove_all_spaces('   python                     program')=='pythonprogram'"
+  ],
+  "code_rust": "pub fn remove_all_spaces(text: &str) -> String {\n    text.chars().filter(|c| !c.is_whitespace()).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert remove_all_spaces('python  program')==('pythonprogram')",
+      "generated_test": "let result = remove_all_spaces(\"python  program\");\nlet expected = \"pythonprogram\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+      "generated_test": "let result = remove_all_spaces(\"python   programming    language\");\nlet expected = \"pythonprogramminglanguage\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python                     program')==('pythonprogram')",
+      "generated_test": "let result = remove_all_spaces(\"python                     program\");\nlet expected = \"pythonprogram\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('   python                     program')=='pythonprogram'",
+      "generated_test": "let result = remove_all_spaces(\"   python                     program\");\nlet expected = \"pythonprogram\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

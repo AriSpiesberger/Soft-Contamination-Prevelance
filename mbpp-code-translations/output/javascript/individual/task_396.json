@@ -1,0 +1,37 @@
+{
+  "task_id": 396,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string starts and ends with the same character or not.",
+  "python_code": "import re  \nregex = r'^[a-z]$|^([a-z]).*\\1$'\ndef check_char(string): \n\tif(re.search(regex, string)): \n\t\treturn \"Valid\" \n\telse: \n\t\treturn \"Invalid\" ",
+  "test_list": [
+    "assert check_char(\"abba\") == \"Valid\"",
+    "assert check_char(\"a\") == \"Valid\"",
+    "assert check_char(\"abcd\") == \"Invalid\""
+  ],
+  "code_javascript": "const regex = /^[a-z]$|^([a-z]).*\\1$/;\n\nfunction check_char(string) {\n    if (regex.test(string)) {\n        return \"Valid\";\n    } else {\n        return \"Invalid\";\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert check_char(\"abba\") == \"Valid\"",
+      "generated_test": "const result = check_char(\"abba\");\nconst expected = \"Valid\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_char(\"a\") == \"Valid\"",
+      "generated_test": "const result = check_char(\"a\");\nconst expected = \"Valid\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_char(\"abcd\") == \"Invalid\"",
+      "generated_test": "const result = check_char(\"abcd\");\nconst expected = \"Invalid\";\n\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

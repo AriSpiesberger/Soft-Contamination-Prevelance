@@ -1,0 +1,37 @@
+{
+  "task_id": 439,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to join a list of multiple integers into a single integer.",
+  "python_code": "def multiple_to_single(L):\n  x = int(\"\".join(map(str, L)))\n  return x",
+  "test_list": [
+    "assert multiple_to_single([11, 33, 50])==113350",
+    "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+    "assert multiple_to_single([10,15,20,25])==10152025"
+  ],
+  "code_rust": "pub fn multiple_to_single(l: Vec<i32>) -> i64 {\n    if l.is_empty() {\n        return 0;\n    }\n    \n    let mut has_negative = false;\n    let mut strings: Vec<String> = Vec::new();\n    \n    for (i, &num) in l.iter().enumerate() {\n        if i == 0 && num < 0 {\n            has_negative = true;\n            strings.push((-num).to_string());\n        } else {\n            strings.push(num.to_string());\n        }\n    }\n    \n    let joined: String = strings.join(\"\");\n    let result: i64 = joined.parse().unwrap_or(0);\n    \n    if has_negative {\n        -result\n    } else {\n        result\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert multiple_to_single([11, 33, 50])==113350",
+      "generated_test": "let result = multiple_to_single(vec![11, 33, 50]);\nlet expected: i64 = 113350;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+      "generated_test": "let result = multiple_to_single(vec![-1, 2, 3, 4, 5, 6]);\nlet expected: i64 = -123456;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiple_to_single([10,15,20,25])==10152025",
+      "generated_test": "let result = multiple_to_single(vec![10, 15, 20, 25]);\nlet expected: i64 = 10152025;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

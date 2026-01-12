@@ -1,0 +1,17 @@
+{
+  "task_id": 567,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a specified list is sorted or not.",
+  "python_code": "def issort_list(list1):\n    result = all(list1[i] <= list1[i+1] for i in range(len(list1)-1))\n    return result",
+  "test_list": [
+    "assert issort_list([1,2,4,6,8,10,12,14,16,17])==True",
+    "assert issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17])==False",
+    "assert issort_list([1, 2, 4, 6, 8, 10,15,14,20])==False"
+  ],
+  "code_typescript": "function issort_list(list1: number[]): boolean {\n    if (list1.length <= 1) {\n        return true;\n    }\n    const result = list1.every((_, i) => i === list1.length - 1 || list1[i] <= list1[i + 1]);\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

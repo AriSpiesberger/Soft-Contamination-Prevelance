@@ -1,0 +1,37 @@
+{
+  "task_id": 11,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove first and last occurrence of a given character from the string.",
+  "python_code": "def remove_Occ(s,ch): \n    for i in range(len(s)): \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    for i in range(len(s) - 1,-1,-1):  \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    return s ",
+  "test_list": [
+    "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+    "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+    "assert remove_Occ(\"PHP\",\"P\") == \"H\""
+  ],
+  "code_rust": "pub fn remove_Occ(s: &str, ch: char) -> String {\n    let mut result: String = s.to_string();\n    \n    // Remove first occurrence\n    if let Some(pos) = result.find(ch) {\n        result.remove(pos);\n    }\n    \n    // Remove last occurrence\n    if let Some(pos) = result.rfind(ch) {\n        result.remove(pos);\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+      "generated_test": "let result = remove_Occ(\"hello\", 'l');\nlet expected = \"heo\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+      "generated_test": "let result = remove_Occ(\"abcda\", 'a');\nlet expected = \"bcd\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_Occ(\"PHP\",\"P\") == \"H\"",
+      "generated_test": "let result = remove_Occ(\"PHP\", 'P');\nlet expected = \"H\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

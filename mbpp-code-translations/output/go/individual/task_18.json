@@ -1,0 +1,37 @@
+{
+  "task_id": 18,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove characters from the first string which are present in the second string.",
+  "python_code": "NO_OF_CHARS = 256\ndef str_to_list(string): \n\ttemp = [] \n\tfor x in string: \n\t\ttemp.append(x) \n\treturn temp \ndef lst_to_string(List): \n\treturn ''.join(List) \ndef get_char_count_array(string): \n\tcount = [0] * NO_OF_CHARS \n\tfor i in string: \n\t\tcount[ord(i)] += 1\n\treturn count \ndef remove_dirty_chars(string, second_string): \n\tcount = get_char_count_array(second_string) \n\tip_ind = 0\n\tres_ind = 0\n\ttemp = '' \n\tstr_list = str_to_list(string) \n\twhile ip_ind != len(str_list): \n\t\ttemp = str_list[ip_ind] \n\t\tif count[ord(temp)] == 0: \n\t\t\tstr_list[res_ind] = str_list[ip_ind] \n\t\t\tres_ind += 1\n\t\tip_ind+=1\n\treturn lst_to_string(str_list[0:res_ind]) ",
+  "test_list": [
+    "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+    "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+    "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'"
+  ],
+  "code_go": "package main\n\nfunc str_to_list(s string) []rune {\n\ttemp := []rune{}\n\tfor _, x := range s {\n\t\ttemp = append(temp, x)\n\t}\n\treturn temp\n}\n\nfunc lst_to_string(list []rune) string {\n\treturn string(list)\n}\n\nfunc get_char_count_array(s string) []int {\n\tconst NO_OF_CHARS = 256\n\tcount := make([]int, NO_OF_CHARS)\n\tfor _, i := range s {\n\t\tif int(i) < NO_OF_CHARS {\n\t\t\tcount[int(i)] += 1\n\t\t}\n\t}\n\treturn count\n}\n\nfunc remove_dirty_chars(s string, second_string string) string {\n\tconst NO_OF_CHARS = 256\n\tcount := get_char_count_array(second_string)\n\tip_ind := 0\n\tres_ind := 0\n\tvar temp rune\n\tstr_list := str_to_list(s)\n\tfor ip_ind != len(str_list) {\n\t\ttemp = str_list[ip_ind]\n\t\tif int(temp) < NO_OF_CHARS && count[int(temp)] == 0 {\n\t\t\tstr_list[res_ind] = str_list[ip_ind]\n\t\t\tres_ind += 1\n\t\t}\n\t\tip_ind += 1\n\t}\n\treturn lst_to_string(str_list[0:res_ind])\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+      "generated_test": "result := remove_dirty_chars(\"probasscurve\", \"pros\")\nexpected := \"bacuve\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+      "generated_test": "result := remove_dirty_chars(\"digitalindia\", \"talent\")\nexpected := \"digiidi\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'",
+      "generated_test": "result := remove_dirty_chars(\"exoticmiles\", \"toxic\")\nexpected := \"emles\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

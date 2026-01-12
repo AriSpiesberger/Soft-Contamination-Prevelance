@@ -1,0 +1,17 @@
+{
+  "task_id": 461,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the upper case characters in a given string.",
+  "python_code": "def upper_ctr(str):\n    upper_ctr = 0\n    for i in range(len(str)):\n          if str[i] >= 'A' and str[i] <= 'Z': upper_ctr += 1\n          return upper_ctr",
+  "test_list": [
+    "assert upper_ctr('PYthon') == 1",
+    "assert upper_ctr('BigData') == 1",
+    "assert upper_ctr('program') == 0"
+  ],
+  "code_typescript": "function upper_ctr(str: string): number {\n    let upper_ctr = 0;\n    for (let i = 0; i < str.length; i++) {\n        if (str[i] >= 'A' && str[i] <= 'Z') upper_ctr += 1;\n        return upper_ctr;\n    }\n    return upper_ctr;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

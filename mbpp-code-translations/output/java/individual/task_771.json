@@ -1,0 +1,37 @@
+{
+  "task_id": 771,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given expression is balanced or not. https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/",
+  "python_code": "from collections import deque\ndef check_expression(exp):\n    if len(exp) & 1:\n        return False\n    stack = deque()\n    for ch in exp:\n        if ch == '(' or ch == '{' or ch == '[':\n            stack.append(ch)\n        if ch == ')' or ch == '}' or ch == ']':\n            if not stack:\n                return False\n            top = stack.pop()\n            if (top == '(' and ch != ')') or (top == '{' and ch != '}' or (top == '[' and ch != ']')):\n                return False\n    return not stack",
+  "test_list": [
+    "assert check_expression(\"{()}[{}]\") == True",
+    "assert check_expression(\"{()}[{]\") == False",
+    "assert check_expression(\"{()}[{}][]({})\") == True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean check_expression(String exp) {\n        if (exp.length() % 2 == 1) {\n            return false;\n        }\n        Deque<Character> stack = new ArrayDeque<>();\n        for (int i = 0; i < exp.length(); i++) {\n            char ch = exp.charAt(i);\n            if (ch == '(' || ch == '{' || ch == '[') {\n                stack.push(ch);\n            }\n            if (ch == ')' || ch == '}' || ch == ']') {\n                if (stack.isEmpty()) {\n                    return false;\n                }\n                char top = stack.pop();\n                if ((top == '(' && ch != ')') || (top == '{' && ch != '}') || (top == '[' && ch != ']')) {\n                    return false;\n                }\n            }\n        }\n        return stack.isEmpty();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_expression(\"{()}[{}]\") == True",
+      "generated_test": "boolean result = check_expression(\"{()}[{}]\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_expression(\"{()}[{]\") == False",
+      "generated_test": "boolean result = check_expression(\"{()}[{]\");\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_expression(\"{()}[{}][]({})\") == True",
+      "generated_test": "boolean result = check_expression(\"{()}[{}][]({})\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 305,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return two words from a list of words starting with letter 'p'.",
+  "python_code": "import re\ndef start_withp(words):\n for w in words:\n        m = re.match(\"(P\\w+)\\W(P\\w+)\", w)\n        if m:\n            return m.groups()",
+  "test_list": [
+    "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+    "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+    "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc start_withp(words []string) []string {\n\tre := regexp.MustCompile(`(P\\w+)\\W(P\\w+)`)\n\tfor _, w := range words {\n\t\tm := re.FindStringSubmatch(w)\n\t\tif m != nil {\n\t\t\treturn []string{m[1], m[2]}\n\t\t}\n\t}\n\treturn nil\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+      "generated_test": "input := []string{\"Python PHP\", \"Java JavaScript\", \"c c++\"}\nexpected := []string{\"Python\", \"PHP\"}\nresult := start_withp(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+      "generated_test": "input := []string{\"Python Programming\", \"Java Programming\"}\nexpected := []string{\"Python\", \"Programming\"}\nresult := start_withp(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')",
+      "generated_test": "result := start_withp([]string{\"Pqrst Pqr\", \"qrstuv\"})\nexpected := []string{\"Pqrst\", \"Pqr\"}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

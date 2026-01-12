@@ -1,0 +1,27 @@
+{
+  "task_id": 90,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the longest word.",
+  "code_python": "def len_log(list1):\n    max=len(list1[0])\n    for i in list1:\n        if len(i)>max:\n            max=len(i)\n    return max",
+  "test_list": [
+    "assert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7",
+    "assert len_log([\"a\",\"ab\",\"abc\"]) == 3",
+    "assert len_log([\"small\",\"big\",\"tall\"]) == 5"
+  ],
+  "python_1": "def len_log(list1):\n    # Transform each word into its length using map function\n    word_lengths = map(len, list1)\n    # Find and return the maximum value from the lengths iterator\n    return max(word_lengths)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def len_log(list1):\n    # Sort the list by word length in descending order to put longest first\n    sorted_by_length = sorted(list1, key=len, reverse=True)\n    # Extract the first element which has the maximum length after sorting\n    longest_word = sorted_by_length[0]\n    # Return the length of the longest word found\n    return len(longest_word)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def len_log(list1):\n    # Use reduce pattern with explicit index tracking to find max length\n    from functools import reduce\n    # Apply reduce to compare lengths pairwise and keep the larger value\n    max_length = reduce(lambda acc, word: len(word) if len(word) > acc else acc, list1, 0)\n    # Return the accumulated maximum length value\n    return max_length",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def len_log(list1):\n    # Use list comprehension to build a list of all word lengths\n    lengths = [len(word) for word in list1]\n    # Initialize result variable to track the largest length found\n    result = lengths[0]\n    # Iterate through remaining lengths using slice starting at index 1\n    for length in lengths[1:]:\n        # Update result if current length exceeds stored maximum\n        if length > result:\n            result = length\n    # Return the largest length discovered across all words\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def len_log(list1):\n    # Use recursive approach to find maximum length in the list\n    def find_max_recursive(words, index, current_max):\n        # Base case: when index reaches list length, return accumulated maximum\n        if index == len(words):\n            return current_max\n        # Calculate length of word at current index position\n        word_len = len(words[index])\n        # Determine new maximum by comparing current word length with running max\n        new_max = word_len if word_len > current_max else current_max\n        # Recurse to next index with updated maximum value\n        return find_max_recursive(words, index + 1, new_max)\n    # Kick off recursion starting at index 0 with initial max of 0\n    return find_max_recursive(list1, 0, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

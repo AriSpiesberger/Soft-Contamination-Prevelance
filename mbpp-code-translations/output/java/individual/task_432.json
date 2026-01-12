@@ -1,0 +1,37 @@
+{
+  "task_id": 432,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median length of a trapezium.",
+  "python_code": "def median_trapezium(base1,base2,height):\n median = 0.5 * (base1+ base2)\n return median",
+  "test_list": [
+    "assert median_trapezium(15,25,35)==20",
+    "assert median_trapezium(10,20,30)==15",
+    "assert median_trapezium(6,9,4)==7.5"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double median_trapezium(double base1, double base2, double height) {\n        double median = 0.5 * (base1 + base2);\n        return median;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert median_trapezium(15,25,35)==20",
+      "generated_test": "double result = median_trapezium(15, 25, 35);\ndouble expected = 20;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_trapezium(10,20,30)==15",
+      "generated_test": "double result = median_trapezium(10, 20, 30);\ndouble expected = 15;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_trapezium(6,9,4)==7.5",
+      "generated_test": "double result = median_trapezium(6, 9, 4);\ndouble expected = 7.5;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

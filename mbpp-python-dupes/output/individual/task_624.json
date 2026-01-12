@@ -1,0 +1,27 @@
+{
+  "task_id": 624,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert a given string to uppercase.",
+  "code_python": "def is_upper(string):\n  return (string.upper())",
+  "test_list": [
+    "assert is_upper(\"person\") ==\"PERSON\"",
+    "assert is_upper(\"final\") == \"FINAL\"",
+    "assert is_upper(\"Valid\") == \"VALID\""
+  ],
+  "python_1": "def is_upper(string):\n    # Initialize an empty list to collect converted characters\n    result = []\n    # Process each character in the input string individually\n    for char in string:\n        # Get the ASCII code of the current character\n        ascii_val = ord(char)\n        # Check if character is a lowercase letter (ASCII 97-122)\n        if 97 <= ascii_val <= 122:\n            # Convert to uppercase by subtracting 32 from ASCII value\n            result.append(chr(ascii_val - 32))\n        else:\n            # Keep non-lowercase characters unchanged\n            result.append(char)\n    # Join all characters back into a single string\n    return ''.join(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_upper(string):\n    # Use a list comprehension with conditional expression to transform each character\n    uppercase_chars = [\n        # Convert lowercase letters by shifting ASCII value, otherwise keep original\n        chr(ord(c) - 32) if 'a' <= c <= 'z' else c\n        # Iterate through every character in the input string\n        for c in string\n    ]\n    # Concatenate all transformed characters into the final uppercase string\n    return ''.join(uppercase_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_upper(string):\n    # Use map function to apply transformation to each character functionally\n    transformed = map(\n        # Lambda function handles the lowercase-to-uppercase conversion logic\n        lambda c: chr(ord(c) - 32) if c.islower() else c,\n        # The string itself serves as the iterable for map\n        string\n    )\n    # Materialize the map iterator into a string by joining all characters\n    return ''.join(transformed)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_upper(string):\n    # Build a translation table mapping lowercase ASCII codes to uppercase\n    translation_table = {i: i - 32 for i in range(97, 123)}\n    # Apply the translation table to convert all lowercase letters at once\n    return string.translate(translation_table)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_upper(string):\n    # Define the lowercase alphabet as a reference string\n    lowercase = 'abcdefghijklmnopqrstuvwxyz'\n    # Define the corresponding uppercase alphabet for replacement lookup\n    uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n    # Accumulator string to build the result character by character\n    result = ''\n    # Process each character using index-based iteration\n    index = 0\n    # Continue looping while there are characters left to process\n    while index < len(string):\n        # Extract the current character at this position\n        current_char = string[index]\n        # Search for this character's position in the lowercase alphabet\n        position = lowercase.find(current_char)\n        # Determine if the character was found in lowercase set (position != -1)\n        if position != -1:\n            # Replace with the uppercase equivalent at the same position\n            result = result + uppercase[position]\n        else:\n            # Character is not lowercase, so append it unchanged\n            result = result + current_char\n        # Advance to the next character position in the string\n        index = index + 1\n    # Return the fully constructed uppercase string\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

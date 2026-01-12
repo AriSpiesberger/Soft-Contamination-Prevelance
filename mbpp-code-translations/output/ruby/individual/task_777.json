@@ -1,0 +1,37 @@
+{
+  "task_id": 777,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of non-repeated elements in a given list.",
+  "python_code": "def find_sum(arr): \n    arr.sort() \n    sum = arr[0] \n    for i in range(len(arr)-1): \n        if (arr[i] != arr[i+1]): \n            sum = sum + arr[i+1]   \n    return sum",
+  "test_list": [
+    "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+    "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+    "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78"
+  ],
+  "code_ruby": "def find_sum(arr)\n  arr.sort!\n  sum = arr[0]\n  (arr.length - 1).times do |i|\n    if arr[i] != arr[i + 1]\n      sum = sum + arr[i + 1]\n    end\n  end\n  sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+      "generated_test": "result = find_sum([1,2,3,1,1,4,5,6])\nexpected = 21\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+      "generated_test": "result = find_sum([1, 10, 9, 4, 2, 10, 10, 45, 4])\nexpected = 71\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78",
+      "generated_test": "result = find_sum([12,10,9,45,2,10,10,45,10])\nexpected = 78\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

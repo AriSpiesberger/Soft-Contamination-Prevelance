@@ -1,0 +1,27 @@
+{
+  "task_id": 120,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.",
+  "code_python": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max",
+  "test_list": [
+    "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+    "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+    "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484"
+  ],
+  "python_1": "def max_product_tuple(list1):\n    # Use map to apply product calculation to each tuple pair\n    products = map(lambda pair: abs(pair[0] * pair[1]), list1)\n    # Convert map object to list for finding maximum\n    product_list = list(products)\n    # Find and return the largest absolute product from all pairs\n    return max(product_list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def max_product_tuple(list1):\n    # Import reduce for functional-style accumulation across the list\n    from functools import reduce\n    # Define comparison function that keeps the larger absolute product\n    def keep_max(current_max, pair):\n        # Calculate absolute product of current tuple's elements\n        current_product = abs(pair[0] * pair[1])\n        # Return whichever value is greater between accumulated max and current\n        return current_max if current_max > current_product else current_product\n    # Extract first tuple to compute initial maximum value\n    first_pair = list1[0]\n    # Compute absolute product of first pair as starting point\n    initial_max = abs(first_pair[0] * first_pair[1])\n    # Apply reduce to fold through remaining tuples, tracking maximum\n    result = reduce(keep_max, list1[1:], initial_max)\n    # Return the final maximum absolute product found\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def max_product_tuple(list1):\n    # Initialize tracking variable to None to handle first iteration specially\n    max_abs_product = None\n    # Iterate through each tuple pair using index-based loop\n    for i in range(len(list1)):\n        # Unpack the tuple at current index into two separate variables\n        first_num, second_num = list1[i]\n        # Multiply the pair elements and take absolute value\n        abs_product = abs(first_num * second_num)\n        # Check if this is the first product we've calculated\n        if max_abs_product is None:\n            # Set initial maximum since we have no prior value to compare\n            max_abs_product = abs_product\n        # Compare current product against stored maximum\n        elif abs_product > max_abs_product:\n            # Update maximum when we find a larger absolute product\n            max_abs_product = abs_product\n    # Return the largest absolute product discovered during iteration\n    return max_abs_product",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def max_product_tuple(list1):\n    # Generate all absolute products using a generator expression for memory efficiency\n    def product_generator():\n        # Yield each absolute product one at a time without storing all in memory\n        for pair in list1:\n            # Compute absolute product by unpacking tuple and multiplying\n            yield abs(pair[0] * pair[1])\n    # Create the generator object that will produce values on demand\n    gen = product_generator()\n    # Consume first value from generator to establish initial maximum\n    max_val = next(gen)\n    # Process remaining products from generator, updating maximum as needed\n    for product in gen:\n        # Use built-in max to compare current product against running maximum\n        max_val = max(max_val, product)\n    # Return the highest absolute product found across all tuple pairs\n    return max_val",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def max_product_tuple(list1):\n    # Transform tuples into absolute products using operator module for multiplication\n    import operator\n    # Build a list storing each tuple's absolute product using itemgetter-style access\n    abs_products = []\n    # Use enumerate to process tuples with their positions for potential debugging\n    for idx, tup in enumerate(list1):\n        # Apply operator.mul to compute product of the two tuple elements\n        product = operator.mul(tup[0], tup[1])\n        # Convert to absolute value using abs() and append to our collection\n        abs_products.append(abs(product))\n    # Sort the products list in descending order to place maximum at front\n    abs_products.sort(reverse=True)\n    # The maximum value is now at index 0 after reverse sorting\n    return abs_products[0]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

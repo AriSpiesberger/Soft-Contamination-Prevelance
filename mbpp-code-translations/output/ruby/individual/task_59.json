@@ -1,0 +1,37 @@
+{
+  "task_id": 59,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth octagonal number.",
+  "python_code": "def is_octagonal(n): \n\treturn 3 * n * n - 2 * n ",
+  "test_list": [
+    "assert is_octagonal(5) == 65",
+    "assert is_octagonal(10) == 280",
+    "assert is_octagonal(15) == 645"
+  ],
+  "code_ruby": "def is_octagonal(n)\n  3 * n * n - 2 * n\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert is_octagonal(5) == 65",
+      "generated_test": "result = is_octagonal(5)\nexpected = 65\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_octagonal(10) == 280",
+      "generated_test": "result = is_octagonal(10)\nexpected = 280\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_octagonal(15) == 645",
+      "generated_test": "result = is_octagonal(15)\nexpected = 645\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 273,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two tuples and subtracts the elements of the first tuple by the elements of the second tuple with the same index.",
+  "code_python": "def substract_elements(test_tup1, test_tup2):\n  res = tuple(map(lambda i, j: i - j, test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert substract_elements((10, 4, 5), (2, 5, 18)) == (8, -1, -13)",
+    "assert substract_elements((11, 2, 3), (24, 45 ,16)) == (-13, -43, -13)",
+    "assert substract_elements((7, 18, 9), (10, 11, 12)) == (-3, 7, -3)"
+  ],
+  "python_1": "def substract_elements(test_tup1, test_tup2):\n  # Create an empty list to accumulate the subtraction results\n  result_list = []\n  # Iterate through both tuples simultaneously using zip to pair elements by index\n  for elem1, elem2 in zip(test_tup1, test_tup2):\n    # Compute the difference between corresponding elements\n    difference = elem1 - elem2\n    # Append the computed difference to our result list\n    result_list.append(difference)\n  # Convert the list of differences to a tuple for the final return value\n  res = tuple(result_list)\n  # Return the tuple containing all element-wise subtractions\n  return res",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def substract_elements(test_tup1, test_tup2):\n  # Use list comprehension with index-based access to compute pairwise differences\n  res = tuple([test_tup1[i] - test_tup2[i] for i in range(len(test_tup1))])\n  # Return the resulting tuple of element-wise subtractions\n  return res",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def substract_elements(test_tup1, test_tup2):\n  # Use generator expression with zip to lazily compute differences on demand\n  differences_generator = (a - b for a, b in zip(test_tup1, test_tup2))\n  # Materialize the generator into a tuple to get the final result\n  res = tuple(differences_generator)\n  # Return the tuple containing subtraction results at each index position\n  return res",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def substract_elements(test_tup1, test_tup2):\n  # Import operator module to use the sub function for subtraction\n  import operator\n  # Apply the subtraction operator function to corresponding pairs using map\n  mapped_result = map(operator.sub, test_tup1, test_tup2)\n  # Convert the map iterator to a tuple to finalize the result\n  res = tuple(mapped_result)\n  # Return the tuple with element-wise subtraction results\n  return res",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def substract_elements(test_tup1, test_tup2):\n  # Use recursive helper to process tuples without explicit loops\n  def subtract_recursive(idx, accumulator):\n    # Base case: when index reaches tuple length, return accumulated results\n    if idx >= len(test_tup1):\n      return accumulator\n    # Compute difference at current index and extend accumulator tuple\n    new_accumulator = accumulator + (test_tup1[idx] - test_tup2[idx],)\n    # Recurse to process the next index position\n    return subtract_recursive(idx + 1, new_accumulator)\n  # Start recursion from index 0 with empty tuple as initial accumulator\n  res = subtract_recursive(0, ())\n  # Return the fully constructed result tuple\n  return res",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

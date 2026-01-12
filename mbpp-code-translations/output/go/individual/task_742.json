@@ -1,0 +1,37 @@
+{
+  "task_id": 742,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to caluclate the area of a tetrahedron.",
+  "python_code": "import math\ndef area_tetrahedron(side):\n  area = math.sqrt(3)*(side*side)\n  return area",
+  "test_list": [
+    "assert area_tetrahedron(3)==15.588457268119894",
+    "assert area_tetrahedron(20)==692.8203230275509",
+    "assert area_tetrahedron(10)==173.20508075688772"
+  ],
+  "code_go": "package main\n\nimport \"math\"\n\nfunc area_tetrahedron(side float64) float64 {\n\tarea := math.Sqrt(3) * (side * side)\n\treturn area\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert area_tetrahedron(3)==15.588457268119894",
+      "generated_test": "result := area_tetrahedron(3)\nexpected := 15.588457268119894\nif math.Abs(result-expected) < 1e-9 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert area_tetrahedron(20)==692.8203230275509",
+      "generated_test": "result := area_tetrahedron(20)\nexpected := 692.8203230275509\nif math.Abs(result-expected) < 1e-9 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert area_tetrahedron(10)==173.20508075688772",
+      "generated_test": "result := area_tetrahedron(10)\nexpected := 173.20508075688772\ntolerance := 1e-9\nif math.Abs(result-expected) < tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

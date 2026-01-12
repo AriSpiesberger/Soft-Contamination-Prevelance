@@ -1,0 +1,37 @@
+{
+  "task_id": 132,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a tuple to a string.",
+  "python_code": "def tup_string(tup1):\n  str =  ''.join(tup1)\n  return str",
+  "test_list": [
+    "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+    "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+    "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strings\"\n)\n\nfunc tup_string(tup1 []string) string {\n\treturn strings.Join(tup1, \"\")\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+      "generated_test": "result := tup_string([]string{\"e\", \"x\", \"e\", \"r\", \"c\", \"i\", \"s\", \"e\", \"s\"})\nexpected := \"exercises\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+      "generated_test": "result := tup_string([]string{\"p\", \"y\", \"t\", \"h\", \"o\", \"n\"})\nexpected := \"python\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")",
+      "generated_test": "result := tup_string([]string{\"p\", \"r\", \"o\", \"g\", \"r\", \"a\", \"m\"})\nexpected := \"program\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

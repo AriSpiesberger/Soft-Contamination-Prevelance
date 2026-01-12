@@ -1,0 +1,44 @@
+{
+  "task_id": 758,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count lists within a list. The function should return a dictionary where every list is converted to a tuple and the value of such tuple is the number of its occurencies in the original list.",
+  "python_code": "def unique_sublists(list1):\n    result ={}\n    for l in  list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+    "assert unique_sublists([['john']])=={('john',): 1}"
+  ],
+  "code_javascript": "function unique_sublists(list1) {\n    const result = {};\n    for (const l of list1) {\n        const key = JSON.stringify(l);\n        if (!(key in result)) {\n            result[key] = 0;\n        }\n        result[key]++;\n    }\n    return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 2,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+      "generated_test": "const result = unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]]);\nconst expected = {\n    \"[1,3]\": 2,\n    \"[5,7]\": 2,\n    \"[13,15,17]\": 1,\n    \"[9,11]\": 1\n};\n\nconst resultKeys = Object.keys(result).sort();\nconst expectedKeys = Object.keys(expected).sort();\n\nlet pass = resultKeys.length === expectedKeys.length;\nif (pass) {\n    for (const key of expectedKeys) {\n        if (result[key] !== expected[key]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+      "generated_test": "const result = unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']]);\nconst expected = {'[\"green\",\"orange\"]': 2, '[\"black\"]': 1, '[\"white\"]': 1};\n\nconst resultKeys = Object.keys(result).sort();\nconst expectedKeys = Object.keys(expected).sort();\n\nlet pass = resultKeys.length === expectedKeys.length;\nif (pass) {\n    for (const key of expectedKeys) {\n        if (result[key] !== expected[key]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+      "generated_test": "const result = unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]]);\nconst expected = {\n    \"[10,20,30,40]\": 1,\n    \"[60,70,50,50]\": 1,\n    \"[90,100,200]\": 1\n};\n\nconst resultKeys = Object.keys(result).sort();\nconst expectedKeys = Object.keys(expected).sort();\n\nlet pass = resultKeys.length === expectedKeys.length;\nif (pass) {\n    for (const key of expectedKeys) {\n        if (result[key] !== expected[key]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['john']])=={('john',): 1}",
+      "generated_test": "const result = unique_sublists([['john']]);\nconst expected = {'[\"john\"]': 1};\n\nconst resultKeys = Object.keys(result).sort();\nconst expectedKeys = Object.keys(expected).sort();\n\nlet pass = resultKeys.length === expectedKeys.length;\nif (pass) {\n    for (const key of resultKeys) {\n        if (result[key] !== expected[key]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

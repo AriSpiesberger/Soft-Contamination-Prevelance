@@ -1,0 +1,37 @@
+{
+  "task_id": 456,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse each string in a given list of string values.",
+  "python_code": "def reverse_string_list(stringlist):\n    result = [x[::-1] for x in stringlist]\n    return result",
+  "test_list": [
+    "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+    "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+    "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']"
+  ],
+  "code_javascript": "function reverse_string_list(stringlist) {\n    return stringlist.map(x => x.split('').reverse().join(''));\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+      "generated_test": "const result = reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black']);\nconst expected = ['deR', 'neerG', 'eulB', 'etihW', 'kcalB'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+      "generated_test": "const result = reverse_string_list(['john','amal','joel','george']);\nconst expected = ['nhoj','lama','leoj','egroeg'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']",
+      "generated_test": "const result = reverse_string_list(['jack','john','mary']);\nconst expected = ['kcaj','nhoj','yram'];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

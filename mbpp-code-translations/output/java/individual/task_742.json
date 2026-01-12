@@ -1,0 +1,37 @@
+{
+  "task_id": 742,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to caluclate the area of a tetrahedron.",
+  "python_code": "import math\ndef area_tetrahedron(side):\n  area = math.sqrt(3)*(side*side)\n  return area",
+  "test_list": [
+    "assert area_tetrahedron(3)==15.588457268119894",
+    "assert area_tetrahedron(20)==692.8203230275509",
+    "assert area_tetrahedron(10)==173.20508075688772"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double area_tetrahedron(double side) {\n        double area = Math.sqrt(3) * (side * side);\n        return area;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert area_tetrahedron(3)==15.588457268119894",
+      "generated_test": "double result = area_tetrahedron(3);\ndouble expected = 15.588457268119894;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert area_tetrahedron(20)==692.8203230275509",
+      "generated_test": "double result = area_tetrahedron(20);\ndouble expected = 692.8203230275509;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert area_tetrahedron(10)==173.20508075688772",
+      "generated_test": "double result = area_tetrahedron(10);\ndouble expected = 173.20508075688772;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

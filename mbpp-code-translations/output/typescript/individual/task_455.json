@@ -1,0 +1,17 @@
+{
+  "task_id": 455,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given month number contains 31 days or not.",
+  "python_code": "def check_monthnumb_number(monthnum2):\n  if(monthnum2==1 or monthnum2==3 or monthnum2==5 or monthnum2==7 or monthnum2==8 or monthnum2==10 or monthnum2==12):\n    return True\n  else:\n    return False",
+  "test_list": [
+    "assert check_monthnumb_number(5)==True",
+    "assert check_monthnumb_number(2)==False",
+    "assert check_monthnumb_number(6)==False"
+  ],
+  "code_typescript": "function check_monthnumb_number(monthnum2: number): boolean {\n  if (monthnum2 === 1 || monthnum2 === 3 || monthnum2 === 5 || monthnum2 === 7 || monthnum2 === 8 || monthnum2 === 10 || monthnum2 === 12) {\n    return true;\n  } else {\n    return false;\n  }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

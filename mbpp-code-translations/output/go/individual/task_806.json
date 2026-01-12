@@ -1,0 +1,37 @@
+{
+  "task_id": 806,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find maximum run of uppercase characters in the given string.",
+  "python_code": "def max_run_uppercase(test_str):\n  cnt = 0\n  res = 0\n  for idx in range(0, len(test_str)):\n    if test_str[idx].isupper():\n      cnt += 1\n    else:\n      res = cnt\n      cnt = 0\n  if test_str[len(test_str) - 1].isupper():\n    res = cnt\n  return (res)",
+  "test_list": [
+    "assert max_run_uppercase('GeMKSForGERksISBESt') == 5",
+    "assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6",
+    "assert max_run_uppercase('GooGLEFluTTER') == 4"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"unicode\"\n)\n\nfunc max_run_uppercase(test_str string) int {\n\tcnt := 0\n\tres := 0\n\trunes := []rune(test_str)\n\t\n\tfor idx := 0; idx < len(runes); idx++ {\n\t\tif unicode.IsUpper(runes[idx]) {\n\t\t\tcnt++\n\t\t} else {\n\t\t\tres = cnt\n\t\t\tcnt = 0\n\t\t}\n\t}\n\t\n\tif unicode.IsUpper(runes[len(runes)-1]) {\n\t\tres = cnt\n\t}\n\t\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_run_uppercase('GeMKSForGERksISBESt') == 5",
+      "generated_test": "result := max_run_uppercase(\"GeMKSForGERksISBESt\")\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6",
+      "generated_test": "result := max_run_uppercase(\"PrECIOusMOVemENTSYT\")\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_run_uppercase('GooGLEFluTTER') == 4",
+      "generated_test": "result := max_run_uppercase(\"GooGLEFluTTER\")\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 102,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a snake case string to camel case string.",
+  "python_code": "def snake_to_camel(word):\n        import re\n        return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('python_program')=='PythonProgram'",
+    "assert snake_to_camel('python_language')==('PythonLanguage')",
+    "assert snake_to_camel('programming_language')==('ProgrammingLanguage')"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strings\"\n\t\"unicode\"\n)\n\nfunc snake_to_camel(word string) string {\n\tparts := strings.Split(word, \"_\")\n\tvar result strings.Builder\n\t\n\tfor _, part := range parts {\n\t\tif part == \"\" {\n\t\t\tresult.WriteRune('_')\n\t\t} else {\n\t\t\t// Capitalize the first letter and keep the rest as is\n\t\t\trunes := []rune(part)\n\t\t\tif len(runes) > 0 {\n\t\t\t\trunes[0] = unicode.ToUpper(runes[0])\n\t\t\t}\n\t\t\tresult.WriteString(string(runes))\n\t\t}\n\t}\n\t\n\treturn result.String()\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert snake_to_camel('python_program')=='PythonProgram'",
+      "generated_test": "result := snake_to_camel(\"python_program\")\nexpected := \"PythonProgram\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('python_language')==('PythonLanguage')",
+      "generated_test": "result := snake_to_camel(\"python_language\")\nexpected := \"PythonLanguage\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('programming_language')==('ProgrammingLanguage')",
+      "generated_test": "result := snake_to_camel(\"programming_language\")\nexpected := \"ProgrammingLanguage\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

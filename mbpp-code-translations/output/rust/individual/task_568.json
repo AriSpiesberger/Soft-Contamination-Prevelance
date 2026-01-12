@@ -1,0 +1,37 @@
+{
+  "task_id": 568,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create a list of N empty dictionaries.",
+  "python_code": "def empty_list(length):\n empty_list = [{} for _ in range(length)]\n return empty_list",
+  "test_list": [
+    "assert empty_list(5)==[{},{},{},{},{}]",
+    "assert empty_list(6)==[{},{},{},{},{},{}]",
+    "assert empty_list(7)==[{},{},{},{},{},{},{}]"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn empty_list(length: usize) -> Vec<HashMap<(), ()>> {\n    (0..length).map(|_| HashMap::new()).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert empty_list(5)==[{},{},{},{},{}]",
+      "generated_test": "let result = empty_list(5);\nlet expected: Vec<HashMap<(), ()>> = vec![HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_list(6)==[{},{},{},{},{},{}]",
+      "generated_test": "let result = empty_list(6);\nlet expected: Vec<HashMap<(), ()>> = vec![HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_list(7)==[{},{},{},{},{},{},{}]",
+      "generated_test": "let result = empty_list(7);\nlet expected: Vec<HashMap<(), ()>> = vec![HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new(), HashMap::new()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

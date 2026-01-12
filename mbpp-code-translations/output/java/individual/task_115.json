@@ -1,0 +1,37 @@
+{
+  "task_id": 115,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether all dictionaries in a list are empty or not.",
+  "python_code": "def empty_dit(list1):\n empty_dit=all(not d for d in list1)\n return empty_dit",
+  "test_list": [
+    "assert empty_dit([{},{},{}])==True",
+    "assert empty_dit([{1,2},{},{}])==False",
+    "assert empty_dit({})==True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean empty_dit(List<?> list1) {\n        if (list1 == null || list1.isEmpty()) {\n            return true;\n        }\n        for (Object item : list1) {\n            if (item instanceof Map) {\n                if (!((Map<?, ?>) item).isEmpty()) {\n                    return false;\n                }\n            } else if (item instanceof Set) {\n                if (!((Set<?>) item).isEmpty()) {\n                    return false;\n                }\n            } else if (item instanceof Collection) {\n                if (!((Collection<?>) item).isEmpty()) {\n                    return false;\n                }\n            } else if (item != null) {\n                return false;\n            }\n        }\n        return true;\n    }\n    \n    public static boolean empty_dit(Map<?, ?> map) {\n        return map == null || map.isEmpty();\n    }\n    \n    public static boolean empty_dit(Set<?> set) {\n        return set == null || set.isEmpty();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert empty_dit([{},{},{}])==True",
+      "generated_test": "List<Map<String, Object>> input = new ArrayList<>();\ninput.add(new HashMap<>());\ninput.add(new HashMap<>());\ninput.add(new HashMap<>());\nboolean expected = true;\nboolean result = empty_dit(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit([{1,2},{},{}])==False",
+      "generated_test": "List<Set<Integer>> testList = new ArrayList<>();\ntestList.add(new HashSet<>(Arrays.asList(1, 2)));\ntestList.add(new HashSet<>());\ntestList.add(new HashSet<>());\n\nboolean result = empty_dit(testList);\nboolean expected = false;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit({})==True",
+      "generated_test": "boolean result = empty_dit(new HashMap<>());\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

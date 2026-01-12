@@ -1,0 +1,28 @@
+{
+  "task_id": 800,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from a string.",
+  "code_python": "import re\ndef remove_all_spaces(text):\n return (re.sub(r'\\s+', '',text))",
+  "test_list": [
+    "assert remove_all_spaces('python  program')==('pythonprogram')",
+    "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+    "assert remove_all_spaces('python                     program')==('pythonprogram')",
+    "assert remove_all_spaces('   python                     program')=='pythonprogram'"
+  ],
+  "python_1": "# Define function to remove all whitespace characters from input string\ndef remove_all_spaces(text):\n    # Use string method split() which automatically splits on any whitespace\n    words = text.split()\n    # Join all non-whitespace fragments back together with empty separator\n    result = ''.join(words)\n    # Return the concatenated string with no spaces remaining\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Define function that removes whitespace using character filtering approach\ndef remove_all_spaces(text):\n    # Build result by keeping only non-whitespace characters using list comprehension\n    filtered_chars = [char for char in text if not char.isspace()]\n    # Concatenate filtered characters into final string without any spaces\n    return ''.join(filtered_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Define function using filter with lambda to exclude whitespace characters\ndef remove_all_spaces(text):\n    # Apply filter to keep only characters where isspace() returns False\n    non_space_chars = filter(lambda c: not c.isspace(), text)\n    # Convert filter iterator to string by joining all passing characters\n    return ''.join(non_space_chars)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Define function using string translate method with custom mapping\ndef remove_all_spaces(text):\n    # Import string module to access whitespace constant containing all whitespace chars\n    import string\n    # Create translation table that maps each whitespace character to None (deletion)\n    translation_table = str.maketrans('', '', string.whitespace)\n    # Apply translation to input text, effectively deleting all whitespace in one pass\n    result = text.translate(translation_table)\n    # Return the cleaned string with all whitespace characters removed\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Define function using recursive approach to strip whitespace character by character\ndef remove_all_spaces(text):\n    # Base case: empty string has no whitespace to remove, return as-is\n    if len(text) == 0:\n        # Recursion terminates here when all characters have been processed\n        return text\n    # Extract the first character to examine for whitespace status\n    first_char = text[0]\n    # Recursively process the rest of the string beyond first character\n    rest_processed = remove_all_spaces(text[1:])\n    # Check if current character is any form of whitespace using isspace method\n    if first_char.isspace():\n        # Skip whitespace by returning only the processed remainder\n        return rest_processed\n    # Non-whitespace character gets prepended to the recursively cleaned tail\n    return first_char + rest_processed",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

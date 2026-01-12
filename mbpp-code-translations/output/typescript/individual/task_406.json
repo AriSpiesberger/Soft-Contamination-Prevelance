@@ -1,0 +1,17 @@
+{
+  "task_id": 406,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find whether the parity of a given number is odd.",
+  "python_code": "def find_Parity(x): \n    y = x ^ (x >> 1); \n    y = y ^ (y >> 2); \n    y = y ^ (y >> 4); \n    y = y ^ (y >> 8); \n    y = y ^ (y >> 16); \n    if (y & 1): \n        return True\n    return False",
+  "test_list": [
+    "assert find_Parity(12) == False",
+    "assert find_Parity(7) == True",
+    "assert find_Parity(10) == False"
+  ],
+  "code_typescript": "function find_Parity(x: number): boolean {\n    let y = x ^ (x >> 1);\n    y = y ^ (y >> 2);\n    y = y ^ (y >> 4);\n    y = y ^ (y >> 8);\n    y = y ^ (y >> 16);\n    if (y & 1) {\n        return true;\n    }\n    return false;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

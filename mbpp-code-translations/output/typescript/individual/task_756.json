@@ -1,0 +1,20 @@
+{
+  "task_id": 756,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by one or more 'b's. https://www.w3resource.com/python-exercises/re/python-re-exercise-3.php",
+  "python_code": "import re\ndef text_match_zero_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_zero_one(\"ac\")==False",
+    "assert text_match_zero_one(\"dc\")==False",
+    "assert text_match_zero_one(\"abbbba\")==True",
+    "assert text_match_zero_one(\"dsabbbba\")==True",
+    "assert text_match_zero_one(\"asbbbba\")==False",
+    "assert text_match_zero_one(\"abaaa\")==True"
+  ],
+  "code_typescript": "function text_match_zero_one(text: string): boolean {\n    const pattern = /ab+?/;\n    if (pattern.test(text)) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 6,
+  "code_typescript_tests_failed": 0
+}

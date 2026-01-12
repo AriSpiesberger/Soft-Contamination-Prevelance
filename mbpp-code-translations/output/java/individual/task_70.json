@@ -1,0 +1,37 @@
+{
+  "task_id": 70,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "python_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1",
+  "test_list": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    \n    public static int find_equal_tuple(List<List<Integer>> Input) {\n        int k = (Input == null || Input.isEmpty()) ? 0 : Input.get(0).size();\n        int flag = 1;\n        \n        if (Input != null) {\n            for (List<Integer> tuple : Input) {\n                if (tuple == null || tuple.size() != k) {\n                    flag = 0;\n                    break;\n                }\n            }\n        }\n        return flag;\n    }\n    \n    public static boolean get_equal(List<List<Integer>> Input) {\n        return find_equal_tuple(Input) == 1;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 4,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> tuple1 = new ArrayList<>();\ntuple1.add(11);\ntuple1.add(22);\ntuple1.add(33);\nList<Integer> tuple2 = new ArrayList<>();\ntuple2.add(44);\ntuple2.add(55);\ntuple2.add(66);\ninput.add(tuple1);\ninput.add(tuple2);\n\nboolean result = get_equal(input);\nboolean expected = true;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> tuple1 = new ArrayList<>();\ntuple1.add(1);\ntuple1.add(2);\ntuple1.add(3);\nList<Integer> tuple2 = new ArrayList<>();\ntuple2.add(4);\ntuple2.add(5);\ntuple2.add(6);\ntuple2.add(7);\ninput.add(tuple1);\ninput.add(tuple2);\n\nboolean expected = false;\nboolean result = get_equal(input);\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2), (3, 4)]) == True",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> tuple1 = new ArrayList<>();\ntuple1.add(1);\ntuple1.add(2);\nList<Integer> tuple2 = new ArrayList<>();\ntuple2.add(3);\ntuple2.add(4);\ninput.add(tuple1);\ninput.add(tuple2);\n\nboolean result = get_equal(input);\nboolean expected = true;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

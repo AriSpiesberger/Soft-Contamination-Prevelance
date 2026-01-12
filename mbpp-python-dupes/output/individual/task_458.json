@@ -1,0 +1,27 @@
+{
+  "task_id": 458,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the area of a rectangle.",
+  "code_python": "def rectangle_area(l,b):\n  area=l*b\n  return area",
+  "test_list": [
+    "assert rectangle_area(10,20)==200",
+    "assert rectangle_area(10,5)==50",
+    "assert rectangle_area(4,2)==8"
+  ],
+  "python_1": "def rectangle_area(l,b):\n  # Use a lambda function to encapsulate the multiplication operation\n  calculate = lambda length, breadth: length * breadth\n  # Invoke the lambda with the provided dimensions and return result directly\n  return calculate(l, b)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def rectangle_area(l,b):\n  # Import the reduce function to perform cumulative operations\n  from functools import reduce\n  # Create a list containing the two dimensions to be multiplied\n  dimensions = [l, b]\n  # Use reduce to multiply all elements together, computing area as product\n  area = reduce(lambda x, y: x * y, dimensions)\n  # Return the computed rectangular area\n  return area",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def rectangle_area(l,b):\n  # Import operator module to access arithmetic functions as callable objects\n  import operator\n  # Use the mul function from operator module instead of the * operator directly\n  product_func = operator.mul\n  # Apply the multiplication function to both dimensions to compute area\n  result = product_func(l, b)\n  # Return the calculated rectangular area\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def rectangle_area(l,b):\n  # Use repeated addition to simulate multiplication without using * operator\n  # Initialize accumulator to zero as starting point for summation\n  total = 0\n  # Loop 'b' times to add 'l' to itself, effectively computing l * b\n  for _ in range(b):\n    # Each iteration adds one copy of the length to our running total\n    total += l\n  # Return the sum which equals the product of length and breadth\n  return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def rectangle_area(l,b):\n  # Use recursion to multiply: base case when multiplier reaches zero\n  def multiply_recursive(x, y):\n    # When y is zero, multiplication result is zero (base case)\n    if y == 0:\n      return 0\n    # Handle negative multiplier by converting to positive and negating result\n    if y < 0:\n      return -multiply_recursive(x, -y)\n    # Recursive case: add x to the result of multiplying x by (y-1)\n    return x + multiply_recursive(x, y - 1)\n  # Invoke the recursive multiplication helper with length and breadth\n  computed_area = multiply_recursive(l, b)\n  # Return the area computed through recursive addition\n  return computed_area",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

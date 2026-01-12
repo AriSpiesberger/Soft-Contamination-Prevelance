@@ -1,0 +1,37 @@
+{
+  "task_id": 808,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuples contain the k or not.",
+  "python_code": "def check_K(test_tup, K):\n  res = False\n  for ele in test_tup:\n    if ele == K:\n      res = True\n      break\n  return res ",
+  "test_list": [
+    "assert check_K((10, 4, 5, 6, 8), 6) == True",
+    "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+    "assert check_K((7, 8, 9, 44, 11, 12), 11) == True"
+  ],
+  "code_rust": "pub fn check_K(test_tup: &[i32], k: i32) -> bool {\n    for ele in test_tup {\n        if *ele == k {\n            return true;\n        }\n    }\n    false\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_K((10, 4, 5, 6, 8), 6) == True",
+      "generated_test": "let test_tup = [10, 4, 5, 6, 8];\nlet k = 6;\nlet result = check_K(&test_tup, k);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+      "generated_test": "let result = check_K(&[1, 2, 3, 4, 5, 6], 7);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_K((7, 8, 9, 44, 11, 12), 11) == True",
+      "generated_test": "let test_tup = [7, 8, 9, 44, 11, 12];\nlet k = 11;\nlet expected = true;\nlet result = check_K(&test_tup, k);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

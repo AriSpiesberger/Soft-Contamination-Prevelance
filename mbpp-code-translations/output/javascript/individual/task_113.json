@@ -1,0 +1,37 @@
+{
+  "task_id": 113,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string represents an integer or not.",
+  "python_code": "def check_integer(text):\n text = text.strip()\n if len(text) < 1:\n    return None\n else:\n     if all(text[i] in \"0123456789\" for i in range(len(text))):\n          return True\n     elif (text[0] in \"+-\") and \\\n         all(text[i] in \"0123456789\" for i in range(1,len(text))):\n         return True\n     else:\n        return False",
+  "test_list": [
+    "assert check_integer(\"python\")==False",
+    "assert check_integer(\"1\")==True",
+    "assert check_integer(\"12345\")==True"
+  ],
+  "code_javascript": "function check_integer(text) {\n  text = text.trim();\n  if (text.length < 1) {\n    return null;\n  } else {\n    const digits = \"0123456789\";\n    if ([...text].every(char => digits.includes(char))) {\n      return true;\n    } else if (\"+-\".includes(text[0]) && \n               [...text.slice(1)].every(char => digits.includes(char)) &&\n               text.length > 1) {\n      return true;\n    } else {\n      return false;\n    }\n  }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert check_integer(\"python\")==False",
+      "generated_test": "const result = check_integer(\"python\");\nconst expected = false;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"1\")==True",
+      "generated_test": "const result = check_integer(\"1\");\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"12345\")==True",
+      "generated_test": "const result = check_integer(\"12345\");\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

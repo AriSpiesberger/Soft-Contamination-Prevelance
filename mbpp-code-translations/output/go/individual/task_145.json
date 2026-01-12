@@ -1,0 +1,37 @@
+{
+  "task_id": 145,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum difference between any two elements in a given array.",
+  "python_code": "def max_Abs_Diff(arr): \n    n = len(arr)\n    minEle = arr[0] \n    maxEle = arr[0] \n    for i in range(1, n): \n        minEle = min(minEle,arr[i]) \n        maxEle = max(maxEle,arr[i]) \n    return (maxEle - minEle) ",
+  "test_list": [
+    "assert max_Abs_Diff((2,1,5,3)) == 4",
+    "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+    "assert max_Abs_Diff((3,2,1)) == 2"
+  ],
+  "code_go": "package main\n\nfunc max_Abs_Diff(arr []int) int {\n\tn := len(arr)\n\tminEle := arr[0]\n\tmaxEle := arr[0]\n\tfor i := 1; i < n; i++ {\n\t\tif arr[i] < minEle {\n\t\t\tminEle = arr[i]\n\t\t}\n\t\tif arr[i] > maxEle {\n\t\t\tmaxEle = arr[i]\n\t\t}\n\t}\n\treturn maxEle - minEle\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_Abs_Diff((2,1,5,3)) == 4",
+      "generated_test": "result := max_Abs_Diff([]int{2, 1, 5, 3})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+      "generated_test": "result := max_Abs_Diff([]int{9, 3, 2, 5, 1})\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Abs_Diff((3,2,1)) == 2",
+      "generated_test": "result := max_Abs_Diff([]int{3, 2, 1})\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

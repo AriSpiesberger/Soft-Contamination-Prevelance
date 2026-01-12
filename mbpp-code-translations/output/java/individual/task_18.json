@@ -1,0 +1,37 @@
+{
+  "task_id": 18,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove characters from the first string which are present in the second string.",
+  "python_code": "NO_OF_CHARS = 256\ndef str_to_list(string): \n\ttemp = [] \n\tfor x in string: \n\t\ttemp.append(x) \n\treturn temp \ndef lst_to_string(List): \n\treturn ''.join(List) \ndef get_char_count_array(string): \n\tcount = [0] * NO_OF_CHARS \n\tfor i in string: \n\t\tcount[ord(i)] += 1\n\treturn count \ndef remove_dirty_chars(string, second_string): \n\tcount = get_char_count_array(second_string) \n\tip_ind = 0\n\tres_ind = 0\n\ttemp = '' \n\tstr_list = str_to_list(string) \n\twhile ip_ind != len(str_list): \n\t\ttemp = str_list[ip_ind] \n\t\tif count[ord(temp)] == 0: \n\t\t\tstr_list[res_ind] = str_list[ip_ind] \n\t\t\tres_ind += 1\n\t\tip_ind+=1\n\treturn lst_to_string(str_list[0:res_ind]) ",
+  "test_list": [
+    "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+    "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+    "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    \n    private static final int NO_OF_CHARS = 256;\n    \n    public static List<Character> str_to_list(String string) {\n        List<Character> temp = new ArrayList<>();\n        for (int i = 0; i < string.length(); i++) {\n            temp.add(string.charAt(i));\n        }\n        return temp;\n    }\n    \n    public static String lst_to_string(List<Character> list) {\n        StringBuilder sb = new StringBuilder();\n        for (Character c : list) {\n            sb.append(c);\n        }\n        return sb.toString();\n    }\n    \n    public static int[] get_char_count_array(String string) {\n        int[] count = new int[NO_OF_CHARS];\n        for (int i = 0; i < string.length(); i++) {\n            int charValue = (int) string.charAt(i);\n            if (charValue < NO_OF_CHARS) {\n                count[charValue] += 1;\n            }\n        }\n        return count;\n    }\n    \n    public static String remove_dirty_chars(String string, String second_string) {\n        if (string == null || string.isEmpty()) {\n            return \"\";\n        }\n        if (second_string == null) {\n            return string;\n        }\n        \n        int[] count = get_char_count_array(second_string);\n        StringBuilder result = new StringBuilder();\n        \n        for (int i = 0; i < string.length(); i++) {\n            char c = string.charAt(i);\n            int charValue = (int) c;\n            if (charValue < NO_OF_CHARS && count[charValue] == 0) {\n                result.append(c);\n            } else if (charValue >= NO_OF_CHARS) {\n                result.append(c);\n            }\n        }\n        \n        return result.toString();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 3,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+      "generated_test": "String result = remove_dirty_chars(\"probasscurve\", \"pros\");\nString expected = \"bacuve\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+      "generated_test": "String result = remove_dirty_chars(\"digitalindia\", \"talent\");\nString expected = \"digiidi\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'",
+      "generated_test": "String result = remove_dirty_chars(\"exoticmiles\", \"toxic\");\nString expected = \"emles\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

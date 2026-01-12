@@ -1,0 +1,37 @@
+{
+  "task_id": 141,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of elements.",
+  "python_code": "def pancake_sort(nums):\n    arr_len = len(nums)\n    while arr_len > 1:\n        mi = nums.index(max(nums[0:arr_len]))\n        nums = nums[mi::-1] + nums[mi+1:len(nums)]\n        nums = nums[arr_len-1::-1] + nums[arr_len:len(nums)]\n        arr_len -= 1\n    return nums",
+  "test_list": [
+    "assert pancake_sort([15, 79, 25, 38, 69]) == [15, 25, 38, 69, 79]",
+    "assert pancake_sort([98, 12, 54, 36, 85]) == [12, 36, 54, 85, 98]",
+    "assert pancake_sort([41, 42, 32, 12, 23]) == [12, 23, 32, 41, 42]"
+  ],
+  "code_go": "package main\n\nfunc pancake_sort(nums []int) []int {\n\t// Make a copy to avoid modifying the original slice\n\tresult := make([]int, len(nums))\n\tcopy(result, nums)\n\t\n\tarr_len := len(result)\n\t\n\tfor arr_len > 1 {\n\t\t// Find index of max element in result[0:arr_len]\n\t\tmi := 0\n\t\tmaxVal := result[0]\n\t\tfor i := 1; i < arr_len; i++ {\n\t\t\tif result[i] > maxVal {\n\t\t\t\tmaxVal = result[i]\n\t\t\t\tmi = i\n\t\t\t}\n\t\t}\n\t\t\n\t\t// Flip from 0 to mi (inclusive): result[mi::-1] + result[mi+1:]\n\t\tresult = flip(result, mi, len(result))\n\t\t\n\t\t// Flip from 0 to arr_len-1 (inclusive): result[arr_len-1::-1] + result[arr_len:]\n\t\tresult = flip(result, arr_len-1, len(result))\n\t\t\n\t\tarr_len--\n\t}\n\t\n\treturn result\n}\n\n// flip reverses elements from index 0 to endIdx (inclusive) and appends the rest\nfunc flip(nums []int, endIdx int, totalLen int) []int {\n\tresult := make([]int, 0, totalLen)\n\t\n\t// Reverse from endIdx down to 0\n\tfor i := endIdx; i >= 0; i-- {\n\t\tresult = append(result, nums[i])\n\t}\n\t\n\t// Append the rest\n\tfor i := endIdx + 1; i < totalLen; i++ {\n\t\tresult = append(result, nums[i])\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert pancake_sort([15, 79, 25, 38, 69]) == [15, 25, 38, 69, 79]",
+      "generated_test": "input := []int{15, 79, 25, 38, 69}\nexpected := []int{15, 25, 38, 69, 79}\nresult := pancake_sort(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pancake_sort([98, 12, 54, 36, 85]) == [12, 36, 54, 85, 98]",
+      "generated_test": "input := []int{98, 12, 54, 36, 85}\nexpected := []int{12, 36, 54, 85, 98}\nresult := pancake_sort(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pancake_sort([41, 42, 32, 12, 23]) == [12, 23, 32, 41, 42]",
+      "generated_test": "input := []int{41, 42, 32, 12, 23}\nexpected := []int{12, 23, 32, 41, 42}\nresult := pancake_sort(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

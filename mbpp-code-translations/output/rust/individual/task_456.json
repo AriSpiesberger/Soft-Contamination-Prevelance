@@ -1,0 +1,37 @@
+{
+  "task_id": 456,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse each string in a given list of string values.",
+  "python_code": "def reverse_string_list(stringlist):\n    result = [x[::-1] for x in stringlist]\n    return result",
+  "test_list": [
+    "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+    "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+    "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']"
+  ],
+  "code_rust": "pub fn reverse_string_list(stringlist: Vec<String>) -> Vec<String> {\n    stringlist\n        .iter()\n        .map(|x| x.chars().rev().collect())\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+      "generated_test": "let input: Vec<String> = vec![\"Red\".to_string(), \"Green\".to_string(), \"Blue\".to_string(), \"White\".to_string(), \"Black\".to_string()];\nlet expected: Vec<String> = vec![\"deR\".to_string(), \"neerG\".to_string(), \"eulB\".to_string(), \"etihW\".to_string(), \"kcalB\".to_string()];\nlet result = reverse_string_list(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+      "generated_test": "let input: Vec<String> = vec![\"john\".to_string(), \"amal\".to_string(), \"joel\".to_string(), \"george\".to_string()];\nlet expected: Vec<String> = vec![\"nhoj\".to_string(), \"lama\".to_string(), \"leoj\".to_string(), \"egroeg\".to_string()];\nlet result = reverse_string_list(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']",
+      "generated_test": "let result = reverse_string_list(vec![\"jack\".to_string(), \"john\".to_string(), \"mary\".to_string()]);\nlet expected = vec![\"kcaj\".to_string(), \"nhoj\".to_string(), \"yram\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

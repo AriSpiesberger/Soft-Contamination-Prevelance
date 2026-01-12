@@ -1,0 +1,37 @@
+{
+  "task_id": 281,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check if the elements of a given list are unique or not.",
+  "python_code": "def all_unique(test_list):\n    if len(test_list) > len(set(test_list)):\n        return False\n    return True",
+  "test_list": [
+    "assert all_unique([1,2,3]) == True",
+    "assert all_unique([1,2,1,2]) == False",
+    "assert all_unique([1,2,3,4,5]) == True"
+  ],
+  "code_rust": "use std::collections::HashSet;\nuse std::hash::Hash;\n\npub fn all_unique<T: Eq + Hash>(test_list: &[T]) -> bool {\n    let set: HashSet<&T> = test_list.iter().collect();\n    test_list.len() <= set.len()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert all_unique([1,2,3]) == True",
+      "generated_test": "let result = all_unique(&[1, 2, 3]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert all_unique([1,2,1,2]) == False",
+      "generated_test": "let result = all_unique(&[1, 2, 1, 2]);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert all_unique([1,2,3,4,5]) == True",
+      "generated_test": "let result = all_unique(&[1, 2, 3, 4, 5]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

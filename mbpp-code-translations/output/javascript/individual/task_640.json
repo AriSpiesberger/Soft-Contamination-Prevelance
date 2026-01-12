@@ -1,0 +1,37 @@
+{
+  "task_id": 640,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove the parenthesis and what is inbetween them from a string.",
+  "python_code": "import re\ndef remove_parenthesis(items):\n for item in items:\n    return (re.sub(r\" ?\\([^)]+\\)\", \"\", item))",
+  "test_list": [
+    "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+    "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+    "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")"
+  ],
+  "code_javascript": "function remove_parenthesis(items) {\n  for (let item of items) {\n    return item.replace(/ ?\\([^)]+\\)/g, \"\");\n  }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+      "generated_test": "const result = remove_parenthesis([\"python (chrome)\"]);\nconst expected = \"python\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+      "generated_test": "const result = remove_parenthesis([\"string(.abc)\"]);\nconst expected = \"string\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")",
+      "generated_test": "const result = remove_parenthesis([\"alpha(num)\"]);\nconst expected = \"alpha\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

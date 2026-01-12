@@ -1,0 +1,37 @@
+{
+  "task_id": 143,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find number of lists present in the given tuple.",
+  "python_code": "def find_lists(Input): \n\tif isinstance(Input, list): \n\t\treturn 1\n\telse: \n\t\treturn len(Input) ",
+  "test_list": [
+    "assert find_lists(([1, 2, 3, 4], [5, 6, 7, 8])) == 2",
+    "assert find_lists(([1, 2], [3, 4], [5, 6]))  == 3",
+    "assert find_lists(([9, 8, 7, 6, 5, 4, 3, 2, 1])) == 1"
+  ],
+  "code_rust": "pub fn find_lists(input: &[Vec<i32>]) -> usize {\n    input.len()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_lists(([1, 2, 3, 4], [5, 6, 7, 8])) == 2",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1, 2, 3, 4], vec![5, 6, 7, 8]];\nlet result = find_lists(&input);\nlet expected: usize = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_lists(([1, 2], [3, 4], [5, 6]))  == 3",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1, 2], vec![3, 4], vec![5, 6]];\nlet result = find_lists(&input);\nlet expected: usize = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_lists(([9, 8, 7, 6, 5, 4, 3, 2, 1])) == 1",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![9, 8, 7, 6, 5, 4, 3, 2, 1]];\nlet result = find_lists(&input);\nlet expected: usize = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

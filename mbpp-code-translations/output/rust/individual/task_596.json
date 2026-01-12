@@ -1,0 +1,37 @@
+{
+  "task_id": 596,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the size in bytes of the given tuple.",
+  "python_code": "import sys \ndef tuple_size(tuple_list):\n  return (sys.getsizeof(tuple_list)) ",
+  "test_list": [
+    "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+    "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+    "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))"
+  ],
+  "code_rust": "use std::mem;\n\npub fn tuple_size<T>(tuple_list: &T) -> usize {\n    mem::size_of_val(tuple_list)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+      "generated_test": "let test_tuple = (\"A\", 1, \"B\", 2, \"C\", 3);\nlet result = tuple_size(&test_tuple);\nlet expected = std::mem::size_of_val(&test_tuple);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+      "generated_test": "let test_tuple = (1i32, \"Raju\", 2i32, \"Nikhil\", 3i32, \"Deepanshu\");\nlet result = tuple_size(&test_tuple);\nlet expected = std::mem::size_of_val(&test_tuple);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))",
+      "generated_test": "let test_tuple = ((1, \"Lion\"), (2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"));\nlet result = tuple_size(&test_tuple);\nlet expected = std::mem::size_of_val(&test_tuple);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

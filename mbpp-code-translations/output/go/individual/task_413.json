@@ -1,0 +1,37 @@
+{
+  "task_id": 413,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the nth element from a given list of tuples.",
+  "python_code": "def extract_nth_element(list1, n):\n    result = [x[n] for x in list1]\n    return result",
+  "test_list": [
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]"
+  ],
+  "code_go": "package main\n\nfunc extract_nth_element(list1 [][]interface{}, n int) []interface{} {\n\tresult := make([]interface{}, len(list1))\n\tfor i, x := range list1 {\n\t\tresult[i] = x[n]\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+      "generated_test": "input := [][]interface{}{\n\t{\"Greyson Fulton\", 98, 99},\n\t{\"Brady Kent\", 97, 96},\n\t{\"Wyatt Knott\", 91, 94},\n\t{\"Beau Turnbull\", 94, 98},\n}\nexpected := []interface{}{\"Greyson Fulton\", \"Brady Kent\", \"Wyatt Knott\", \"Beau Turnbull\"}\nresult := extract_nth_element(input, 0)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+      "generated_test": "input := [][]interface{}{\n\t{\"Greyson Fulton\", 98, 99},\n\t{\"Brady Kent\", 97, 96},\n\t{\"Wyatt Knott\", 91, 94},\n\t{\"Beau Turnbull\", 94, 98},\n}\nexpected := []interface{}{99, 96, 94, 98}\nresult := extract_nth_element(input, 2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]",
+      "generated_test": "input := [][]interface{}{\n\t{\"Greyson Fulton\", 98, 99},\n\t{\"Brady Kent\", 97, 96},\n\t{\"Wyatt Knott\", 91, 94},\n\t{\"Beau Turnbull\", 94, 98},\n}\nexpected := []interface{}{98, 97, 91, 94}\nresult := extract_nth_element(input, 1)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

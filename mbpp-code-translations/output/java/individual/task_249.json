@@ -1,0 +1,37 @@
+{
+  "task_id": 249,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the intersection of two arrays.",
+  "python_code": "def intersection_array(array_nums1,array_nums2):\n result = list(filter(lambda x: x in array_nums1, array_nums2)) \n return result",
+  "test_list": [
+    "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[1, 2, 4, 8, 9])==[1, 2, 8, 9]",
+    "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[3,5,7,9])==[3,5,7,9]",
+    "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[10,20,30,40])==[10]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Integer> intersection_array(int[] array_nums1, int[] array_nums2) {\n        List<Integer> result = new ArrayList<>();\n        \n        for (int num : array_nums2) {\n            for (int n : array_nums1) {\n                if (num == n) {\n                    result.add(num);\n                    break;\n                }\n            }\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[1, 2, 4, 8, 9])==[1, 2, 8, 9]",
+      "generated_test": "int[] arr1 = new int[]{1, 2, 3, 5, 7, 8, 9, 10};\nint[] arr2 = new int[]{1, 2, 4, 8, 9};\nList<Integer> result = intersection_array(arr1, arr2);\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(2);\nexpected.add(8);\nexpected.add(9);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[3,5,7,9])==[3,5,7,9]",
+      "generated_test": "int[] arr1 = new int[]{1, 2, 3, 5, 7, 8, 9, 10};\nint[] arr2 = new int[]{3, 5, 7, 9};\nList<Integer> expected = new ArrayList<>();\nexpected.add(3);\nexpected.add(5);\nexpected.add(7);\nexpected.add(9);\nList<Integer> result = intersection_array(arr1, arr2);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[10,20,30,40])==[10]",
+      "generated_test": "int[] arr1 = new int[]{1, 2, 3, 5, 7, 8, 9, 10};\nint[] arr2 = new int[]{10, 20, 30, 40};\nList<Integer> result = intersection_array(arr1, arr2);\nList<Integer> expected = new ArrayList<>();\nexpected.add(10);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

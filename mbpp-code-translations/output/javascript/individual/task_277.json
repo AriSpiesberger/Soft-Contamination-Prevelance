@@ -1,0 +1,37 @@
+{
+  "task_id": 277,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a dictionary and integer n and filters the dictionary to only include entries with values greater than or equal to n.",
+  "python_code": "def dict_filter(dict,n):\n result = {key:value for (key, value) in dict.items() if value >=n}\n return result",
+  "test_list": [
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}"
+  ],
+  "code_javascript": "function dict_filter(dict, n) {\n    const result = {};\n    for (const [key, value] of Object.entries(dict)) {\n        if (value >= n) {\n            result[key] = value;\n        }\n    }\n    return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+      "generated_test": "const result = dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190}, 170);\nconst expected = {'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190};\n\nconst resultStr = JSON.stringify(Object.keys(result).sort().reduce((obj, key) => { obj[key] = result[key]; return obj; }, {}));\nconst expectedStr = JSON.stringify(Object.keys(expected).sort().reduce((obj, key) => { obj[key] = expected[key]; return obj; }, {}));\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+      "generated_test": "const result = dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190}, 180);\nconst expected = {'Alden Cantrell': 180, 'Pierre Cox': 190};\n\nconst resultStr = JSON.stringify(Object.keys(result).sort().reduce((obj, key) => { obj[key] = result[key]; return obj; }, {}));\nconst expectedStr = JSON.stringify(Object.keys(expected).sort().reduce((obj, key) => { obj[key] = expected[key]; return obj; }, {}));\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}",
+      "generated_test": "const result = dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190}, 190);\nconst expected = {'Pierre Cox': 190};\n\nconst resultKeys = Object.keys(result).sort();\nconst expectedKeys = Object.keys(expected).sort();\n\nlet pass = resultKeys.length === expectedKeys.length;\nif (pass) {\n    for (const key of expectedKeys) {\n        if (result[key] !== expected[key]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

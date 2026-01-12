@@ -1,0 +1,37 @@
+{
+  "task_id": 305,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return two words from a list of words starting with letter 'p'.",
+  "python_code": "import re\ndef start_withp(words):\n for w in words:\n        m = re.match(\"(P\\w+)\\W(P\\w+)\", w)\n        if m:\n            return m.groups()",
+  "test_list": [
+    "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+    "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+    "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')"
+  ],
+  "code_ruby": "def start_withp(words)\n  words.each do |w|\n    m = w.match(/(P\\w+)\\W(P\\w+)/)\n    if m\n      return [m[1], m[2]]\n    end\n  end\n  nil\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+      "generated_test": "result = start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])\nexpected = [\"Python\", \"PHP\"]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+      "generated_test": "result = start_withp([\"Python Programming\",\"Java Programming\"])\nexpected = [\"Python\", \"Programming\"]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')",
+      "generated_test": "result = start_withp([\"Pqrst Pqr\", \"qrstuv\"])\nexpected = [\"Pqrst\", \"Pqr\"]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

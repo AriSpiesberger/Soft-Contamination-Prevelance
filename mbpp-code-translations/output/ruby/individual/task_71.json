@@ -1,0 +1,37 @@
+{
+  "task_id": 71,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of elements.",
+  "python_code": "def comb_sort(nums):\n    shrink_fact = 1.3\n    gaps = len(nums)\n    swapped = True\n    i = 0\n    while gaps > 1 or swapped:\n        gaps = int(float(gaps) / shrink_fact)\n        swapped = False\n        i = 0\n        while gaps + i < len(nums):\n            if nums[i] > nums[i+gaps]:\n                nums[i], nums[i+gaps] = nums[i+gaps], nums[i]\n                swapped = True\n            i += 1\n    return nums",
+  "test_list": [
+    "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+    "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+    "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]"
+  ],
+  "code_ruby": "def comb_sort(nums)\n  shrink_fact = 1.3\n  gaps = nums.length\n  swapped = true\n  \n  while gaps > 1 || swapped\n    gaps = (gaps / shrink_fact).to_i\n    swapped = false\n    i = 0\n    while gaps + i < nums.length\n      if nums[i] > nums[i + gaps]\n        nums[i], nums[i + gaps] = nums[i + gaps], nums[i]\n        swapped = true\n      end\n      i += 1\n    end\n  end\n  \n  nums\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+      "generated_test": "result = comb_sort([5, 15, 37, 25, 79])\nexpected = [5, 15, 25, 37, 79]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+      "generated_test": "result = comb_sort([41, 32, 15, 19, 22])\nexpected = [15, 19, 22, 32, 41]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]",
+      "generated_test": "result = comb_sort([99, 15, 13, 47])\nexpected = [13, 15, 47, 99]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

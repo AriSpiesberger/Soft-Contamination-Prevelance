@@ -1,0 +1,17 @@
+{
+  "task_id": 590,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert polar coordinates to rectangular coordinates.",
+  "python_code": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)",
+  "test_list": [
+    "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))"
+  ],
+  "code_typescript": "function polar_rect(x: number, y: number): [[number, number], [number, number]] {\n    // Convert complex number to polar coordinates\n    const real = x;\n    const imag = y;\n    const r = Math.sqrt(real * real + imag * imag);\n    const theta = Math.atan2(imag, real);\n    \n    // Convert polar to rectangular (r=2, theta=pi)\n    const r2 = 2;\n    const theta2 = Math.PI;\n    const rectReal = r2 * Math.cos(theta2);\n    const rectImag = r2 * Math.sin(theta2);\n    \n    return [[r, theta], [rectReal, rectImag]];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

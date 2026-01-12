@@ -1,0 +1,37 @@
+{
+  "task_id": 732,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all occurrences of spaces, commas, or dots with a colon.",
+  "python_code": "import re\ndef replace_specialchar(text):\n return (re.sub(\"[ ,.]\", \":\", text))\n",
+  "test_list": [
+    "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+    "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+    "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')"
+  ],
+  "code_javascript": "function replace_specialchar(text) {\n  return text.replace(/[ ,.]/g, \":\");\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+      "generated_test": "const result = replace_specialchar('Python language, Programming language.');\nconst expected = 'Python:language::Programming:language:';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+      "generated_test": "const result = replace_specialchar('a b c,d e f');\nconst expected = 'a:b:c:d:e:f';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')",
+      "generated_test": "const result = replace_specialchar('ram reshma,ram rahim');\nconst expected = 'ram:reshma:ram:rahim';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

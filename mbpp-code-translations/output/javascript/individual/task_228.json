@@ -1,0 +1,37 @@
+{
+  "task_id": 228,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether all the bits are unset in the given range or not.",
+  "python_code": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    num = (((1 << r) - 1) ^ ((1 << (l - 1)) - 1)) \n    new_num = n & num\n    if (new_num == 0): \n        return True\n    return False",
+  "test_list": [
+    "assert all_Bits_Set_In_The_Given_Range(4,1,2) == True",
+    "assert all_Bits_Set_In_The_Given_Range(17,2,4) == True",
+    "assert all_Bits_Set_In_The_Given_Range(39,4,6) == False"
+  ],
+  "code_javascript": "function all_Bits_Set_In_The_Given_Range(n, l, r) {\n    const num = ((1 << r) - 1) ^ ((1 << (l - 1)) - 1);\n    const new_num = n & num;\n    if (new_num === 0) {\n        return true;\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert all_Bits_Set_In_The_Given_Range(4,1,2) == True",
+      "generated_test": "const result = all_Bits_Set_In_The_Given_Range(4, 1, 2);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert all_Bits_Set_In_The_Given_Range(17,2,4) == True",
+      "generated_test": "const result = all_Bits_Set_In_The_Given_Range(17, 2, 4);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert all_Bits_Set_In_The_Given_Range(39,4,6) == False",
+      "generated_test": "const result = all_Bits_Set_In_The_Given_Range(39, 4, 6);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 468,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum product formed by multiplying numbers of an increasing subsequence of that array.",
+  "python_code": "def max_product(arr):   \n  n = len(arr)\n  mpis = arr[:]\n  for i in range(n): \n    current_prod = arr[i]\n    j = i + 1\n    while j < n:\n      if arr[j-1] > arr[j]: \n        break\n      current_prod *= arr[j]\n      if current_prod > mpis[j]:\n        mpis[j] = current_prod \n      j = j + 1\n  return max(mpis)",
+  "test_list": [
+    "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+    "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+    "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460"
+  ],
+  "code_ruby": "def max_product(arr)\n  n = arr.length\n  mpis = arr.dup\n  \n  (0...n).each do |i|\n    current_prod = arr[i]\n    j = i + 1\n    while j < n\n      break if arr[j-1] > arr[j]\n      current_prod *= arr[j]\n      if current_prod > mpis[j]\n        mpis[j] = current_prod\n      end\n      j += 1\n    end\n  end\n  \n  mpis.max\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+      "generated_test": "result = max_product([3, 100, 4, 5, 150, 6])\nexpected = 3000\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+      "generated_test": "result = max_product([4, 42, 55, 68, 80])\nexpected = 50265600\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460",
+      "generated_test": "result = max_product([10, 22, 9, 33, 21, 50, 41, 60])\nexpected = 2460\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

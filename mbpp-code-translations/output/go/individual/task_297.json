@@ -1,0 +1,37 @@
+{
+  "task_id": 297,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a given nested list structure.",
+  "python_code": "def flatten_list(list1):\n    result_list = []\n    if not list1: return result_list\n    stack = [list(list1)]\n    while stack:\n        c_num = stack.pop()\n        next = c_num.pop()\n        if c_num: stack.append(c_num)\n        if isinstance(next, list):\n            if next: stack.append(list(next))\n        else: result_list.append(next)\n    result_list.reverse()\n    return result_list ",
+  "test_list": [
+    "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+    "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+    "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]"
+  ],
+  "code_go": "package main\n\nfunc flatten_list(list1 []interface{}) []int {\n\tresult_list := []int{}\n\tif len(list1) == 0 {\n\t\treturn result_list\n\t}\n\t\n\t// Create a copy of list1\n\tinitialCopy := make([]interface{}, len(list1))\n\tcopy(initialCopy, list1)\n\t\n\tstack := [][]interface{}{initialCopy}\n\t\n\tfor len(stack) > 0 {\n\t\t// Pop from stack\n\t\tc_num := stack[len(stack)-1]\n\t\tstack = stack[:len(stack)-1]\n\t\t\n\t\t// Pop last element from c_num\n\t\tnext := c_num[len(c_num)-1]\n\t\tc_num = c_num[:len(c_num)-1]\n\t\t\n\t\t// If c_num still has elements, push it back\n\t\tif len(c_num) > 0 {\n\t\t\tstack = append(stack, c_num)\n\t\t}\n\t\t\n\t\t// Check if next is a list ([]interface{}) or an int\n\t\tswitch v := next.(type) {\n\t\tcase []interface{}:\n\t\t\tif len(v) > 0 {\n\t\t\t\t// Create a copy\n\t\t\t\tnextCopy := make([]interface{}, len(v))\n\t\t\t\tcopy(nextCopy, v)\n\t\t\t\tstack = append(stack, nextCopy)\n\t\t\t}\n\t\tcase int:\n\t\t\tresult_list = append(result_list, v)\n\t\t}\n\t}\n\t\n\t// Reverse the result\n\tfor i, j := 0, len(result_list)-1; i < j; i, j = i+1, j-1 {\n\t\tresult_list[i], result_list[j] = result_list[j], result_list[i]\n\t}\n\t\n\treturn result_list\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+      "generated_test": "input := []interface{}{0, 10, []interface{}{20, 30}, 40, 50, []interface{}{60, 70, 80}, []interface{}{90, 100, 110, 120}}\nexpected := []int{0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}\nresult := flatten_list(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+      "generated_test": "input := []interface{}{\n\t[]interface{}{10, 20},\n\t[]interface{}{40},\n\t[]interface{}{30, 56, 25},\n\t[]interface{}{10, 20},\n\t[]interface{}{33},\n\t[]interface{}{40},\n}\nexpected := []int{10, 20, 40, 30, 56, 25, 10, 20, 33, 40}\nresult := flatten_list(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]",
+      "generated_test": "input := []interface{}{\n\t[]interface{}{1, 2, 3},\n\t[]interface{}{4, 5, 6},\n\t[]interface{}{10, 11, 12},\n\t[]interface{}{7, 8, 9},\n}\nexpected := []int{1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9}\nresult := flatten_list(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

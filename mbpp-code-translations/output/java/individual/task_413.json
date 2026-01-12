@@ -1,0 +1,37 @@
+{
+  "task_id": 413,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the nth element from a given list of tuples.",
+  "python_code": "def extract_nth_element(list1, n):\n    result = [x[n] for x in list1]\n    return result",
+  "test_list": [
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Object> extract_nth_element(List<Object[]> list1, int n) {\n        ArrayList<Object> result = new ArrayList<>();\n        for (Object[] x : list1) {\n            result.add(x[n]);\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{\"Greyson Fulton\", 98, 99});\ninput.add(new Object[]{\"Brady Kent\", 97, 96});\ninput.add(new Object[]{\"Wyatt Knott\", 91, 94});\ninput.add(new Object[]{\"Beau Turnbull\", 94, 98});\n\nList<Object> result = extract_nth_element(input, 0);\n\nList<Object> expected = new ArrayList<>();\nexpected.add(\"Greyson Fulton\");\nexpected.add(\"Brady Kent\");\nexpected.add(\"Wyatt Knott\");\nexpected.add(\"Beau Turnbull\");\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{\"Greyson Fulton\", 98, 99});\ninput.add(new Object[]{\"Brady Kent\", 97, 96});\ninput.add(new Object[]{\"Wyatt Knott\", 91, 94});\ninput.add(new Object[]{\"Beau Turnbull\", 94, 98});\n\nList<Object> result = extract_nth_element(input, 2);\nList<Object> expected = new ArrayList<>();\nexpected.add(99);\nexpected.add(96);\nexpected.add(94);\nexpected.add(98);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{\"Greyson Fulton\", 98, 99});\ninput.add(new Object[]{\"Brady Kent\", 97, 96});\ninput.add(new Object[]{\"Wyatt Knott\", 91, 94});\ninput.add(new Object[]{\"Beau Turnbull\", 94, 98});\n\nList<Object> result = extract_nth_element(input, 1);\nList<Object> expected = new ArrayList<>();\nexpected.add(98);\nexpected.add(97);\nexpected.add(91);\nexpected.add(94);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        if (!result.get(i).equals(expected.get(i))) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

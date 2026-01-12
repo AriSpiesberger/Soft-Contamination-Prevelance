@@ -1,0 +1,37 @@
+{
+  "task_id": 589,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find perfect squares between two given numbers.",
+  "python_code": "def perfect_squares(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists",
+  "test_list": [
+    "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+    "assert perfect_squares(50,100)==[64, 81, 100]",
+    "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static ArrayList<Integer> perfect_squares(int a, int b) {\n        ArrayList<Integer> lists = new ArrayList<>();\n        for (int i = a; i <= b; i++) {\n            int j = 1;\n            while (j * j <= i) {\n                if (j * j == i) {\n                    lists.add(i);\n                }\n                j = j + 1;\n            }\n        }\n        return lists;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+      "generated_test": "ArrayList<Integer> result = perfect_squares(1, 30);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(4);\nexpected.add(9);\nexpected.add(16);\nexpected.add(25);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(50,100)==[64, 81, 100]",
+      "generated_test": "ArrayList<Integer> result = perfect_squares(50, 100);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(64);\nexpected.add(81);\nexpected.add(100);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]",
+      "generated_test": "ArrayList<Integer> result = perfect_squares(100, 200);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(100);\nexpected.add(121);\nexpected.add(144);\nexpected.add(169);\nexpected.add(196);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

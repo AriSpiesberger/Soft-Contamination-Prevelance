@@ -1,0 +1,27 @@
+{
+  "task_id": 413,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the nth element from a given list of tuples.",
+  "code_python": "def extract_nth_element(list1, n):\n    result = [x[n] for x in list1]\n    return result",
+  "test_list": [
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]"
+  ],
+  "python_1": "def extract_nth_element(list1, n):\n    # Initialize an empty list to accumulate extracted elements\n    result = []\n    # Use a traditional for loop to iterate through each tuple\n    for tup in list1:\n        # Access the nth index of current tuple and append to result\n        result.append(tup[n])\n    # Return the collected nth elements from all tuples\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "from operator import itemgetter\n\ndef extract_nth_element(list1, n):\n    # Create an itemgetter callable that extracts element at index n\n    getter = itemgetter(n)\n    # Apply the getter function to each tuple using map, converting result to list\n    result = list(map(getter, list1))\n    # Return the list of extracted nth elements\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def extract_nth_element(list1, n):\n    # Use zip to transpose the list of tuples, unpacking each tuple as separate arguments\n    transposed = zip(*list1)\n    # Convert the zip iterator to a list of tuples where each tuple contains all values at same index\n    all_columns = list(transposed)\n    # Select the nth column which contains all nth elements from original tuples\n    nth_column = all_columns[n]\n    # Convert the tuple to a list to match expected return type\n    result = list(nth_column)\n    # Return the extracted nth elements as a list\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def extract_nth_element(list1, n):\n    # Use reduce pattern to build result list by processing tuples one at a time\n    from functools import reduce\n    # Define accumulator function that extracts nth element and appends to growing list\n    def accumulate(acc, tup):\n        # Concatenate current accumulator with single-element list containing nth item\n        return acc + [tup[n]]\n    # Apply reduce with empty list as initial value, building result incrementally\n    result = reduce(accumulate, list1, [])\n    # Return the fully constructed list of nth elements\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def extract_nth_element(list1, n):\n    # Use a generator expression inside list() for lazy evaluation approach\n    def get_element(tup):\n        # Extract and return the element at position n from the tuple\n        return tup[n]\n    # Apply the extraction function via map and materialize as list\n    result = list(map(get_element, list1))\n    # Return the collected nth elements\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

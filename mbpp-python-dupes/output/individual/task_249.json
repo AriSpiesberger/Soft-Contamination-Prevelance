@@ -1,0 +1,27 @@
+{
+  "task_id": 249,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the intersection of two arrays.",
+  "code_python": "def intersection_array(array_nums1,array_nums2):\n result = list(filter(lambda x: x in array_nums1, array_nums2)) \n return result",
+  "test_list": [
+    "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[1, 2, 4, 8, 9])==[1, 2, 8, 9]",
+    "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[3,5,7,9])==[3,5,7,9]",
+    "assert intersection_array([1, 2, 3, 5, 7, 8, 9, 10],[10,20,30,40])==[10]"
+  ],
+  "python_1": "def intersection_array(array_nums1,array_nums2):\n    # Initialize empty list to collect common elements\n    result = []\n    # Convert first array to set for O(1) membership testing\n    set_nums1 = set(array_nums1)\n    # Iterate through each element in the second array\n    for num in array_nums2:\n        # Check if current element exists in the first array's set\n        if num in set_nums1:\n            # Append matching element to result list\n            result.append(num)\n    # Return list containing all elements present in both arrays\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def intersection_array(array_nums1,array_nums2):\n    # Use list comprehension to filter elements from array_nums2 that exist in array_nums1\n    result = [x for x in array_nums2 if x in array_nums1]\n    # Return the intersection maintaining order from the second array\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def intersection_array(array_nums1,array_nums2):\n    # Convert first array to a set for efficient intersection operation\n    set1 = set(array_nums1)\n    # Convert second array to a set to find common elements\n    set2 = set(array_nums2)\n    # Compute set intersection to get elements present in both arrays\n    common_elements = set1 & set2\n    # Build result by preserving order from array_nums2 using membership check against intersection set\n    result = [elem for elem in array_nums2 if elem in common_elements]\n    # Return filtered list maintaining original sequence from second array\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def intersection_array(array_nums1,array_nums2):\n    # Create a dictionary to mark presence of elements from first array\n    presence_map = {}\n    # Populate the dictionary with elements from array_nums1 as keys\n    for num in array_nums1:\n        # Set value to True to indicate element exists in first array\n        presence_map[num] = True\n    # Use Python's built-in map function with a custom lookup function\n    def check_presence(x):\n        # Return the element itself if found in map, otherwise None\n        return x if presence_map.get(x, False) else None\n    # Apply the lookup function across all elements of second array\n    mapped_result = map(check_presence, array_nums2)\n    # Filter out None values to keep only elements that were found\n    result = [x for x in mapped_result if x is not None]\n    # Return the final intersection preserving order from second array\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def intersection_array(array_nums1,array_nums2):\n    # Use collections.Counter to count occurrences in first array (supports duplicates properly)\n    from collections import Counter\n    # Build frequency counter for the first array's elements\n    counter1 = Counter(array_nums1)\n    # Initialize accumulator list using reduce pattern with a helper function\n    from functools import reduce\n    # Define reducer function that appends element if it exists in counter\n    def accumulate_matches(acc, elem):\n        # Check if element has positive count in the first array's counter\n        if counter1.get(elem, 0) > 0:\n            # Extend accumulator with current element wrapped in list\n            return acc + [elem]\n        # Return accumulator unchanged when element not found\n        return acc\n    # Apply reduce to fold over array_nums2, starting with empty list\n    result = reduce(accumulate_matches, array_nums2, [])\n    # Return accumulated list of matching elements\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

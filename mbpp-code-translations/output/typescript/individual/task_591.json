@@ -1,0 +1,17 @@
+{
+  "task_id": 591,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to interchange the first and last elements in a list.",
+  "python_code": "def swap_List(newList): \n    size = len(newList) \n    temp = newList[0] \n    newList[0] = newList[size - 1] \n    newList[size - 1] = temp  \n    return newList ",
+  "test_list": [
+    "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+    "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+    "assert swap_List([4, 5, 6]) == [6, 5, 4]"
+  ],
+  "code_typescript": "function swap_List<T>(newList: T[]): T[] {\n    const size = newList.length;\n    const temp = newList[0];\n    newList[0] = newList[size - 1];\n    newList[size - 1] = temp;\n    return newList;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

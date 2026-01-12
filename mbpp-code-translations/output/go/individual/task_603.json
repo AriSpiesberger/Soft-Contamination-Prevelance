@@ -1,0 +1,37 @@
+{
+  "task_id": 603,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get all lucid numbers smaller than or equal to a given integer.",
+  "python_code": "def get_ludic(n):\n\tludics = []\n\tfor i in range(1, n + 1):\n\t\tludics.append(i)\n\tindex = 1\n\twhile(index != len(ludics)):\n\t\tfirst_ludic = ludics[index]\n\t\tremove_index = index + first_ludic\n\t\twhile(remove_index < len(ludics)):\n\t\t\tludics.remove(ludics[remove_index])\n\t\t\tremove_index = remove_index + first_ludic - 1\n\t\tindex += 1\n\treturn ludics",
+  "test_list": [
+    "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+    "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+    "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]"
+  ],
+  "code_go": "package main\n\nfunc get_ludic(n int) []int {\n\tludics := []int{}\n\tfor i := 1; i <= n; i++ {\n\t\tludics = append(ludics, i)\n\t}\n\tindex := 1\n\tfor index != len(ludics) {\n\t\tfirst_ludic := ludics[index]\n\t\tremove_index := index + first_ludic\n\t\tfor remove_index < len(ludics) {\n\t\t\tludics = append(ludics[:remove_index], ludics[remove_index+1:]...)\n\t\t\tremove_index = remove_index + first_ludic - 1\n\t\t}\n\t\tindex++\n\t}\n\treturn ludics\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+      "generated_test": "expected := []int{1, 2, 3, 5, 7}\ngot := get_ludic(10)\n\npass := len(expected) == len(got)\nif pass {\n\tfor i := range expected {\n\t\tif expected[i] != got[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+      "generated_test": "expected := []int{1, 2, 3, 5, 7, 11, 13, 17, 23, 25}\ngot := get_ludic(25)\n\npass := len(got) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif got[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]",
+      "generated_test": "expected := []int{1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43}\ngot := get_ludic(45)\n\npass := len(got) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif got[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

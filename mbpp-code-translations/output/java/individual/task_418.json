@@ -1,0 +1,37 @@
+{
+  "task_id": 418,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the element of a list having maximum length.",
+  "python_code": "def Find_Max(lst): \n    maxList = max((x) for x in lst) \n    return maxList",
+  "test_list": [
+    "assert Find_Max([['A'],['A','B'],['A','B','C']]) == ['A','B','C']",
+    "assert Find_Max([[1],[1,2],[1,2,3]]) == [1,2,3]",
+    "assert Find_Max([[1,1],[1,2,3],[1,5,6,1]]) == [1,5,6,1]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<?> Find_Max(List<? extends List<?>> lst) {\n        List<?> maxList = null;\n        int maxLength = -1;\n        \n        for (List<?> x : lst) {\n            if (x.size() > maxLength) {\n                maxLength = x.size();\n                maxList = x;\n            }\n        }\n        \n        return maxList;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert Find_Max([['A'],['A','B'],['A','B','C']]) == ['A','B','C']",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\nList<String> list1 = new ArrayList<>();\nlist1.add(\"A\");\nList<String> list2 = new ArrayList<>();\nlist2.add(\"A\");\nlist2.add(\"B\");\nList<String> list3 = new ArrayList<>();\nlist3.add(\"A\");\nlist3.add(\"B\");\nlist3.add(\"C\");\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"A\");\nexpected.add(\"B\");\nexpected.add(\"C\");\n\nList<?> result = Find_Max(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Max([[1],[1,2],[1,2,3]]) == [1,2,3]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(1);\nlist2.add(2);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(1);\nlist3.add(2);\nlist3.add(3);\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\n\nList<?> result = Find_Max(input);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(2);\nexpected.add(3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Max([[1,1],[1,2,3],[1,5,6,1]]) == [1,5,6,1]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(1);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(1);\nlist2.add(2);\nlist2.add(3);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(1);\nlist3.add(5);\nlist3.add(6);\nlist3.add(1);\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(5);\nexpected.add(6);\nexpected.add(1);\n\nList<?> result = Find_Max(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

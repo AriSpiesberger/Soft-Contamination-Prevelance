@@ -1,0 +1,17 @@
+{
+  "task_id": 404,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum of two numbers.",
+  "python_code": "def minimum(a,b):   \n    if a <= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert minimum(1,2) == 1",
+    "assert minimum(-5,-4) == -5",
+    "assert minimum(0,0) == 0"
+  ],
+  "code_typescript": "function minimum(a: number, b: number): number {\n    if (a <= b) {\n        return a;\n    } else {\n        return b;\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

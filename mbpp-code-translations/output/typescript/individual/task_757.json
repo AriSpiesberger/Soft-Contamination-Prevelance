@@ -1,0 +1,17 @@
+{
+  "task_id": 757,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the pairs of reverse strings in the given string list. https://www.geeksforgeeks.org/python-program-to-count-the-pairs-of-reverse-strings/",
+  "python_code": "def count_reverse_pairs(test_list):\n  res = sum([1 for idx in range(0, len(test_list)) for idxn in range(idx, len( \n\ttest_list)) if test_list[idxn] == str(''.join(list(reversed(test_list[idx]))))]) \n  return res",
+  "test_list": [
+    "assert count_reverse_pairs([\"julia\", \"best\", \"tseb\", \"for\", \"ailuj\"])== 2",
+    "assert count_reverse_pairs([\"geeks\", \"best\", \"for\", \"skeeg\"]) == 1",
+    "assert count_reverse_pairs([\"makes\", \"best\", \"sekam\", \"for\", \"rof\"]) == 2"
+  ],
+  "code_typescript": "function count_reverse_pairs(test_list: string[]): number {\n  let res = 0;\n  for (let idx = 0; idx < test_list.length; idx++) {\n    for (let idxn = idx; idxn < test_list.length; idxn++) {\n      const reversed = test_list[idx].split('').reverse().join('');\n      if (test_list[idxn] === reversed) {\n        res += 1;\n      }\n    }\n  }\n  return res;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

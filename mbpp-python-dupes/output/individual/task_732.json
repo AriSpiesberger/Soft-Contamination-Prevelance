@@ -1,0 +1,27 @@
+{
+  "task_id": 732,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all occurrences of spaces, commas, or dots with a colon.",
+  "code_python": "import re\ndef replace_specialchar(text):\n return (re.sub(\"[ ,.]\", \":\", text))\n",
+  "test_list": [
+    "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+    "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+    "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')"
+  ],
+  "python_1": "def replace_specialchar(text):\n    # Define the set of characters that need to be replaced with colons\n    chars_to_replace = {' ', ',', '.'}\n    # Initialize an empty list to build the result efficiently\n    result = []\n    # Process each character in the input text one at a time\n    for char in text:\n        # Check if current character is one of the special characters\n        if char in chars_to_replace:\n            # Append colon as replacement for special character\n            result.append(':')\n        else:\n            # Keep the original character unchanged\n            result.append(char)\n    # Join all characters in the list into a single string and return\n    return ''.join(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def replace_specialchar(text):\n    # Start with the original text and apply sequential replacements\n    result = text\n    # Replace all space characters with colons first\n    result = result.replace(' ', ':')\n    # Replace all comma characters with colons second\n    result = result.replace(',', ':')\n    # Replace all dot characters with colons third\n    result = result.replace('.', ':')\n    # Return the fully transformed string\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def replace_specialchar(text):\n    # Use str.translate with a translation table for efficient character mapping\n    # Create a translation dictionary mapping each special character's ordinal to colon\n    translation_table = str.maketrans({' ': ':', ',': ':', '.': ':'})\n    # Apply the translation table to transform all specified characters at once\n    return text.translate(translation_table)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def replace_specialchar(text):\n    # Use a list comprehension with ternary operator for concise one-liner transformation\n    # Each character is conditionally replaced based on membership in target set\n    return ''.join([':' if c in ' ,.' else c for c in text])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def replace_specialchar(text):\n    # Use reduce from functools to iteratively transform the string character by character\n    from functools import reduce\n    # Define a reducer function that accumulates the result string\n    def reducer(accumulated, char):\n        # Check if the current character matches any of our target characters\n        if char == ' ' or char == ',' or char == '.':\n            # Concatenate a colon to the accumulated result when special char found\n            return accumulated + ':'\n        else:\n            # Concatenate the original character when it's not a special char\n            return accumulated + char\n    # Apply reduce across all characters starting with empty string accumulator\n    return reduce(reducer, text, '')",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

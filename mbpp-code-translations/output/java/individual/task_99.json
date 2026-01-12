@@ -1,0 +1,37 @@
+{
+  "task_id": 99,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.",
+  "python_code": "def decimal_to_binary(n): \n    return bin(n).replace(\"0b\",\"\") ",
+  "test_list": [
+    "assert decimal_to_binary(8) == '1000'",
+    "assert decimal_to_binary(18) == '10010'",
+    "assert decimal_to_binary(7) == '111'"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static String decimal_to_binary(int n) {\n        return Integer.toBinaryString(n);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert decimal_to_binary(8) == '1000'",
+      "generated_test": "String result = decimal_to_binary(8);\nString expected = \"1000\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert decimal_to_binary(18) == '10010'",
+      "generated_test": "String result = decimal_to_binary(18);\nString expected = \"10010\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert decimal_to_binary(7) == '111'",
+      "generated_test": "String result = decimal_to_binary(7);\nString expected = \"111\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

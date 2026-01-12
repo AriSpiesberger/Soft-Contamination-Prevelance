@@ -1,0 +1,37 @@
+{
+  "task_id": 776,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count those characters which have vowels as their neighbors in the given string.",
+  "python_code": "def count_vowels(test_str):\n  res = 0\n  vow_list = ['a', 'e', 'i', 'o', 'u']\n  for idx in range(1, len(test_str) - 1):\n    if test_str[idx] not in vow_list and (test_str[idx - 1] in vow_list or test_str[idx + 1] in vow_list):\n      res += 1\n  if test_str[0] not in vow_list and test_str[1] in vow_list:\n    res += 1\n  if test_str[-1] not in vow_list and test_str[-2] in vow_list:\n    res += 1\n  return (res) ",
+  "test_list": [
+    "assert count_vowels('bestinstareels') == 7",
+    "assert count_vowels('partofthejourneyistheend') == 12",
+    "assert count_vowels('amazonprime') == 5"
+  ],
+  "code_javascript": "function count_vowels(test_str) {\n  let res = 0;\n  const vow_list = ['a', 'e', 'i', 'o', 'u'];\n  for (let idx = 1; idx < test_str.length - 1; idx++) {\n    if (!vow_list.includes(test_str[idx]) && (vow_list.includes(test_str[idx - 1]) || vow_list.includes(test_str[idx + 1]))) {\n      res += 1;\n    }\n  }\n  if (!vow_list.includes(test_str[0]) && vow_list.includes(test_str[1])) {\n    res += 1;\n  }\n  if (!vow_list.includes(test_str[test_str.length - 1]) && vow_list.includes(test_str[test_str.length - 2])) {\n    res += 1;\n  }\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert count_vowels('bestinstareels') == 7",
+      "generated_test": "const result = count_vowels('bestinstareels');\nconst expected = 7;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_vowels('partofthejourneyistheend') == 12",
+      "generated_test": "const result = count_vowels('partofthejourneyistheend');\nconst expected = 12;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_vowels('amazonprime') == 5",
+      "generated_test": "const result = count_vowels('amazonprime');\nconst expected = 5;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

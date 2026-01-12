@@ -1,0 +1,17 @@
+{
+  "task_id": 295,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return the sum of all divisors of a number.",
+  "python_code": "def sum_div(number):\n    divisors = [1]\n    for i in range(2, number):\n        if (number % i)==0:\n            divisors.append(i)\n    return sum(divisors)",
+  "test_list": [
+    "assert sum_div(8)==7",
+    "assert sum_div(12)==16",
+    "assert sum_div(7)==1"
+  ],
+  "code_typescript": "function sum_div(number: number): number {\n    const divisors: number[] = [1];\n    for (let i = 2; i < number; i++) {\n        if (number % i === 0) {\n            divisors.push(i);\n        }\n    }\n    return divisors.reduce((acc, val) => acc + val, 0);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

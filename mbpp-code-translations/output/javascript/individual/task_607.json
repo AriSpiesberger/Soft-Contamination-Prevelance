@@ -1,0 +1,37 @@
+{
+  "task_id": 607,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to search a string for a regex pattern. The function should return the matching subtring, a start index and an end index.",
+  "python_code": "import re\n\ndef find_literals(text, pattern):\n  match = re.search(pattern, text)\n  s = match.start()\n  e = match.end()\n  return (match.re.pattern, s, e)",
+  "test_list": [
+    "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+    "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+    "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)"
+  ],
+  "code_javascript": "function find_literals(text, pattern) {\n  const regex = new RegExp(pattern);\n  const match = regex.exec(text);\n  const s = match.index;\n  const e = match.index + match[0].length;\n  return [pattern, s, e];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+      "generated_test": "const result = find_literals('The quick brown fox jumps over the lazy dog.', 'fox');\nconst expected = ['fox', 16, 19];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+      "generated_test": "const result = find_literals('Its been a very crazy procedure right', 'crazy');\nconst expected = ['crazy', 16, 21];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected:\", expected);\n  console.log(\"  Got:\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)",
+      "generated_test": "const result = find_literals('Hardest choices required strongest will', 'will');\nconst expected = ['will', 35, 39];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

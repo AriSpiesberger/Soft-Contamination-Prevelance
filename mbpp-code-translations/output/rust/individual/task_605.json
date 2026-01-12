@@ -1,0 +1,37 @@
+{
+  "task_id": 605,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given integer is a prime number.",
+  "python_code": "def prime_num(num):\n  if num >=1:\n   for i in range(2, num//2):\n     if (num % i) == 0:\n                return False\n     else:\n                return True\n  else:\n          return False",
+  "test_list": [
+    "assert prime_num(13)==True",
+    "assert prime_num(7)==True",
+    "assert prime_num(-1010)==False"
+  ],
+  "code_rust": "pub fn prime_num(num: i32) -> bool {\n    if num >= 1 {\n        for i in 2..(num / 2) {\n            if num % i == 0 {\n                return false;\n            } else {\n                return true;\n            }\n        }\n        false\n    } else {\n        false\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert prime_num(13)==True",
+      "generated_test": "let result = prime_num(13);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert prime_num(7)==True",
+      "generated_test": "let result = prime_num(7);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert prime_num(-1010)==False",
+      "generated_test": "let result = prime_num(-1010);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

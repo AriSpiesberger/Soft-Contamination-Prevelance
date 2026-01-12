@@ -1,0 +1,27 @@
+{
+  "task_id": 234,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cube given its side length.",
+  "code_python": "def volume_cube(l):\n  volume = l * l * l\n  return volume",
+  "test_list": [
+    "assert volume_cube(3)==27",
+    "assert volume_cube(2)==8",
+    "assert volume_cube(5)==125"
+  ],
+  "python_1": "def volume_cube(l):\n    # Use the power operator to raise side length to the third power\n    volume = l ** 3\n    # Return the computed cubic volume\n    return volume",
+  "python_1_status": "success",
+  "python_1_attempts": 3,
+  "python_2": "def volume_cube(l):\n    # Import the math module to access the pow function\n    import math\n    # Calculate volume using math.pow which performs floating-point exponentiation\n    volume = math.pow(l, 3)\n    # Convert to integer since cube volumes of integers should be integers\n    return int(volume)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def volume_cube(l):\n    # Use reduce from functools to multiply the side length by itself three times\n    from functools import reduce\n    # Create a list containing the side length repeated three times for multiplication\n    sides = [l, l, l]\n    # Apply reduce with multiplication operator to compute l * l * l iteratively\n    volume = reduce(lambda x, y: x * y, sides)\n    # Return the product which represents the cube's volume\n    return volume",
+  "python_3_status": "success",
+  "python_3_attempts": 2,
+  "python_4": "def volume_cube(l):\n    # Start with an initial value of 1 for multiplicative accumulation\n    volume = 1\n    # Loop exactly three times to multiply by the side length\n    for _ in range(3):\n        # Multiply the running product by the side length on each iteration\n        volume *= l\n    # Return the final volume after three multiplications\n    return volume",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def volume_cube(l):\n    # Define a recursive helper function to compute power through repeated multiplication\n    def power(base, exponent):\n        # Base case: any number raised to power 0 equals 1\n        if exponent == 0:\n            return 1\n        # Recursive case: multiply base by the result of power with decremented exponent\n        return base * power(base, exponent - 1)\n    # Call the recursive power function with exponent 3 for cubic volume\n    volume = power(l, 3)\n    # Return the recursively computed volume\n    return volume",
+  "python_5_status": "success",
+  "python_5_attempts": 2
+}

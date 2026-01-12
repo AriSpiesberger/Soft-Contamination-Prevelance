@@ -1,0 +1,37 @@
+{
+  "task_id": 106,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to append the given list to the given tuples.",
+  "python_code": "def add_lists(test_list, test_tup):\n  res = tuple(list(test_tup) + test_list)\n  return (res) ",
+  "test_list": [
+    "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+    "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+    "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)"
+  ],
+  "code_go": "package main\n\nfunc add_lists(test_list []int, test_tup []int) []int {\n\tres := make([]int, len(test_tup)+len(test_list))\n\tcopy(res, test_tup)\n\tcopy(res[len(test_tup):], test_list)\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+      "generated_test": "result := add_lists([]int{5, 6, 7}, []int{9, 10})\nexpected := []int{9, 10, 5, 6, 7}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+      "generated_test": "result := add_lists([]int{6, 7, 8}, []int{10, 11})\nexpected := []int{10, 11, 6, 7, 8}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)",
+      "generated_test": "result := add_lists([]int{7, 8, 9}, []int{11, 12})\nexpected := []int{11, 12, 7, 8, 9}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

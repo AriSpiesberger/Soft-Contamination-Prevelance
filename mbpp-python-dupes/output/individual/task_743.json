@@ -1,0 +1,27 @@
+{
+  "task_id": 743,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to rotate a given list by specified number of items to the right direction. https://www.geeksforgeeks.org/python-program-right-rotate-list-n/",
+  "code_python": "def rotate_right(list, m):\n  result =  list[-m:] + list[:-m]\n  return result",
+  "test_list": [
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]"
+  ],
+  "python_1": "def rotate_right(list, m):\n    # Create an empty list to store the rotated result\n    result = []\n    # Calculate the length of the input list once for efficiency\n    n = len(list)\n    # Handle edge case where rotation amount exceeds list length\n    m = m % n if n > 0 else 0\n    # Calculate the starting index for the rotated list (where elements will come from)\n    start_index = n - m\n    # Iterate through all positions in the new rotated list\n    for i in range(n):\n        # Calculate which original index maps to current position using modular arithmetic\n        original_index = (start_index + i) % n\n        # Append the element from the calculated original position\n        result.append(list[original_index])\n    # Return the newly constructed rotated list\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "from collections import deque\n\ndef rotate_right(lst, m):\n    # Convert the input list to a deque for efficient rotation operations\n    d = deque(lst)\n    # Use deque's built-in rotate method which rotates right for positive values\n    d.rotate(m)\n    # Convert the deque back to a standard list using the list constructor\n    return [item for item in d]",
+  "python_2_status": "success",
+  "python_2_attempts": 2,
+  "python_3": "def rotate_right(lst, m):\n    # Determine the total number of elements to handle edge cases\n    n = len(lst)\n    # Early return for empty list to avoid division by zero\n    if n == 0:\n        return []\n    # Normalize rotation amount to handle cases where m exceeds list length\n    m = m % n\n    # Early return if no effective rotation is needed\n    if m == 0:\n        return lst[:]\n    # Use list reversal technique: reverse entire list first\n    reversed_full = lst[::-1]\n    # Reverse the first m elements (these were the last m elements originally)\n    first_part = reversed_full[:m][::-1]\n    # Reverse the remaining n-m elements (these were the first n-m elements originally)\n    second_part = reversed_full[m:][::-1]\n    # Concatenate the two reversed portions to get final rotated list\n    result = first_part + second_part\n    # Return the completed right-rotated list\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def rotate_right(lst, m):\n    # Get the size of the input list to calculate positions\n    n = len(lst)\n    # Guard against empty list to prevent modulo by zero\n    if n == 0:\n        return []\n    # Reduce rotation count to effective rotations within list bounds\n    m = m % n\n    # Preallocate result list with None values for direct index assignment\n    result = [None] * n\n    # Iterate over each element in the original list by its index\n    for original_pos in range(n):\n        # Compute the destination index by shifting right by m positions with wraparound\n        new_pos = (original_pos + m) % n\n        # Place the element directly at its computed rotated position\n        result[new_pos] = lst[original_pos]\n    # Return the list with all elements repositioned via index mapping\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def rotate_right(lst, m):\n    # Determine list length for boundary calculations\n    n = len(lst)\n    # Handle empty list edge case immediately\n    if n == 0:\n        return []\n    # Normalize rotation to prevent unnecessary full rotations\n    m = m % n\n    # Skip rotation entirely if m is zero after normalization\n    if m == 0:\n        return lst[:]\n    # Use recursive approach: pop last element and insert at front\n    # Create a working copy to avoid mutating the original list\n    working = lst[:]\n    # Perform the rotation m times using pop and insert operations\n    for _ in range(m):\n        # Remove the last element from the working list\n        last_element = working.pop()\n        # Insert the removed element at the beginning (index 0)\n        working.insert(0, last_element)\n    # Return the rotated working copy\n    return working",
+  "python_5_status": "success",
+  "python_5_attempts": 2
+}

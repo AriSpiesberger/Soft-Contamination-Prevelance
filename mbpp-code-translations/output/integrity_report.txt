@@ -1,0 +1,58 @@
+================================================================================
+MBPP MULTI-LANGUAGE TRANSLATION - INTEGRITY REPORT
+================================================================================
+Generated: 2026-01-12T17:14:17.985640
+
+================================================================================
+OVERALL STATISTICS
+================================================================================
+Total tasks: 427
+Languages: go, java, javascript, ruby, rust, typescript
+
+================================================================================
+PER-LANGUAGE STATISTICS
+================================================================================
+go           - Success: 427/427 (100.0%), Avg attempts: 1.28
+java         - Success: 427/427 (100.0%), Avg attempts: 1.25
+javascript   - Success: 427/427 (100.0%), Avg attempts: 1.03
+ruby         - Success: 427/427 (100.0%), Avg attempts: 1.03
+rust         - Success: 427/427 (100.0%), Avg attempts: 1.14
+typescript   - Success: 427/427 (100.0%), Avg attempts: 1.02
+
+Overall: 2562/2562 (100.0%)
+
+================================================================================
+BY SPLIT STATISTICS
+================================================================================
+prompt: 7 tasks, 42/42 translations (100.0%)
+test: 257 tasks, 1542/1542 translations (100.0%)
+validation: 43 tasks, 258/258 translations (100.0%)
+train: 120 tasks, 720/720 translations (100.0%)
+
+================================================================================
+INCOMPLETE TASKS (at least one language failed)
+================================================================================
+Total incomplete tasks: 0
+
+
+================================================================================
+LABEL INTEGRITY CHECK
+================================================================================
+Tasks with source_split: 427/427
+Tasks with source_config: 427/427
+[OK] All tasks have proper labels
+
+================================================================================
+DATA CHARACTERISTICS
+================================================================================
+Python code length: min=36, max=906, avg=154
+go code length: min=59, max=1272, avg=289
+java code length: min=119, max=2194, avg=474
+javascript code length: min=43, max=2214, avg=224
+ruby code length: min=26, max=879, avg=137
+rust code length: min=47, max=3143, avg=301
+typescript code length: min=59, max=2496, avg=271
+
+================================================================================
+END OF REPORT
+================================================================================

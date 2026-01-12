@@ -1,0 +1,37 @@
+{
+  "task_id": 119,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the element that appears only once in a sorted array.",
+  "python_code": "def search(arr):\n    n = len(arr)\n    XOR = 0\n    for i in range(n) :\n        XOR = XOR ^ arr[i]\n    return (XOR)",
+  "test_list": [
+    "assert search([1,1,2,2,3]) == 3",
+    "assert search([1,1,3,3,4,4,5,5,7,7,8]) == 8",
+    "assert search([1,2,2,3,3,4,4]) == 1"
+  ],
+  "code_ruby": "def search(arr)\n  arr.reduce(0, :^)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert search([1,1,2,2,3]) == 3",
+      "generated_test": "result = search([1, 1, 2, 2, 3])\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert search([1,1,3,3,4,4,5,5,7,7,8]) == 8",
+      "generated_test": "result = search([1,1,3,3,4,4,5,5,7,7,8])\nexpected = 8\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert search([1,2,2,3,3,4,4]) == 1",
+      "generated_test": "result = search([1,2,2,3,3,4,4])\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

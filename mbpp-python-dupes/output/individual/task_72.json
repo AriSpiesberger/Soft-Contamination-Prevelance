@@ -1,0 +1,27 @@
+{
+  "task_id": 72,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given number can be represented as the difference of two squares or not.",
+  "code_python": "def dif_Square(n): \n    if (n % 4 != 2): \n        return True\n    return False",
+  "test_list": [
+    "assert dif_Square(5) == True",
+    "assert dif_Square(10) == False",
+    "assert dif_Square(15) == True"
+  ],
+  "python_1": "def dif_Square(n): \n    # A number can be expressed as a^2 - b^2 = (a+b)(a-b)\n    # This is possible when n is odd OR n is divisible by 4\n    # Check if n leaves remainder 2 when divided by 4 (the only case that fails)\n    remainder = n % 4\n    # Numbers with remainder 2 mod 4 cannot be written as difference of two squares\n    is_not_representable = (remainder == 2)\n    # Return True if representable, False otherwise (invert the condition)\n    return not is_not_representable",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def dif_Square(n): \n    # Check if n is odd by testing the least significant bit\n    is_odd = (n & 1) == 1\n    # Check if n is a multiple of 4 using bitwise AND with 3 (binary: 11)\n    is_multiple_of_4 = (n & 3) == 0\n    # A number is expressible as difference of squares iff it's odd OR divisible by 4\n    can_be_expressed = is_odd or is_multiple_of_4\n    # Return the boolean result indicating representability\n    return can_be_expressed",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def dif_Square(n): \n    # Use integer division to find which \"group\" of 4 consecutive numbers n falls into\n    quotient = n // 4\n    # Calculate what the next multiple of 4 after or at n would be\n    next_mult_of_4 = quotient * 4\n    # Compute how far n is from the previous multiple of 4\n    distance_from_mult = n - next_mult_of_4\n    # Build a lookup tuple: positions 0,1,3 from mult of 4 are valid, position 2 is not\n    validity_map = (True, True, False, True)\n    # Index into the map using the remainder to determine representability\n    result = validity_map[distance_from_mult]\n    # Return whether n can be written as a difference of two squares\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def dif_Square(n): \n    # Create a set containing the only invalid remainder when dividing by 4\n    invalid_remainders = {2}\n    # Compute the remainder of n when divided by 4\n    current_remainder = n % 4\n    # Check membership in the invalid set to determine if representation is impossible\n    is_invalid = current_remainder in invalid_remainders\n    # Negate the invalid flag to get whether representation is possible\n    is_valid = not is_invalid\n    # Return the final determination of representability\n    return is_valid",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def dif_Square(n): \n    # Define a lambda that checks if remainder mod 4 equals the forbidden value 2\n    check_remainder = lambda x: x % 4\n    # Apply the remainder function to get n's position in the cycle of 4\n    position_in_cycle = check_remainder(n)\n    # Use list comprehension to generate valid positions [0, 1, 3] from range\n    valid_positions = [i for i in range(4) if i != 2]\n    # Determine representability by checking if position exists in valid list\n    representable = position_in_cycle in valid_positions\n    # Return boolean indicating if n can be written as a\u00b2 - b\u00b2\n    return representable",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

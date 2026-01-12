@@ -1,0 +1,17 @@
+{
+  "task_id": 256,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a non-negative number and returns the number of prime numbers less than the given non-negative number.",
+  "python_code": "def count_Primes_nums(n):\n    ctr = 0\n    for num in range(n):\n        if num <= 1:\n            continue\n        for i in range(2,num):\n            if (num % i) == 0:\n                break\n        else:\n            ctr += 1\n    return ctr",
+  "test_list": [
+    "assert count_Primes_nums(5) == 2",
+    "assert count_Primes_nums(10) == 4",
+    "assert count_Primes_nums(100) == 25"
+  ],
+  "code_typescript": "function count_Primes_nums(n: number): number {\n    let ctr: number = 0;\n    for (let num = 0; num < n; num++) {\n        if (num <= 1) {\n            continue;\n        }\n        let isPrime: boolean = true;\n        for (let i = 2; i < num; i++) {\n            if (num % i === 0) {\n                isPrime = false;\n                break;\n            }\n        }\n        if (isPrime) {\n            ctr += 1;\n        }\n    }\n    return ctr;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

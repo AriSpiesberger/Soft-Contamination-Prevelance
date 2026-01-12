@@ -1,0 +1,37 @@
+{
+  "task_id": 69,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a list contains the given sublist or not.",
+  "python_code": "def is_sublist(l, s):\n\tsub_set = False\n\tif s == []:\n\t\tsub_set = True\n\telif s == l:\n\t\tsub_set = True\n\telif len(s) > len(l):\n\t\tsub_set = False\n\telse:\n\t\tfor i in range(len(l)):\n\t\t\tif l[i] == s[0]:\n\t\t\t\tn = 1\n\t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n\t\t\t\t\tn += 1\t\t\t\t\n\t\t\t\tif n == len(s):\n\t\t\t\t\tsub_set = True\n\treturn sub_set",
+  "test_list": [
+    "assert is_sublist([2,4,3,5,7],[3,7])==False",
+    "assert is_sublist([2,4,3,5,7],[4,3])==True",
+    "assert is_sublist([2,4,3,5,7],[1,6])==False"
+  ],
+  "code_ruby": "def is_sublist(l, s)\n  sub_set = false\n  if s == []\n    sub_set = true\n  elsif s == l\n    sub_set = true\n  elsif s.length > l.length\n    sub_set = false\n  else\n    l.length.times do |i|\n      if l[i] == s[0]\n        n = 1\n        while (n < s.length) && (l[i + n] == s[n])\n          n += 1\n        end\n        if n == s.length\n          sub_set = true\n        end\n      end\n    end\n  end\n  sub_set\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[3,7])==False",
+      "generated_test": "result = is_sublist([2,4,3,5,7], [3,7])\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[4,3])==True",
+      "generated_test": "result = is_sublist([2,4,3,5,7], [4,3])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[1,6])==False",
+      "generated_test": "result = is_sublist([2,4,3,5,7], [1,6])\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

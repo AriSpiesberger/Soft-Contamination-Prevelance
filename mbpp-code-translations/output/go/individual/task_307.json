@@ -1,0 +1,37 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "python_code": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "code_go": "package main\n\nfunc colon_tuplex(tuplex []interface{}, m int, n interface{}) []interface{} {\n\t// Deep copy the tuple\n\ttuplex_colon := make([]interface{}, len(tuplex))\n\tfor i, v := range tuplex {\n\t\tswitch val := v.(type) {\n\t\tcase []interface{}:\n\t\t\t// Deep copy slices\n\t\t\tnewSlice := make([]interface{}, len(val))\n\t\t\tcopy(newSlice, val)\n\t\t\ttuplex_colon[i] = newSlice\n\t\tdefault:\n\t\t\ttuplex_colon[i] = val\n\t\t}\n\t}\n\t\n\t// Append n to the slice at index m\n\tif slice, ok := tuplex_colon[m].([]interface{}); ok {\n\t\ttuplex_colon[m] = append(slice, n)\n\t}\n\t\n\treturn tuplex_colon\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+      "generated_test": "input := []interface{}{\"HELLO\", 5, []interface{}{}, true}\nexpected := []interface{}{\"HELLO\", 5, []interface{}{50}, true}\nresult := colon_tuplex(input, 2, 50)\n\n// Compare results\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tswitch ev := expected[i].(type) {\n\t\tcase []interface{}:\n\t\t\trv, ok := result[i].([]interface{})\n\t\t\tif !ok || len(rv) != len(ev) {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tfor j := range ev {\n\t\t\t\tif rv[j] != ev[j] {\n\t\t\t\t\tpass = false\n\t\t\t\t\tbreak\n\t\t\t\t}\n\t\t\t}\n\t\tdefault:\n\t\t\tif result[i] != expected[i] {\n\t\t\t\tpass = false\n\t\t\t}\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+      "generated_test": "result := colon_tuplex([]interface{}{\"HELLO\", 5, []interface{}{}, true}, 2, 100)\nexpected := []interface{}{\"HELLO\", 5, []interface{}{100}, true}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tswitch ev := expected[i].(type) {\n\t\tcase []interface{}:\n\t\t\trv, ok := result[i].([]interface{})\n\t\t\tif !ok || len(rv) != len(ev) {\n\t\t\t\tpass = false\n\t\t\t} else {\n\t\t\t\tfor j := range ev {\n\t\t\t\t\tif rv[j] != ev[j] {\n\t\t\t\t\t\tpass = false\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\tdefault:\n\t\t\tif result[i] != expected[i] {\n\t\t\t\tpass = false\n\t\t\t}\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)",
+      "generated_test": "input := []interface{}{\"HELLO\", 5, []interface{}{}, true}\nexpected := []interface{}{\"HELLO\", 5, []interface{}{500}, true}\nresult := colon_tuplex(input, 2, 500)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tswitch ev := expected[i].(type) {\n\t\tcase []interface{}:\n\t\t\trv, ok := result[i].([]interface{})\n\t\t\tif !ok || len(rv) != len(ev) {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tfor j := range ev {\n\t\t\t\tif rv[j] != ev[j] {\n\t\t\t\t\tpass = false\n\t\t\t\t\tbreak\n\t\t\t\t}\n\t\t\t}\n\t\tdefault:\n\t\t\tif result[i] != expected[i] {\n\t\t\t\tpass = false\n\t\t\t}\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

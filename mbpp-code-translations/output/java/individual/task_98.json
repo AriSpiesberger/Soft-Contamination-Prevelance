@@ -1,0 +1,37 @@
+{
+  "task_id": 98,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to multiply all the numbers in a list and divide with the length of the list.",
+  "python_code": "def multiply_num(numbers):  \n    total = 1\n    for x in numbers:\n        total *= x  \n    return total/len(numbers) ",
+  "test_list": [
+    "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static double multiply_num(List<Number> numbers) {\n        double total = 1;\n        for (Number x : numbers) {\n            total *= x.doubleValue();\n        }\n        return total / numbers.size();\n    }\n    \n    public static double multiply_num(int[] numbers) {\n        double total = 1;\n        for (int x : numbers) {\n            total *= x;\n        }\n        return total / numbers.length;\n    }\n    \n    public static double multiply_num(double[] numbers) {\n        double total = 1;\n        for (double x : numbers) {\n            total *= x;\n        }\n        return total / numbers.length;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+      "generated_test": "int[] input = new int[]{8, 2, 3, -1, 7};\ndouble result = multiply_num(input);\ndouble expected = -67.2;\ndouble relTol = 0.001;\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+      "generated_test": "int[] input = new int[]{-10, -20, -30};\ndouble result = multiply_num(input);\ndouble expected = -2000.0;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)",
+      "generated_test": "int[] input = new int[]{19, 15, 18};\ndouble result = multiply_num(input);\ndouble expected = 1710.0;\ndouble relTol = 0.001;\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

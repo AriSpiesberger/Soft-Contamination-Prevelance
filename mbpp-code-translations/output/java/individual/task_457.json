@@ -1,0 +1,37 @@
+{
+  "task_id": 457,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sublist having minimum length.",
+  "python_code": "def Find_Min(lst): \n    return min(lst, key=len) ",
+  "test_list": [
+    "assert Find_Min([[1],[1,2],[1,2,3]]) == [1]",
+    "assert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]",
+    "assert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<?> Find_Min(List<? extends List<?>> lst) {\n        if (lst == null || lst.isEmpty()) {\n            return null;\n        }\n        \n        List<?> minList = lst.get(0);\n        int minLen = minList.size();\n        \n        for (List<?> sublist : lst) {\n            if (sublist.size() < minLen) {\n                minLen = sublist.size();\n                minList = sublist;\n            }\n        }\n        \n        return minList;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert Find_Min([[1],[1,2],[1,2,3]]) == [1]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(1));\ninput.add(Arrays.asList(1, 2));\ninput.add(Arrays.asList(1, 2, 3));\n\nList<?> result = Find_Min(input);\nList<Integer> expected = Arrays.asList(1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(1);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(1);\nlist2.add(1);\nlist2.add(1);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(1);\nlist3.add(2);\nlist3.add(7);\nlist3.add(8);\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(1);\n\nList<?> result = Find_Min(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\nList<String> list1 = new ArrayList<>();\nlist1.add(\"x\");\nList<String> list2 = new ArrayList<>();\nlist2.add(\"x\");\nlist2.add(\"y\");\nList<String> list3 = new ArrayList<>();\nlist3.add(\"x\");\nlist3.add(\"y\");\nlist3.add(\"z\");\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"x\");\n\nList<?> result = Find_Min(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

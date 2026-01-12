@@ -1,0 +1,37 @@
+{
+  "task_id": 399,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to perform the mathematical bitwise xor operation across the given tuples.",
+  "python_code": "def bitwise_xor(test_tup1, test_tup2):\n  res = tuple(ele1 ^ ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+    "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+    "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)"
+  ],
+  "code_go": "package main\n\nfunc bitwise_xor(test_tup1, test_tup2 []int) []int {\n\tminLen := len(test_tup1)\n\tif len(test_tup2) < minLen {\n\t\tminLen = len(test_tup2)\n\t}\n\t\n\tres := make([]int, minLen)\n\tfor i := 0; i < minLen; i++ {\n\t\tres[i] = test_tup1[i] ^ test_tup2[i]\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+      "generated_test": "result := bitwise_xor([]int{10, 4, 6, 9}, []int{5, 2, 3, 3})\nexpected := []int{15, 6, 5, 10}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+      "generated_test": "result := bitwise_xor([]int{11, 5, 7, 10}, []int{6, 3, 4, 4})\nexpected := []int{13, 6, 3, 14}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)",
+      "generated_test": "result := bitwise_xor([]int{12, 6, 8, 11}, []int{7, 4, 5, 6})\nexpected := []int{11, 2, 13, 13}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

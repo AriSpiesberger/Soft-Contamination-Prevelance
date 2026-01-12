@@ -1,0 +1,37 @@
+{
+  "task_id": 720,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add a dictionary to the tuple. The output should be a tuple.",
+  "python_code": "def add_dict_to_tuple(test_tup, test_dict):\n  test_tup = list(test_tup)\n  test_tup.append(test_dict)\n  test_tup = tuple(test_tup)\n  return (test_tup) ",
+  "test_list": [
+    "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+    "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+    "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})"
+  ],
+  "code_go": "package main\n\nfunc add_dict_to_tuple(test_tup []interface{}, test_dict map[string]int) []interface{} {\n\tresult := make([]interface{}, len(test_tup))\n\tcopy(result, test_tup)\n\tresult = append(result, test_dict)\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+      "generated_test": "testTup := []interface{}{4, 5, 6}\ntestDict := map[string]int{\"MSAM\": 1, \"is\": 2, \"best\": 3}\nresult := add_dict_to_tuple(testTup, testDict)\n\n// Check length first\nif len(result) != 4 {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: length 4\\n\")\n\tfmt.Printf(\"  Got: length %d\\n\", len(result))\n} else {\n\t// Check first three elements\n\tpass := true\n\texpectedVals := []int{4, 5, 6}\n\tfor i := 0; i < 3; i++ {\n\t\tif result[i] != expectedVals[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n\t\n\t// Check the dictionary at index 3\n\tif pass {\n\t\tdict, ok := result[3].(map[string]int)\n\t\tif !ok {\n\t\t\tpass = false\n\t\t} else {\n\t\t\texpectedDict := map[string]int{\"MSAM\": 1, \"is\": 2, \"best\": 3}\n\t\t\tif len(dict) != len(expectedDict) {\n\t\t\t\tpass = false\n\t\t\t} else {\n\t\t\t\tfor k, v := range expectedDict {\n\t\t\t\t\tif dict[k] != v {\n\t\t\t\t\t\tpass = false\n\t\t\t\t\t\tbreak\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\t\n\tif pass {\n\t\tfmt.Println(\"PASS\")\n\t} else {\n\t\tfmt.Println(\"FAIL\")\n\t\tfmt.Printf(\"  Expected: [4 5 6 map[MSAM:1 is:2 best:3]]\\n\")\n\t\tfmt.Printf(\"  Got: %v\\n\", result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+      "generated_test": "testTup := []interface{}{1, 2, 3}\ntestDict := map[string]int{\"UTS\": 2, \"is\": 3, \"Worst\": 4}\nresult := add_dict_to_tuple(testTup, testDict)\n\n// Expected: (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})\n// Check length is 4\npass := true\nif len(result) != 4 {\n\tpass = false\n} else {\n\t// Check first 3 elements\n\tif result[0] != 1 || result[1] != 2 || result[2] != 3 {\n\t\tpass = false\n\t}\n\t// Check the 4th element is the dict\n\tif dictVal, ok := result[3].(map[string]int); !ok {\n\t\tpass = false\n\t} else {\n\t\tif dictVal[\"UTS\"] != 2 || dictVal[\"is\"] != 3 || dictVal[\"Worst\"] != 4 || len(dictVal) != 3 {\n\t\t\tpass = false\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: [1 2 3 map[UTS:2 is:3 Worst:4]]\\n\")\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})",
+      "generated_test": "testTup := []interface{}{8, 9, 10}\ntestDict := map[string]int{\"POS\": 3, \"is\": 4, \"Okay\": 5}\nresult := add_dict_to_tuple(testTup, testDict)\n\n// Expected: (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})\n// Check length is 4\npass := true\nif len(result) != 4 {\n\tpass = false\n}\n\n// Check first three elements\nif pass {\n\tif result[0] != 8 || result[1] != 9 || result[2] != 10 {\n\t\tpass = false\n\t}\n}\n\n// Check the dictionary at index 3\nif pass {\n\tdict, ok := result[3].(map[string]int)\n\tif !ok {\n\t\tpass = false\n\t} else {\n\t\tif dict[\"POS\"] != 3 || dict[\"is\"] != 4 || dict[\"Okay\"] != 5 || len(dict) != 3 {\n\t\t\tpass = false\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", []interface{}{8, 9, 10, map[string]int{\"POS\": 3, \"is\": 4, \"Okay\": 5}})\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

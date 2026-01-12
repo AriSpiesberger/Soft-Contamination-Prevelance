@@ -1,0 +1,17 @@
+{
+  "task_id": 742,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to caluclate the area of a tetrahedron.",
+  "python_code": "import math\ndef area_tetrahedron(side):\n  area = math.sqrt(3)*(side*side)\n  return area",
+  "test_list": [
+    "assert area_tetrahedron(3)==15.588457268119894",
+    "assert area_tetrahedron(20)==692.8203230275509",
+    "assert area_tetrahedron(10)==173.20508075688772"
+  ],
+  "code_typescript": "function area_tetrahedron(side: number): number {\n  const area = Math.sqrt(3) * (side * side);\n  return area;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

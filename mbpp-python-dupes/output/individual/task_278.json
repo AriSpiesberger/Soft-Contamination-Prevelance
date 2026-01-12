@@ -1,0 +1,27 @@
+{
+  "task_id": 278,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the number of elements that occurs before the tuple element in the given tuple.",
+  "code_python": "def count_first_elements(test_tup):\n  for count, ele in enumerate(test_tup):\n    if isinstance(ele, tuple):\n      break\n  return (count) ",
+  "test_list": [
+    "assert count_first_elements((1, 5, 7, (4, 6), 10) ) == 3",
+    "assert count_first_elements((2, 9, (5, 7), 11) ) == 2",
+    "assert count_first_elements((11, 15, 5, 8, (2, 3), 8) ) == 4"
+  ],
+  "python_1": "def count_first_elements(test_tup):\n  # Initialize a counter variable to track position\n  count = 0\n  # Use a while loop with index-based access instead of enumerate\n  while count < len(test_tup):\n    # Check if current element at index is a tuple type\n    if type(test_tup[count]) == tuple:\n      # Exit loop immediately when first tuple is found\n      break\n    # Increment counter to move to next position\n    count += 1\n  # Return the index where first tuple was found (equals count of preceding elements)\n  return count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_first_elements(test_tup):\n  # Use list comprehension to create boolean flags for each element indicating if it's a tuple\n  is_tuple_flags = [isinstance(ele, tuple) for ele in test_tup]\n  # Find the index of the first True value using the index method on the boolean list\n  first_tuple_index = is_tuple_flags.index(True)\n  # The index naturally represents how many elements came before it\n  return first_tuple_index",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_first_elements(test_tup):\n  # Convert tuple to list and map each element to 1 if tuple, 0 otherwise\n  tuple_indicators = list(map(lambda x: 1 if isinstance(x, tuple) else 0, test_tup))\n  # Sum all zeros before the first 1 by finding position of first 1\n  # Use next() with generator to find index of first tuple element lazily\n  position = next(i for i, val in enumerate(tuple_indicators) if val == 1)\n  # Position index equals count of non-tuple elements before first tuple\n  return position",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_first_elements(test_tup):\n  # Use filter to extract only tuple-type elements from the input\n  tuple_elements = list(filter(lambda x: isinstance(x, tuple), test_tup))\n  # Retrieve the first tuple element that was found in the sequence\n  first_tuple = tuple_elements[0]\n  # Leverage tuple's built-in index method to locate position of the nested tuple\n  position = test_tup.index(first_tuple)\n  # Position value directly corresponds to count of preceding non-tuple elements\n  return position",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_first_elements(test_tup):\n  # Use recursion helper to traverse tuple elements and count non-tuple items\n  def recursive_search(tup, index):\n    # Base case: if current index equals length, return index (no tuple found)\n    if index >= len(tup):\n      return index\n    # Check if element at current position is a nested tuple type\n    if isinstance(tup[index], tuple):\n      # Return current index as it represents count of elements before this tuple\n      return index\n    # Recurse with incremented index to check next element in sequence\n    return recursive_search(tup, index + 1)\n  # Initiate recursive search starting from index zero\n  result = recursive_search(test_tup, 0)\n  # Return the computed position of first tuple element\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

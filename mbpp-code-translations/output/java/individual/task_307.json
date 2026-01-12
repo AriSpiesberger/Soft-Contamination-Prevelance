@@ -1,0 +1,37 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "python_code": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    @SuppressWarnings(\"unchecked\")\n    public static List<Object> colon_tuplex(List<Object> tuplex, int m, int n) {\n        List<Object> tuplex_colon = new ArrayList<>();\n        for (int i = 0; i < tuplex.size(); i++) {\n            Object item = tuplex.get(i);\n            if (item instanceof List) {\n                List<Object> copiedList = new ArrayList<>((List<Object>) item);\n                if (i == m) {\n                    copiedList.add(n);\n                }\n                tuplex_colon.add(copiedList);\n            } else {\n                tuplex_colon.add(item);\n            }\n        }\n        return tuplex_colon;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 5,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+      "generated_test": "List<Object> input = new ArrayList<>();\ninput.add(\"HELLO\");\ninput.add(5);\ninput.add(new ArrayList<>());\ninput.add(true);\n\nList<Object> expected = new ArrayList<>();\nexpected.add(\"HELLO\");\nexpected.add(5);\nList<Object> expectedInnerList = new ArrayList<>();\nexpectedInnerList.add(50);\nexpected.add(expectedInnerList);\nexpected.add(true);\n\nList<Object> result = colon_tuplex(input, 2, 50);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+      "generated_test": "List<Object> input = new ArrayList<>();\ninput.add(\"HELLO\");\ninput.add(5);\ninput.add(new ArrayList<Object>());\ninput.add(true);\n\nList<Object> expected = new ArrayList<>();\nexpected.add(\"HELLO\");\nexpected.add(5);\nList<Object> expectedInnerList = new ArrayList<>();\nexpectedInnerList.add(100);\nexpected.add(expectedInnerList);\nexpected.add(true);\n\nList<Object> result = colon_tuplex(input, 2, 100);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)",
+      "generated_test": "List<Object> input = new ArrayList<>();\ninput.add(\"HELLO\");\ninput.add(5);\ninput.add(new ArrayList<>());\ninput.add(true);\n\nList<Object> expected = new ArrayList<>();\nexpected.add(\"HELLO\");\nexpected.add(5);\nList<Object> expectedInnerList = new ArrayList<>();\nexpectedInnerList.add(500);\nexpected.add(expectedInnerList);\nexpected.add(true);\n\nList<Object> result = colon_tuplex(input, 2, 500);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

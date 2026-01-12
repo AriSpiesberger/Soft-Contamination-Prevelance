@@ -1,0 +1,37 @@
+{
+  "task_id": 603,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get all lucid numbers smaller than or equal to a given integer.",
+  "python_code": "def get_ludic(n):\n\tludics = []\n\tfor i in range(1, n + 1):\n\t\tludics.append(i)\n\tindex = 1\n\twhile(index != len(ludics)):\n\t\tfirst_ludic = ludics[index]\n\t\tremove_index = index + first_ludic\n\t\twhile(remove_index < len(ludics)):\n\t\t\tludics.remove(ludics[remove_index])\n\t\t\tremove_index = remove_index + first_ludic - 1\n\t\tindex += 1\n\treturn ludics",
+  "test_list": [
+    "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+    "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+    "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> get_ludic(int n) {\n        ArrayList<Integer> ludics = new ArrayList<>();\n        for (int i = 1; i <= n; i++) {\n            ludics.add(i);\n        }\n        int index = 1;\n        while (index < ludics.size()) {\n            int first_ludic = ludics.get(index);\n            int remove_index = index + first_ludic;\n            while (remove_index < ludics.size()) {\n                ludics.remove(remove_index);\n                remove_index = remove_index + first_ludic - 1;\n            }\n            index += 1;\n        }\n        return ludics;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+      "generated_test": "ArrayList<Integer> result = get_ludic(10);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(2);\nexpected.add(3);\nexpected.add(5);\nexpected.add(7);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+      "generated_test": "ArrayList<Integer> result = get_ludic(25);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(2);\nexpected.add(3);\nexpected.add(5);\nexpected.add(7);\nexpected.add(11);\nexpected.add(13);\nexpected.add(17);\nexpected.add(23);\nexpected.add(25);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]",
+      "generated_test": "ArrayList<Integer> result = get_ludic(45);\nArrayList<Integer> expected = new ArrayList<>();\nint[] expectedArray = new int[]{1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43};\nfor (int val : expectedArray) {\n    expected.add(val);\n}\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

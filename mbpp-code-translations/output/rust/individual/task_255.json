@@ -1,0 +1,37 @@
+{
+  "task_id": 255,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and length n, and generates all combinations (with repetition) of the elements of the list and returns a list with a tuple for each combination.",
+  "python_code": "from itertools import combinations_with_replacement \ndef combinations_colors(l, n):\n    return list(combinations_with_replacement(l,n))\n",
+  "test_list": [
+    "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],1)==[('Red',), ('Green',), ('Blue',)]",
+    "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],2)==[('Red', 'Red'), ('Red', 'Green'), ('Red', 'Blue'), ('Green', 'Green'), ('Green', 'Blue'), ('Blue', 'Blue')]",
+    "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],3)==[('Red', 'Red', 'Red'), ('Red', 'Red', 'Green'), ('Red', 'Red', 'Blue'), ('Red', 'Green', 'Green'), ('Red', 'Green', 'Blue'), ('Red', 'Blue', 'Blue'), ('Green', 'Green', 'Green'), ('Green', 'Green', 'Blue'), ('Green', 'Blue', 'Blue'), ('Blue', 'Blue', 'Blue')]"
+  ],
+  "code_rust": "pub fn combinations_colors<T: Clone>(l: &[T], n: usize) -> Vec<Vec<T>> {\n    if n == 0 {\n        return vec![vec![]];\n    }\n    \n    if l.is_empty() {\n        return vec![];\n    }\n    \n    let mut result = Vec::new();\n    combinations_helper(l, n, 0, &mut Vec::new(), &mut result);\n    result\n}\n\nfn combinations_helper<T: Clone>(\n    l: &[T],\n    n: usize,\n    start: usize,\n    current: &mut Vec<T>,\n    result: &mut Vec<Vec<T>>,\n) {\n    if current.len() == n {\n        result.push(current.clone());\n        return;\n    }\n    \n    for i in start..l.len() {\n        current.push(l[i].clone());\n        combinations_helper(l, n, i, current, result);\n        current.pop();\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],1)==[('Red',), ('Green',), ('Blue',)]",
+      "generated_test": "let input = vec![\"Red\", \"Green\", \"Blue\"];\nlet result = combinations_colors(&input, 1);\nlet expected: Vec<Vec<&str>> = vec![vec![\"Red\"], vec![\"Green\"], vec![\"Blue\"]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],2)==[('Red', 'Red'), ('Red', 'Green'), ('Red', 'Blue'), ('Green', 'Green'), ('Green', 'Blue'), ('Blue', 'Blue')]",
+      "generated_test": "let input = vec![\"Red\", \"Green\", \"Blue\"];\nlet result = combinations_colors(&input, 2);\nlet expected: Vec<Vec<&str>> = vec![\n    vec![\"Red\", \"Red\"],\n    vec![\"Red\", \"Green\"],\n    vec![\"Red\", \"Blue\"],\n    vec![\"Green\", \"Green\"],\n    vec![\"Green\", \"Blue\"],\n    vec![\"Blue\", \"Blue\"],\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],3)==[('Red', 'Red', 'Red'), ('Red', 'Red', 'Green'), ('Red', 'Red', 'Blue'), ('Red', 'Green', 'Green'), ('Red', 'Green', 'Blue'), ('Red', 'Blue', 'Blue'), ('Green', 'Green', 'Green'), ('Green', 'Green', 'Blue'), ('Green', 'Blue', 'Blue'), ('Blue', 'Blue', 'Blue')]",
+      "generated_test": "let input = vec![\"Red\", \"Green\", \"Blue\"];\nlet result = combinations_colors(&input, 3);\nlet expected: Vec<Vec<&str>> = vec![\n    vec![\"Red\", \"Red\", \"Red\"],\n    vec![\"Red\", \"Red\", \"Green\"],\n    vec![\"Red\", \"Red\", \"Blue\"],\n    vec![\"Red\", \"Green\", \"Green\"],\n    vec![\"Red\", \"Green\", \"Blue\"],\n    vec![\"Red\", \"Blue\", \"Blue\"],\n    vec![\"Green\", \"Green\", \"Green\"],\n    vec![\"Green\", \"Green\", \"Blue\"],\n    vec![\"Green\", \"Blue\", \"Blue\"],\n    vec![\"Blue\", \"Blue\", \"Blue\"],\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

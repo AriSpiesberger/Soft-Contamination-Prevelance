@@ -1,0 +1,27 @@
+{
+  "task_id": 101,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the kth element in the given array using 1-based indexing.",
+  "code_python": "def kth_element(arr, k):\n  n = len(arr)\n  for i in range(n):\n    for j in range(0, n-i-1):\n      if arr[j] > arr[j+1]:\n        arr[j], arr[j+1] == arr[j+1], arr[j]\n  return arr[k-1]",
+  "test_list": [
+    "assert kth_element([12,3,5,7,19], 2) == 3",
+    "assert kth_element([17,24,8,23], 3) == 8",
+    "assert kth_element([16,21,25,36,4], 4) == 36"
+  ],
+  "python_1": "def kth_element(arr, k):\n  # Simply return the element at position k-1 since arrays use 0-based indexing\n  # The test cases show that kth element means the element at index k-1 (no sorting needed)\n  return arr[k-1]",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "def kth_element(arr, k):\n  # Create a list of tuples pairing each element with its original position\n  indexed_arr = [(val, idx) for idx, val in enumerate(arr)]\n  # Sort the indexed list by values to find positional ranking\n  indexed_arr.sort(key=lambda x: x[0])\n  # Build a rank array where rank[i] tells us the sorted position of arr[i]\n  rank = [0] * len(arr)\n  # Assign ranks based on sorted order (0-indexed ranks)\n  for sorted_pos, (val, original_idx) in enumerate(indexed_arr):\n    # Each original index gets its rank in the sorted sequence\n    rank[original_idx] = sorted_pos\n  # The k-th element (1-based) is at index k-1 in original array\n  return arr[k - 1]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def kth_element(arr, k):\n  # Use list slicing to extract elements from start up to position k\n  first_k_elements = arr[:k]\n  # The last element of this slice is at the k-th position (1-based)\n  kth_value = first_k_elements[-1]\n  # Return the element directly from the original array position\n  return kth_value",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def kth_element(arr, k):\n  # Use a generator expression with enumerate to find the element at target index\n  target_index = k - 1\n  # Iterate through array with index tracking using enumerate\n  for current_index, element in enumerate(arr):\n    # Check if we've reached the desired 1-based position\n    if current_index == target_index:\n      # Immediately return when we find the k-th element\n      return element\n  # Fallback return if k exceeds array length (shouldn't happen with valid input)\n  return None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def kth_element(arr, k):\n  # Use Python's iterator protocol to advance to desired position\n  iterator = iter(arr)\n  # Track how many elements we've consumed from iterator\n  consumed = 0\n  # Loop until we've consumed exactly k elements\n  while consumed < k:\n    # Get next element from iterator, advancing position by one\n    result = next(iterator)\n    # Increment our consumption counter after each successful retrieval\n    consumed += 1\n  # The last value retrieved is the k-th element (1-based indexing)\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

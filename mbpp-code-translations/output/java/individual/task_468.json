@@ -1,0 +1,37 @@
+{
+  "task_id": 468,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum product formed by multiplying numbers of an increasing subsequence of that array.",
+  "python_code": "def max_product(arr):   \n  n = len(arr)\n  mpis = arr[:]\n  for i in range(n): \n    current_prod = arr[i]\n    j = i + 1\n    while j < n:\n      if arr[j-1] > arr[j]: \n        break\n      current_prod *= arr[j]\n      if current_prod > mpis[j]:\n        mpis[j] = current_prod \n      j = j + 1\n  return max(mpis)",
+  "test_list": [
+    "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+    "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+    "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_product(int[] arr) {\n        int n = arr.length;\n        int[] mpis = arr.clone();\n        for (int i = 0; i < n; i++) {\n            int current_prod = arr[i];\n            int j = i + 1;\n            while (j < n) {\n                if (arr[j - 1] > arr[j]) {\n                    break;\n                }\n                current_prod *= arr[j];\n                if (current_prod > mpis[j]) {\n                    mpis[j] = current_prod;\n                }\n                j = j + 1;\n            }\n        }\n        int maxVal = mpis[0];\n        for (int i = 1; i < n; i++) {\n            if (mpis[i] > maxVal) {\n                maxVal = mpis[i];\n            }\n        }\n        return maxVal;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+      "generated_test": "int[] arr = new int[]{3, 100, 4, 5, 150, 6};\nint result = max_product(arr);\nint expected = 3000;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+      "generated_test": "int[] arr = new int[]{4, 42, 55, 68, 80};\nint expected = 50265600;\nint result = max_product(arr);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460",
+      "generated_test": "int[] arr = new int[]{10, 22, 9, 33, 21, 50, 41, 60};\nint expected = 2460;\nint result = max_product(arr);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

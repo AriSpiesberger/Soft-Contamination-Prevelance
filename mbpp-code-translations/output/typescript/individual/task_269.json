@@ -1,0 +1,17 @@
+{
+  "task_id": 269,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ascii value of a character.",
+  "python_code": "def ascii_value(k):\n  ch=k\n  return ord(ch)",
+  "test_list": [
+    "assert ascii_value('A')==65",
+    "assert ascii_value('R')==82",
+    "assert ascii_value('S')==83"
+  ],
+  "code_typescript": "function ascii_value(k: string): number {\n  const ch = k;\n  return ch.charCodeAt(0);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

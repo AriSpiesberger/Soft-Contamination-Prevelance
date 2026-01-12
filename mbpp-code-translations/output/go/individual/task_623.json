@@ -1,0 +1,37 @@
+{
+  "task_id": 623,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the n-th power of each number in a list.",
+  "python_code": "def nth_nums(nums,n):\n nth_nums = list(map(lambda x: x ** n, nums))\n return nth_nums",
+  "test_list": [
+    "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+    "assert nth_nums([12,15],5)==([248832, 759375])"
+  ],
+  "code_go": "package main\n\nfunc nth_nums(nums []int, n int) []int {\n\tresult := make([]int, len(nums))\n\tfor i, x := range nums {\n\t\tresult[i] = intPow(x, n)\n\t}\n\treturn result\n}\n\nfunc intPow(base, exp int) int {\n\tresult := 1\n\tfor exp > 0 {\n\t\tif exp%2 == 1 {\n\t\t\tresult *= base\n\t\t}\n\t\texp /= 2\n\t\tif exp > 0 {\n\t\t\tbase *= base\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 4,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+      "generated_test": "result := nth_nums([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 2)\nexpected := []int{1, 4, 9, 16, 25, 36, 49, 64, 81, 100}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+      "generated_test": "result := nth_nums([]int{10, 20, 30}, 3)\nexpected := []int{1000, 8000, 27000}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert nth_nums([12,15],5)==([248832, 759375])",
+      "generated_test": "result := nth_nums([]int{12, 15}, 5)\nexpected := []int{248832, 759375}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

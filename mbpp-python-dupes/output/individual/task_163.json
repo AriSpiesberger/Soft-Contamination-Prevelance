@@ -1,0 +1,27 @@
+{
+  "task_id": 163,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the area of a regular polygon given the length and number of its sides.",
+  "code_python": "from math import tan, pi\ndef area_polygon(s, l):\n  area = s * (l ** 2) / (4 * tan(pi / s))\n  return area",
+  "test_list": [
+    "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+    "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+    "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef area_polygon(s, l):\n    # Calculate the interior angle at the center of the polygon (central angle)\n    central_angle = 2 * math.pi / s\n    \n    # Compute half of the central angle for use in triangle calculations\n    half_angle = central_angle / 2\n    \n    # Find the apothem (perpendicular distance from center to side midpoint)\n    # Using the relationship: apothem = (side_length / 2) / tan(half_central_angle)\n    apothem = l / (2 * math.tan(half_angle))\n    \n    # Calculate the perimeter as the sum of all side lengths\n    perimeter = s * l\n    \n    # Apply the standard formula: Area = (1/2) * perimeter * apothem\n    area = 0.5 * perimeter * apothem\n    \n    # Return the computed area of the regular polygon\n    return area",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "import math\n\ndef area_polygon(s, l):\n    # Use cotangent identity: cot(x) = cos(x)/sin(x) instead of 1/tan(x)\n    angle = math.pi / s\n    \n    # Compute sine of the central half-angle for triangle decomposition\n    sin_val = math.sin(angle)\n    \n    # Compute cosine of the central half-angle for apothem calculation\n    cos_val = math.cos(angle)\n    \n    # Calculate cotangent directly from trig ratios to avoid division by tan\n    cot_val = cos_val / sin_val\n    \n    # Square the side length once and store for efficiency\n    l_squared = l * l\n    \n    # Multiply number of sides by squared length as the scaling factor\n    numerator = s * l_squared\n    \n    # Divide by 4 and multiply by cotangent to complete the area formula\n    area = numerator * cot_val / 4\n    \n    # Return the final polygon area calculation\n    return area",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef area_polygon(s, l):\n    # Decompose polygon into s identical isosceles triangles from center\n    # Each triangle has two sides equal to the circumradius and base equal to l\n    \n    # Calculate the circumradius using the formula: R = l / (2 * sin(pi/s))\n    circumradius = l / (2 * math.sin(math.pi / s))\n    \n    # The angle at the center of each isosceles triangle is 2*pi/s\n    center_angle = 2 * math.pi / s\n    \n    # Area of one isosceles triangle: (1/2) * R^2 * sin(center_angle)\n    # This uses the formula for triangle area given two sides and included angle\n    single_triangle_area = 0.5 * circumradius * circumradius * math.sin(center_angle)\n    \n    # Total polygon area is the sum of all s identical triangles\n    total_area = s * single_triangle_area\n    \n    # Return the accumulated area of all triangular sections\n    return total_area",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef area_polygon(s, l):\n    # Use the double angle identity: sin(2x) = 2*sin(x)*cos(x) for area derivation\n    half_central = math.pi / s\n    \n    # Compute the full central angle spanning one triangular wedge\n    full_central = 2 * half_central\n    \n    # Calculate sin of full central angle using double angle formula\n    sin_double = 2 * math.sin(half_central) * math.cos(half_central)\n    \n    # Derive circumradius squared: R^2 = l^2 / (4 * sin^2(pi/s))\n    sin_half_squared = math.sin(half_central) ** 2\n    \n    # Compute R^2 by rearranging the circumradius formula\n    r_squared = (l ** 2) / (4 * sin_half_squared)\n    \n    # Each wedge triangle has area (1/2) * R^2 * sin(2*pi/s)\n    wedge_area = 0.5 * r_squared * sin_double\n    \n    # Sum up all s wedge triangles to get total polygon area\n    total = s * wedge_area\n    \n    # Return the calculated regular polygon area\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef area_polygon(s, l):\n    # Leverage the half-angle tangent formula: tan(x/2) = (1 - cos(x)) / sin(x)\n    full_angle = 2 * math.pi / s\n    \n    # Compute sine and cosine of the central angle for each polygon segment\n    sin_full = math.sin(full_angle)\n    cos_full = math.cos(full_angle)\n    \n    # Calculate half-angle tangent using the alternative half-angle identity\n    tan_half = (1 - cos_full) / sin_full\n    \n    # The apothem relates to side length via: apothem = l / (2 * tan(pi/s))\n    # Rearranged: apothem = l / (2 * tan_half) since tan_half equals tan(pi/s)\n    apothem = l / (2 * tan_half)\n    \n    # Compute the total perimeter by multiplying side count by side length\n    perimeter = s * l\n    \n    # Regular polygon area equals half the product of perimeter and apothem\n    result = (perimeter * apothem) / 2\n    \n    # Return the final computed area value\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

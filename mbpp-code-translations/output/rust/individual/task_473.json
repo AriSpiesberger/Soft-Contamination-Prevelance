@@ -1,0 +1,37 @@
+{
+  "task_id": 473,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the tuple intersection of elements in the given tuple list irrespective of their order.",
+  "python_code": "def tuple_intersection(test_list1, test_list2):\n  res = set([tuple(sorted(ele)) for ele in test_list1]) & set([tuple(sorted(ele)) for ele in test_list2])\n  return (res)",
+  "test_list": [
+    "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+    "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+    "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn tuple_intersection(test_list1: Vec<(i32, i32)>, test_list2: Vec<(i32, i32)>) -> HashSet<(i32, i32)> {\n    let set1: HashSet<(i32, i32)> = test_list1\n        .iter()\n        .map(|&(a, b)| if a <= b { (a, b) } else { (b, a) })\n        .collect();\n    \n    let set2: HashSet<(i32, i32)> = test_list2\n        .iter()\n        .map(|&(a, b)| if a <= b { (a, b) } else { (b, a) })\n        .collect();\n    \n    set1.intersection(&set2).cloned().collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+      "generated_test": "let result = tuple_intersection(\n    vec![(3, 4), (5, 6), (9, 10), (4, 5)],\n    vec![(5, 4), (3, 4), (6, 5), (9, 11)]\n);\nlet expected: HashSet<(i32, i32)> = [(4, 5), (3, 4), (5, 6)].iter().cloned().collect();\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+      "generated_test": "let result = tuple_intersection(\n    vec![(4, 1), (7, 4), (11, 13), (17, 14)],\n    vec![(1, 4), (7, 4), (16, 12), (10, 13)]\n);\nlet expected: HashSet<(i32, i32)> = [(4, 7), (1, 4)].iter().cloned().collect();\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}",
+      "generated_test": "let result = tuple_intersection(\n    vec![(2, 1), (3, 2), (1, 3), (1, 4)],\n    vec![(11, 2), (2, 3), (6, 2), (1, 3)]\n);\nlet expected: HashSet<(i32, i32)> = [(1, 3), (2, 3)].iter().cloned().collect();\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

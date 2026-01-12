@@ -1,0 +1,37 @@
+{
+  "task_id": 235,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to set all even bits of a given number.",
+  "python_code": "def even_bit_set_number(n): \n    count = 0;res = 0;temp = n \n    while(temp > 0): \n        if (count % 2 == 1): \n            res |= (1 << count)\n        count+=1\n        temp >>= 1\n    return (n | res) ",
+  "test_list": [
+    "assert even_bit_set_number(10) == 10",
+    "assert even_bit_set_number(20) == 30",
+    "assert even_bit_set_number(30) == 30"
+  ],
+  "code_go": "package main\n\nfunc even_bit_set_number(n int) int {\n\tcount := 0\n\tres := 0\n\ttemp := n\n\tfor temp > 0 {\n\t\tif count%2 == 1 {\n\t\t\tres |= (1 << count)\n\t\t}\n\t\tcount++\n\t\ttemp >>= 1\n\t}\n\treturn n | res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert even_bit_set_number(10) == 10",
+      "generated_test": "result := even_bit_set_number(10)\nexpected := 10\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert even_bit_set_number(20) == 30",
+      "generated_test": "result := even_bit_set_number(20)\nexpected := 30\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert even_bit_set_number(30) == 30",
+      "generated_test": "result := even_bit_set_number(30)\nexpected := 30\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

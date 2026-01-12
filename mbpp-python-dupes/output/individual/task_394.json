@@ -1,0 +1,27 @@
+{
+  "task_id": 394,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if given tuple contains no duplicates.",
+  "code_python": "def check_distinct(test_tup):\n  res = True\n  temp = set()\n  for ele in test_tup:\n    if ele in temp:\n      res = False\n      break\n    temp.add(ele)\n  return res ",
+  "test_list": [
+    "assert check_distinct((1, 4, 5, 6, 1, 4)) == False",
+    "assert check_distinct((1, 4, 5, 6)) == True",
+    "assert check_distinct((2, 3, 4, 5, 6)) == True"
+  ],
+  "python_1": "# Convert tuple to set which automatically removes duplicates\nunique_elements = lambda t: set(t)\n# Compare length of original tuple with length of set to detect duplicates\ndef check_distinct(test_tup):\n    # Create a set from the tuple, which eliminates any duplicate values\n    unique_set = unique_elements(test_tup)\n    # If lengths match, all elements were unique; if not, duplicates existed\n    return len(test_tup) == len(unique_set)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_distinct(test_tup):\n    # Use count method to check each element's occurrences in the tuple\n    for ele in test_tup:\n        # If any element appears more than once, tuple has duplicates\n        if test_tup.count(ele) > 1:\n            # Immediately return False upon finding first duplicate\n            return False\n    # All elements appeared exactly once, so tuple is distinct\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_distinct(test_tup):\n    # Convert tuple to list to enable index-based nested iteration\n    elements = list(test_tup)\n    # Get total number of elements for outer loop boundary\n    n = len(elements)\n    # Outer loop iterates through each element as potential duplicate source\n    for i in range(n):\n        # Inner loop compares current element with all subsequent elements\n        for j in range(i + 1, n):\n            # Direct equality check between two different positions\n            if elements[i] == elements[j]:\n                # Found matching pair at different indices, so duplicates exist\n                return False\n    # Exhausted all pairwise comparisons without finding matches\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_distinct(test_tup):\n    # Use sorted list to group identical elements together\n    sorted_elements = sorted(test_tup)\n    # Handle edge case of empty or single element tuple - always distinct\n    if len(sorted_elements) <= 1:\n        return True\n    # Iterate through consecutive pairs using index-based access\n    for i in range(len(sorted_elements) - 1):\n        # Adjacent elements in sorted sequence will be equal if duplicates exist\n        if sorted_elements[i] == sorted_elements[i + 1]:\n            # Duplicate detected via neighbor comparison in sorted order\n            return False\n    # Survived all neighbor checks - no two elements were identical\n    return True",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_distinct(test_tup):\n    # Use dictionary to track first occurrence index of each element\n    seen_at_index = {}\n    # Enumerate provides both position and value for tracking purposes\n    for idx, ele in enumerate(test_tup):\n        # Dictionary get returns None if key absent, avoiding KeyError\n        if seen_at_index.get(ele) is not None:\n            # Element was previously recorded, confirming duplicate exists\n            return False\n        # Store current index as proof this element has been encountered\n        seen_at_index[ele] = idx\n    # Dictionary never contained repeat keys, all elements were unique\n    return True",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

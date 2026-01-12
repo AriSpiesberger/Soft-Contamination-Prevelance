@@ -1,0 +1,37 @@
+{
+  "task_id": 580,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove uneven elements in the nested mixed tuple.",
+  "python_code": "def even_ele(test_tuple, even_fnc): \n\tres = tuple() \n\tfor ele in test_tuple: \n\t\tif isinstance(ele, tuple): \n\t\t\tres += (even_ele(ele, even_fnc), ) \n\t\telif even_fnc(ele): \n\t\t\tres += (ele, ) \n\treturn res \ndef extract_even(test_tuple):\n  res = even_ele(test_tuple, lambda x: x % 2 == 0)\n  return (res) ",
+  "test_list": [
+    "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+    "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+    "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)"
+  ],
+  "code_rust": "#[derive(Debug, Clone, PartialEq)]\npub enum NestedElement {\n    Value(i32),\n    Tuple(Vec<NestedElement>),\n}\n\nfn even_ele<F>(test_tuple: &[NestedElement], even_fnc: &F) -> Vec<NestedElement>\nwhere\n    F: Fn(i32) -> bool,\n{\n    let mut res = Vec::new();\n    for ele in test_tuple {\n        match ele {\n            NestedElement::Tuple(inner) => {\n                let filtered = even_ele(inner, even_fnc);\n                if !filtered.is_empty() {\n                    res.push(NestedElement::Tuple(filtered));\n                }\n            }\n            NestedElement::Value(v) => {\n                if even_fnc(*v) {\n                    res.push(NestedElement::Value(*v));\n                }\n            }\n        }\n    }\n    res\n}\n\npub fn extract_even(test_tuple: &[NestedElement]) -> Vec<NestedElement> {\n    even_ele(test_tuple, &|x: i32| x % 2 == 0)\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    use NestedElement::*;\n\n    #[test]\n    fn test_extract_even_1() {\n        // (4, 5, (7, 6, (2, 4)), 6, 8)\n        let input = vec![\n            Value(4),\n            Value(5),\n            Tuple(vec![\n                Value(7),\n                Value(6),\n                Tuple(vec![Value(2), Value(4)]),\n            ]),\n            Value(6),\n            Value(8),\n        ];\n        // (4, (6, (2, 4)), 6, 8)\n        let expected = vec![\n            Value(4),\n            Tuple(vec![\n                Value(6),\n                Tuple(vec![Value(2), Value(4)]),\n            ]),\n            Value(6),\n            Value(8),\n        ];\n        assert_eq!(extract_even(&input), expected);\n    }\n\n    #[test]\n    fn test_extract_even_2() {\n        // (5, 6, (8, 7, (4, 8)), 7, 9)\n        let input = vec![\n            Value(5),\n            Value(6),\n            Tuple(vec![\n                Value(8),\n                Value(7),\n                Tuple(vec![Value(4), Value(8)]),\n            ]),\n            Value(7),\n            Value(9),\n        ];\n        // (6, (8, (4, 8)))\n        let expected = vec![\n            Value(6),\n            Tuple(vec![\n                Value(8),\n                Tuple(vec![Value(4), Value(8)]),\n            ]),\n        ];\n        assert_eq!(extract_even(&input), expected);\n    }\n\n    #[test]\n    fn test_extract_even_3() {\n        // (5, 6, (9, 8, (4, 6)), 8, 10)\n        let input = vec![\n            Value(5),\n            Value(6),\n            Tuple(vec![\n                Value(9),\n                Value(8),\n                Tuple(vec![Value(4), Value(6)]),\n            ]),\n            Value(8),\n            Value(10),\n        ];\n        // (6, (8, (4, 6)), 8, 10)\n        let expected = vec![\n            Value(6),\n            Tuple(vec![\n                Value(8),\n                Tuple(vec![Value(4), Value(6)]),\n            ]),\n            Value(8),\n            Value(10),\n        ];\n        assert_eq!(extract_even(&input), expected);\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+      "generated_test": "use NestedElement::*;\n\nlet input = vec![\n    Value(4),\n    Value(5),\n    Tuple(vec![\n        Value(7),\n        Value(6),\n        Tuple(vec![Value(2), Value(4)]),\n    ]),\n    Value(6),\n    Value(8),\n];\n\nlet expected = vec![\n    Value(4),\n    Tuple(vec![\n        Value(6),\n        Tuple(vec![Value(2), Value(4)]),\n    ]),\n    Value(6),\n    Value(8),\n];\n\nlet result = extract_even(&input);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+      "generated_test": "use NestedElement::*;\n\nlet input = vec![\n    Value(5),\n    Value(6),\n    Tuple(vec![\n        Value(8),\n        Value(7),\n        Tuple(vec![Value(4), Value(8)]),\n    ]),\n    Value(7),\n    Value(9),\n];\n\nlet expected = vec![\n    Value(6),\n    Tuple(vec![\n        Value(8),\n        Tuple(vec![Value(4), Value(8)]),\n    ]),\n];\n\nlet result = extract_even(&input);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)",
+      "generated_test": "use NestedElement::*;\n\nlet input = vec![\n    Value(5),\n    Value(6),\n    Tuple(vec![\n        Value(9),\n        Value(8),\n        Tuple(vec![Value(4), Value(6)]),\n    ]),\n    Value(8),\n    Value(10),\n];\n\nlet expected = vec![\n    Value(6),\n    Tuple(vec![\n        Value(8),\n        Tuple(vec![Value(4), Value(6)]),\n    ]),\n    Value(8),\n    Value(10),\n];\n\nlet result = extract_even(&input);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

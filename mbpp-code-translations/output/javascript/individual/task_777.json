@@ -1,0 +1,37 @@
+{
+  "task_id": 777,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of non-repeated elements in a given list.",
+  "python_code": "def find_sum(arr): \n    arr.sort() \n    sum = arr[0] \n    for i in range(len(arr)-1): \n        if (arr[i] != arr[i+1]): \n            sum = sum + arr[i+1]   \n    return sum",
+  "test_list": [
+    "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+    "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+    "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78"
+  ],
+  "code_javascript": "function find_sum(arr) {\n    arr.sort((a, b) => a - b);\n    let sum = arr[0];\n    for (let i = 0; i < arr.length - 1; i++) {\n        if (arr[i] !== arr[i + 1]) {\n            sum = sum + arr[i + 1];\n        }\n    }\n    return sum;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+      "generated_test": "const result = find_sum([1, 2, 3, 1, 1, 4, 5, 6]);\nconst expected = 21;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+      "generated_test": "const result = find_sum([1, 10, 9, 4, 2, 10, 10, 45, 4]);\nconst expected = 71;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78",
+      "generated_test": "const result = find_sum([12, 10, 9, 45, 2, 10, 10, 45, 10]);\nconst expected = 78;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

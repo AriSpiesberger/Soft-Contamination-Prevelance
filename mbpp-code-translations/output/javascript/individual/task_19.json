@@ -1,0 +1,37 @@
+{
+  "task_id": 19,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether a given array of integers contains any duplicate element.",
+  "python_code": "def test_duplicate(arraynums):\n    nums_set = set(arraynums)    \n    return len(arraynums) != len(nums_set)     ",
+  "test_list": [
+    "assert test_duplicate(([1,2,3,4,5]))==False",
+    "assert test_duplicate(([1,2,3,4, 4]))==True",
+    "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True"
+  ],
+  "code_javascript": "function test_duplicate(arraynums) {\n    const nums_set = new Set(arraynums);\n    return arraynums.length !== nums_set.size;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert test_duplicate(([1,2,3,4,5]))==False",
+      "generated_test": "const result = test_duplicate([1,2,3,4,5]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_duplicate(([1,2,3,4, 4]))==True",
+      "generated_test": "const result = test_duplicate([1, 2, 3, 4, 4]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True",
+      "generated_test": "const result = test_duplicate([1,1,2,2,3,3,4,4,5]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

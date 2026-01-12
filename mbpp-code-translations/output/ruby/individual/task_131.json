@@ -1,0 +1,37 @@
+{
+  "task_id": 131,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse only the vowels of a given string (where y is not a vowel).",
+  "python_code": "def reverse_vowels(str1):\n\tvowels = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tvowels += char\n\tresult_string = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tresult_string += vowels[-1]\n\t\t\tvowels = vowels[:-1]\n\t\telse:\n\t\t\tresult_string += char\n\treturn result_string",
+  "test_list": [
+    "assert reverse_vowels(\"Python\") == \"Python\"",
+    "assert reverse_vowels(\"USA\") == \"ASU\"",
+    "assert reverse_vowels(\"ab\") == \"ab\""
+  ],
+  "code_ruby": "def reverse_vowels(str1)\n  vowels = \"\"\n  str1.each_char do |char|\n    if \"aeiouAEIOU\".include?(char)\n      vowels += char\n    end\n  end\n  result_string = \"\"\n  str1.each_char do |char|\n    if \"aeiouAEIOU\".include?(char)\n      result_string += vowels[-1]\n      vowels = vowels[0...-1]\n    else\n      result_string += char\n    end\n  end\n  result_string\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert reverse_vowels(\"Python\") == \"Python\"",
+      "generated_test": "result = reverse_vowels(\"Python\")\nexpected = \"Python\"\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"USA\") == \"ASU\"",
+      "generated_test": "result = reverse_vowels(\"USA\")\nexpected = \"ASU\"\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"ab\") == \"ab\"",
+      "generated_test": "result = reverse_vowels(\"ab\")\nexpected = \"ab\"\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

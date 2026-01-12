@@ -1,0 +1,37 @@
+{
+  "task_id": 291,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find out the number of ways of painting the fence such that at most 2 adjacent posts have the same color for the given fence with n posts and k colors.",
+  "python_code": "def count_no_of_ways(n, k): \n\tdp = [0] * (n + 1) \n\ttotal = k \n\tmod = 1000000007\n\tdp[1] = k \n\tdp[2] = k * k\t \n\tfor i in range(3,n+1): \n\t\tdp[i] = ((k - 1) * (dp[i - 1] + dp[i - 2])) % mod \n\treturn dp[n]",
+  "test_list": [
+    "assert count_no_of_ways(2, 4) == 16",
+    "assert count_no_of_ways(3, 2) == 6",
+    "assert count_no_of_ways(4, 4) == 228"
+  ],
+  "code_javascript": "function count_no_of_ways(n, k) {\n    const dp = new Array(n + 1).fill(0);\n    const mod = 1000000007n;\n    dp[1] = BigInt(k);\n    dp[2] = BigInt(k * k);\n    for (let i = 3; i <= n; i++) {\n        dp[i] = (BigInt(k - 1) * (dp[i - 1] + dp[i - 2])) % mod;\n    }\n    return Number(dp[n]);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert count_no_of_ways(2, 4) == 16",
+      "generated_test": "const result = count_no_of_ways(2, 4);\nconst expected = 16;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_no_of_ways(3, 2) == 6",
+      "generated_test": "const result = count_no_of_ways(3, 2);\nconst expected = 6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_no_of_ways(4, 4) == 228",
+      "generated_test": "const result = count_no_of_ways(4, 4);\nconst expected = 228;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

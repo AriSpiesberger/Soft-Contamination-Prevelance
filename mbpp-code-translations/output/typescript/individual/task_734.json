@@ -1,0 +1,17 @@
+{
+  "task_id": 734,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find sum of products of all possible sublists of a given list. https://www.geeksforgeeks.org/sum-of-products-of-all-possible-subarrays/",
+  "python_code": "def sum_Of_Subarray_Prod(arr):\n    ans = 0\n    res = 0\n    i = len(arr) - 1\n    while (i >= 0):\n        incr = arr[i]*(1 + res)\n        ans += incr\n        res = incr\n        i -= 1\n    return (ans)",
+  "test_list": [
+    "assert sum_Of_Subarray_Prod([1,2,3]) == 20",
+    "assert sum_Of_Subarray_Prod([1,2]) == 5",
+    "assert sum_Of_Subarray_Prod([1,2,3,4]) == 84"
+  ],
+  "code_typescript": "function sum_Of_Subarray_Prod(arr: number[]): number {\n    let ans: number = 0;\n    let res: number = 0;\n    let i: number = arr.length - 1;\n    while (i >= 0) {\n        const incr: number = arr[i] * (1 + res);\n        ans += incr;\n        res = incr;\n        i -= 1;\n    }\n    return ans;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

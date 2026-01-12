@@ -1,0 +1,28 @@
+{
+  "task_id": 723,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "The input is defined as two lists of the same length. Write a function to count indices where the lists have the same values.",
+  "code_python": "from operator import eq\ndef count_same_pair(nums1, nums2):\n    result = sum(map(eq, nums1, nums2))\n    return result",
+  "test_list": [
+    "assert count_same_pair([1, 2, 3, 4, 5, 6, 7, 8],[2, 2, 3, 1, 2, 6, 7, 9])==4",
+    "assert count_same_pair([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==11",
+    "assert count_same_pair([2, 4, -6, -9, 11, -12, 14, -5, 17],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==1",
+    "assert count_same_pair([0, 1, 1, 2],[0, 1, 2, 2])==3"
+  ],
+  "python_1": "def count_same_pair(nums1, nums2):\n    # Initialize a counter variable to track matching pairs\n    count = 0\n    # Loop through indices using range based on list length\n    for i in range(len(nums1)):\n        # Compare elements at the same index position in both lists\n        if nums1[i] == nums2[i]:\n            # Increment counter when a match is found\n            count += 1\n    # Return the total number of matching index positions\n    return count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_same_pair(nums1, nums2):\n    # Use zip to pair up corresponding elements from both lists simultaneously\n    paired_elements = zip(nums1, nums2)\n    # Apply a generator expression to check equality of each pair\n    equality_checks = (a == b for a, b in paired_elements)\n    # Sum the boolean results where True counts as 1 and False as 0\n    total_matches = sum(equality_checks)\n    # Return the accumulated count of matching positions\n    return total_matches",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_same_pair(nums1, nums2):\n    # Use list comprehension to create a list of 1s where elements match, 0s otherwise\n    match_indicators = [1 if x == y else 0 for x, y in zip(nums1, nums2)]\n    # Reduce the list by summing all indicator values to get total matches\n    return sum(match_indicators)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_same_pair(nums1, nums2):\n    # Use filter with lambda to retain only index positions where elements match\n    matching_indices = filter(lambda i: nums1[i] == nums2[i], range(len(nums1)))\n    # Convert filtered iterator to list and measure its length for the count\n    count = len(list(matching_indices))\n    # Return the number of indices that passed the filter condition\n    return count",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_same_pair(nums1, nums2):\n    # Use numpy-style boolean array creation via list comprehension for element-wise comparison\n    boolean_matches = [x == y for x, y in zip(nums1, nums2)]\n    # Leverage the count method on the boolean list to tally True values directly\n    return boolean_matches.count(True)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

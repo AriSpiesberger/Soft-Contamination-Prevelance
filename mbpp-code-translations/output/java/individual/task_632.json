@@ -1,0 +1,37 @@
+{
+  "task_id": 632,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to move all zeroes to the end of the given list.",
+  "python_code": "def move_zero(num_list):\n    a = [0 for i in range(num_list.count(0))]\n    x = [i for i in num_list if i != 0]\n    return x + a",
+  "test_list": [
+    "assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]",
+    "assert move_zero([2,3,2,0,0,4,0,5,0]) == [2,3,2,4,5,0,0,0,0]",
+    "assert move_zero([0,1,0,1,1]) == [1,1,1,0,0]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> move_zero(ArrayList<Integer> num_list) {\n        int zeroCount = 0;\n        for (Integer num : num_list) {\n            if (num == 0) {\n                zeroCount++;\n            }\n        }\n        \n        ArrayList<Integer> result = new ArrayList<>();\n        for (Integer num : num_list) {\n            if (num != 0) {\n                result.add(num);\n            }\n        }\n        \n        for (int i = 0; i < zeroCount; i++) {\n            result.add(0);\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(0);\ninput.add(2);\ninput.add(0);\ninput.add(3);\ninput.add(4);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(2);\nexpected.add(3);\nexpected.add(4);\nexpected.add(0);\nexpected.add(0);\n\nArrayList<Integer> result = move_zero(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_zero([2,3,2,0,0,4,0,5,0]) == [2,3,2,4,5,0,0,0,0]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(2);\ninput.add(3);\ninput.add(2);\ninput.add(0);\ninput.add(0);\ninput.add(4);\ninput.add(0);\ninput.add(5);\ninput.add(0);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(2);\nexpected.add(3);\nexpected.add(2);\nexpected.add(4);\nexpected.add(5);\nexpected.add(0);\nexpected.add(0);\nexpected.add(0);\nexpected.add(0);\n\nArrayList<Integer> result = move_zero(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_zero([0,1,0,1,1]) == [1,1,1,0,0]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(0);\ninput.add(1);\ninput.add(0);\ninput.add(1);\ninput.add(1);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(1);\nexpected.add(1);\nexpected.add(0);\nexpected.add(0);\n\nArrayList<Integer> result = move_zero(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

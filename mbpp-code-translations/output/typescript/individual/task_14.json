@@ -1,0 +1,17 @@
+{
+  "task_id": 14,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the volume of a triangular prism.",
+  "python_code": "def find_Volume(l,b,h) : \n    return ((l * b * h) / 2) ",
+  "test_list": [
+    "assert find_Volume(10,8,6) == 240",
+    "assert find_Volume(3,2,2) == 6",
+    "assert find_Volume(1,2,1) == 1"
+  ],
+  "code_typescript": "function find_Volume(l: number, b: number, h: number): number {\n    return (l * b * h) / 2;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

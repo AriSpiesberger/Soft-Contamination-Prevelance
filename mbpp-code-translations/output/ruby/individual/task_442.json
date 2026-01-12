@@ -1,0 +1,37 @@
+{
+  "task_id": 442,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ration of positive numbers in an array of integers.",
+  "python_code": "from array import array\ndef positive_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x > 0:\n            n1 += 1\n        else:\n          None\n    return round(n1/n,2)",
+  "test_list": [
+    "assert positive_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8])==0.54",
+    "assert positive_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==0.69",
+    "assert positive_count([2, 4, -6, -9, 11, -12, 14, -5, 17])==0.56"
+  ],
+  "code_ruby": "def positive_count(nums)\n  n = nums.length\n  n1 = nums.count { |x| x > 0 }\n  (n1.to_f / n).round(2)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert positive_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8])==0.54",
+      "generated_test": "result = positive_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8])\nexpected = 0.54\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert positive_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==0.69",
+      "generated_test": "result = positive_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])\nexpected = 0.69\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert positive_count([2, 4, -6, -9, 11, -12, 14, -5, 17])==0.56",
+      "generated_test": "result = positive_count([2, 4, -6, -9, 11, -12, 14, -5, 17])\nexpected = 0.56\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

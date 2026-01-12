@@ -1,0 +1,44 @@
+{
+  "task_id": 791,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove tuples from the given tuple.",
+  "python_code": "def remove_nested(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res) ",
+  "test_list": [
+    "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+    "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+    "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+    "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static Object[] remove_nested(Object[] test_tup) {\n        ArrayList<Object> res = new ArrayList<>();\n        for (Object ele : test_tup) {\n            if (!(ele instanceof Object[])) {\n                res.add(ele);\n            }\n        }\n        return res.toArray();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+      "generated_test": "Object[] input = new Object[]{1, 5, 7, new Object[]{4, 6}, 10};\nObject[] expected = new Object[]{1, 5, 7, 10};\nObject[] result = remove_nested(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expectedStr = new StringBuilder(\"(\");\n    for (int i = 0; i < expected.length; i++) {\n        if (i > 0) expectedStr.append(\", \");\n        expectedStr.append(expected[i]);\n    }\n    expectedStr.append(\")\");\n    \n    StringBuilder gotStr = new StringBuilder(\"(\");\n    for (int i = 0; i < result.length; i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(result[i]);\n    }\n    gotStr.append(\")\");\n    \n    System.out.println(\"  Expected: \" + expectedStr);\n    System.out.println(\"  Got: \" + gotStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+      "generated_test": "Object[] input = new Object[]{2, 6, 8, new Object[]{5, 7}, 11};\nObject[] expected = new Object[]{2, 6, 8, 11};\nObject[] result = remove_nested(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expStr = new StringBuilder(\"(\");\n    for (int i = 0; i < expected.length; i++) {\n        if (i > 0) expStr.append(\", \");\n        expStr.append(expected[i]);\n    }\n    expStr.append(\")\");\n    StringBuilder gotStr = new StringBuilder(\"(\");\n    for (int i = 0; i < result.length; i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(result[i]);\n    }\n    gotStr.append(\")\");\n    System.out.println(\"  Expected: \" + expStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+      "generated_test": "Object[] input = new Object[]{3, 7, 9, new Object[]{6, 8}, 12};\nObject[] expected = new Object[]{3, 7, 9, 12};\nObject[] result = remove_nested(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expectedStr = new StringBuilder(\"(\");\n    for (int i = 0; i < expected.length; i++) {\n        if (i > 0) expectedStr.append(\", \");\n        expectedStr.append(expected[i]);\n    }\n    expectedStr.append(\")\");\n    \n    StringBuilder gotStr = new StringBuilder(\"(\");\n    for (int i = 0; i < result.length; i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(result[i]);\n    }\n    gotStr.append(\")\");\n    \n    System.out.println(\"  Expected: \" + expectedStr);\n    System.out.println(\"  Got: \" + gotStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)",
+      "generated_test": "Object[] input = new Object[]{3, 7, 9, new Object[]{6, 8}, new Object[]{5, 12}, 12};\nObject[] expected = new Object[]{3, 7, 9, 12};\nObject[] result = remove_nested(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.print(\"  Expected: [\");\n    for (int i = 0; i < expected.length; i++) {\n        System.out.print(expected[i]);\n        if (i < expected.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n    System.out.print(\"  Got: [\");\n    for (int i = 0; i < result.length; i++) {\n        System.out.print(result[i]);\n        if (i < result.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

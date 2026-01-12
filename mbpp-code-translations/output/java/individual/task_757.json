@@ -1,0 +1,37 @@
+{
+  "task_id": 757,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the pairs of reverse strings in the given string list. https://www.geeksforgeeks.org/python-program-to-count-the-pairs-of-reverse-strings/",
+  "python_code": "def count_reverse_pairs(test_list):\n  res = sum([1 for idx in range(0, len(test_list)) for idxn in range(idx, len( \n\ttest_list)) if test_list[idxn] == str(''.join(list(reversed(test_list[idx]))))]) \n  return res",
+  "test_list": [
+    "assert count_reverse_pairs([\"julia\", \"best\", \"tseb\", \"for\", \"ailuj\"])== 2",
+    "assert count_reverse_pairs([\"geeks\", \"best\", \"for\", \"skeeg\"]) == 1",
+    "assert count_reverse_pairs([\"makes\", \"best\", \"sekam\", \"for\", \"rof\"]) == 2"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int count_reverse_pairs(ArrayList<String> test_list) {\n        int res = 0;\n        for (int idx = 0; idx < test_list.size(); idx++) {\n            for (int idxn = idx; idxn < test_list.size(); idxn++) {\n                String original = test_list.get(idx);\n                String reversed = new StringBuilder(original).reverse().toString();\n                if (test_list.get(idxn).equals(reversed)) {\n                    res++;\n                }\n            }\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_reverse_pairs([\"julia\", \"best\", \"tseb\", \"for\", \"ailuj\"])== 2",
+      "generated_test": "ArrayList<String> test_list = new ArrayList<>();\ntest_list.add(\"julia\");\ntest_list.add(\"best\");\ntest_list.add(\"tseb\");\ntest_list.add(\"for\");\ntest_list.add(\"ailuj\");\nint result = count_reverse_pairs(test_list);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_reverse_pairs([\"geeks\", \"best\", \"for\", \"skeeg\"]) == 1",
+      "generated_test": "ArrayList<String> testList = new ArrayList<>();\ntestList.add(\"geeks\");\ntestList.add(\"best\");\ntestList.add(\"for\");\ntestList.add(\"skeeg\");\nint result = count_reverse_pairs(testList);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_reverse_pairs([\"makes\", \"best\", \"sekam\", \"for\", \"rof\"]) == 2",
+      "generated_test": "ArrayList<String> test_list = new ArrayList<>();\ntest_list.add(\"makes\");\ntest_list.add(\"best\");\ntest_list.add(\"sekam\");\ntest_list.add(\"for\");\ntest_list.add(\"rof\");\nint result = count_reverse_pairs(test_list);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

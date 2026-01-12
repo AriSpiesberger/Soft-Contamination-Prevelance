@@ -1,0 +1,37 @@
+{
+  "task_id": 233,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cylinder.",
+  "python_code": "def lateralsuface_cylinder(r,h):\n  lateralsurface= 2*3.1415*r*h\n  return lateralsurface",
+  "test_list": [
+    "assert math.isclose(lateralsuface_cylinder(10,5), 314.15000000000003, rel_tol=0.001)",
+    "assert math.isclose(lateralsuface_cylinder(4,5), 125.66000000000001, rel_tol=0.001)",
+    "assert math.isclose(lateralsuface_cylinder(4,10), 251.32000000000002, rel_tol=0.001)"
+  ],
+  "code_go": "package main\n\nfunc lateralsuface_cylinder(r, h float64) float64 {\n\tlateralsurface := 2 * 3.1415 * r * h\n\treturn lateralsurface\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert math.isclose(lateralsuface_cylinder(10,5), 314.15000000000003, rel_tol=0.001)",
+      "generated_test": "result := lateralsuface_cylinder(10, 5)\nexpected := 314.15000000000003\ntolerance := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nif diff <= tolerance*expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(lateralsuface_cylinder(4,5), 125.66000000000001, rel_tol=0.001)",
+      "generated_test": "result := lateralsuface_cylinder(4, 5)\nexpected := 125.66000000000001\ntolerance := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nif diff <= tolerance*expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(lateralsuface_cylinder(4,10), 251.32000000000002, rel_tol=0.001)",
+      "generated_test": "result := lateralsuface_cylinder(4, 10)\nexpected := 251.32000000000002\ntolerance := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nif diff <= tolerance*expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

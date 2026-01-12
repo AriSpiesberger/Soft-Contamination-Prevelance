@@ -1,0 +1,37 @@
+{
+  "task_id": 57,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the largest number that can be formed with the given list of digits.",
+  "python_code": "def find_Max_Num(arr) : \n    n = len(arr)\n    arr.sort(reverse = True) \n    num = arr[0] \n    for i in range(1,n) : \n        num = num * 10 + arr[i] \n    return num ",
+  "test_list": [
+    "assert find_Max_Num([1,2,3]) == 321",
+    "assert find_Max_Num([4,5,6,1]) == 6541",
+    "assert find_Max_Num([1,2,3,9]) == 9321"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.Collections;\n\npublic class Solution {\n    public static int find_Max_Num(ArrayList<Integer> arr) {\n        int n = arr.size();\n        ArrayList<Integer> sorted = new ArrayList<>(arr);\n        Collections.sort(sorted, Collections.reverseOrder());\n        int num = sorted.get(0);\n        for (int i = 1; i < n; i++) {\n            num = num * 10 + sorted.get(i);\n        }\n        return num;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_Max_Num([1,2,3]) == 321",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(1);\narr.add(2);\narr.add(3);\nint result = find_Max_Num(arr);\nint expected = 321;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Max_Num([4,5,6,1]) == 6541",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(4);\narr.add(5);\narr.add(6);\narr.add(1);\nint result = find_Max_Num(arr);\nint expected = 6541;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Max_Num([1,2,3,9]) == 9321",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(1);\narr.add(2);\narr.add(3);\narr.add(9);\nint result = find_Max_Num(arr);\nint expected = 9321;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

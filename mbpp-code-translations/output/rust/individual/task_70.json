@@ -1,0 +1,37 @@
+{
+  "task_id": 70,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "python_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1",
+  "test_list": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "code_rust": "pub fn find_equal_tuple<T>(input: &[Vec<T>]) -> i32 {\n    let k = if input.is_empty() { 0 } else { input[0].len() };\n    let mut flag = 1;\n    for tuple in input {\n        if tuple.len() != k {\n            flag = 0;\n            break;\n        }\n    }\n    flag\n}\n\npub fn get_equal<T>(input: &[Vec<T>]) -> bool {\n    find_equal_tuple(input) == 1\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+      "generated_test": "let input: &[Vec<i32>] = &[vec![11, 22, 33], vec![44, 55, 66]];\nlet result = get_equal(input);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1, 2, 3], vec![4, 5, 6, 7]];\nlet result = get_equal(&input);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2), (3, 4)]) == True",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1, 2], vec![3, 4]];\nlet result = get_equal(&input);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

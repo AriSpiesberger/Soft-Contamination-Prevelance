@@ -1,0 +1,17 @@
+{
+  "task_id": 435,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit of a given number.",
+  "python_code": "def last_Digit(n) :\n    return (n % 10) ",
+  "test_list": [
+    "assert last_Digit(123) == 3",
+    "assert last_Digit(25) == 5",
+    "assert last_Digit(30) == 0"
+  ],
+  "code_typescript": "function last_Digit(n: number): number {\n    return ((n % 10) + 10) % 10;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

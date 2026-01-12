@@ -1,0 +1,17 @@
+{
+  "task_id": 291,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find out the number of ways of painting the fence such that at most 2 adjacent posts have the same color for the given fence with n posts and k colors.",
+  "python_code": "def count_no_of_ways(n, k): \n\tdp = [0] * (n + 1) \n\ttotal = k \n\tmod = 1000000007\n\tdp[1] = k \n\tdp[2] = k * k\t \n\tfor i in range(3,n+1): \n\t\tdp[i] = ((k - 1) * (dp[i - 1] + dp[i - 2])) % mod \n\treturn dp[n]",
+  "test_list": [
+    "assert count_no_of_ways(2, 4) == 16",
+    "assert count_no_of_ways(3, 2) == 6",
+    "assert count_no_of_ways(4, 4) == 228"
+  ],
+  "code_typescript": "function count_no_of_ways(n: number, k: number): number {\n    const dp: number[] = new Array(n + 1).fill(0);\n    const mod: number = 1000000007;\n    dp[1] = k;\n    dp[2] = k * k;\n    for (let i = 3; i <= n; i++) {\n        dp[i] = ((k - 1) * (dp[i - 1] + dp[i - 2])) % mod;\n    }\n    return dp[n];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

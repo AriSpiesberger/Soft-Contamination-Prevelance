@@ -1,0 +1,37 @@
+{
+  "task_id": 744,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuple has any none value or not.",
+  "python_code": "def check_none(test_tup):\n  res = any(map(lambda ele: ele is None, test_tup))\n  return res ",
+  "test_list": [
+    "assert check_none((10, 4, 5, 6, None)) == True",
+    "assert check_none((7, 8, 9, 11, 14)) == False",
+    "assert check_none((1, 2, 3, 4, None)) == True"
+  ],
+  "code_go": "package main\n\nfunc check_none(test_tup []interface{}) bool {\n\tfor _, ele := range test_tup {\n\t\tif ele == nil {\n\t\t\treturn true\n\t\t}\n\t}\n\treturn false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_none((10, 4, 5, 6, None)) == True",
+      "generated_test": "result := check_none([]interface{}{10, 4, 5, 6, nil})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_none((7, 8, 9, 11, 14)) == False",
+      "generated_test": "result := check_none([]interface{}{7, 8, 9, 11, 14})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_none((1, 2, 3, 4, None)) == True",
+      "generated_test": "result := check_none([]interface{}{1, 2, 3, 4, nil})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

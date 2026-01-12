@@ -1,0 +1,51 @@
+{
+  "task_id": 735,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to toggle bits of the number except the first and the last bit. https://www.geeksforgeeks.org/toggle-bits-number-expect-first-last-bits/",
+  "python_code": "def set_middle_bits(n):  \n    n |= n >> 1; \n    n |= n >> 2; \n    n |= n >> 4; \n    n |= n >> 8; \n    n |= n >> 16;  \n    return (n >> 1) ^ 1\ndef toggle_middle_bits(n): \n    if (n == 1): \n        return 1\n    return n ^ set_middle_bits(n) ",
+  "test_list": [
+    "assert toggle_middle_bits(9) == 15",
+    "assert toggle_middle_bits(10) == 12",
+    "assert toggle_middle_bits(11) == 13",
+    "assert toggle_middle_bits(0b1000001) == 0b1111111",
+    "assert toggle_middle_bits(0b1001101) == 0b1110011"
+  ],
+  "code_go": "package main\n\nfunc set_middle_bits(n int) int {\n\tn |= n >> 1\n\tn |= n >> 2\n\tn |= n >> 4\n\tn |= n >> 8\n\tn |= n >> 16\n\treturn (n >> 1) ^ 1\n}\n\nfunc toggle_middle_bits(n int) int {\n\tif n == 1 {\n\t\treturn 1\n\t}\n\treturn n ^ set_middle_bits(n)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 5,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert toggle_middle_bits(9) == 15",
+      "generated_test": "result := toggle_middle_bits(9)\nexpected := 15\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(10) == 12",
+      "generated_test": "result := toggle_middle_bits(10)\nexpected := 12\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(11) == 13",
+      "generated_test": "result := toggle_middle_bits(11)\nexpected := 13\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(0b1000001) == 0b1111111",
+      "generated_test": "result := toggle_middle_bits(0b1000001)\nexpected := 0b1111111\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(0b1001101) == 0b1110011",
+      "generated_test": "result := toggle_middle_bits(0b1001101)\nexpected := 0b1110011\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

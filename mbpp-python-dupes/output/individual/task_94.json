@@ -1,0 +1,27 @@
+{
+  "task_id": 94,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value.",
+  "code_python": "from operator import itemgetter \ndef index_minimum(test_list):\n  res = min(test_list, key = itemgetter(1))[0]\n  return (res) ",
+  "test_list": [
+    "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+    "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+    "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'"
+  ],
+  "python_1": "def index_minimum(test_list):\n    # Use a lambda function instead of itemgetter to extract the second element for comparison\n    result = min(test_list, key=lambda x: x[1])\n    # Extract and return only the first element of the tuple with minimum second value\n    return result[0]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def index_minimum(test_list):\n    # Initialize tracking variable with the first tuple's second element as the smallest so far\n    min_second_value = test_list[0][1]\n    # Store the first element of the first tuple as the initial result candidate\n    result_first_value = test_list[0][0]\n    # Iterate through remaining tuples starting from index 1 to find smaller second values\n    for i in range(1, len(test_list)):\n        # Extract the second element of current tuple for comparison\n        current_second = test_list[i][1]\n        # Check if current tuple has a smaller second value than our tracked minimum\n        if current_second < min_second_value:\n            # Update the minimum second value with the new smaller value found\n            min_second_value = current_second\n            # Update result to store the first element of the tuple with new minimum\n            result_first_value = test_list[i][0]\n    # Return the first element from the tuple that had the smallest second element\n    return result_first_value",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def index_minimum(test_list):\n    # Sort the list by second tuple element and store the sorted result\n    sorted_list = sorted(test_list, key=lambda tup: tup[1])\n    # The first element after sorting has the smallest second value\n    tuple_with_min = sorted_list[0]\n    # Unpack the first value from the winning tuple\n    first_value, _ = tuple_with_min\n    # Return the extracted first value of the minimum tuple\n    return first_value",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def index_minimum(test_list):\n    # Use dictionary comprehension to map second values to first values (handles duplicates by keeping last)\n    second_to_first = {tup[1]: tup[0] for tup in test_list}\n    # Extract all second values as keys from our mapping dictionary\n    all_second_values = second_to_first.keys()\n    # Find the minimum among all second values using built-in min on dictionary keys\n    smallest_second = min(all_second_values)\n    # Look up and return the first value associated with the smallest second value\n    return second_to_first[smallest_second]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def index_minimum(test_list):\n    # Create an iterator from the list to process tuples one at a time\n    iterator = iter(test_list)\n    # Grab the first tuple to establish our initial minimum candidate\n    first_tuple = next(iterator)\n    # Store both values from first tuple as our starting minimum state\n    min_first, min_second = first_tuple[0], first_tuple[1]\n    # Process remaining tuples using the iterator with for-each unpacking\n    for first_val, second_val in iterator:\n        # Compare current second value against our tracked minimum\n        if second_val < min_second:\n            # Replace minimum tracker with newly found smaller second value\n            min_second = second_val\n            # Capture corresponding first value as new result candidate\n            min_first = first_val\n    # Return the first element paired with the smallest second element found\n    return min_first",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

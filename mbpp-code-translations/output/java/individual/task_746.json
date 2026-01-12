@@ -1,0 +1,37 @@
+{
+  "task_id": 746,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find area of a sector. The function takes the radius and angle as inputs. Function should return None if the angle is larger than 360 degrees.",
+  "python_code": "import math\ndef sector_area(r,a):\n    if a > 360:\n        return None\n    return (math.pi*r**2) * (a/360)",
+  "test_list": [
+    "assert sector_area(4,45)==6.283185307179586",
+    "assert sector_area(9,45)==31.808625617596654",
+    "assert sector_area(9,361)==None"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Double sector_area(double r, double a) {\n        if (a > 360) {\n            return null;\n        }\n        return (Math.PI * Math.pow(r, 2)) * (a / 360);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sector_area(4,45)==6.283185307179586",
+      "generated_test": "double result = sector_area(4, 45);\ndouble expected = 6.283185307179586;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sector_area(9,45)==31.808625617596654",
+      "generated_test": "double result = sector_area(9, 45);\ndouble expected = 31.808625617596654;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sector_area(9,361)==None",
+      "generated_test": "Double result = sector_area(9, 361);\nDouble expected = null;\n\nif (result == null && expected == null) {\n    System.out.println(\"PASS\");\n} else if (result == null || expected == null || !result.equals(expected)) {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n} else {\n    System.out.println(\"PASS\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

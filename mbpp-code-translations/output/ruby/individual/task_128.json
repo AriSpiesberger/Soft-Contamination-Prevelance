@@ -1,0 +1,37 @@
+{
+  "task_id": 128,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find words that are longer than n characters from a given list of words.",
+  "python_code": "def long_words(n, str):\n    word_len = []\n    txt = str.split(\" \")\n    for x in txt:\n        if len(x) > n:\n            word_len.append(x)\n    return word_len\t",
+  "test_list": [
+    "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+    "assert long_words(2,\"writing a program\")==['writing','program']",
+    "assert long_words(5,\"sorting list\")==['sorting']"
+  ],
+  "code_ruby": "def long_words(n, str)\n  str.split(\" \").select { |x| x.length > n }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+      "generated_test": "result = long_words(3, \"python is a programming language\")\nexpected = ['python', 'programming', 'language']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(2,\"writing a program\")==['writing','program']",
+      "generated_test": "result = long_words(2, \"writing a program\")\nexpected = ['writing', 'program']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(5,\"sorting list\")==['sorting']",
+      "generated_test": "result = long_words(5, \"sorting list\")\nexpected = ['sorting']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

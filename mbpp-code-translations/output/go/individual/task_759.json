@@ -1,0 +1,51 @@
+{
+  "task_id": 759,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a given string is a decimal number with a precision of 2.",
+  "python_code": "def is_decimal(num):\n    import re\n    dnumre = re.compile(r\"\"\"^[0-9]+(\\.[0-9]{1,2})?$\"\"\")\n    result = dnumre.search(num)\n    return bool(result)",
+  "test_list": [
+    "assert is_decimal('123.11')==True",
+    "assert is_decimal('e666.86')==False",
+    "assert is_decimal('3.124587')==False",
+    "assert is_decimal('1.11')==True",
+    "assert is_decimal('1.1.11')==False"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc is_decimal(num string) bool {\n\tdnumre := regexp.MustCompile(`^[0-9]+(\\.[0-9]{1,2})?$`)\n\treturn dnumre.MatchString(num)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 5,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert is_decimal('123.11')==True",
+      "generated_test": "result := is_decimal(\"123.11\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_decimal('e666.86')==False",
+      "generated_test": "result := is_decimal(\"e666.86\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_decimal('3.124587')==False",
+      "generated_test": "result := is_decimal(\"3.124587\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_decimal('1.11')==True",
+      "generated_test": "result := is_decimal(\"1.11\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_decimal('1.1.11')==False",
+      "generated_test": "result := is_decimal(\"1.1.11\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

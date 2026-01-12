@@ -1,0 +1,37 @@
+{
+  "task_id": 396,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string starts and ends with the same character or not.",
+  "python_code": "import re  \nregex = r'^[a-z]$|^([a-z]).*\\1$'\ndef check_char(string): \n\tif(re.search(regex, string)): \n\t\treturn \"Valid\" \n\telse: \n\t\treturn \"Invalid\" ",
+  "test_list": [
+    "assert check_char(\"abba\") == \"Valid\"",
+    "assert check_char(\"a\") == \"Valid\"",
+    "assert check_char(\"abcd\") == \"Invalid\""
+  ],
+  "code_rust": "pub fn check_char(string: &str) -> &'static str {\n    if string.is_empty() {\n        return \"Invalid\";\n    }\n    \n    let chars: Vec<char> = string.chars().collect();\n    let first = chars.first().unwrap();\n    let last = chars.last().unwrap();\n    \n    // Check if it's a single lowercase letter OR starts and ends with the same lowercase letter\n    if first.is_ascii_lowercase() && first == last {\n        \"Valid\"\n    } else {\n        \"Invalid\"\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 3,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_char(\"abba\") == \"Valid\"",
+      "generated_test": "let result = check_char(\"abba\");\nlet expected = \"Valid\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_char(\"a\") == \"Valid\"",
+      "generated_test": "let result = check_char(\"a\");\nlet expected = \"Valid\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_char(\"abcd\") == \"Invalid\"",
+      "generated_test": "let result = check_char(\"abcd\");\nlet expected = \"Invalid\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 125,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.",
+  "python_code": "def find_length(string): \n\tn = len(string)\n\tcurrent_sum = 0\n\tmax_sum = 0\n\tfor i in range(n): \n\t\tcurrent_sum += (1 if string[i] == '0' else -1) \n\t\tif current_sum < 0: \n\t\t\tcurrent_sum = 0\n\t\tmax_sum = max(current_sum, max_sum) \n\treturn max_sum if max_sum else 0",
+  "test_list": [
+    "assert find_length(\"11000010001\") == 6",
+    "assert find_length(\"10111\") == 1",
+    "assert find_length(\"11011101100101\") == 2"
+  ],
+  "code_typescript": "function find_length(string: string): number {\n    const n: number = string.length;\n    let current_sum: number = 0;\n    let max_sum: number = 0;\n    \n    for (let i = 0; i < n; i++) {\n        current_sum += (string[i] === '0' ? 1 : -1);\n        if (current_sum < 0) {\n            current_sum = 0;\n        }\n        max_sum = Math.max(current_sum, max_sum);\n    }\n    \n    return max_sum ? max_sum : 0;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

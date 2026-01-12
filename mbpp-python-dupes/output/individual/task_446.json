@@ -1,0 +1,27 @@
+{
+  "task_id": 446,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the occurence of all elements of list in a tuple.",
+  "code_python": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    count = 0\n    for item in tup: \n        if item in lst: \n            count+= 1 \n    return count  ",
+  "test_list": [
+    "assert count_Occurrence(('a', 'a', 'c', 'b', 'd'),['a', 'b'] ) == 3",
+    "assert count_Occurrence((1, 2, 3, 1, 4, 6, 7, 1, 4),[1, 4, 7]) == 6",
+    "assert count_Occurrence((1,2,3,4,5,6),[1,2]) == 2"
+  ],
+  "python_1": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    # Convert list to set for O(1) lookup performance\n    target_set = set(lst)\n    # Use generator expression with sum to count matches in one line\n    # sum() treats True as 1 and False as 0, effectively counting matches\n    return sum(1 for element in tup if element in target_set)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    # Build a frequency map of all elements appearing in the tuple\n    tuple_counter = Counter(tup)\n    # Initialize accumulator for total matching occurrences\n    total = 0\n    # Iterate through each target element we want to count\n    for item in lst:\n        # Add the count of this specific item from tuple (0 if not present)\n        total += tuple_counter.get(item, 0)\n    # Return the sum of all occurrences of list elements found in tuple\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    # Transform list elements into a set for efficient membership testing\n    lookup_set = set(lst)\n    # Use filter with lambda to extract only elements that exist in our target set\n    matching_elements = filter(lambda x: x in lookup_set, tup)\n    # Convert filtered iterator to list and measure its length for the count\n    filtered_list = list(matching_elements)\n    # Return the length which represents total occurrences of list elements in tuple\n    return len(filtered_list)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    # Create a Counter object to tally frequencies of each element in the tuple\n    tuple_freq = Counter(tup)\n    # Convert the target list to a set to identify unique elements we care about\n    targets = set(lst)\n    # Use set intersection to find common elements between tuple keys and target set\n    common_elements = tuple_freq.keys() & targets\n    # Sum up frequencies using map to apply the Counter's __getitem__ to each common element\n    frequency_values = map(tuple_freq.__getitem__, common_elements)\n    # Aggregate all frequency values into a single total count\n    return sum(frequency_values)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    # Build Counter from tuple to get element frequencies efficiently\n    tuple_counter = Counter(tup)\n    # Convert list to set to eliminate duplicate targets and enable fast lookup\n    target_elements = set(lst)\n    # Use list comprehension to gather counts for each target found in tuple\n    counts_for_targets = [tuple_counter[elem] for elem in target_elements if elem in tuple_counter]\n    # Reduce the list of individual counts into a single sum using built-in sum\n    return sum(counts_for_targets)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

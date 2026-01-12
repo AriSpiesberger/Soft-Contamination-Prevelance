@@ -1,0 +1,17 @@
+{
+  "task_id": 437,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove odd characters in a string.",
+  "python_code": "def remove_odd(str1):\n str2 = ''\n for i in range(1, len(str1) + 1):\n    if(i % 2 == 0):\n        str2 = str2 + str1[i - 1]\n return str2",
+  "test_list": [
+    "assert remove_odd(\"python\")==(\"yhn\")",
+    "assert remove_odd(\"program\")==(\"rga\")",
+    "assert remove_odd(\"language\")==(\"agae\")"
+  ],
+  "code_typescript": "function remove_odd(str1: string): string {\n    let str2: string = '';\n    for (let i = 1; i <= str1.length; i++) {\n        if (i % 2 === 0) {\n            str2 = str2 + str1[i - 1];\n        }\n    }\n    return str2;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

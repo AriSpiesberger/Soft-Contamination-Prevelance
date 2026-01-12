@@ -1,0 +1,17 @@
+{
+  "task_id": 617,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check for the number of jumps required of given length to reach a point of form (d, 0) from origin in a 2d plane.",
+  "python_code": "def min_Jumps(steps, d): \n    (a, b) = steps\n    temp = a \n    a = min(a, b) \n    b = max(temp, b) \n    if (d >= b): \n        return (d + b - 1) / b \n    if (d == 0): \n        return 0\n    if (d == a): \n        return 1\n    else:\n        return 2",
+  "test_list": [
+    "assert min_Jumps((3,4),11)==3.5",
+    "assert min_Jumps((3,4),0)==0",
+    "assert min_Jumps((11,14),11)==1"
+  ],
+  "code_typescript": "function min_Jumps(steps: [number, number], d: number): number {\n    let [a, b] = steps;\n    const temp = a;\n    a = Math.min(a, b);\n    b = Math.max(temp, b);\n    if (d >= b) {\n        return (d + b - 1) / b;\n    }\n    if (d === 0) {\n        return 0;\n    }\n    if (d === a) {\n        return 1;\n    }\n    return 2;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

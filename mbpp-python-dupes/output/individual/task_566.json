@@ -1,0 +1,27 @@
+{
+  "task_id": 566,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the sum of the digits of a non-negative integer.",
+  "code_python": "def sum_digits(n):\n  if n == 0:\n    return 0\n  else:\n    return n % 10 + sum_digits(int(n / 10))",
+  "test_list": [
+    "assert sum_digits(345)==12",
+    "assert sum_digits(12)==3",
+    "assert sum_digits(97)==16"
+  ],
+  "python_1": "def sum_digits(n):\n    # Convert the integer to its string representation for character iteration\n    digit_string = str(n)\n    # Initialize accumulator to store running total of digit values\n    total = 0\n    # Process each character in the string representation\n    for char in digit_string:\n        # Convert character back to integer and add to running total\n        total += int(char)\n    # Return the accumulated sum of all digits\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_digits(n):\n    # Leverage Python's built-in sum function with a generator expression\n    # Convert number to string, then map each character to its integer value\n    return sum(int(digit) for digit in str(n))",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_digits(n):\n    # Initialize a mutable total using a list to allow modification in nested function\n    total = [0]\n    # Define inner function that uses while loop with arithmetic extraction\n    def extract_and_sum(num):\n        # Continue processing while there are digits remaining\n        while num > 0:\n            # Use divmod to simultaneously get quotient and remainder (digit)\n            num, digit = divmod(num, 10)\n            # Accumulate the extracted digit into our running total\n            total[0] += digit\n    # Invoke the extraction function to process all digits\n    extract_and_sum(n)\n    # Return the accumulated sum stored in our mutable container\n    return total[0]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_digits(n):\n    # Use reduce from functools to fold over digits with accumulation\n    from functools import reduce\n    # Convert number to string to get iterable of digit characters\n    digits_as_chars = str(n)\n    # Apply reduce with lambda that converts each char to int and accumulates\n    # The lambda takes running sum and next char, returning updated sum\n    result = reduce(lambda acc, char: acc + int(char), digits_as_chars, 0)\n    # Return the final reduced value representing sum of all digits\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_digits(n):\n    # Handle edge case where input is zero directly\n    if n == 0:\n        return 0\n    # Create a list of individual digit characters by converting and splitting\n    digit_chars = list(str(n))\n    # Use map to transform each character to its numeric value, creating an iterator\n    digit_values = map(int, digit_chars)\n    # Convert the map iterator to a concrete list of integers\n    digit_list = list(digit_values)\n    # Calculate the sum by iterating with index-based access\n    total = 0\n    # Use range to generate indices for positional list access\n    for index in range(len(digit_list)):\n        # Access each digit by its index position and accumulate\n        total = total + digit_list[index]\n    # Return the computed sum of all digit values\n    return total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

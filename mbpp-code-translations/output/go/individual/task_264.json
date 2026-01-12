@@ -1,0 +1,37 @@
+{
+  "task_id": 264,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate a dog's age in dog's years.",
+  "python_code": "def dog_age(h_age):\n if h_age < 0:\n \texit()\n elif h_age <= 2:\n\t d_age = h_age * 10.5\n else:\n\t d_age = 21 + (h_age - 2)*4\n return d_age",
+  "test_list": [
+    "assert dog_age(12)==61",
+    "assert dog_age(15)==73",
+    "assert dog_age(24)==109"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"os\"\n)\n\nfunc dog_age(h_age float64) float64 {\n\tvar d_age float64\n\tif h_age < 0 {\n\t\tos.Exit(1)\n\t} else if h_age <= 2 {\n\t\td_age = h_age * 10.5\n\t} else {\n\t\td_age = 21 + (h_age-2)*4\n\t}\n\treturn d_age\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert dog_age(12)==61",
+      "generated_test": "result := dog_age(12)\nexpected := 61.0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dog_age(15)==73",
+      "generated_test": "result := dog_age(15)\nexpected := 73.0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dog_age(24)==109",
+      "generated_test": "result := dog_age(24)\nexpected := 109.0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

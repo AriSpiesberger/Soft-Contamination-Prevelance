@@ -1,0 +1,27 @@
+{
+  "task_id": 567,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a specified list is sorted or not.",
+  "code_python": "def issort_list(list1):\n    result = all(list1[i] <= list1[i+1] for i in range(len(list1)-1))\n    return result",
+  "test_list": [
+    "assert issort_list([1,2,4,6,8,10,12,14,16,17])==True",
+    "assert issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17])==False",
+    "assert issort_list([1, 2, 4, 6, 8, 10,15,14,20])==False"
+  ],
+  "python_1": "def issort_list(list1):\n    # Handle edge case of empty or single-element lists which are trivially sorted\n    if len(list1) <= 1:\n        return True\n    # Create a sorted copy of the original list for comparison\n    sorted_copy = sorted(list1)\n    # Compare original with sorted version - if equal, list was already sorted\n    return list1 == sorted_copy",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def issort_list(list1):\n    # Use zip to pair each element with its successor for direct comparison\n    paired_elements = zip(list1, list1[1:])\n    # Iterate through consecutive pairs using a traditional loop approach\n    for current, next_val in paired_elements:\n        # Return False immediately upon finding any out-of-order pair\n        if current > next_val:\n            return False\n    # All pairs satisfied the ordering constraint, so list is sorted\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def issort_list(list1):\n    # Use reduce pattern via recursion to check sorted property across list\n    def check_sorted(index):\n        # Base case: reached end of list without finding violations\n        if index >= len(list1) - 1:\n            return True\n        # Check if current element violates ascending order with next element\n        if list1[index] > list1[index + 1]:\n            return False\n        # Recursively verify the rest of the list starting from next index\n        return check_sorted(index + 1)\n    # Start the recursive sorted check from the first element\n    return check_sorted(0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def issort_list(list1):\n    # Convert the list to an iterator for manual traversal\n    it = iter(list1)\n    # Attempt to grab the first element as our initial \"previous\" value\n    try:\n        prev = next(it)\n    # Empty lists are considered sorted by definition\n    except StopIteration:\n        return True\n    # Use while True loop with iterator exhaustion as termination condition\n    while True:\n        # Try to advance to the next element in the sequence\n        try:\n            current = next(it)\n        # StopIteration means we've checked all pairs successfully\n        except StopIteration:\n            return True\n        # Detect if the previous element is greater than current (unsorted condition)\n        if prev > current:\n            return False\n        # Shift the window forward by making current the new previous\n        prev = current",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def issort_list(list1):\n    # Use enumerate to track position while iterating through elements\n    for idx, val in enumerate(list1):\n        # Skip the last element since there's no successor to compare with\n        if idx == len(list1) - 1:\n            # Breaking here means we've verified all pairs without issues\n            break\n        # Fetch the next element using index arithmetic for comparison\n        next_val = list1[idx + 1]\n        # Detect ascending order violation where current exceeds its successor\n        if val > next_val:\n            # Early return optimization when unsorted pair is discovered\n            return False\n    # Reaching this point confirms no violations were found in entire list\n    return True",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

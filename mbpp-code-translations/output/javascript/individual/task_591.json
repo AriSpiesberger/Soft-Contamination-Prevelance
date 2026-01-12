@@ -1,0 +1,37 @@
+{
+  "task_id": 591,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to interchange the first and last elements in a list.",
+  "python_code": "def swap_List(newList): \n    size = len(newList) \n    temp = newList[0] \n    newList[0] = newList[size - 1] \n    newList[size - 1] = temp  \n    return newList ",
+  "test_list": [
+    "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+    "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+    "assert swap_List([4, 5, 6]) == [6, 5, 4]"
+  ],
+  "code_javascript": "function swap_List(newList) {\n    const size = newList.length;\n    const temp = newList[0];\n    newList[0] = newList[size - 1];\n    newList[size - 1] = temp;\n    return newList;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+      "generated_test": "const result = swap_List([12, 35, 9, 56, 24]);\nconst expected = [24, 35, 9, 56, 12];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+      "generated_test": "const result = swap_List([1, 2, 3]);\nconst expected = [3, 2, 1];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_List([4, 5, 6]) == [6, 5, 4]",
+      "generated_test": "const result = swap_List([4, 5, 6]);\nconst expected = [6, 5, 4];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 397,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median of three numbers.",
+  "python_code": "def median_numbers(a,b,c):\n if a > b:\n    if a < c:\n        median = a\n    elif b > c:\n        median = b\n    else:\n        median = c\n else:\n    if a > c:\n        median = a\n    elif b < c:\n        median = b\n    else:\n        median = c\n return median",
+  "test_list": [
+    "assert median_numbers(25,55,65)==55.0",
+    "assert median_numbers(20,10,30)==20.0",
+    "assert median_numbers(15,45,75)==45.0"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double median_numbers(double a, double b, double c) {\n        double median;\n        if (a > b) {\n            if (a < c) {\n                median = a;\n            } else if (b > c) {\n                median = b;\n            } else {\n                median = c;\n            }\n        } else {\n            if (a > c) {\n                median = a;\n            } else if (b < c) {\n                median = b;\n            } else {\n                median = c;\n            }\n        }\n        return median;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert median_numbers(25,55,65)==55.0",
+      "generated_test": "double result = median_numbers(25, 55, 65);\ndouble expected = 55.0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_numbers(20,10,30)==20.0",
+      "generated_test": "double result = median_numbers(20, 10, 30);\ndouble expected = 20.0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_numbers(15,45,75)==45.0",
+      "generated_test": "double result = median_numbers(15, 45, 75);\ndouble expected = 45.0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

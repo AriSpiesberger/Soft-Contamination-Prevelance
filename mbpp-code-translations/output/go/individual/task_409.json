@@ -1,0 +1,37 @@
+{
+  "task_id": 409,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum product from the pairs of tuples within a given list.",
+  "python_code": "def min_product_tuple(list1):\n    result_min = min([abs(x * y) for x, y in list1] )\n    return result_min",
+  "test_list": [
+    "assert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8",
+    "assert min_product_tuple([(10,20), (15,2), (5,10)] )==30",
+    "assert min_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==100"
+  ],
+  "code_go": "package main\n\nfunc min_product_tuple(list1 [][2]int) int {\n\tif len(list1) == 0 {\n\t\treturn 0\n\t}\n\t\n\tabs := func(n int) int {\n\t\tif n < 0 {\n\t\t\treturn -n\n\t\t}\n\t\treturn n\n\t}\n\t\n\tresult_min := abs(list1[0][0] * list1[0][1])\n\t\n\tfor _, pair := range list1 {\n\t\tproduct := abs(pair[0] * pair[1])\n\t\tif product < result_min {\n\t\t\tresult_min = product\n\t\t}\n\t}\n\t\n\treturn result_min\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8",
+      "generated_test": "result := min_product_tuple([][2]int{{2, 7}, {2, 6}, {1, 8}, {4, 9}})\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_product_tuple([(10,20), (15,2), (5,10)] )==30",
+      "generated_test": "result := min_product_tuple([][2]int{{10, 20}, {15, 2}, {5, 10}})\nexpected := 30\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==100",
+      "generated_test": "result := min_product_tuple([][2]int{{11, 44}, {10, 15}, {20, 5}, {12, 9}})\nexpected := 100\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 106,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to append the given list to the given tuples.",
+  "python_code": "def add_lists(test_list, test_tup):\n  res = tuple(list(test_tup) + test_list)\n  return (res) ",
+  "test_list": [
+    "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+    "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+    "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)"
+  ],
+  "code_javascript": "function add_lists(test_list, test_tup) {\n  const res = [...test_tup, ...test_list];\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+      "generated_test": "const result = add_lists([5, 6, 7], [9, 10]);\nconst expected = [9, 10, 5, 6, 7];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+      "generated_test": "const result = add_lists([6, 7, 8], [10, 11]);\nconst expected = [10, 11, 6, 7, 8];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)",
+      "generated_test": "const result = add_lists([7, 8, 9], [11, 12]);\nconst expected = [11, 12, 7, 8, 9];\n\nconst arraysEqual = (a, b) => a.length === b.length && a.every((val, i) => val === b[i]);\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

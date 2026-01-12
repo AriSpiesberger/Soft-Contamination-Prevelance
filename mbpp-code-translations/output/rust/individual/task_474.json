@@ -1,0 +1,37 @@
+{
+  "task_id": 474,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace characters in a string.",
+  "python_code": "def replace_char(str1,ch,newch):\n str2 = str1.replace(ch, newch)\n return str2",
+  "test_list": [
+    "assert replace_char(\"polygon\",'y','l')==(\"pollgon\")",
+    "assert replace_char(\"character\",'c','a')==(\"aharaater\")",
+    "assert replace_char(\"python\",'l','a')==(\"python\")"
+  ],
+  "code_rust": "pub fn replace_char(str1: &str, ch: char, newch: char) -> String {\n    str1.replace(ch, &newch.to_string())\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert replace_char(\"polygon\",'y','l')==(\"pollgon\")",
+      "generated_test": "let result = replace_char(\"polygon\", 'y', 'l');\nlet expected = \"pollgon\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_char(\"character\",'c','a')==(\"aharaater\")",
+      "generated_test": "let result = replace_char(\"character\", 'c', 'a');\nlet expected = \"aharaater\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_char(\"python\",'l','a')==(\"python\")",
+      "generated_test": "let result = replace_char(\"python\", 'l', 'a');\nlet expected = \"python\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

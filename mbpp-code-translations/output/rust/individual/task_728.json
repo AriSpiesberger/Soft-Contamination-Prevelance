@@ -1,0 +1,37 @@
+{
+  "task_id": 728,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function takes as input two lists [a_1,...,a_n], [b_1,...,b_n] and returns [a_1+b_1,...,a_n+b_n].",
+  "python_code": "def sum_list(lst1,lst2):\n  res_list = [lst1[i] + lst2[i] for i in range(len(lst1))] \n  return res_list",
+  "test_list": [
+    "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+    "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+    "assert sum_list([15,20,30],[15,45,75])==[30,65,105]"
+  ],
+  "code_rust": "pub fn sum_list(lst1: &[i32], lst2: &[i32]) -> Vec<i32> {\n    lst1.iter().zip(lst2.iter()).map(|(a, b)| a + b).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+      "generated_test": "let result = sum_list(&[10, 20, 30], &[15, 25, 35]);\nlet expected = vec![25, 45, 65];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+      "generated_test": "let result = sum_list(&[1, 2, 3], &[5, 6, 7]);\nlet expected = vec![6, 8, 10];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_list([15,20,30],[15,45,75])==[30,65,105]",
+      "generated_test": "let result = sum_list(&[15, 20, 30], &[15, 45, 75]);\nlet expected = vec![30, 65, 105];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

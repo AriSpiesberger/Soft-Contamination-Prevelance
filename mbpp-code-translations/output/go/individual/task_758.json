@@ -1,0 +1,44 @@
+{
+  "task_id": 758,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count lists within a list. The function should return a dictionary where every list is converted to a tuple and the value of such tuple is the number of its occurencies in the original list.",
+  "python_code": "def unique_sublists(list1):\n    result ={}\n    for l in  list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+    "assert unique_sublists([['john']])=={('john',): 1}"
+  ],
+  "code_go": "package main\n\nfunc unique_sublists(list1 [][]interface{}) map[string]int {\n\tresult := make(map[string]int)\n\tkeyToTuple := make(map[string][]interface{})\n\t\n\tfor _, l := range list1 {\n\t\tkey := sliceToKey(l)\n\t\tresult[key]++\n\t\tif _, exists := keyToTuple[key]; !exists {\n\t\t\ttupleCopy := make([]interface{}, len(l))\n\t\t\tcopy(tupleCopy, l)\n\t\t\tkeyToTuple[key] = tupleCopy\n\t\t}\n\t}\n\t\n\treturn result\n}\n\nfunc sliceToKey(s []interface{}) string {\n\tresult := \"(\"\n\tfor i, v := range s {\n\t\tif i > 0 {\n\t\t\tresult += \", \"\n\t\t}\n\t\tswitch val := v.(type) {\n\t\tcase int:\n\t\t\tresult += intToString(val)\n\t\tcase string:\n\t\t\tresult += \"'\" + val + \"'\"\n\t\tdefault:\n\t\t\tresult += \"?\"\n\t\t}\n\t}\n\t// Add trailing comma for single-element slices to match Python tuple syntax\n\tif len(s) == 1 {\n\t\tresult += \",\"\n\t}\n\tresult += \")\"\n\treturn result\n}\n\nfunc intToString(n int) string {\n\tif n == 0 {\n\t\treturn \"0\"\n\t}\n\tnegative := false\n\tif n < 0 {\n\t\tnegative = true\n\t\tn = -n\n\t}\n\tdigits := \"\"\n\tfor n > 0 {\n\t\tdigit := n % 10\n\t\tdigits = string(rune('0'+digit)) + digits\n\t\tn /= 10\n\t}\n\tif negative {\n\t\tdigits = \"-\" + digits\n\t}\n\treturn digits\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+      "generated_test": "input := [][]interface{}{\n\t{1, 3},\n\t{5, 7},\n\t{1, 3},\n\t{13, 15, 17},\n\t{5, 7},\n\t{9, 11},\n}\n\nexpected := map[string]int{\n\t\"(1, 3)\":       2,\n\t\"(5, 7)\":       2,\n\t\"(13, 15, 17)\": 1,\n\t\"(9, 11)\":      1,\n}\n\nresult := unique_sublists(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+      "generated_test": "input := [][]interface{}{\n\t{\"green\", \"orange\"},\n\t{\"black\"},\n\t{\"green\", \"orange\"},\n\t{\"white\"},\n}\n\nresult := unique_sublists(input)\n\nexpected := map[string]int{\n\t\"('green', 'orange')\": 2,\n\t\"('black',)\":          1,\n\t\"('white',)\":          1,\n}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+      "generated_test": "input := [][]interface{}{\n\t{10, 20, 30, 40},\n\t{60, 70, 50, 50},\n\t{90, 100, 200},\n}\n\nresult := unique_sublists(input)\n\nexpected := map[string]int{\n\t\"(10, 20, 30, 40)\": 1,\n\t\"(60, 70, 50, 50)\": 1,\n\t\"(90, 100, 200)\":   1,\n}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['john']])=={('john',): 1}",
+      "generated_test": "result := unique_sublists([][]interface{}{{\"john\"}})\nexpected := map[string]int{\"('john',)\": 1}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

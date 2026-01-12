@@ -1,0 +1,44 @@
+{
+  "task_id": 724,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes base and power as arguments and calculate the sum of all digits of the base to the specified power.",
+  "python_code": "def power_base_sum(base, power):\n    return sum([int(i) for i in str(pow(base, power))])",
+  "test_list": [
+    "assert power_base_sum(2,100)==115",
+    "assert power_base_sum(8,10)==37",
+    "assert power_base_sum(8,15)==62",
+    "assert power_base_sum(3,3)==9"
+  ],
+  "code_javascript": "function power_base_sum(base, power) {\n    return (BigInt(base) ** BigInt(power))\n        .toString()\n        .split('')\n        .reduce((sum, digit) => sum + parseInt(digit), 0);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 2,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert power_base_sum(2,100)==115",
+      "generated_test": "const result = power_base_sum(2, 100);\nconst expected = 115;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(8,10)==37",
+      "generated_test": "const result = power_base_sum(8, 10);\nconst expected = 37;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(8,15)==62",
+      "generated_test": "const result = power_base_sum(8, 15);\nconst expected = 62;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(3,3)==9",
+      "generated_test": "const result = power_base_sum(3, 3);\nconst expected = 9;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

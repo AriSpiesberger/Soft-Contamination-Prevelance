@@ -1,0 +1,37 @@
+{
+  "task_id": 460,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to get the first element of each sublist.",
+  "python_code": "def Extract(lst): \n    return [item[0] for item in lst] ",
+  "test_list": [
+    "assert Extract([[1, 2], [3, 4, 5], [6, 7, 8, 9]]) == [1, 3, 6]",
+    "assert Extract([[1,2,3],[4, 5]]) == [1,4]",
+    "assert Extract([[9,8,1],[1,2]]) == [9,1]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Integer> Extract(List<List<Integer>> lst) {\n        ArrayList<Integer> result = new ArrayList<>();\n        for (List<Integer> item : lst) {\n            result.add(item.get(0));\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert Extract([[1, 2], [3, 4, 5], [6, 7, 8, 9]]) == [1, 3, 6]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(2);\ninput.add(list1);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(3);\nlist2.add(4);\nlist2.add(5);\ninput.add(list2);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(6);\nlist3.add(7);\nlist3.add(8);\nlist3.add(9);\ninput.add(list3);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(3);\nexpected.add(6);\n\nList<Integer> result = Extract(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Extract([[1,2,3],[4, 5]]) == [1,4]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(2);\nlist1.add(3);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(4);\nlist2.add(5);\ninput.add(list1);\ninput.add(list2);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(4);\n\nList<Integer> result = Extract(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Extract([[9,8,1],[1,2]]) == [9,1]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> inner1 = new ArrayList<>();\ninner1.add(9);\ninner1.add(8);\ninner1.add(1);\nList<Integer> inner2 = new ArrayList<>();\ninner2.add(1);\ninner2.add(2);\ninput.add(inner1);\ninput.add(inner2);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(9);\nexpected.add(1);\n\nList<Integer> result = Extract(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

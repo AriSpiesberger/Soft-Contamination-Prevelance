@@ -1,0 +1,37 @@
+{
+  "task_id": 168,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurrences of a number in a given list.",
+  "python_code": "def frequency(a,x): \n    count = 0  \n    for i in a: \n      if i == x: \n        count += 1\n\n    return count ",
+  "test_list": [
+    "assert frequency([1,2,3], 4) == 0",
+    "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+    "assert frequency([0,1,2,3,1,2], 1) == 2"
+  ],
+  "code_ruby": "def frequency(a, x)\n  a.count(x)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert frequency([1,2,3], 4) == 0",
+      "generated_test": "result = frequency([1,2,3], 4)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+      "generated_test": "result = frequency([1,2,2,3,3,3,4], 3)\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency([0,1,2,3,1,2], 1) == 2",
+      "generated_test": "result = frequency([0, 1, 2, 3, 1, 2], 1)\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

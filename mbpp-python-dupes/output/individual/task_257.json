@@ -1,0 +1,27 @@
+{
+  "task_id": 257,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two numbers and returns a tuple with the second number and then the first number.",
+  "code_python": "def swap_numbers(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)",
+  "test_list": [
+    "assert swap_numbers(10,20)==(20,10)",
+    "assert swap_numbers(15,17)==(17,15)",
+    "assert swap_numbers(100,200)==(200,100)"
+  ],
+  "python_1": "# Define function that swaps the order of two input parameters\ndef swap_numbers(a, b):\n    # Directly return a tuple with arguments in reversed order using Python's tuple packing\n    return (b, a)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Define the swap function using list unpacking technique\ndef swap_numbers(a, b):\n    # Create a list containing both values in original order\n    values = [a, b]\n    # Use negative indexing to extract elements in reverse order and pack into tuple\n    result = (values[-1], values[-2])\n    # Return the tuple with swapped positions\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Define swap function using Python's simultaneous assignment feature\ndef swap_numbers(a, b):\n    # Perform parallel assignment to swap values without temporary variable\n    a, b = b, a\n    # Construct and return tuple from the now-swapped variables\n    return (a, b)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Define swap function using slice reversal on a sequence\ndef swap_numbers(a, b):\n    # Pack both arguments into a tuple as an ordered sequence\n    pair = (a, b)\n    # Use slice notation [::-1] to create a reversed copy of the tuple\n    reversed_pair = pair[::-1]\n    # Return the reversed tuple which now has b first, then a\n    return reversed_pair",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Define swap function using the built-in reversed iterator\ndef swap_numbers(a, b):\n    # Store both inputs in a tuple to create an iterable sequence\n    original = (a, b)\n    # Apply reversed() to get an iterator that yields elements in reverse order\n    reverse_iterator = reversed(original)\n    # Convert the reverse iterator to a tuple, materializing the swapped result\n    swapped = tuple(reverse_iterator)\n    # Return the newly constructed tuple with positions exchanged\n    return swapped",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

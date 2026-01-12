@@ -1,0 +1,58 @@
+{
+  "task_id": 6,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the two numbers differ at one bit position only or not.",
+  "python_code": "def is_Power_Of_Two (x): \n    return x and (not(x & (x - 1))) \ndef differ_At_One_Bit_Pos(a,b): \n    return is_Power_Of_Two(a ^ b)",
+  "test_list": [
+    "assert differ_At_One_Bit_Pos(13,9) == True",
+    "assert differ_At_One_Bit_Pos(15,8) == False",
+    "assert differ_At_One_Bit_Pos(2,4) == False",
+    "assert differ_At_One_Bit_Pos(2, 3) == True",
+    "assert differ_At_One_Bit_Pos(5, 1) == True",
+    "assert differ_At_One_Bit_Pos(1, 5) == True"
+  ],
+  "code_go": "package main\n\nfunc is_Power_Of_Two(x int) bool {\n    return x != 0 && (x&(x-1)) == 0\n}\n\nfunc differ_At_One_Bit_Pos(a, b int) bool {\n    return is_Power_Of_Two(a ^ b)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 6,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(13,9) == True",
+      "generated_test": "result := differ_At_One_Bit_Pos(13, 9)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(15,8) == False",
+      "generated_test": "result := differ_At_One_Bit_Pos(15, 8)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(2,4) == False",
+      "generated_test": "result := differ_At_One_Bit_Pos(2, 4)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(2, 3) == True",
+      "generated_test": "result := differ_At_One_Bit_Pos(2, 3)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(5, 1) == True",
+      "generated_test": "result := differ_At_One_Bit_Pos(5, 1)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert differ_At_One_Bit_Pos(1, 5) == True",
+      "generated_test": "result := differ_At_One_Bit_Pos(1, 5)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 638,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the wind chill index rounded to the next integer given the wind velocity in km/h and a temperature in celsius.",
+  "python_code": "import math\ndef wind_chill(v,t):\n windchill = 13.12 + 0.6215*t -  11.37*math.pow(v, 0.16) + 0.3965*t*math.pow(v, 0.16)\n return int(round(windchill, 0))",
+  "test_list": [
+    "assert wind_chill(120,35)==40",
+    "assert wind_chill(40,20)==19",
+    "assert wind_chill(10,8)==6"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int wind_chill(double v, double t) {\n        double windchill = 13.12 + 0.6215 * t - 11.37 * Math.pow(v, 0.16) + 0.3965 * t * Math.pow(v, 0.16);\n        return (int) Math.round(windchill);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert wind_chill(120,35)==40",
+      "generated_test": "int result = wind_chill(120, 35);\nint expected = 40;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert wind_chill(40,20)==19",
+      "generated_test": "int result = wind_chill(40, 20);\nint expected = 19;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert wind_chill(10,8)==6",
+      "generated_test": "int result = wind_chill(10, 8);\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

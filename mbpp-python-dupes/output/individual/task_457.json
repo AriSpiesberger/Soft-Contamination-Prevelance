@@ -1,0 +1,27 @@
+{
+  "task_id": 457,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sublist having minimum length.",
+  "code_python": "def Find_Min(lst): \n    return min(lst, key=len) ",
+  "test_list": [
+    "assert Find_Min([[1],[1,2],[1,2,3]]) == [1]",
+    "assert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]",
+    "assert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']"
+  ],
+  "python_1": "def Find_Min(lst): \n    # Start by assuming the first sublist is the shortest one\n    min_sublist = lst[0]\n    # Track the length of the current minimum to avoid repeated len() calls\n    min_length = len(lst[0])\n    # Iterate through remaining sublists starting from index 1\n    for sublist in lst[1:]:\n        # Calculate length of current sublist for comparison\n        current_length = len(sublist)\n        # Update minimum if we found a shorter sublist\n        if current_length < min_length:\n            # Store the new shortest sublist\n            min_sublist = sublist\n            # Update the tracked minimum length\n            min_length = current_length\n    # Return the sublist with the smallest number of elements\n    return min_sublist",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def Find_Min(lst): \n    # Create list of tuples pairing each sublist with its length\n    length_pairs = [(sublist, len(sublist)) for sublist in lst]\n    # Sort the pairs by length in ascending order\n    sorted_pairs = sorted(length_pairs, key=lambda pair: pair[1])\n    # Extract and return the sublist from the first pair (shortest)\n    return sorted_pairs[0][0]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def Find_Min(lst): \n    # Use enumerate to pair each sublist with its index position\n    indexed_sublists = enumerate(lst)\n    # Apply min with a custom key that extracts length from the enumerated tuple\n    index_and_min = min(indexed_sublists, key=lambda x: len(x[1]))\n    # Unpack the winning tuple to get just the sublist (discarding index)\n    _, shortest_sublist = index_and_min\n    # Return the sublist that had the smallest length\n    return shortest_sublist",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def Find_Min(lst): \n    # Use reduce to iteratively compare pairs and keep the shorter one\n    from functools import reduce\n    # Define comparison function that returns the shorter of two sublists\n    def keep_shorter(a, b):\n        # Compare lengths and return whichever sublist has fewer elements\n        if len(a) <= len(b):\n            return a\n        else:\n            return b\n    # Apply reduce to fold the entire list down to the single shortest sublist\n    result = reduce(keep_shorter, lst)\n    # Return the final winner after all pairwise comparisons\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def Find_Min(lst): \n    # Build a dictionary mapping each sublist's length to its index for lookup\n    length_to_index = {}\n    # Process each sublist by its position in the original list\n    for i in range(len(lst)):\n        # Calculate how many elements are in the current sublist\n        current_len = len(lst[i])\n        # Only store first occurrence of each length to preserve original behavior\n        if current_len not in length_to_index:\n            # Map this length value to the index where we first saw it\n            length_to_index[current_len] = i\n    # Extract all the unique length values we encountered\n    all_lengths = list(length_to_index.keys())\n    # Find the smallest length value among all sublists\n    smallest_length = all_lengths[0]\n    # Scan through remaining lengths to find the true minimum\n    for length in all_lengths[1:]:\n        # Update our tracked minimum when we find something smaller\n        if length < smallest_length:\n            smallest_length = length\n    # Retrieve the index of the sublist that had the minimum length\n    min_index = length_to_index[smallest_length]\n    # Return the actual sublist located at that index position\n    return lst[min_index]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

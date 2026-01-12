@@ -1,0 +1,27 @@
+{
+  "task_id": 720,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add a dictionary to the tuple. The output should be a tuple.",
+  "code_python": "def add_dict_to_tuple(test_tup, test_dict):\n  test_tup = list(test_tup)\n  test_tup.append(test_dict)\n  test_tup = tuple(test_tup)\n  return (test_tup) ",
+  "test_list": [
+    "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+    "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+    "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})"
+  ],
+  "python_1": "def add_dict_to_tuple(test_tup, test_dict):\n  # Create a single-element tuple containing just the dictionary\n  dict_as_tuple = (test_dict,)\n  # Concatenate the original tuple with the new single-element tuple using + operator\n  result = test_tup + dict_as_tuple\n  # Return the combined tuple directly\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def add_dict_to_tuple(test_tup, test_dict):\n  # Use unpacking operator to spread original tuple elements into a new tuple with dict appended\n  return (*test_tup, test_dict)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def add_dict_to_tuple(test_tup, test_dict):\n  # Import reduce function for functional-style accumulation\n  from functools import reduce\n  # Create a list containing all elements we want in final tuple\n  elements = [*test_tup, test_dict]\n  # Use reduce to accumulate elements one by one into a growing tuple\n  result = reduce(lambda acc, x: acc + (x,), elements, ())\n  # Return the fully constructed tuple\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def add_dict_to_tuple(test_tup, test_dict):\n  # Use tuple constructor with a generator expression that yields original elements then the dict\n  def element_generator():\n    # Yield each element from the original tuple one at a time\n    for item in test_tup:\n      yield item\n    # Yield the dictionary as the final element\n    yield test_dict\n  # Convert the generator output to a tuple using the tuple constructor\n  return tuple(element_generator())",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def add_dict_to_tuple(test_tup, test_dict):\n  # Use itertools.chain to lazily concatenate the tuple elements with a single-item list containing the dict\n  import itertools\n  # Chain creates an iterator that seamlessly combines multiple iterables in sequence\n  chained = itertools.chain(test_tup, [test_dict])\n  # Materialize the chained iterator into a tuple using the tuple constructor\n  return tuple(chained)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

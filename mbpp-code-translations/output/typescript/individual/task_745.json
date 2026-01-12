@@ -1,0 +1,17 @@
+{
+  "task_id": 745,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find numbers within a given range from startnum ti endnum where every number is divisible by every digit it contains. https://www.w3resource.com/python-exercises/lambda/python-lambda-exercise-24.php",
+  "python_code": "def divisible_by_digits(startnum, endnum):\n    return [n for n in range(startnum, endnum+1) \\\n                if not any(map(lambda x: int(x) == 0 or n%int(x) != 0, str(n)))]",
+  "test_list": [
+    "assert divisible_by_digits(1,22)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22]",
+    "assert divisible_by_digits(1,15)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15]",
+    "assert divisible_by_digits(20,25)==[22, 24]"
+  ],
+  "code_typescript": "function divisible_by_digits(startnum: number, endnum: number): number[] {\n    const result: number[] = [];\n    \n    for (let n = startnum; n <= endnum; n++) {\n        const digits = String(n).split('');\n        const isValid = !digits.some(x => {\n            const digit = parseInt(x);\n            return digit === 0 || n % digit !== 0;\n        });\n        \n        if (isValid) {\n            result.push(n);\n        }\n    }\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

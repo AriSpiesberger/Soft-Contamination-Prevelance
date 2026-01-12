@@ -1,0 +1,37 @@
+{
+  "task_id": 772,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all the words with k length in the given string.",
+  "python_code": "def remove_length(test_str, K):\n  temp = test_str.split()\n  res = [ele for ele in temp if len(ele) != K]\n  res = ' '.join(res)\n  return (res) ",
+  "test_list": [
+    "assert remove_length('The person is most value tet', 3) == 'person is most value'",
+    "assert remove_length('If you told me about this ok', 4) == 'If you me about ok'",
+    "assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'"
+  ],
+  "code_ruby": "def remove_length(test_str, k)\n  temp = test_str.split\n  res = temp.select { |ele| ele.length != k }\n  res.join(' ')\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert remove_length('The person is most value tet', 3) == 'person is most value'",
+      "generated_test": "result = remove_length('The person is most value tet', 3)\nexpected = 'person is most value'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_length('If you told me about this ok', 4) == 'If you me about ok'",
+      "generated_test": "result = remove_length('If you told me about this ok', 4)\nexpected = 'If you me about ok'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'",
+      "generated_test": "result = remove_length('Forces of darkeness is come into the play', 4)\nexpected = 'Forces of darkeness is the'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

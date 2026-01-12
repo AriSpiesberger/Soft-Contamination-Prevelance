@@ -1,0 +1,17 @@
+{
+  "task_id": 61,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of substrings with the sum of digits equal to their length.",
+  "python_code": "from collections import defaultdict\ndef count_Substrings(s):\n    n = len(s)\n    count,sum = 0,0\n    mp = defaultdict(lambda : 0)\n    mp[0] += 1\n    for i in range(n):\n        sum += ord(s[i]) - ord('0')\n        count += mp[sum - (i + 1)]\n        mp[sum - (i + 1)] += 1\n    return count",
+  "test_list": [
+    "assert count_Substrings('112112') == 6",
+    "assert count_Substrings('111') == 6",
+    "assert count_Substrings('1101112') == 12"
+  ],
+  "code_typescript": "function count_Substrings(s: string): number {\n    const n: number = s.length;\n    let count: number = 0;\n    let sum: number = 0;\n    const mp: Map<number, number> = new Map();\n    mp.set(0, 1);\n    \n    for (let i = 0; i < n; i++) {\n        sum += s.charCodeAt(i) - '0'.charCodeAt(0);\n        const key: number = sum - (i + 1);\n        count += mp.get(key) || 0;\n        mp.set(key, (mp.get(key) || 0) + 1);\n    }\n    \n    return count;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

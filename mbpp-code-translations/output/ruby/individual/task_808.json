@@ -1,0 +1,37 @@
+{
+  "task_id": 808,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuples contain the k or not.",
+  "python_code": "def check_K(test_tup, K):\n  res = False\n  for ele in test_tup:\n    if ele == K:\n      res = True\n      break\n  return res ",
+  "test_list": [
+    "assert check_K((10, 4, 5, 6, 8), 6) == True",
+    "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+    "assert check_K((7, 8, 9, 44, 11, 12), 11) == True"
+  ],
+  "code_ruby": "def check_K(test_tup, k)\n  test_tup.include?(k)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert check_K((10, 4, 5, 6, 8), 6) == True",
+      "generated_test": "result = check_K([10, 4, 5, 6, 8], 6)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+      "generated_test": "result = check_K([1, 2, 3, 4, 5, 6], 7)\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_K((7, 8, 9, 44, 11, 12), 11) == True",
+      "generated_test": "result = check_K([7, 8, 9, 44, 11, 12], 11)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

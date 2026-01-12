@@ -1,0 +1,37 @@
+{
+  "task_id": 763,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum difference between any two elements in a given array. https://www.geeksforgeeks.org/find-minimum-difference-pair/",
+  "python_code": "def find_min_diff(arr,n): \n    arr = sorted(arr) \n    diff = 10**20 \n    for i in range(n-1): \n        if arr[i+1] - arr[i] < diff: \n            diff = arr[i+1] - arr[i]  \n    return diff ",
+  "test_list": [
+    "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+    "assert find_min_diff((4,3,2,6),4) == 1",
+    "assert find_min_diff((30,5,20,9),4) == 4"
+  ],
+  "code_ruby": "def find_min_diff(arr, n)\n  arr = arr.sort\n  diff = 10**20\n  (0...(n-1)).each do |i|\n    if arr[i+1] - arr[i] < diff\n      diff = arr[i+1] - arr[i]\n    end\n  end\n  diff\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+      "generated_test": "result = find_min_diff([1, 5, 3, 19, 18, 25], 6)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_min_diff((4,3,2,6),4) == 1",
+      "generated_test": "result = find_min_diff([4, 3, 2, 6], 4)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_min_diff((30,5,20,9),4) == 4",
+      "generated_test": "result = find_min_diff([30, 5, 20, 9], 4)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

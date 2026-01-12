@@ -1,0 +1,37 @@
+{
+  "task_id": 83,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the character made by adding the ASCII value of all the characters of the given string modulo 26.",
+  "python_code": "def get_Char(strr):  \n    summ = 0\n    for i in range(len(strr)): \n        summ += (ord(strr[i]) - ord('a') + 1)  \n    if (summ % 26 == 0): \n        return ord('z') \n    else: \n        summ = summ % 26\n        return chr(ord('a') + summ - 1)",
+  "test_list": [
+    "assert get_Char(\"abc\") == \"f\"",
+    "assert get_Char(\"gfg\") == \"t\"",
+    "assert get_Char(\"ab\") == \"c\""
+  ],
+  "code_rust": "pub fn get_Char(strr: &str) -> char {\n    let mut summ: i32 = 0;\n    for c in strr.chars() {\n        summ += (c as i32) - ('a' as i32) + 1;\n    }\n    if summ % 26 == 0 {\n        'z'\n    } else {\n        summ = summ % 26;\n        (('a' as i32) + summ - 1) as u8 as char\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert get_Char(\"abc\") == \"f\"",
+      "generated_test": "let result = get_Char(\"abc\");\nlet expected = 'f';\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_Char(\"gfg\") == \"t\"",
+      "generated_test": "let result = get_Char(\"gfg\");\nlet expected = 't';\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_Char(\"ab\") == \"c\"",
+      "generated_test": "let result = get_Char(\"ab\");\nlet expected = 'c';\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

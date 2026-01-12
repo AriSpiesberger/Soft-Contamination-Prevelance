@@ -1,0 +1,37 @@
+{
+  "task_id": 98,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to multiply all the numbers in a list and divide with the length of the list.",
+  "python_code": "def multiply_num(numbers):  \n    total = 1\n    for x in numbers:\n        total *= x  \n    return total/len(numbers) ",
+  "test_list": [
+    "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)"
+  ],
+  "code_javascript": "function multiply_num(numbers) {\n    let total = 1;\n    for (const x of numbers) {\n        total *= x;\n    }\n    return total / numbers.length;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+      "generated_test": "const result = multiply_num([8, 2, 3, -1, 7]);\nconst expected = -67.2;\nconst tolerance = 0.001;\nif (Math.abs(result - expected) <= Math.abs(expected) * tolerance) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+      "generated_test": "const result = multiply_num([-10, -20, -30]);\nconst expected = -2000.0;\nconst relTol = 0.001;\n\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)",
+      "generated_test": "const result = multiply_num([19, 15, 18]);\nconst expected = 1710.0;\nconst relTol = 0.001;\n\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

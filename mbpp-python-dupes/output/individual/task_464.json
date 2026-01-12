@@ -1,0 +1,27 @@
+{
+  "task_id": 464,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if all values are same in a dictionary.",
+  "code_python": "def check_value(dict, n):\n    result = all(x == n for x in dict.values()) \n    return result",
+  "test_list": [
+    "assert check_value({'Cierra Vega': 12, 'Alden Cantrell': 12, 'Kierra Gentry': 12, 'Pierre Cox': 12},10)==False",
+    "assert check_value({'Cierra Vega': 12, 'Alden Cantrell': 12, 'Kierra Gentry': 12, 'Pierre Cox': 12},12)==True",
+    "assert check_value({'Cierra Vega': 12, 'Alden Cantrell': 12, 'Kierra Gentry': 12, 'Pierre Cox': 12},5)==False"
+  ],
+  "python_1": "def check_value(dict, n):\n    # Extract all values from the dictionary into a list for iteration\n    values = list(dict.values())\n    # Iterate through each value using index-based loop\n    for i in range(len(values)):\n        # Compare current value against target n, return False on mismatch\n        if values[i] != n:\n            return False\n    # All values matched n, so return True\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_value(dict, n):\n    # Convert dictionary values to a set to get unique values only\n    unique_values = set(dict.values())\n    # Check if the set contains exactly one element and that element equals n\n    # An empty dict would have empty set, so we handle that edge case too\n    if len(unique_values) == 0:\n        # Empty dictionary case - return True as there are no values to contradict\n        return True\n    # Verify set has single unique value AND that value matches the target n\n    return unique_values == {n}",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_value(dict, n):\n    # Use filter to find values that don't match n, creating a lazy iterator\n    mismatches = filter(lambda x: x != n, dict.values())\n    # Convert to list and check if any mismatches exist - empty list means all matched\n    mismatch_list = list(mismatches)\n    # Return True only when no mismatching values were found\n    return len(mismatch_list) == 0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_value(dict, n):\n    # Use map to transform each value into a boolean indicating equality with n\n    equality_checks = map(lambda v: v == n, dict.values())\n    # Convert the map object to a list of True/False values\n    bool_list = list(equality_checks)\n    # Handle empty dictionary case by returning True (vacuous truth)\n    if not bool_list:\n        return True\n    # Use reduce-like approach: count True values and compare to total length\n    true_count = sum(bool_list)\n    # All values match n only when count of True equals total number of values\n    return true_count == len(bool_list)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_value(dict, n):\n    # Build a list of boolean comparisons using list comprehension instead of map/filter\n    comparison_results = [value == n for value in dict.values()]\n    # Use the built-in all() on the pre-computed list rather than a generator expression\n    # This differs from Solution 1 which uses a generator directly inside all()\n    if len(comparison_results) == 0:\n        # Empty dictionary means no values to check, vacuously true\n        return True\n    # Check if False exists anywhere in our boolean list using 'in' operator\n    # This is semantically different - we're detecting absence of False rather than presence of all True\n    return False not in comparison_results",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

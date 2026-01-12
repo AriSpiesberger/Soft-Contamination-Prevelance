@@ -1,0 +1,37 @@
+{
+  "task_id": 473,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the tuple intersection of elements in the given tuple list irrespective of their order.",
+  "python_code": "def tuple_intersection(test_list1, test_list2):\n  res = set([tuple(sorted(ele)) for ele in test_list1]) & set([tuple(sorted(ele)) for ele in test_list2])\n  return (res)",
+  "test_list": [
+    "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+    "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+    "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}"
+  ],
+  "code_javascript": "function tuple_intersection(test_list1, test_list2) {\n  const sortedTupleToString = (ele) => [...ele].sort((a, b) => a - b).join(',');\n  \n  const set1 = new Set(test_list1.map(sortedTupleToString));\n  const set2 = new Set(test_list2.map(sortedTupleToString));\n  \n  const intersection = new Set();\n  for (const item of set1) {\n    if (set2.has(item)) {\n      intersection.add(item);\n    }\n  }\n  \n  const result = new Set();\n  for (const item of intersection) {\n    result.add(item.split(',').map(Number));\n  }\n  \n  return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+      "generated_test": "const result = tuple_intersection([[3, 4], [5, 6], [9, 10], [4, 5]], [[5, 4], [3, 4], [6, 5], [9, 11]]);\nconst expected = [[3, 4], [4, 5], [5, 6]];\n\nconst resultArray = Array.from(result).map(arr => arr.join(',')).sort();\nconst expectedArray = expected.map(arr => arr.join(',')).sort();\n\nconst pass = resultArray.length === expectedArray.length && \n             resultArray.every((val, idx) => val === expectedArray[idx]);\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: {\" + expected.map(arr => \"(\" + arr.join(\", \") + \")\").join(\", \") + \"}\");\n  console.log(\"  Got: {\" + Array.from(result).map(arr => \"(\" + arr.join(\", \") + \")\").join(\", \") + \"}\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+      "generated_test": "const result = tuple_intersection([[4, 1], [7, 4], [11, 13], [17, 14]], [[1, 4], [7, 4], [16, 12], [10, 13]]);\n\nconst expected = [[1, 4], [4, 7]];\n\nconst resultArray = Array.from(result).map(arr => arr.join(','));\nconst expectedArray = expected.map(arr => arr.join(','));\n\nresultArray.sort();\nexpectedArray.sort();\n\nconst pass = resultArray.length === expectedArray.length && \n             resultArray.every((val, idx) => val === expectedArray[idx]);\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: {\" + expected.map(arr => \"(\" + arr.join(\", \") + \")\").join(\", \") + \"}\");\n  console.log(\"  Got: {\" + Array.from(result).map(arr => \"(\" + arr.join(\", \") + \")\").join(\", \") + \"}\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}",
+      "generated_test": "const result = tuple_intersection([[2, 1], [3, 2], [1, 3], [1, 4]], [[11, 2], [2, 3], [6, 2], [1, 3]]);\n\nconst expected = [[1, 3], [2, 3]];\n\nconst resultArray = Array.from(result).map(arr => arr.join(','));\nconst expectedArray = expected.map(arr => arr.join(','));\n\nresultArray.sort();\nexpectedArray.sort();\n\nconst pass = resultArray.length === expectedArray.length && \n             resultArray.every((val, idx) => val === expectedArray[idx]);\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: {\" + expected.map(arr => \"(\" + arr.join(\", \") + \")\").join(\", \") + \"}\");\n  console.log(\"  Got: {\" + Array.from(result).map(arr => \"(\" + arr.join(\", \") + \")\").join(\", \") + \"}\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

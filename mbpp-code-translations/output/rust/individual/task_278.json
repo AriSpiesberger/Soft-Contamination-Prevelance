@@ -1,0 +1,37 @@
+{
+  "task_id": 278,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the number of elements that occurs before the tuple element in the given tuple.",
+  "python_code": "def count_first_elements(test_tup):\n  for count, ele in enumerate(test_tup):\n    if isinstance(ele, tuple):\n      break\n  return (count) ",
+  "test_list": [
+    "assert count_first_elements((1, 5, 7, (4, 6), 10) ) == 3",
+    "assert count_first_elements((2, 9, (5, 7), 11) ) == 2",
+    "assert count_first_elements((11, 15, 5, 8, (2, 3), 8) ) == 4"
+  ],
+  "code_rust": "use std::fmt::Debug;\n\n#[derive(Debug, Clone)]\npub enum TupleElement {\n    Int(i32),\n    Tuple(Vec<i32>),\n}\n\npub fn count_first_elements(test_tup: &[TupleElement]) -> usize {\n    for (count, ele) in test_tup.iter().enumerate() {\n        if matches!(ele, TupleElement::Tuple(_)) {\n            return count;\n        }\n    }\n    test_tup.len()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_first_elements((1, 5, 7, (4, 6), 10) ) == 3",
+      "generated_test": "let test_tup = vec![\n    TupleElement::Int(1),\n    TupleElement::Int(5),\n    TupleElement::Int(7),\n    TupleElement::Tuple(vec![4, 6]),\n    TupleElement::Int(10),\n];\nlet result = count_first_elements(&test_tup);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_first_elements((2, 9, (5, 7), 11) ) == 2",
+      "generated_test": "let test_input = vec![\n    TupleElement::Int(2),\n    TupleElement::Int(9),\n    TupleElement::Tuple(vec![5, 7]),\n    TupleElement::Int(11),\n];\nlet result = count_first_elements(&test_input);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_first_elements((11, 15, 5, 8, (2, 3), 8) ) == 4",
+      "generated_test": "let test_input = &[\n    TupleElement::Int(11),\n    TupleElement::Int(15),\n    TupleElement::Int(5),\n    TupleElement::Int(8),\n    TupleElement::Tuple(vec![2, 3]),\n    TupleElement::Int(8),\n];\nlet result = count_first_elements(test_input);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

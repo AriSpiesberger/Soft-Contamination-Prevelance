@@ -1,0 +1,27 @@
+{
+  "task_id": 168,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurrences of a number in a given list.",
+  "code_python": "def frequency(a,x): \n    count = 0  \n    for i in a: \n      if i == x: \n        count += 1\n\n    return count ",
+  "test_list": [
+    "assert frequency([1,2,3], 4) == 0",
+    "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+    "assert frequency([0,1,2,3,1,2], 1) == 2"
+  ],
+  "python_1": "def frequency(a,x): \n    # Leverage Python's built-in list method to directly count occurrences\n    # This delegates the iteration to optimized C-level code\n    return a.count(x)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def frequency(a,x): \n    # Use a list comprehension to filter elements equal to x, creating a filtered list\n    matches = [item for item in a if item == x]\n    # Return the length of the filtered list as the frequency count\n    return len(matches)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def frequency(a,x): \n    # Use sum() with a generator expression to count matches without creating intermediate list\n    # Each comparison yields True (1) or False (0), which sum() accumulates\n    return sum(1 for item in a if item == x)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def frequency(a,x): \n    # Import reduce function for functional-style accumulation\n    from functools import reduce\n    # Use reduce to fold the list into a single count value\n    # Lambda takes accumulator and current element, adds 1 if element matches x\n    return reduce(lambda acc, item: acc + (1 if item == x else 0), a, 0)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def frequency(a,x): \n    # Use recursion as the approach - check if list is empty (base case)\n    if len(a) == 0:\n        # Return zero when no elements left to check\n        return 0\n    # Extract the first element to compare against target value x\n    first_element = a[0]\n    # Determine if first element matches x, yielding 1 if true, 0 if false\n    current_match = 1 if first_element == x else 0\n    # Recursively count occurrences in the remaining list slice\n    remaining_count = frequency(a[1:], x)\n    # Combine current match result with count from rest of list\n    return current_match + remaining_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

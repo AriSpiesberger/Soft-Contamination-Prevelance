@@ -1,0 +1,37 @@
+{
+  "task_id": 62,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find smallest number in a list.",
+  "python_code": "def smallest_num(xs):\n  return min(xs)\n",
+  "test_list": [
+    "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+    "assert smallest_num([1, 2, 3]) == 1",
+    "assert smallest_num([45, 46, 50, 60]) == 45"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.Collections;\n\npublic class Solution {\n    public static int smallest_num(ArrayList<Integer> xs) {\n        return Collections.min(xs);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(10);\nlist1.add(20);\nlist1.add(1);\nlist1.add(45);\nlist1.add(99);\nint result = smallest_num(list1);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert smallest_num([1, 2, 3]) == 1",
+      "generated_test": "ArrayList<Integer> xs = new ArrayList<>();\nxs.add(1);\nxs.add(2);\nxs.add(3);\nint result = smallest_num(xs);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert smallest_num([45, 46, 50, 60]) == 45",
+      "generated_test": "ArrayList<Integer> testList = new ArrayList<>();\ntestList.add(45);\ntestList.add(46);\ntestList.add(50);\ntestList.add(60);\n\nint result = smallest_num(testList);\nint expected = 45;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 310,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given string to a tuple of characters.",
+  "python_code": "def string_to_tuple(str1):\n    result = tuple(x for x in str1 if not x.isspace()) \n    return result",
+  "test_list": [
+    "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+    "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+    "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"unicode\"\n)\n\nfunc string_to_tuple(str1 string) []rune {\n\tvar result []rune\n\tfor _, x := range str1 {\n\t\tif !unicode.IsSpace(x) {\n\t\t\tresult = append(result, x)\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+      "generated_test": "result := string_to_tuple(\"python 3.0\")\nexpected := []rune{'p', 'y', 't', 'h', 'o', 'n', '3', '.', '0'}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", string(expected))\n\tfmt.Printf(\"  Got: %v\\n\", string(result))\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+      "generated_test": "result := string_to_tuple(\"item1\")\nexpected := []rune{'i', 't', 'e', 'm', '1'}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", string(expected))\n\tfmt.Printf(\"  Got: %v\\n\", string(result))\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')",
+      "generated_test": "result := string_to_tuple(\"15.10\")\nexpected := []rune{'1', '5', '.', '1', '0'}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", string(expected))\n\tfmt.Printf(\"  Got: %v\\n\", string(result))\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

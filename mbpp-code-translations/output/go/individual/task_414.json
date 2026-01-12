@@ -1,0 +1,37 @@
+{
+  "task_id": 414,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether any value in a sequence exists in a sequence or not.",
+  "python_code": "def overlapping(list1,list2):  \n    for i in range(len(list1)): \n        for j in range(len(list2)): \n            if(list1[i]==list2[j]): \n                return True\n    return False",
+  "test_list": [
+    "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+    "assert overlapping([1,2,3],[4,5,6]) == False",
+    "assert overlapping([1,4,5],[1,4,5]) == True"
+  ],
+  "code_go": "package main\n\nfunc overlapping(list1, list2 []int) bool {\n\tfor i := 0; i < len(list1); i++ {\n\t\tfor j := 0; j < len(list2); j++ {\n\t\t\tif list1[i] == list2[j] {\n\t\t\t\treturn true\n\t\t\t}\n\t\t}\n\t}\n\treturn false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+      "generated_test": "result := overlapping([]int{1, 2, 3, 4, 5}, []int{6, 7, 8, 9})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert overlapping([1,2,3],[4,5,6]) == False",
+      "generated_test": "result := overlapping([]int{1, 2, 3}, []int{4, 5, 6})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert overlapping([1,4,5],[1,4,5]) == True",
+      "generated_test": "result := overlapping([]int{1, 4, 5}, []int{1, 4, 5})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

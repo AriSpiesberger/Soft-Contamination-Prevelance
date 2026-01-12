@@ -1,0 +1,27 @@
+{
+  "task_id": 641,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth nonagonal number.",
+  "code_python": "def is_nonagonal(n): \n\treturn int(n * (7 * n - 5) / 2) ",
+  "test_list": [
+    "assert is_nonagonal(10) == 325",
+    "assert is_nonagonal(15) == 750",
+    "assert is_nonagonal(18) == 1089"
+  ],
+  "python_1": "def is_nonagonal(n): \n    # Nonagonal numbers follow the pattern where each term adds 7 more than the previous increment\n    # Start with the first nonagonal number which is 1\n    result = 0\n    # Iterate through each position from 1 to n to build up the nonagonal number\n    for i in range(1, n + 1):\n        # Each term adds (7*i - 6) to get the cumulative nonagonal number at position i\n        # This is derived from the difference between consecutive nonagonal numbers\n        increment = 7 * i - 6\n        # Accumulate the increment to build the nth nonagonal number\n        result += increment\n    # Return the computed nth nonagonal number\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_nonagonal(n): \n    # Use the expanded algebraic form: (7n\u00b2 - 5n) / 2\n    n_squared = n * n\n    # Multiply n\u00b2 by 7 to get the first term of the numerator\n    first_term = 7 * n_squared\n    # Compute the second term which is subtracted (5 times n)\n    second_term = 5 * n\n    # Calculate the numerator by subtracting the second term from the first\n    numerator = first_term - second_term\n    # Integer division by 2 gives the final nonagonal number\n    result = numerator // 2\n    # Return the computed nth nonagonal number\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_nonagonal(n): \n    # Define a recursive helper to compute nonagonal number using memoization\n    def compute(k, memo={}):\n        # Base case: the 0th nonagonal number is 0\n        if k == 0:\n            return 0\n        # Check if we've already computed this value to avoid redundant work\n        if k in memo:\n            return memo[k]\n        # The difference between consecutive nonagonal numbers is (7k - 6)\n        diff = 7 * k - 6\n        # Recursively get the previous nonagonal number and add the difference\n        memo[k] = compute(k - 1, memo) + diff\n        # Return the memoized result for position k\n        return memo[k]\n    # Call the recursive function with the input n\n    return compute(n)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_nonagonal(n): \n    # Use reduce to apply a lambda that accumulates the sum of differences\n    from functools import reduce\n    # Generate the sequence of increments (7*i - 6) for i from 1 to n\n    increments = range(1, n + 1)\n    # Apply reduce with a lambda that adds each transformed increment to the accumulator\n    # Each increment transforms to (7*i - 6) which is the gap between consecutive nonagonal numbers\n    result = reduce(lambda acc, i: acc + (7 * i - 6), increments, 0)\n    # Return the final accumulated nonagonal number\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_nonagonal(n): \n    # Use generator expression with sum() for a functional one-liner approach\n    # The nth nonagonal number is the sum of all increments from 1 to n\n    # where each increment at position i equals (7*i - 6)\n    return sum(7 * i - 6 for i in range(1, n + 1))",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

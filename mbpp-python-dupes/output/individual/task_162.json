@@ -1,0 +1,27 @@
+{
+  "task_id": 162,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum (n - 2*i) from i=0 to n // 2, for instance n + (n-2) + (n-4)... (until n-x =< 0).",
+  "code_python": "def sum_series(n):\n  if n < 1:\n    return 0\n  else:\n    return n + sum_series(n - 2)",
+  "test_list": [
+    "assert sum_series(6) == 12",
+    "assert sum_series(10) == 30",
+    "assert sum_series(9) == 25"
+  ],
+  "python_1": "def sum_series(n):\n    # Handle edge case where n is less than 1 by returning zero\n    if n < 1:\n        return 0\n    # Initialize accumulator to store the running total\n    total = 0\n    # Start from n and decrement by 2 each iteration until reaching 0 or below\n    current = n\n    # Use while loop to iterate through the series n, n-2, n-4, ...\n    while current > 0:\n        # Add current term to the running total\n        total += current\n        # Move to the next term in the sequence by subtracting 2\n        current -= 2\n    # Return the computed sum of the arithmetic series\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_series(n):\n    # Early exit for non-positive inputs as they contribute nothing to sum\n    if n < 1:\n        return 0\n    # Generate sequence of positive terms: n, n-2, n-4, ... using range with step -2\n    terms = range(n, 0, -2)\n    # Leverage built-in sum function to aggregate all terms efficiently\n    return sum(terms)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_series(n):\n    # Guard against non-positive inputs which have no terms to sum\n    if n < 1:\n        return 0\n    # Determine how many terms exist in the series (1, 3, 5... or 2, 4, 6...)\n    num_terms = (n + 1) // 2\n    # For odd n: terms are 1,3,5,...,n forming arithmetic progression\n    # For even n: terms are 2,4,6,...,n forming arithmetic progression\n    # The smallest positive term in the series depends on parity\n    first_term = 1 if n % 2 == 1 else 2\n    # Apply arithmetic series formula: sum = count * (first + last) / 2\n    # Where first is the smallest term and last is n (the largest term)\n    result = num_terms * (first_term + n) // 2\n    # Return the calculated sum using closed-form mathematical expression\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_series(n):\n    # Immediately return zero for non-positive inputs since series is empty\n    if n < 1:\n        return 0\n    # Build list of all valid terms using list comprehension with conditional filter\n    terms_list = [n - 2*i for i in range(n // 2 + 1) if n - 2*i > 0]\n    # Use functools.reduce to fold the list into a single sum value\n    from functools import reduce\n    # Apply binary addition operator across all elements via reduce\n    return reduce(lambda acc, x: acc + x, terms_list, 0)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_series(n):\n    # Use generator expression inside sum() - more memory efficient than list comprehension\n    # Check for invalid input and return zero for empty series\n    if n < 1:\n        return 0\n    # Calculate number of iterations needed based on integer division\n    iterations = n // 2 + 1\n    # Create generator that yields each term without storing all in memory\n    term_generator = (n - 2*i for i in range(iterations))\n    # Filter generator to only include positive values using another generator\n    positive_terms = (term for term in term_generator if term > 0)\n    # Consume generator and accumulate sum in single pass\n    return sum(positive_terms)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

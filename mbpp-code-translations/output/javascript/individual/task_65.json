@@ -1,0 +1,37 @@
+{
+  "task_id": 65,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a list and sum all of its elements.",
+  "python_code": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total",
+  "test_list": [
+    "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+    "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+    "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210"
+  ],
+  "code_javascript": "function recursive_list_sum(data_list) {\n\tlet total = 0;\n\tfor (let element of data_list) {\n\t\tif (Array.isArray(element)) {\n\t\t\ttotal = total + recursive_list_sum(element);\n\t\t} else {\n\t\t\ttotal = total + element;\n\t\t}\n\t}\n\treturn total;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+      "generated_test": "const result = recursive_list_sum([1, 2, [3, 4], [5, 6]]);\nconst expected = 21;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+      "generated_test": "const result = recursive_list_sum([7, 10, [15, 14], [19, 41]]);\nconst expected = 106;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210",
+      "generated_test": "const result = recursive_list_sum([10, 20, [30, 40], [50, 60]]);\nconst expected = 210;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

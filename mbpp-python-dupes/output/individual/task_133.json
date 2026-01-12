@@ -1,0 +1,27 @@
+{
+  "task_id": 133,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum of the negative numbers of a given list of numbers.",
+  "code_python": "def sum_negativenum(nums):\n  sum_negativenum = list(filter(lambda nums:nums<0,nums))\n  return sum(sum_negativenum)",
+  "test_list": [
+    "assert sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17])==-32",
+    "assert sum_negativenum([10,15,-14,13,-18,12,-20])==-52",
+    "assert sum_negativenum([19, -65, 57, 39, 152,-639, 121, 44, 90, -190])==-894"
+  ],
+  "python_1": "def sum_negativenum(nums):\n    # Initialize accumulator to store running total of negative values\n    total = 0\n    # Iterate through each number in the input list\n    for num in nums:\n        # Check if current number is less than zero\n        if num < 0:\n            # Add the negative number to our running total\n            total += num\n    # Return the final sum of all negative numbers found\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_negativenum(nums):\n    # Use list comprehension to extract only negative values from input\n    negative_numbers = [n for n in nums if n < 0]\n    # Apply built-in sum function to the filtered negative numbers list\n    return sum(negative_numbers)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_negativenum(nums):\n    # Import reduce function for functional-style aggregation\n    from functools import reduce\n    # Use reduce to accumulate sum, adding num only when negative, else add 0\n    return reduce(lambda acc, num: acc + num if num < 0 else acc, nums, 0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_negativenum(nums):\n    # Use generator expression with conditional to yield negative values lazily\n    negative_gen = (x for x in nums if x < 0)\n    # Accumulate sum directly from generator without creating intermediate list\n    result = sum(negative_gen)\n    # Return computed sum of all negative elements\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_negativenum(nums):\n    # Leverage numpy-style approach using map to create boolean mask multiplied by values\n    # Map each number to itself if negative, otherwise to zero\n    masked_values = map(lambda x: x if x < 0 else 0, nums)\n    # Convert mapped iterator to list for summation\n    masked_list = list(masked_values)\n    # Calculate total by summing all elements (zeros contribute nothing)\n    return sum(masked_list)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

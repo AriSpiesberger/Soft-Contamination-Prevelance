@@ -1,0 +1,37 @@
+{
+  "task_id": 308,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the specified number of largest products from two given lists, selecting one factor from each list.",
+  "python_code": "def large_product(nums1, nums2, N):\n    result = sorted([x*y for x in nums1 for y in nums2], reverse=True)[:N]\n    return result",
+  "test_list": [
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]"
+  ],
+  "code_rust": "pub fn large_product(nums1: &[i32], nums2: &[i32], n: usize) -> Vec<i32> {\n    let mut products: Vec<i32> = nums1\n        .iter()\n        .flat_map(|x| nums2.iter().map(move |y| x * y))\n        .collect();\n    \n    products.sort_by(|a, b| b.cmp(a));\n    products.truncate(n);\n    products\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+      "generated_test": "let result = large_product(&[1, 2, 3, 4, 5, 6], &[3, 6, 8, 9, 10, 6], 3);\nlet expected = vec![60, 54, 50];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+      "generated_test": "let result = large_product(&[1, 2, 3, 4, 5, 6], &[3, 6, 8, 9, 10, 6], 4);\nlet expected = vec![60, 54, 50, 48];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]",
+      "generated_test": "let result = large_product(&[1, 2, 3, 4, 5, 6], &[3, 6, 8, 9, 10, 6], 5);\nlet expected = vec![60, 54, 50, 48, 45];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

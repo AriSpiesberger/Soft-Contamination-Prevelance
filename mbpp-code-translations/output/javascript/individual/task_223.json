@@ -1,0 +1,44 @@
+{
+  "task_id": 223,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a sorted array, its length (n), and an element and returns whether the element is the majority element in the given sorted array. (The majority element is the element that occurs more than n/2 times.)",
+  "python_code": "def is_majority(arr, n, x):\n\ti = binary_search(arr, 0, n-1, x)\n\tif i == -1:\n\t\treturn False\n\tif ((i + n//2) <= (n -1)) and arr[i + n//2] == x:\n\t\treturn True\n\telse:\n\t\treturn False\ndef binary_search(arr, low, high, x):\n\tif high >= low:\n\t\tmid = (low + high)//2 \n\t\tif (mid == 0 or x > arr[mid-1]) and (arr[mid] == x):\n\t\t\treturn mid\n\t\telif x > arr[mid]:\n\t\t\treturn binary_search(arr, (mid + 1), high, x)\n\t\telse:\n\t\t\treturn binary_search(arr, low, (mid -1), x)\n\treturn -1",
+  "test_list": [
+    "assert is_majority([1, 2, 3, 3, 3, 3, 10], 7, 3) == True",
+    "assert is_majority([1, 1, 2, 4, 4, 4, 6, 6], 8, 4) == False",
+    "assert is_majority([1, 1, 1, 2, 2], 5, 1) == True",
+    "assert is_majority([1, 1, 2, 2], 5, 1) == False"
+  ],
+  "code_javascript": "function binary_search(arr, low, high, x) {\n    if (high >= low) {\n        let mid = Math.floor((low + high) / 2);\n        if ((mid === 0 || x > arr[mid - 1]) && (arr[mid] === x)) {\n            return mid;\n        } else if (x > arr[mid]) {\n            return binary_search(arr, mid + 1, high, x);\n        } else {\n            return binary_search(arr, low, mid - 1, x);\n        }\n    }\n    return -1;\n}\n\nfunction is_majority(arr, n, x) {\n    let i = binary_search(arr, 0, n - 1, x);\n    if (i === -1) {\n        return false;\n    }\n    if ((i + Math.floor(n / 2)) <= (n - 1) && arr[i + Math.floor(n / 2)] === x) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert is_majority([1, 2, 3, 3, 3, 3, 10], 7, 3) == True",
+      "generated_test": "const result = is_majority([1, 2, 3, 3, 3, 3, 10], 7, 3);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_majority([1, 1, 2, 4, 4, 4, 6, 6], 8, 4) == False",
+      "generated_test": "const result = is_majority([1, 1, 2, 4, 4, 4, 6, 6], 8, 4);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_majority([1, 1, 1, 2, 2], 5, 1) == True",
+      "generated_test": "const result = is_majority([1, 1, 1, 2, 2], 5, 1);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_majority([1, 1, 2, 2], 5, 1) == False",
+      "generated_test": "const result = is_majority([1, 1, 2, 2], 5, 1);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

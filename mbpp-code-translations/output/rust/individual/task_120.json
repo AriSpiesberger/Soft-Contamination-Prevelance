@@ -1,0 +1,37 @@
+{
+  "task_id": 120,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.",
+  "python_code": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max",
+  "test_list": [
+    "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+    "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+    "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484"
+  ],
+  "code_rust": "pub fn max_product_tuple(list1: &[(i32, i32)]) -> i32 {\n    list1\n        .iter()\n        .map(|(x, y)| (x * y).abs())\n        .max()\n        .unwrap_or(0)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+      "generated_test": "let result = max_product_tuple(&[(2, 7), (2, 6), (1, 8), (4, 9)]);\nlet expected = 36;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+      "generated_test": "let result = max_product_tuple(&[(10, 20), (15, 2), (5, 10)]);\nlet expected = 200;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484",
+      "generated_test": "let result = max_product_tuple(&[(11, 44), (10, 15), (20, 5), (12, 9)]);\nlet expected = 484;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

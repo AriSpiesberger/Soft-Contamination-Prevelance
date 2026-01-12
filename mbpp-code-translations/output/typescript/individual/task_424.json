@@ -1,0 +1,17 @@
+{
+  "task_id": 424,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract only the rear index element of each string in the given tuple.",
+  "python_code": "def extract_rear(test_tuple):\n  res = list(sub[len(sub) - 1] for sub in test_tuple)\n  return (res) ",
+  "test_list": [
+    "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+    "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+    "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']"
+  ],
+  "code_typescript": "function extract_rear(test_tuple: string[]): string[] {\n  const res: string[] = test_tuple.map(sub => sub[sub.length - 1]);\n  return res;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

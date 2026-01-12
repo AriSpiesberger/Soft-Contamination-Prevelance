@@ -1,0 +1,37 @@
+{
+  "task_id": 70,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "python_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1",
+  "test_list": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "code_go": "package main\n\nfunc find_equal_tuple(Input [][]int) int {\n\tk := 0\n\tif len(Input) > 0 {\n\t\tk = len(Input[0])\n\t}\n\tflag := 1\n\tfor _, tuple := range Input {\n\t\tif len(tuple) != k {\n\t\t\tflag = 0\n\t\t\tbreak\n\t\t}\n\t}\n\treturn flag\n}\n\nfunc get_equal(Input [][]int) bool {\n\treturn find_equal_tuple(Input) == 1\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+      "generated_test": "input := [][]int{{11, 22, 33}, {44, 55, 66}}\nexpected := true\nresult := get_equal(input)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+      "generated_test": "input := [][]int{{1, 2, 3}, {4, 5, 6, 7}}\nexpected := false\nresult := get_equal(input)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2), (3, 4)]) == True",
+      "generated_test": "input := [][]int{{1, 2}, {3, 4}}\nexpected := true\nresult := get_equal(input)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

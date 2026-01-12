@@ -1,0 +1,37 @@
+{
+  "task_id": 250,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a tuple and an element and counts the occcurences of the element in the tuple.",
+  "python_code": "def count_X(tup, x): \n    count = 0\n    for ele in tup: \n        if (ele == x): \n            count = count + 1\n    return count ",
+  "test_list": [
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0",
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3",
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int count_X(ArrayList<Integer> tup, int x) {\n        int count = 0;\n        for (int ele : tup) {\n            if (ele == x) {\n                count = count + 1;\n            }\n        }\n        return count;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0",
+      "generated_test": "ArrayList<Integer> tup = new ArrayList<Integer>();\ntup.add(10);\ntup.add(8);\ntup.add(5);\ntup.add(2);\ntup.add(10);\ntup.add(15);\ntup.add(10);\ntup.add(8);\ntup.add(5);\ntup.add(8);\ntup.add(8);\ntup.add(2);\nint result = count_X(tup, 4);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3",
+      "generated_test": "ArrayList<Integer> tup = new ArrayList<Integer>();\ntup.add(10);\ntup.add(8);\ntup.add(5);\ntup.add(2);\ntup.add(10);\ntup.add(15);\ntup.add(10);\ntup.add(8);\ntup.add(5);\ntup.add(8);\ntup.add(8);\ntup.add(2);\nint result = count_X(tup, 10);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4",
+      "generated_test": "ArrayList<Integer> tup = new ArrayList<>();\ntup.add(10);\ntup.add(8);\ntup.add(5);\ntup.add(2);\ntup.add(10);\ntup.add(15);\ntup.add(10);\ntup.add(8);\ntup.add(5);\ntup.add(8);\ntup.add(8);\ntup.add(2);\n\nint result = count_X(tup, 8);\nint expected = 4;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

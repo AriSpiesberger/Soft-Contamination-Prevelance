@@ -1,0 +1,37 @@
+{
+  "task_id": 794,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.",
+  "python_code": "import re\ndef text_starta_endb(text):\n        patterns = 'a.*?b$'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert text_starta_endb(\"aabbbb\")",
+    "assert not text_starta_endb(\"aabAbbbc\")",
+    "assert not text_starta_endb(\"accddbbjjj\")"
+  ],
+  "code_ruby": "def text_starta_endb(text)\n  /a.*?b$/.match(text)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert text_starta_endb(\"aabbbb\")",
+      "generated_test": "result = text_starta_endb(\"aabbbb\")\nif result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: truthy\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"aabAbbbc\")",
+      "generated_test": "result = text_starta_endb(\"aabAbbbc\")\nexpected = nil\n\nif !result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"accddbbjjj\")",
+      "generated_test": "result = text_starta_endb(\"accddbbjjj\")\nif !result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: nil/false\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

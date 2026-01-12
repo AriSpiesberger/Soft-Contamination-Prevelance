@@ -1,0 +1,37 @@
+{
+  "task_id": 434,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by one or more b's.",
+  "python_code": "import re\ndef text_match_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False\n",
+  "test_list": [
+    "assert text_match_one(\"ac\")==False",
+    "assert text_match_one(\"dc\")==False",
+    "assert text_match_one(\"abba\")==True"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc text_match_one(text string) bool {\n\tpattern := `ab+?`\n\tmatched, _ := regexp.MatchString(pattern, text)\n\treturn matched\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert text_match_one(\"ac\")==False",
+      "generated_test": "expected := false\nresult := text_match_one(\"ac\")\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_one(\"dc\")==False",
+      "generated_test": "result := text_match_one(\"dc\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_one(\"abba\")==True",
+      "generated_test": "result := text_match_one(\"abba\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

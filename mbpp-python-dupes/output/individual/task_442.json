@@ -1,0 +1,27 @@
+{
+  "task_id": 442,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ration of positive numbers in an array of integers.",
+  "code_python": "from array import array\ndef positive_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x > 0:\n            n1 += 1\n        else:\n          None\n    return round(n1/n,2)",
+  "test_list": [
+    "assert positive_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8])==0.54",
+    "assert positive_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==0.69",
+    "assert positive_count([2, 4, -6, -9, 11, -12, 14, -5, 17])==0.56"
+  ],
+  "python_1": "def positive_count(nums):\n    # Use list comprehension to filter only positive numbers (greater than zero)\n    positive_nums = [x for x in nums if x > 0]\n    # Calculate ratio by dividing count of positives by total length\n    ratio = len(positive_nums) / len(nums)\n    # Round the result to 2 decimal places before returning\n    return round(ratio, 2)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def positive_count(nums):\n    # Use sum with generator expression - True converts to 1, False to 0\n    positive_total = sum(1 for num in nums if num > 0)\n    # Compute the ratio using the counted positives and total array size\n    ratio = positive_total / len(nums)\n    # Round to two decimal places to match expected output format\n    return round(ratio, 2)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def positive_count(nums):\n    # Use filter function with lambda to extract only positive values\n    positive_filter = filter(lambda x: x > 0, nums)\n    # Convert filter object to list to enable counting\n    positive_list = list(positive_filter)\n    # Divide positive count by total elements to get the ratio\n    ratio = len(positive_list) / len(nums)\n    # Format result to exactly 2 decimal places using round function\n    return round(ratio, 2)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def positive_count(nums):\n    # Use map to convert each element to 1 if positive, 0 otherwise\n    mapped_values = map(lambda x: 1 if x > 0 else 0, nums)\n    # Convert mapped iterator to list for summation\n    binary_list = list(mapped_values)\n    # Sum up all the 1s to get count of positive numbers\n    count_positives = sum(binary_list)\n    # Calculate total number of elements in input array\n    total_elements = len(nums)\n    # Perform division to compute the ratio of positives\n    raw_ratio = count_positives / total_elements\n    # Round to 2 decimal places for consistent output formatting\n    return round(raw_ratio, 2)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def positive_count(nums):\n    # Leverage Python's bool-to-int coercion: True becomes 1 when summed\n    positive_sum = sum(x > 0 for x in nums)\n    # Use built-in len to determine array cardinality for denominator\n    array_length = len(nums)\n    # Apply floating point division and round in single expression\n    return round(positive_sum / array_length, 2)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

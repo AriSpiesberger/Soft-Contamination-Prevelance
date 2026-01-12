@@ -1,0 +1,37 @@
+{
+  "task_id": 257,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two numbers and returns a tuple with the second number and then the first number.",
+  "python_code": "def swap_numbers(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)",
+  "test_list": [
+    "assert swap_numbers(10,20)==(20,10)",
+    "assert swap_numbers(15,17)==(17,15)",
+    "assert swap_numbers(100,200)==(200,100)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int[] swap_numbers(int a, int b) {\n        int temp = a;\n        a = b;\n        b = temp;\n        return new int[]{a, b};\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert swap_numbers(10,20)==(20,10)",
+      "generated_test": "int[] result = swap_numbers(10, 20);\nint[] expected = new int[]{20, 10};\nif (result.length == expected.length && result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_numbers(15,17)==(17,15)",
+      "generated_test": "int[] result = swap_numbers(15, 17);\nint[] expected = new int[]{17, 15};\nif (result.length == expected.length && result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_numbers(100,200)==(200,100)",
+      "generated_test": "int[] result = swap_numbers(100, 200);\nint[] expected = new int[]{200, 100};\nif (result.length == expected.length && result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

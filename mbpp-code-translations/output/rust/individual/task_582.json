@@ -1,0 +1,37 @@
+{
+  "task_id": 582,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a dictionary is empty",
+  "python_code": "def my_dict(dict1):\n  if bool(dict1):\n     return False\n  else:\n     return True",
+  "test_list": [
+    "assert my_dict({10})==False",
+    "assert my_dict({11})==False",
+    "assert my_dict({})==True"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn my_dict<T: std::hash::Hash + Eq>(dict1: &HashSet<T>) -> bool {\n    dict1.is_empty()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert my_dict({10})==False",
+      "generated_test": "let test_set: HashSet<i32> = [10].iter().cloned().collect();\nlet result = my_dict(&test_set);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert my_dict({11})==False",
+      "generated_test": "let test_set: HashSet<i32> = [11].iter().cloned().collect();\nlet result = my_dict(&test_set);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert my_dict({})==True",
+      "generated_test": "let result = my_dict::<i32>(&HashSet::new());\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

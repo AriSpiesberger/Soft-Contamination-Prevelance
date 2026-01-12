@@ -1,0 +1,37 @@
+{
+  "task_id": 563,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks from a string.",
+  "python_code": "import re\ndef extract_values(text):\n return (re.findall(r'\"(.*?)\"', text))",
+  "test_list": [
+    "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+    "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+    "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc extract_values(text string) []string {\n\tre := regexp.MustCompile(`\"([^\"]*)\"`)\n\tmatches := re.FindAllStringSubmatch(text, -1)\n\t\n\tresult := make([]string, 0, len(matches))\n\tfor _, match := range matches {\n\t\tif len(match) > 1 {\n\t\t\tresult = append(result, match[1])\n\t\t}\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+      "generated_test": "expected := []string{\"Python\", \"PHP\", \"Java\"}\nresult := extract_values(\"\\\"Python\\\", \\\"PHP\\\", \\\"Java\\\"\")\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+      "generated_test": "expected := []string{\"python\", \"program\", \"language\"}\nresult := extract_values(\"\\\"python\\\",\\\"program\\\",\\\"language\\\"\")\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']",
+      "generated_test": "expected := []string{\"red\", \"blue\", \"green\", \"yellow\"}\ngot := extract_values(`\"red\",\"blue\",\"green\",\"yellow\"`)\n\npass := true\nif len(got) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif got[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

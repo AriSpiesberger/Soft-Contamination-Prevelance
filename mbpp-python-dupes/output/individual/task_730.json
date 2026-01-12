@@ -1,0 +1,28 @@
+{
+  "task_id": 730,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove consecutive duplicates of a given list.",
+  "code_python": "from itertools import groupby\ndef consecutive_duplicates(nums):\n    return [key for key, group in groupby(nums)] ",
+  "test_list": [
+    "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+    "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']"
+  ],
+  "python_1": "def consecutive_duplicates(nums):\n    # Handle edge case where input list is empty\n    if not nums:\n        return []\n    \n    # Initialize result list with the first element since it's always included\n    result = [nums[0]]\n    \n    # Iterate through remaining elements starting from index 1\n    for i in range(1, len(nums)):\n        # Compare current element with the last added element to detect consecutive duplicates\n        if nums[i] != result[-1]:\n            # Append only when current differs from previous, breaking consecutive runs\n            result.append(nums[i])\n    \n    # Return the filtered list with consecutive duplicates removed\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def consecutive_duplicates(nums):\n    # Return empty list immediately if input has no elements\n    if not nums:\n        return []\n    \n    # Use enumerate to get both index and value, filtering with zip comparison\n    # Pair each element with its next neighbor to detect transitions\n    result = [nums[0]]\n    \n    # Create pairs of adjacent elements using zip with offset slices\n    pairs = zip(nums[:-1], nums[1:])\n    \n    # Iterate through consecutive pairs to find where values change\n    for prev, curr in pairs:\n        # Only keep the second element when it differs from the first in the pair\n        if prev != curr:\n            # Append the current element since it marks start of new consecutive group\n            result.append(curr)\n    \n    # Return the deduplicated list preserving non-consecutive duplicates\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def consecutive_duplicates(nums):\n    # Guard clause: empty input yields empty output\n    if not nums:\n        return []\n    \n    # Use reduce-style accumulation via list comprehension with enumerate\n    # Build result by checking if current element differs from its predecessor\n    result = [\n        # Select the current element for inclusion in output\n        elem\n        # Walk through each element with its position in the sequence\n        for idx, elem in enumerate(nums)\n        # Include first element unconditionally, others only when they break a streak\n        if idx == 0 or elem != nums[idx - 1]\n    ]\n    \n    # Deliver the filtered sequence with consecutive runs collapsed\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def consecutive_duplicates(nums):\n    # Early exit for empty sequences avoids index errors downstream\n    if not nums:\n        return []\n    \n    # Identify boundary positions where consecutive runs end and new values begin\n    # Position 0 is always a boundary since it starts the first run\n    boundary_indices = [0]\n    \n    # Scan through indices 1 to end, marking where value transitions occur\n    for i in range(1, len(nums)):\n        # Detect transition points by comparing current position to previous\n        if nums[i] != nums[i - 1]:\n            # Record this index as the start of a new consecutive group\n            boundary_indices.append(i)\n    \n    # Extract elements at each boundary index to form the deduplicated output\n    result = [nums[i] for i in boundary_indices]\n    \n    # Return the list containing only the first element from each consecutive run\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def consecutive_duplicates(nums):\n    # Handle the trivial case where no elements exist to process\n    if not nums:\n        return []\n    \n    # Convert input to iterator to enable stateful traversal\n    iterator = iter(nums)\n    \n    # Extract first element to serve as initial \"previous\" value for comparison\n    prev = next(iterator)\n    \n    # Start output with first element since it always belongs in result\n    result = [prev]\n    \n    # Process remaining elements by pulling from iterator one at a time\n    for current in iterator:\n        # Skip elements that match the most recent unique value we stored\n        if current == prev:\n            # Continue to next iteration without modifying result\n            continue\n        # New distinct value found - add to output and update tracking variable\n        result.append(current)\n        # Update prev to this new value for subsequent comparisons\n        prev = current\n    \n    # Deliver the collapsed list with only first occurrence of each consecutive run\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

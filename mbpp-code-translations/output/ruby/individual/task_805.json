@@ -1,0 +1,37 @@
+{
+  "task_id": 805,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the list in a list of lists whose sum of elements is the highest.",
+  "python_code": "def max_sum_list(lists):\n return max(lists, key=sum)",
+  "test_list": [
+    "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+    "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+    "assert max_sum_list([[2,3,1]])==[2,3,1]"
+  ],
+  "code_ruby": "def max_sum_list(lists)\n  lists.max_by { |list| list.sum }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+      "generated_test": "result = max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])\nexpected = [10, 11, 12]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+      "generated_test": "result = max_sum_list([[3,2,1], [6,5,4], [12,11,10]])\nexpected = [12,11,10]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[2,3,1]])==[2,3,1]",
+      "generated_test": "result = max_sum_list([[2, 3, 1]])\nexpected = [2, 3, 1]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

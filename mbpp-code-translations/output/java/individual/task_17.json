@@ -1,0 +1,37 @@
+{
+  "task_id": 17,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the perimeter of a square given its side length as input.",
+  "python_code": "def square_perimeter(a):\n  perimeter=4*a\n  return perimeter",
+  "test_list": [
+    "assert square_perimeter(10)==40",
+    "assert square_perimeter(5)==20",
+    "assert square_perimeter(4)==16"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int square_perimeter(int a) {\n        int perimeter = 4 * a;\n        return perimeter;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert square_perimeter(10)==40",
+      "generated_test": "int result = square_perimeter(10);\nint expected = 40;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert square_perimeter(5)==20",
+      "generated_test": "int result = square_perimeter(5);\nint expected = 20;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert square_perimeter(4)==16",
+      "generated_test": "int result = square_perimeter(4);\nint expected = 16;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

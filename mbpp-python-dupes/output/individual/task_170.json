@@ -1,0 +1,27 @@
+{
+  "task_id": 170,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the sum of numbers in a list within a range specified by two indices.",
+  "code_python": "def sum_range_list(list1, m, n):                                                                                                                                                                                                \n    sum_range = 0                                                                                                                                                                                                         \n    for i in range(m, n+1, 1):                                                                                                                                                                                        \n        sum_range += list1[i]                                                                                                                                                                                                  \n    return sum_range   ",
+  "test_list": [
+    "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 8, 10) == 29",
+    "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 5, 7) == 16",
+    "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 7, 10) == 38"
+  ],
+  "python_1": "def sum_range_list(list1, m, n):\n    # Use Python's slice notation to extract elements from index m to n (inclusive)\n    sublist = list1[m:n+1]\n    # Apply built-in sum function to the sliced portion for efficient summation\n    return sum(sublist)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_range_list(list1, m, n):\n    # Use reduce to accumulate sum by iterating through index range\n    from functools import reduce\n    # Generate sequence of indices from m to n inclusive\n    indices = range(m, n + 1)\n    # Apply reduce with lambda that adds each indexed element to accumulator\n    return reduce(lambda acc, idx: acc + list1[idx], indices, 0)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_range_list(list1, m, n):\n    # Recursive helper function that accumulates sum from current index to end index\n    def recursive_sum(current_idx, end_idx):\n        # Base case: when current index exceeds end, return 0 to stop recursion\n        if current_idx > end_idx:\n            return 0\n        # Recursive case: add current element to sum of remaining elements\n        return list1[current_idx] + recursive_sum(current_idx + 1, end_idx)\n    # Initiate recursion starting from index m up to index n\n    return recursive_sum(m, n)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_range_list(list1, m, n):\n    # Use list comprehension with enumerate to pair indices with values\n    indexed_pairs = [(i, val) for i, val in enumerate(list1)]\n    # Filter to keep only pairs where index falls within our target range\n    filtered_elements = [val for i, val in indexed_pairs if m <= i <= n]\n    # Aggregate all filtered values using sum to get final result\n    return sum(filtered_elements)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_range_list(list1, m, n):\n    # Use a while loop with manual index control instead of for/range\n    current_index = m\n    # Initialize accumulator to store running total\n    total = 0\n    # Continue looping until we've processed all indices up to and including n\n    while current_index <= n:\n        # Fetch value at current position and add to running total\n        total = total + list1[current_index]\n        # Manually advance index to next position\n        current_index = current_index + 1\n    # Return the computed sum of elements in specified range\n    return total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

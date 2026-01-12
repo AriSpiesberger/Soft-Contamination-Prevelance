@@ -1,0 +1,37 @@
+{
+  "task_id": 590,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert polar coordinates to rectangular coordinates.",
+  "python_code": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)",
+  "test_list": [
+    "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n\t\"math/cmplx\"\n)\n\nfunc polar_rect(x, y float64) (interface{}, interface{}) {\n\tcn := complex(x, y)\n\tr, theta := cmplx.Polar(cn)\n\tcn1 := cmplx.Rect(2, math.Pi)\n\treturn []float64{r, theta}, cn1\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+      "generated_test": "result1, result2 := polar_rect(3, 4)\n\nexpectedPolar := []float64{5.0, 0.9272952180016122}\nexpectedRect := complex(-2, 2.4492935982947064e-16)\n\ngotPolar := result1.([]float64)\ngotRect := result2.(complex128)\n\ntolerance := 1e-10\npolarMatch := math.Abs(gotPolar[0]-expectedPolar[0]) < tolerance && math.Abs(gotPolar[1]-expectedPolar[1]) < tolerance\nrectMatch := cmplx.Abs(gotRect-expectedRect) < tolerance\n\nif polarMatch && rectMatch {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expectedPolar, expectedRect)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", gotPolar, gotRect)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+      "generated_test": "result1, result2 := polar_rect(4, 7)\n\nexpectedPolar := []float64{8.06225774829855, 1.0516502125483738}\nexpectedRect := complex(-2, 2.4492935982947064e-16)\n\ngotPolar := result1.([]float64)\ngotRect := result2.(complex128)\n\ntolerance := 1e-10\npolarMatch := math.Abs(gotPolar[0]-expectedPolar[0]) < tolerance && math.Abs(gotPolar[1]-expectedPolar[1]) < tolerance\nrectMatch := cmplx.Abs(gotRect-expectedRect) < tolerance\n\nif polarMatch && rectMatch {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expectedPolar, expectedRect)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", gotPolar, gotRect)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))",
+      "generated_test": "result1, result2 := polar_rect(15, 17)\n\nexpectedPolar := []float64{22.67156809750927, 0.8478169733934057}\nexpectedRect := complex(-2, 2.4492935982947064e-16)\n\ngotPolar := result1.([]float64)\ngotRect := result2.(complex128)\n\ntolerance := 1e-10\npolarMatch := math.Abs(gotPolar[0]-expectedPolar[0]) < tolerance && math.Abs(gotPolar[1]-expectedPolar[1]) < tolerance\nrectMatch := cmplx.Abs(gotRect-expectedRect) < tolerance\n\nif polarMatch && rectMatch {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expectedPolar, expectedRect)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", gotPolar, gotRect)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

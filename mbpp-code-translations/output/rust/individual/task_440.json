@@ -1,0 +1,37 @@
+{
+  "task_id": 440,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb and their positions in a given sentence.",
+  "python_code": "import re\ndef find_adverb_position(text):\n for m in re.finditer(r\"\\w+ly\", text):\n    return (m.start(), m.end(), m.group(0))",
+  "test_list": [
+    "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+    "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+    "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')"
+  ],
+  "code_rust": "use regex::Regex;\n\npub fn find_adverb_position(text: &str) -> Option<(usize, usize, String)> {\n    let re = Regex::new(r\"\\w+ly\").unwrap();\n    if let Some(m) = re.find(text) {\n        Some((m.start(), m.end(), m.as_str().to_string()))\n    } else {\n        None\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+      "generated_test": "let result = find_adverb_position(\"clearly!! we can see the sky\");\nlet expected = Some((0_usize, 7_usize, \"clearly\".to_string()));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+      "generated_test": "let result = find_adverb_position(\"seriously!! there are many roses\");\nlet expected = Some((0, 9, \"seriously\".to_string()));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')",
+      "generated_test": "let result = find_adverb_position(\"unfortunately!! sita is going to home\");\nlet expected = Some((0, 13, \"unfortunately\".to_string()));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

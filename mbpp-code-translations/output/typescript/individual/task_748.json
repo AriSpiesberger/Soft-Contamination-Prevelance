@@ -1,0 +1,17 @@
+{
+  "task_id": 748,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to put spaces between words starting with capital letters in a given string.",
+  "python_code": "import re\ndef capital_words_spaces(str1):\n  return re.sub(r\"(\\w)([A-Z])\", r\"\\1 \\2\", str1)",
+  "test_list": [
+    "assert capital_words_spaces(\"Python\") == 'Python'",
+    "assert capital_words_spaces(\"PythonProgrammingExamples\") == 'Python Programming Examples'",
+    "assert capital_words_spaces(\"GetReadyToBeCodingFreak\") == 'Get Ready To Be Coding Freak'"
+  ],
+  "code_typescript": "function capital_words_spaces(str1: string): string {\n  return str1.replace(/(\\w)([A-Z])/g, \"$1 $2\");\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

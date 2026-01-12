@@ -1,0 +1,37 @@
+{
+  "task_id": 129,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate whether the matrix is a magic square.",
+  "python_code": "def magic_square_test(my_matrix):\n    iSize = len(my_matrix[0])\n    sum_list = []\n    sum_list.extend([sum (lines) for lines in my_matrix])   \n    for col in range(iSize):\n        sum_list.append(sum(row[col] for row in my_matrix))\n    result1 = 0\n    for i in range(0,iSize):\n        result1 +=my_matrix[i][i]\n    sum_list.append(result1)      \n    result2 = 0\n    for i in range(iSize-1,-1,-1):\n        result2 +=my_matrix[i][i]\n    sum_list.append(result2)\n    if len(set(sum_list))>1:\n        return False\n    return True",
+  "test_list": [
+    "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False"
+  ],
+  "code_rust": "pub fn magic_square_test(my_matrix: Vec<Vec<i32>>) -> bool {\n    if my_matrix.is_empty() || my_matrix[0].is_empty() {\n        return true;\n    }\n    \n    let i_size = my_matrix[0].len();\n    let mut sum_list: Vec<i32> = Vec::new();\n    \n    // Sum of each row\n    for lines in &my_matrix {\n        sum_list.push(lines.iter().sum());\n    }\n    \n    // Sum of each column\n    for col in 0..i_size {\n        let col_sum: i32 = my_matrix.iter().map(|row| row[col]).sum();\n        sum_list.push(col_sum);\n    }\n    \n    // Main diagonal sum\n    let mut result1: i32 = 0;\n    for i in 0..i_size {\n        result1 += my_matrix[i][i];\n    }\n    sum_list.push(result1);\n    \n    // Anti-diagonal sum (note: Python code has a bug here, it calculates main diagonal again)\n    // Following the exact Python behavior which iterates i from iSize-1 to 0 and uses my_matrix[i][i]\n    let mut result2: i32 = 0;\n    for i in (0..i_size).rev() {\n        result2 += my_matrix[i][i];\n    }\n    sum_list.push(result2);\n    \n    // Check if all sums are equal\n    use std::collections::HashSet;\n    let unique_sums: HashSet<i32> = sum_list.into_iter().collect();\n    \n    unique_sums.len() <= 1\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+      "generated_test": "let result = magic_square_test(vec![vec![7, 12, 1, 14], vec![2, 13, 8, 11], vec![16, 3, 10, 5], vec![9, 6, 15, 4]]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+      "generated_test": "let result = magic_square_test(vec![vec![2, 7, 6], vec![9, 5, 1], vec![4, 3, 8]]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False",
+      "generated_test": "let result = magic_square_test(vec![vec![2, 7, 6], vec![9, 5, 1], vec![4, 3, 7]]);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

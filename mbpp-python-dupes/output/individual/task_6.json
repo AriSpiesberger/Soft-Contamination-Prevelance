@@ -1,0 +1,30 @@
+{
+  "task_id": 6,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the two numbers differ at one bit position only or not.",
+  "code_python": "def is_Power_Of_Two (x): \n    return x and (not(x & (x - 1))) \ndef differ_At_One_Bit_Pos(a,b): \n    return is_Power_Of_Two(a ^ b)",
+  "test_list": [
+    "assert differ_At_One_Bit_Pos(13,9) == True",
+    "assert differ_At_One_Bit_Pos(15,8) == False",
+    "assert differ_At_One_Bit_Pos(2,4) == False",
+    "assert differ_At_One_Bit_Pos(2, 3) == True",
+    "assert differ_At_One_Bit_Pos(5, 1) == True",
+    "assert differ_At_One_Bit_Pos(1, 5) == True"
+  ],
+  "python_1": "def is_Power_Of_Two(x):\n    # Handle edge case where x is zero or negative\n    if x <= 0:\n        return False\n    # Count how many bits are set to 1 using bin() string representation\n    bit_count = bin(x).count('1')\n    # A power of two has exactly one bit set\n    return bit_count == 1\n\ndef differ_At_One_Bit_Pos(a, b):\n    # XOR the two numbers to find differing bit positions\n    xor_result = a ^ b\n    # Check if the XOR result is a power of two (exactly one bit differs)\n    return is_Power_Of_Two(xor_result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_Power_Of_Two(x):\n    # Guard against non-positive numbers which cannot be powers of two\n    if x <= 0:\n        return False\n    # Use bit_length to find position of highest set bit\n    highest_bit_pos = x.bit_length()\n    # Reconstruct what the number would be if only that highest bit was set\n    reconstructed = 1 << (highest_bit_pos - 1)\n    # If original equals reconstructed, only one bit was set (power of two)\n    return x == reconstructed\n\ndef differ_At_One_Bit_Pos(a, b):\n    # Compute XOR to isolate bits that are different between the two numbers\n    diff_bits = a ^ b\n    # Verify exactly one bit position differs by checking if XOR is power of two\n    return is_Power_Of_Two(diff_bits)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_Power_Of_Two(x):\n    # Reject zero and negative numbers as they cannot be powers of two\n    if x <= 0:\n        return False\n    # Initialize a counter to track how many 1-bits we encounter\n    ones_count = 0\n    # Loop through all bits until the number becomes zero\n    while x > 0:\n        # Extract the least significant bit and add it to our count\n        ones_count += x & 1\n        # Early exit optimization: more than one 1-bit means not a power of two\n        if ones_count > 1:\n            return False\n        # Shift right to examine the next bit in the next iteration\n        x >>= 1\n    # A power of two has exactly one bit set to 1\n    return ones_count == 1\n\ndef differ_At_One_Bit_Pos(a, b):\n    # XOR operation produces 1s only where the two numbers have different bits\n    xor_value = a ^ b\n    # The numbers differ at exactly one bit if their XOR is a power of two\n    return is_Power_Of_Two(xor_value)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_Power_Of_Two(x):\n    # Eliminate zero and negative values since they cannot represent powers of two\n    if x <= 0:\n        return False\n    # Use logarithm base 2 to find what power would produce x\n    import math\n    log_value = math.log2(x)\n    # Check if the log result is a whole number (integer power of 2)\n    return log_value == int(log_value)\n\ndef differ_At_One_Bit_Pos(a, b):\n    # Perform bitwise XOR to highlight positions where bits disagree\n    xor_result = a ^ b\n    # Verify the XOR yields a power of two, meaning single bit difference\n    return is_Power_Of_Two(xor_result)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_Power_Of_Two(x):\n    # Exclude non-positive integers since powers of two are strictly positive\n    if x <= 0:\n        return False\n    # Use Brian Kernighan's algorithm: x & (x-1) clears the rightmost set bit\n    cleared = x & (x - 1)\n    # If result is zero, x had exactly one bit set, confirming it's a power of two\n    return cleared == 0\n\ndef differ_At_One_Bit_Pos(a, b):\n    # First check if the numbers are identical (no bits differ)\n    if a == b:\n        return False\n    # XOR reveals all bit positions where a and b have opposite values\n    difference = a ^ b\n    # Isolate the lowest set bit using two's complement trick\n    lowest_bit = difference & (-difference)\n    # If the isolated bit equals the full difference, only one bit was set\n    return lowest_bit == difference",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 566,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the sum of the digits of a non-negative integer.",
+  "python_code": "def sum_digits(n):\n  if n == 0:\n    return 0\n  else:\n    return n % 10 + sum_digits(int(n / 10))",
+  "test_list": [
+    "assert sum_digits(345)==12",
+    "assert sum_digits(12)==3",
+    "assert sum_digits(97)==16"
+  ],
+  "code_typescript": "function sum_digits(n: number): number {\n  if (n === 0) {\n    return 0;\n  } else {\n    return (n % 10) + sum_digits(Math.floor(n / 10));\n  }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 7,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find all words which are at least 4 characters long in a string.",
+  "python_code": "import re\ndef find_char_long(text):\n  return (re.findall(r\"\\b\\w{4,}\\b\", text))",
+  "test_list": [
+    "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+    "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+    "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn find_char_long(text: &str) -> Vec<String> {\n    let mut result = Vec::new();\n    let mut current_word = String::new();\n    \n    for ch in text.chars() {\n        if ch.is_alphanumeric() || ch == '_' {\n            current_word.push(ch);\n        } else {\n            if current_word.len() >= 4 {\n                result.push(current_word.clone());\n            }\n            current_word.clear();\n        }\n    }\n    \n    // Don't forget the last word if the string doesn't end with a non-word character\n    if current_word.len() >= 4 {\n        result.push(current_word);\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+      "generated_test": "let result: HashSet<String> = find_char_long(\"Please move back to stream\").into_iter().collect();\nlet expected: HashSet<String> = [\"Please\", \"move\", \"back\", \"stream\"].iter().map(|s| s.to_string()).collect();\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+      "generated_test": "let result: HashSet<String> = find_char_long(\"Jing Eco and Tech\").into_iter().collect();\nlet expected: HashSet<String> = vec![\"Jing\".to_string(), \"Tech\".to_string()].into_iter().collect();\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])",
+      "generated_test": "let result: HashSet<String> = find_char_long(\"Jhingai wulu road Zone 3\").into_iter().collect();\nlet expected: HashSet<String> = [\"Jhingai\", \"wulu\", \"road\", \"Zone\"].iter().map(|s| s.to_string()).collect();\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

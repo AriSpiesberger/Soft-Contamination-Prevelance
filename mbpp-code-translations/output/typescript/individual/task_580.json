@@ -1,0 +1,17 @@
+{
+  "task_id": 580,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove uneven elements in the nested mixed tuple.",
+  "python_code": "def even_ele(test_tuple, even_fnc): \n\tres = tuple() \n\tfor ele in test_tuple: \n\t\tif isinstance(ele, tuple): \n\t\t\tres += (even_ele(ele, even_fnc), ) \n\t\telif even_fnc(ele): \n\t\t\tres += (ele, ) \n\treturn res \ndef extract_even(test_tuple):\n  res = even_ele(test_tuple, lambda x: x % 2 == 0)\n  return (res) ",
+  "test_list": [
+    "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+    "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+    "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)"
+  ],
+  "code_typescript": "type NestedTuple = (number | NestedTuple)[];\n\nfunction even_ele(test_tuple: NestedTuple, even_fnc: (x: number) => boolean): NestedTuple {\n    let res: NestedTuple = [];\n    for (const ele of test_tuple) {\n        if (Array.isArray(ele)) {\n            res.push(even_ele(ele, even_fnc));\n        } else if (even_fnc(ele)) {\n            res.push(ele);\n        }\n    }\n    return res;\n}\n\nfunction extract_even(test_tuple: NestedTuple): NestedTuple {\n    const res = even_ele(test_tuple, (x: number) => x % 2 === 0);\n    return res;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

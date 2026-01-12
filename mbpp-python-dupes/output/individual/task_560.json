@@ -1,0 +1,27 @@
+{
+  "task_id": 560,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the union of the elements of two given tuples and output them in sorted order.",
+  "code_python": "def union_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1 + test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert union_elements((3, 4, 5, 6),(5, 7, 4, 10) ) == (3, 4, 5, 6, 7, 10)",
+    "assert union_elements((1, 2, 3, 4),(3, 4, 5, 6) ) == (1, 2, 3, 4, 5, 6)",
+    "assert union_elements((11, 12, 13, 14),(13, 15, 16, 17) ) == (11, 12, 13, 14, 15, 16, 17)"
+  ],
+  "python_1": "def union_elements(test_tup1, test_tup2):\n    # Convert first tuple to a set for efficient lookup and union operations\n    set1 = set(test_tup1)\n    # Convert second tuple to a set to eliminate its internal duplicates\n    set2 = set(test_tup2)\n    # Perform set union using the | operator to combine unique elements\n    union_set = set1 | set2\n    # Convert the union set to a list for sorting capability\n    union_list = list(union_set)\n    # Sort the list in ascending order to meet the output requirement\n    union_list.sort()\n    # Convert sorted list back to tuple and return the final result\n    return tuple(union_list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def union_elements(test_tup1, test_tup2):\n    # Use set union method instead of | operator for combining unique elements\n    combined_set = set(test_tup1).union(set(test_tup2))\n    # Apply sorted() function directly to return a new sorted iterable\n    sorted_elements = sorted(combined_set)\n    # Wrap sorted list in tuple constructor for final return type\n    return tuple(sorted_elements)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def union_elements(test_tup1, test_tup2):\n    # Create an empty dictionary to track unique elements (keys are inherently unique)\n    unique_dict = {}\n    # Iterate through first tuple and add each element as a dictionary key\n    for elem in test_tup1:\n        # Dictionary key assignment automatically handles duplicates\n        unique_dict[elem] = True\n    # Iterate through second tuple and add elements to same dictionary\n    for elem in test_tup2:\n        # Any duplicates from second tuple will simply overwrite existing keys\n        unique_dict[elem] = True\n    # Extract all unique elements by getting dictionary keys as a list\n    unique_elements = list(unique_dict.keys())\n    # Sort the list in-place to arrange elements in ascending numerical order\n    unique_elements.sort()\n    # Transform the sorted list into an immutable tuple for the return value\n    result = tuple(unique_elements)\n    # Return the final sorted tuple containing the union of both input tuples\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def union_elements(test_tup1, test_tup2):\n    # Concatenate both tuples into a single sequence for processing\n    combined = test_tup1 + test_tup2\n    # Initialize an empty list to accumulate unique elements manually\n    unique_list = []\n    # Process each element from the combined sequence one by one\n    for element in combined:\n        # Check if this element hasn't been seen before using membership test\n        if element not in unique_list:\n            # Append only first occurrence of each element to maintain uniqueness\n            unique_list.append(element)\n    # Use built-in sorted() to create a new ascending-order list from unique elements\n    sorted_list = sorted(unique_list)\n    # Cast the sorted list to tuple type for immutable return value\n    final_result = tuple(sorted_list)\n    # Return the union as a sorted tuple containing all distinct elements\n    return final_result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def union_elements(test_tup1, test_tup2):\n    # Leverage dict.fromkeys() which preserves insertion order while eliminating duplicates\n    combined_sequence = test_tup1 + test_tup2\n    # Create ordered dict from combined tuples - keys become unique elements automatically\n    ordered_unique = dict.fromkeys(combined_sequence)\n    # Extract the dictionary keys which represent all unique values from both tuples\n    unique_keys = ordered_unique.keys()\n    # Apply sorted() to produce a new list arranged in ascending numerical sequence\n    ascending_order = sorted(unique_keys)\n    # Construct final tuple from the sorted sequence to match expected return type\n    return tuple(ascending_order)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

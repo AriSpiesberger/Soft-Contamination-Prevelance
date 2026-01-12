@@ -1,0 +1,17 @@
+{
+  "task_id": 92,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is undulating or not.",
+  "python_code": "def is_undulating(n): \n\tn = str(n)\n\tif (len(n) <= 2): \n\t\treturn False\n\tfor i in range(2, len(n)): \n\t\tif (n[i - 2] != n[i]): \n\t\t\treturn False\n\treturn True",
+  "test_list": [
+    "assert is_undulating(1212121) == True",
+    "assert is_undulating(1991) == False",
+    "assert is_undulating(121) == True"
+  ],
+  "code_typescript": "function is_undulating(n: number): boolean {\n    const s: string = n.toString();\n    if (s.length <= 2) {\n        return false;\n    }\n    for (let i = 2; i < s.length; i++) {\n        if (s[i - 2] !== s[i]) {\n            return false;\n        }\n    }\n    return true;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

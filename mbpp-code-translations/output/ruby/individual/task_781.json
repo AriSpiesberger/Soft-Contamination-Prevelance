@@ -1,0 +1,37 @@
+{
+  "task_id": 781,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the count of divisors is even. https://www.w3resource.com/python-exercises/basic/python-basic-1-exercise-24.php",
+  "python_code": "import math \ndef count_divisors(n) : \n    count = 0\n    for i in range(1, (int)(math.sqrt(n)) + 2) : \n        if (n % i == 0) : \n            if( n // i == i) : \n                count = count + 1\n            else : \n                count = count + 2\n    return count % 2 == 0",
+  "test_list": [
+    "assert count_divisors(10)",
+    "assert not count_divisors(100)",
+    "assert count_divisors(125)"
+  ],
+  "code_ruby": "def count_divisors(n)\n  count = 0\n  (1..(Math.sqrt(n).to_i + 1)).each do |i|\n    if n % i == 0\n      if n / i == i\n        count += 1\n      else\n        count += 2\n      end\n    end\n  end\n  count % 2 == 0\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert count_divisors(10)",
+      "generated_test": "result = count_divisors(10)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not count_divisors(100)",
+      "generated_test": "result = count_divisors(100)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_divisors(125)",
+      "generated_test": "result = count_divisors(125)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 297,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a given nested list structure.",
+  "python_code": "def flatten_list(list1):\n    result_list = []\n    if not list1: return result_list\n    stack = [list(list1)]\n    while stack:\n        c_num = stack.pop()\n        next = c_num.pop()\n        if c_num: stack.append(c_num)\n        if isinstance(next, list):\n            if next: stack.append(list(next))\n        else: result_list.append(next)\n    result_list.reverse()\n    return result_list ",
+  "test_list": [
+    "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+    "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+    "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]"
+  ],
+  "code_rust": "use std::fmt::Debug;\n\n#[derive(Clone, Debug)]\npub enum NestedList {\n    Value(i32),\n    List(Vec<NestedList>),\n}\n\npub fn flatten_list(list1: Vec<NestedList>) -> Vec<i32> {\n    let mut result_list = Vec::new();\n    if list1.is_empty() {\n        return result_list;\n    }\n    \n    let mut stack: Vec<Vec<NestedList>> = vec![list1];\n    \n    while !stack.is_empty() {\n        let mut c_num = stack.pop().unwrap();\n        \n        if c_num.is_empty() {\n            continue;\n        }\n        \n        let next = c_num.pop().unwrap();\n        \n        if !c_num.is_empty() {\n            stack.push(c_num);\n        }\n        \n        match next {\n            NestedList::List(inner_list) => {\n                if !inner_list.is_empty() {\n                    stack.push(inner_list);\n                }\n            }\n            NestedList::Value(val) => {\n                result_list.push(val);\n            }\n        }\n    }\n    \n    result_list.reverse();\n    result_list\n}\n\n// Helper function to convert from nested Vec<Vec<i32>> to Vec<NestedList>\npub fn from_nested_vecs(input: Vec<Vec<i32>>) -> Vec<NestedList> {\n    input\n        .into_iter()\n        .map(|inner| NestedList::List(inner.into_iter().map(NestedList::Value).collect()))\n        .collect()\n}\n\n// Wrapper function that matches Python's interface for lists of lists of integers\npub fn flatten_list_from_vecs(list1: Vec<Vec<i32>>) -> Vec<i32> {\n    flatten_list(from_nested_vecs(list1))\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    use NestedList::{Value as V, List as L};\n    \n    #[test]\n    fn test_flatten_list_1() {\n        let input = vec![\n            V(0), V(10), L(vec![V(20), V(30)]), V(40), V(50),\n            L(vec![V(60), V(70), V(80)]),\n            L(vec![V(90), V(100), V(110), V(120)])\n        ];\n        assert_eq!(\n            flatten_list(input),\n            vec![0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]\n        );\n    }\n    \n    #[test]\n    fn test_flatten_list_2() {\n        let input = vec![\n            L(vec![V(10), V(20)]),\n            L(vec![V(40)]),\n            L(vec![V(30), V(56), V(25)]),\n            L(vec![V(10), V(20)]),\n            L(vec![V(33)]),\n            L(vec![V(40)])\n        ];\n        assert_eq!(\n            flatten_list(input),\n            vec![10, 20, 40, 30, 56, 25, 10, 20, 33, 40]\n        );\n    }\n    \n    #[test]\n    fn test_flatten_list_3() {\n        let input = vec![\n            L(vec![V(1), V(2), V(3)]),\n            L(vec![V(4), V(5), V(6)]),\n            L(vec![V(10), V(11), V(12)]),\n            L(vec![V(7), V(8), V(9)])\n        ];\n        assert_eq!(\n            flatten_list(input),\n            vec![1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]\n        );\n    }\n    \n    #[test]\n    fn test_flatten_empty() {\n        let input: Vec<NestedList> = vec![];\n        assert_eq!(flatten_list(input), Vec::<i32>::new());\n    }\n    \n    #[test]\n    fn test_flatten_from_vecs() {\n        let input = vec![vec![10, 20], vec![40], vec![30, 56, 25], vec![10, 20], vec![33], vec![40]];\n        assert_eq!(\n            flatten_list_from_vecs(input),\n            vec![10, 20, 40, 30, 56, 25, 10, 20, 33, 40]\n        );\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+      "generated_test": "use NestedList::*;\n\nlet input = vec![\n    Value(0),\n    Value(10),\n    List(vec![Value(20), Value(30)]),\n    Value(40),\n    Value(50),\n    List(vec![Value(60), Value(70), Value(80)]),\n    List(vec![Value(90), Value(100), Value(110), Value(120)]),\n];\nlet expected = vec![0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];\nlet result = flatten_list(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+      "generated_test": "let input = vec![\n    vec![10, 20],\n    vec![40],\n    vec![30, 56, 25],\n    vec![10, 20],\n    vec![33],\n    vec![40],\n];\nlet result = flatten_list_from_vecs(input);\nlet expected = vec![10, 20, 40, 30, 56, 25, 10, 20, 33, 40];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]",
+      "generated_test": "let input = vec![\n    NestedList::List(vec![NestedList::Value(1), NestedList::Value(2), NestedList::Value(3)]),\n    NestedList::List(vec![NestedList::Value(4), NestedList::Value(5), NestedList::Value(6)]),\n    NestedList::List(vec![NestedList::Value(10), NestedList::Value(11), NestedList::Value(12)]),\n    NestedList::List(vec![NestedList::Value(7), NestedList::Value(8), NestedList::Value(9)]),\n];\nlet expected = vec![1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9];\nlet result = flatten_list(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

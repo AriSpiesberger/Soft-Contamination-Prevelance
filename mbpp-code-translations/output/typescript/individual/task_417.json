@@ -1,0 +1,17 @@
+{
+  "task_id": 417,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find common first element in given list of tuple.",
+  "python_code": "def group_tuples(Input): \n\tout = {} \n\tfor elem in Input: \n\t\ttry: \n\t\t\tout[elem[0]].extend(elem[1:]) \n\t\texcept KeyError: \n\t\t\tout[elem[0]] = list(elem) \n\treturn [tuple(values) for values in out.values()] ",
+  "test_list": [
+    "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+    "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+    "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]"
+  ],
+  "code_typescript": "function group_tuples<T>(Input: T[][]): T[][] {\n    const out: Map<T, T[]> = new Map();\n    \n    for (const elem of Input) {\n        const key = elem[0];\n        if (out.has(key)) {\n            out.get(key)!.push(...elem.slice(1));\n        } else {\n            out.set(key, [...elem]);\n        }\n    }\n    \n    return Array.from(out.values());\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

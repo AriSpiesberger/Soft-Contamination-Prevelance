@@ -1,0 +1,37 @@
+{
+  "task_id": 257,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two numbers and returns a tuple with the second number and then the first number.",
+  "python_code": "def swap_numbers(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)",
+  "test_list": [
+    "assert swap_numbers(10,20)==(20,10)",
+    "assert swap_numbers(15,17)==(17,15)",
+    "assert swap_numbers(100,200)==(200,100)"
+  ],
+  "code_javascript": "function swap_numbers(a, b) {\n  let temp = a;\n  a = b;\n  b = temp;\n  return [a, b];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert swap_numbers(10,20)==(20,10)",
+      "generated_test": "const result = swap_numbers(10, 20);\nconst expected = [20, 10];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_numbers(15,17)==(17,15)",
+      "generated_test": "const result = swap_numbers(15, 17);\nconst expected = [17, 15];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_numbers(100,200)==(200,100)",
+      "generated_test": "const result = swap_numbers(100, 200);\nconst expected = [200, 100];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

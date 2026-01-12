@@ -1,0 +1,27 @@
+{
+  "task_id": 450,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract specified size of strings from a given list of string values.",
+  "code_python": "def extract_string(str, l):\n    result = [e for e in str if len(e) == l] \n    return result",
+  "test_list": [
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,8)==['practice', 'solution']",
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,6)==['Python']",
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,9)==['exercises']"
+  ],
+  "python_1": "def extract_string(str, l):\n    # Initialize empty list to accumulate matching strings\n    result = []\n    # Use filter with lambda to select strings of exact length l\n    filtered = filter(lambda e: len(e) == l, str)\n    # Convert filter iterator to list for return value\n    result = list(filtered)\n    # Return the collected strings matching the length requirement\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def extract_string(str, l):\n    # Create an empty list to store strings matching the target length\n    result = []\n    # Set up index variable for manual iteration through the list\n    index = 0\n    # Continue looping while index is within bounds of the input list\n    while index < len(str):\n        # Retrieve the current string element at this position\n        current_string = str[index]\n        # Check if the current string's character count matches desired length\n        if len(current_string) == l:\n            # Append matching string to our result collection\n            result.append(current_string)\n        # Move to the next position in the input list\n        index += 1\n    # Return the accumulated list of length-matching strings\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def extract_string(str, l):\n    # Use recursion base case: empty input yields empty result\n    if len(str) == 0:\n        # Return empty list when no more elements to process\n        return []\n    # Extract the first element from the input list\n    first_element = str[0]\n    # Recursively process the remaining elements in the list\n    rest_result = extract_string(str[1:], l)\n    # Evaluate if first element's length matches the target size\n    if len(first_element) == l:\n        # Prepend matching element to recursive result using list concatenation\n        return [first_element] + rest_result\n    # Skip non-matching element by returning only recursive results\n    return rest_result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def extract_string(str, l):\n    # Use enumerate to get both index and value pairs from input list\n    indexed_strings = enumerate(str)\n    # Build result by extracting strings where length criterion is satisfied\n    result = []\n    # Unpack each index-value tuple from the enumeration\n    for idx, string_val in indexed_strings:\n        # Compute the character count of current string element\n        char_count = len(string_val)\n        # Compare computed length against target length parameter\n        matches_length = char_count == l\n        # Conditionally include string in output based on length match\n        if matches_length:\n            # Use extend with single-element list as alternative to append\n            result.extend([string_val])\n    # Provide the filtered collection as function output\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def extract_string(str, l):\n    # Import reduce function from functools for fold-based accumulation\n    from functools import reduce\n    # Define accumulator function that conditionally appends matching strings\n    def accumulator(acc, element):\n        # Determine if current element should be included based on length equality\n        return acc + [element] if len(element) == l else acc\n    # Apply reduce to fold the list into filtered result starting with empty list\n    result = reduce(accumulator, str, [])\n    # Return the accumulated list containing only strings of specified length\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

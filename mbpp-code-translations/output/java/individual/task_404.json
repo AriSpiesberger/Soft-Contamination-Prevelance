@@ -1,0 +1,37 @@
+{
+  "task_id": 404,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum of two numbers.",
+  "python_code": "def minimum(a,b):   \n    if a <= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert minimum(1,2) == 1",
+    "assert minimum(-5,-4) == -5",
+    "assert minimum(0,0) == 0"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int minimum(int a, int b) {\n        if (a <= b) {\n            return a;\n        } else {\n            return b;\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert minimum(1,2) == 1",
+      "generated_test": "int result = minimum(1, 2);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(-5,-4) == -5",
+      "generated_test": "int result = minimum(-5, -4);\nint expected = -5;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(0,0) == 0",
+      "generated_test": "int result = minimum(0, 0);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

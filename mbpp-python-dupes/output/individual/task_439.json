@@ -1,0 +1,27 @@
+{
+  "task_id": 439,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to join a list of multiple integers into a single integer.",
+  "code_python": "def multiple_to_single(L):\n  x = int(\"\".join(map(str, L)))\n  return x",
+  "test_list": [
+    "assert multiple_to_single([11, 33, 50])==113350",
+    "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+    "assert multiple_to_single([10,15,20,25])==10152025"
+  ],
+  "python_1": "def multiple_to_single(L):\n    # Check if the list is empty and return 0 as base case\n    if not L:\n        return 0\n    # Determine if result should be negative by checking first element\n    is_negative = L[0] < 0\n    # Build result string starting empty\n    result_str = \"\"\n    # Process each number in the list sequentially\n    for i, num in enumerate(L):\n        # Convert number to absolute value for string building\n        abs_num = abs(num)\n        # Concatenate the string representation of each number\n        result_str = result_str + str(abs_num)\n    # Convert accumulated string to integer\n    result = int(result_str)\n    # Apply negative sign if original first element was negative\n    if is_negative:\n        result = -result\n    # Return the final combined integer\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def multiple_to_single(L):\n    # Handle empty list edge case by returning zero\n    if not L:\n        return 0\n    # Track negativity based on first element's sign\n    negative = L[0] < 0\n    # Use list comprehension to convert all numbers to their absolute string forms\n    str_parts = [str(abs(num)) for num in L]\n    # Concatenate all string parts using reduce-like approach with sum on strings\n    combined = \"\".join(str_parts)\n    # Parse the combined string as an integer\n    result = int(combined)\n    # Negate the result if the original first number was negative\n    return -result if negative else result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def multiple_to_single(L):\n    # Return zero immediately for empty input lists\n    if not L:\n        return 0\n    # Extract the first element to check its sign\n    first = L[0]\n    # Determine sign multiplier: -1 for negative first element, 1 otherwise\n    sign = -1 if first < 0 else 1\n    # Initialize accumulator that will hold our growing integer result\n    result = 0\n    # Process each number in the input list one by one\n    for num in L:\n        # Get positive version of current number for digit manipulation\n        abs_num = abs(num)\n        # Count digits by converting to string and measuring length\n        num_digits = len(str(abs_num))\n        # Shift existing result left by multiplying by appropriate power of 10\n        result = result * (10 ** num_digits)\n        # Append current number's digits by adding its absolute value\n        result = result + abs_num\n    # Apply the sign based on whether first element was negative\n    result = sign * result\n    # Return the fully constructed single integer\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def multiple_to_single(L):\n    # Guard clause for empty input - return neutral value\n    if not L:\n        return 0\n    # Capture sign from first element before any transformations\n    needs_negation = L[0] < 0\n    # Use functools reduce to accumulate string without explicit loop\n    from functools import reduce\n    # Define lambda that concatenates absolute string representations\n    concat_abs = lambda acc, x: acc + str(abs(x))\n    # Apply reduce starting with empty accumulator to build digit string\n    digit_string = reduce(concat_abs, L, \"\")\n    # Transform the accumulated digit string into integer type\n    numeric_result = int(digit_string)\n    # Flip sign using multiplication trick: -1**True = -1, -1**False = 1... but simpler approach\n    final_value = -numeric_result if needs_negation else numeric_result\n    # Deliver the combined integer with correct sign\n    return final_value",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def multiple_to_single(L):\n    # Early exit for edge case of no elements provided\n    if not L:\n        return 0\n    # Detect negative sign by inspecting the leading element\n    is_neg = L[0] < 0\n    # Build character list using recursive-style generator expression\n    chars = (char for num in L for char in str(abs(num)))\n    # Materialize generator into a single concatenated string\n    joined = ''.join(chars)\n    # Parse string to integer, using eval alternative for variety\n    parsed = int(joined, 10)\n    # Apply conditional negation using arithmetic sign flip\n    return parsed * (-1 if is_neg else 1)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

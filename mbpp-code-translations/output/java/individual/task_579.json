@@ -1,0 +1,37 @@
+{
+  "task_id": 579,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the dissimilar elements in the given two tuples.",
+  "python_code": "def find_dissimilar(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) ^ set(test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert find_dissimilar((3, 4, 5, 6), (5, 7, 4, 10)) == (3, 6, 7, 10)",
+    "assert find_dissimilar((1, 2, 3, 4), (7, 2, 3, 9)) == (1, 4, 7, 9)",
+    "assert find_dissimilar((21, 11, 25, 26), (26, 34, 21, 36)) == (34, 36, 11, 25)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int[] find_dissimilar(int[] test_tup1, int[] test_tup2) {\n        Set<Integer> set1 = new HashSet<>();\n        Set<Integer> set2 = new HashSet<>();\n        \n        for (int num : test_tup1) {\n            set1.add(num);\n        }\n        \n        for (int num : test_tup2) {\n            set2.add(num);\n        }\n        \n        // Symmetric difference: (set1 - set2) union (set2 - set1)\n        Set<Integer> result = new HashSet<>();\n        \n        // Elements in set1 but not in set2\n        for (int num : set1) {\n            if (!set2.contains(num)) {\n                result.add(num);\n            }\n        }\n        \n        // Elements in set2 but not in set1\n        for (int num : set2) {\n            if (!set1.contains(num)) {\n                result.add(num);\n            }\n        }\n        \n        int[] resArray = new int[result.size()];\n        int i = 0;\n        for (int num : result) {\n            resArray[i++] = num;\n        }\n        \n        return resArray;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_dissimilar((3, 4, 5, 6), (5, 7, 4, 10)) == (3, 6, 7, 10)",
+      "generated_test": "int[] result = find_dissimilar(new int[]{3, 4, 5, 6}, new int[]{5, 7, 4, 10});\nint[] expected = new int[]{3, 6, 7, 10};\n\n// Sort both arrays for comparison since set order is not guaranteed\nArrays.sort(result);\nArrays.sort(expected);\n\nboolean pass = Arrays.equals(result, expected);\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_dissimilar((1, 2, 3, 4), (7, 2, 3, 9)) == (1, 4, 7, 9)",
+      "generated_test": "int[] result = find_dissimilar(new int[]{1, 2, 3, 4}, new int[]{7, 2, 3, 9});\nint[] expected = new int[]{1, 4, 7, 9};\n\n// Sort both arrays for comparison since order may differ\nArrays.sort(result);\nArrays.sort(expected);\n\nboolean pass = Arrays.equals(result, expected);\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_dissimilar((21, 11, 25, 26), (26, 34, 21, 36)) == (34, 36, 11, 25)",
+      "generated_test": "int[] result = find_dissimilar(new int[]{21, 11, 25, 26}, new int[]{26, 34, 21, 36});\nint[] expected = new int[]{34, 36, 11, 25};\n\n// Sort both arrays for comparison since order may differ\nArrays.sort(result);\nArrays.sort(expected);\n\nboolean pass = Arrays.equals(result, expected);\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

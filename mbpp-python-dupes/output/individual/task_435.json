@@ -1,0 +1,27 @@
+{
+  "task_id": 435,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit of a given number.",
+  "code_python": "def last_Digit(n) :\n    return (n % 10) ",
+  "test_list": [
+    "assert last_Digit(123) == 3",
+    "assert last_Digit(25) == 5",
+    "assert last_Digit(30) == 0"
+  ],
+  "python_1": "# Convert the number to its absolute value first, then to string representation\ndef last_Digit(n):\n    # Handle negative numbers by taking absolute value before string conversion\n    n = abs(n)\n    # Convert the integer to a string to access individual digits as characters\n    str_n = str(n)\n    # Extract the rightmost character which represents the last digit\n    last_char = str_n[-1]\n    # Convert the character back to an integer for proper return type\n    return int(last_char)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Use divmod to get both quotient and remainder in one operation\ndef last_Digit(n):\n    # Ensure we work with positive numbers since last digit sign doesn't matter\n    n = abs(n)\n    # divmod returns (n // 10, n % 10) as a tuple - we only need the remainder\n    quotient, remainder = divmod(n, 10)\n    # The remainder when dividing by 10 is always the last digit\n    return remainder",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Use bitwise operations and repeated subtraction concept via integer arithmetic\ndef last_Digit(n):\n    # Take absolute value to handle negative inputs uniformly\n    n = abs(n)\n    # Handle edge case where input is already a single digit (0-9)\n    if n < 10:\n        # The number itself is its last digit when less than 10\n        return n\n    # Calculate how many complete groups of 10 exist in the number\n    tens_count = n // 10\n    # Reconstruct the number without its last digit by multiplying back\n    number_without_last = tens_count * 10\n    # Subtract to isolate only the ones place digit\n    last_digit = n - number_without_last\n    # Return the isolated last digit\n    return last_digit",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Use recursive approach to strip digits until we reach the last one\ndef last_Digit(n):\n    # Normalize negative numbers since sign doesn't affect last digit\n    n = abs(n)\n    # Base case: if number is single digit, it is its own last digit\n    if n < 10:\n        # Return the number directly as it's already the final digit\n        return n\n    # Recursive case: remove the last digit and call again with remaining\n    # Actually we need to return the last digit, so use different recursion\n    # Strip away all digits except the last by recursively taking mod 10\n    return last_Digit(n % 10 + (0 if n < 10 else 0))\n\n# Actually let me rewrite with a different structural approach using a list\ndef last_Digit(n):\n    # Convert to positive since we only care about digit magnitude\n    n = abs(n)\n    # Create a list to store extracted digits in reverse order\n    digits = []\n    # Handle special case of zero which would skip the loop entirely\n    if n == 0:\n        # Zero's last digit is simply zero\n        return 0\n    # Extract digits one by one using repeated division\n    while n > 0:\n        # Append current rightmost digit to our collection\n        digits.append(n % 10)\n        # Remove the rightmost digit by integer division\n        n = n // 10\n    # The first digit we extracted was the rightmost (last) digit\n    return digits[0]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Use a generator expression with enumerate to find the digit at the last position\ndef last_Digit(n):\n    # Normalize to positive since sign is irrelevant for digit extraction\n    n = abs(n)\n    # Create a tuple of digits by mapping each character to its numeric value\n    digit_sequence = tuple(int(char) for char in str(n))\n    # Calculate the index of the final element in our digit sequence\n    final_index = len(digit_sequence) - 1\n    # Access the digit at the computed terminal position\n    result = digit_sequence[final_index]\n    # Return the extracted rightmost digit\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

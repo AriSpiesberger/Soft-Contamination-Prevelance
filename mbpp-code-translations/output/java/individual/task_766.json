@@ -1,0 +1,44 @@
+{
+  "task_id": 766,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return a list of all pairs of consecutive items in a given list.",
+  "python_code": "def pair_wise(l1):\n    temp = []\n    for i in range(len(l1) - 1):\n        current_element, next_element = l1[i], l1[i + 1]\n        x = (current_element, next_element)\n        temp.append(x)\n    return temp",
+  "test_list": [
+    "assert pair_wise([1,1,2,3,3,4,4,5])==[(1, 1), (1, 2), (2, 3), (3, 3), (3, 4), (4, 4), (4, 5)]",
+    "assert pair_wise([1,5,7,9,10])==[(1, 5), (5, 7), (7, 9), (9, 10)]",
+    "assert pair_wise([5,1,9,7,10])==[(5, 1), (1, 9), (9, 7), (7, 10)]",
+    "assert pair_wise([1,2,3,4,5,6,7,8,9,10])==[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10)]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<int[]> pair_wise(List<Integer> l1) {\n        List<int[]> temp = new ArrayList<>();\n        for (int i = 0; i < l1.size() - 1; i++) {\n            int current_element = l1.get(i);\n            int next_element = l1.get(i + 1);\n            int[] x = {current_element, next_element};\n            temp.add(x);\n        }\n        return temp;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert pair_wise([1,1,2,3,3,4,4,5])==[(1, 1), (1, 2), (2, 3), (3, 3), (3, 4), (4, 4), (4, 5)]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(1);\ninput.add(2);\ninput.add(3);\ninput.add(3);\ninput.add(4);\ninput.add(4);\ninput.add(5);\n\nList<int[]> result = pair_wise(input);\n\nint[][] expected = {{1, 1}, {1, 2}, {2, 3}, {3, 3}, {3, 4}, {4, 4}, {4, 5}};\n\nboolean pass = true;\nif (result.size() != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result.get(i)[0] != expected[i][0] || result.get(i)[1] != expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(\"(\").append(expected[i][0]).append(\", \").append(expected[i][1]).append(\")\");\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        gotStr.append(\"(\").append(result.get(i)[0]).append(\", \").append(result.get(i)[1]).append(\")\");\n        if (i < result.size() - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_wise([1,5,7,9,10])==[(1, 5), (5, 7), (7, 9), (9, 10)]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(5);\ninput.add(7);\ninput.add(9);\ninput.add(10);\n\nList<int[]> result = pair_wise(input);\n\nint[][] expected = {{1, 5}, {5, 7}, {7, 9}, {9, 10}};\n\nboolean pass = true;\nif (result.size() != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result.get(i)[0] != expected[i][0] || result.get(i)[1] != expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(\"(\").append(expected[i][0]).append(\", \").append(expected[i][1]).append(\")\");\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        gotStr.append(\"(\").append(result.get(i)[0]).append(\", \").append(result.get(i)[1]).append(\")\");\n        if (i < result.size() - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_wise([5,1,9,7,10])==[(5, 1), (1, 9), (9, 7), (7, 10)]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(5);\ninput.add(1);\ninput.add(9);\ninput.add(7);\ninput.add(10);\n\nList<int[]> result = pair_wise(input);\n\nint[][] expected = {{5, 1}, {1, 9}, {9, 7}, {7, 10}};\n\nboolean pass = true;\nif (result.size() != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result.get(i)[0] != expected[i][0] || result.get(i)[1] != expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(\"(\").append(expected[i][0]).append(\", \").append(expected[i][1]).append(\")\");\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        gotStr.append(\"(\").append(result.get(i)[0]).append(\", \").append(result.get(i)[1]).append(\")\");\n        if (i < result.size() - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_wise([1,2,3,4,5,6,7,8,9,10])==[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10)]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\nfor (int i = 1; i <= 10; i++) {\n    input.add(i);\n}\n\nList<int[]> result = pair_wise(input);\n\nint[][] expected = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};\n\nboolean passed = true;\nif (result.size() != expected.length) {\n    passed = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result.get(i)[0] != expected[i][0] || result.get(i)[1] != expected[i][1]) {\n            passed = false;\n            break;\n        }\n    }\n}\n\nif (passed) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(\"[\").append(expected[i][0]).append(\", \").append(expected[i][1]).append(\"]\");\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        gotStr.append(\"[\").append(result.get(i)[0]).append(\", \").append(result.get(i)[1]).append(\"]\");\n        if (i < result.size() - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

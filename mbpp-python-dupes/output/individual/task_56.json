@@ -1,0 +1,27 @@
+{
+  "task_id": 56,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check if a given number is one less than twice its reverse.",
+  "code_python": "def rev(num):    \n    rev_num = 0\n    while (num > 0):  \n        rev_num = (rev_num * 10 + num % 10) \n        num = num // 10  \n    return rev_num  \ndef check(n):    \n    return (2 * rev(n) == n + 1)  ",
+  "test_list": [
+    "assert check(70) == False",
+    "assert check(23) == False",
+    "assert check(73) == True"
+  ],
+  "python_1": "def rev(num):\n    # Convert the number to a string for easy reversal\n    num_str = str(num)\n    # Use string slicing with step -1 to reverse the digits\n    reversed_str = num_str[::-1]\n    # Convert the reversed string back to an integer\n    return int(reversed_str)\n\ndef check(n):\n    # Calculate twice the reverse of n\n    twice_reverse = 2 * rev(n)\n    # Check if twice the reverse equals n plus one\n    result = twice_reverse == n + 1\n    # Return the boolean comparison result\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def rev(num):\n    # Convert number to string to access individual digits\n    digits = str(num)\n    # Use reversed() iterator combined with join for memory-efficient reversal\n    reversed_digits = ''.join(reversed(digits))\n    # Parse the reversed string back to integer, handling leading zeros automatically\n    return int(reversed_digits)\n\ndef check(n):\n    # Obtain the reversed form of the input number\n    reversed_n = rev(n)\n    # Compute what n should be if it satisfies the condition: n = 2*reverse - 1\n    expected_n = 2 * reversed_n - 1\n    # Verify if the actual n matches the expected value derived from the formula\n    return n == expected_n",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def rev(num):\n    # Extract all digits using list comprehension with modulo and integer division\n    digits = []\n    # Store original number to preserve it during digit extraction\n    temp = num\n    # Continue extracting digits until no digits remain\n    while temp > 0:\n        # Append the rightmost digit to our collection\n        digits.append(temp % 10)\n        # Remove the rightmost digit by integer division\n        temp = temp // 10\n    # Build reversed number by treating extracted digits as already reversed\n    reversed_num = 0\n    # Multiply each digit by appropriate power of 10 using enumerate\n    for i, digit in enumerate(digits):\n        # Each digit gets multiplied by 10^(len-1-i) to place it correctly\n        reversed_num += digit * (10 ** (len(digits) - 1 - i))\n    # Return the reconstructed reversed integer\n    return reversed_num\n\ndef check(n):\n    # Store the reverse calculation result in a variable for clarity\n    reverse_value = rev(n)\n    # Apply the mathematical formula: is n one less than twice its reverse?\n    is_one_less = (n + 1) == (2 * reverse_value)\n    # Return the boolean result of our condition check\n    return is_one_less",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def rev(num):\n    # Convert integer to list of character digits for manipulation\n    digit_chars = list(str(num))\n    # Use two-pointer technique to swap digits in place\n    left = 0\n    # Initialize right pointer at the last index\n    right = len(digit_chars) - 1\n    # Continue swapping until pointers meet in the middle\n    while left < right:\n        # Swap characters at left and right positions simultaneously\n        digit_chars[left], digit_chars[right] = digit_chars[right], digit_chars[left]\n        # Move left pointer toward center\n        left += 1\n        # Move right pointer toward center\n        right -= 1\n    # Reconstruct string from swapped character list\n    reversed_str = ''.join(digit_chars)\n    # Convert reversed string representation back to integer\n    return int(reversed_str)\n\ndef check(n):\n    # Compute the reversed version of input number\n    reversed_value = rev(n)\n    # Calculate twice the reversed number\n    doubled_reverse = reversed_value * 2\n    # Subtract one from doubled reverse to get expected value\n    target = doubled_reverse - 1\n    # Compare original number against computed target for equality\n    return n == target",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def rev(num):\n    # Use recursion helper with accumulator for functional-style reversal\n    def reverse_helper(n, accumulated):\n        # Base case: when no digits remain, return accumulated result\n        if n == 0:\n            return accumulated\n        # Extract last digit and add to accumulated value shifted left by one decimal place\n        return reverse_helper(n // 10, accumulated * 10 + n % 10)\n    # Handle edge case where input is zero\n    if num == 0:\n        return 0\n    # Initiate recursive reversal starting with zero as accumulator\n    return reverse_helper(num, 0)\n\ndef check(n):\n    # Use lambda to encapsulate the mathematical condition as a predicate function\n    condition_check = lambda x: 2 * rev(x) - 1 == x\n    # Apply the predicate to our input and return boolean result directly\n    return condition_check(n)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

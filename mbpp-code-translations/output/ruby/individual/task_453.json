@@ -1,0 +1,37 @@
+{
+  "task_id": 453,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of even factors of a number.",
+  "python_code": "import math \ndef sumofFactors(n) : \n    if (n % 2 != 0) : \n        return 0\n    res = 1\n    for i in range(2, (int)(math.sqrt(n)) + 1) :    \n        count = 0\n        curr_sum = 1\n        curr_term = 1\n        while (n % i == 0) : \n            count= count + 1\n            n = n // i \n            if (i == 2 and count == 1) : \n                curr_sum = 0\n            curr_term = curr_term * i \n            curr_sum = curr_sum + curr_term \n        res = res * curr_sum  \n    if (n >= 2) : \n        res = res * (1 + n) \n    return res",
+  "test_list": [
+    "assert sumofFactors(18) == 26",
+    "assert sumofFactors(30) == 48",
+    "assert sumofFactors(6) == 8"
+  ],
+  "code_ruby": "def sumofFactors(n)\n  if n % 2 != 0\n    return 0\n  end\n  res = 1\n  (2..(Math.sqrt(n).to_i)).each do |i|\n    count = 0\n    curr_sum = 1\n    curr_term = 1\n    while n % i == 0\n      count = count + 1\n      n = n / i\n      if i == 2 && count == 1\n        curr_sum = 0\n      end\n      curr_term = curr_term * i\n      curr_sum = curr_sum + curr_term\n    end\n    res = res * curr_sum\n  end\n  if n >= 2\n    res = res * (1 + n)\n  end\n  res\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sumofFactors(18) == 26",
+      "generated_test": "result = sumofFactors(18)\nexpected = 26\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sumofFactors(30) == 48",
+      "generated_test": "result = sumofFactors(30)\nexpected = 48\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sumofFactors(6) == 8",
+      "generated_test": "result = sumofFactors(6)\nexpected = 8\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 266,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cube given its side length.",
+  "code_python": "def lateralsurface_cube(l):\n  LSA = 4 * (l * l)\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cube(5)==100",
+    "assert lateralsurface_cube(9)==324",
+    "assert lateralsurface_cube(10)==400"
+  ],
+  "python_1": "def lateralsurface_cube(l):\n    # A cube has 4 lateral faces, each being a square with area l^2\n    number_of_lateral_faces = 4\n    # Calculate the area of one square face using exponentiation\n    single_face_area = l ** 2\n    # Multiply the number of lateral faces by the area of each face\n    total_lateral_surface_area = number_of_lateral_faces * single_face_area\n    # Return the computed lateral surface area\n    return total_lateral_surface_area",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def lateralsurface_cube(l):\n    # Use a lambda function to compute the square of a number\n    square = lambda x: x * x\n    # Apply the square function to get the area of one face\n    face_area = square(l)\n    # Sum up four identical face areas using built-in sum with a generator\n    total_area = sum(face_area for _ in range(4))\n    # Return the computed lateral surface area\n    return total_area",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def lateralsurface_cube(l):\n    # Import the reduce function for functional programming approach\n    from functools import reduce\n    # Create a list representing the 4 lateral faces of the cube\n    lateral_faces = [l, l, l, l]\n    # Use reduce to multiply each side length by itself and accumulate the sum\n    total_area = reduce(lambda acc, side: acc + side * side, lateral_faces, 0)\n    # Return the accumulated lateral surface area\n    return total_area",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def lateralsurface_cube(l):\n    # Use pow() built-in function as an alternative to ** or * for exponentiation\n    squared_side = pow(l, 2)\n    # Employ bit shifting to multiply by 4 (equivalent to left shift by 2 bits)\n    lateral_surface_area = squared_side << 2\n    # Return the result computed via bitwise operation\n    return lateral_surface_area",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def lateralsurface_cube(l):\n    # Import math module to access mathematical operations\n    import math\n    # Calculate l^2 using math.prod with a list containing l twice\n    face_area = math.prod([l, l])\n    # Use integer multiplication via repeated addition concept with list replication\n    four_faces = [face_area] * 4\n    # Aggregate all face areas using math.fsum for precise floating-point summation\n    lateral_surface_area = math.fsum(four_faces)\n    # Convert back to integer since we're dealing with whole number areas\n    return int(lateral_surface_area)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

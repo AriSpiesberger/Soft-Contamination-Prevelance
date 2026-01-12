@@ -1,0 +1,17 @@
+{
+  "task_id": 606,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert degrees to radians.",
+  "python_code": "import math\ndef radian_degree(degree):\n radian = degree*(math.pi/180)\n return radian",
+  "test_list": [
+    "assert radian_degree(90)==1.5707963267948966",
+    "assert radian_degree(60)==1.0471975511965976",
+    "assert radian_degree(120)==2.0943951023931953"
+  ],
+  "code_typescript": "function radian_degree(degree: number): number {\n    const radian = degree * (Math.PI / 180);\n    return radian;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

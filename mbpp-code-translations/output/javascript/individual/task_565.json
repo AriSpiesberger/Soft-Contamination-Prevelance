@@ -1,0 +1,37 @@
+{
+  "task_id": 565,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a string into characters.",
+  "python_code": "def split(word): \n    return [char for char in word] ",
+  "test_list": [
+    "assert split('python') == ['p','y','t','h','o','n']",
+    "assert split('Name') == ['N','a','m','e']",
+    "assert split('program') == ['p','r','o','g','r','a','m']"
+  ],
+  "code_javascript": "function split(word) {\n    return [...word];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert split('python') == ['p','y','t','h','o','n']",
+      "generated_test": "const result = split('python');\nconst expected = ['p','y','t','h','o','n'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split('Name') == ['N','a','m','e']",
+      "generated_test": "const result = split('Name');\nconst expected = ['N', 'a', 'm', 'e'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split('program') == ['p','r','o','g','r','a','m']",
+      "generated_test": "const result = split('program');\nconst expected = ['p','r','o','g','r','a','m'];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 779,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of lists within a list. The function should return a dictionary, where every list is turned to a tuple, and the value of the tuple is the number of its occurrences.",
+  "code_python": "def unique_sublists(list1):\n    result ={}\n    for l in list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]])=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[1, 2], [3, 4], [4, 5], [6, 7]])=={(1, 2): 1, (3, 4): 1, (4, 5): 1, (6, 7): 1}"
+  ],
+  "python_1": "def unique_sublists(list1):\n    # Convert each sublist to a tuple to make it hashable for counting\n    tuple_list = [tuple(sublist) for sublist in list1]\n    # Initialize an empty dictionary to store tuple counts\n    result = {}\n    # Iterate through each tuple in our converted list\n    for t in tuple_list:\n        # Use get() with default 0 and increment by 1 for each occurrence\n        result[t] = result.get(t, 0) + 1\n    # Return the dictionary mapping tuples to their occurrence counts\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "from collections import Counter\n\ndef unique_sublists(list1):\n    # Use a generator expression to lazily convert sublists to tuples for hashing\n    tuple_generator = (tuple(sublist) for sublist in list1)\n    # Leverage Counter class which efficiently counts hashable objects in one pass\n    counts = Counter(tuple_generator)\n    # Convert Counter to regular dict to match expected return type\n    return dict(counts)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def unique_sublists(list1):\n    # Build result dictionary using dict comprehension with count method\n    # First, extract all unique tuples by converting to set\n    unique_tuples = set(tuple(sublist) for sublist in list1)\n    # Create a parallel list of all tuples for counting purposes\n    all_tuples = [tuple(sublist) for sublist in list1]\n    # Use dict comprehension to map each unique tuple to its count in the full list\n    result = {t: all_tuples.count(t) for t in unique_tuples}\n    # Return the frequency dictionary preserving insertion order by rebuilding\n    ordered_result = {}\n    # Iterate original list to maintain first-seen order of sublists\n    for sublist in list1:\n        # Convert current sublist to tuple for dictionary key\n        key = tuple(sublist)\n        # Only add to ordered result if not already present\n        if key not in ordered_result:\n            # Transfer the precomputed count from our result dictionary\n            ordered_result[key] = result[key]\n    # Return dictionary with original encounter order preserved\n    return ordered_result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def unique_sublists(list1):\n    # Use reduce pattern to accumulate counts in a single pass through the list\n    from functools import reduce\n    \n    # Define accumulator function that updates dictionary with each sublist\n    def count_accumulator(acc, sublist):\n        # Transform current sublist into immutable tuple for dict key usage\n        key = tuple(sublist)\n        # Check if this tuple key already exists in our accumulator dictionary\n        if key in acc:\n            # Increment existing count by one for repeated occurrence\n            acc[key] += 1\n        else:\n            # Initialize count to 1 for first occurrence of this tuple\n            acc[key] = 1\n        # Return modified accumulator for next iteration in reduce chain\n        return acc\n    \n    # Apply reduce with empty dict as initial value, folding all sublists into counts\n    result = reduce(count_accumulator, list1, {})\n    # Return the fully accumulated frequency dictionary\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def unique_sublists(list1):\n    # Create an empty dictionary to store our final counts\n    result = {}\n    # Use enumerate to get both index and sublist, though we only need sublist\n    for sublist in list1:\n        # Convert the mutable list to an immutable tuple for use as dict key\n        tuple_key = tuple(sublist)\n        # Try-except pattern as alternative to get() or setdefault() methods\n        try:\n            # Attempt to increment count assuming key exists\n            result[tuple_key] = result[tuple_key] + 1\n        except KeyError:\n            # Key doesn't exist yet, so initialize with count of 1\n            result[tuple_key] = 1\n    # Return dictionary mapping each unique tuple to its frequency\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

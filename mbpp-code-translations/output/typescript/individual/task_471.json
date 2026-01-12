@@ -1,0 +1,17 @@
+{
+  "task_id": 471,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the product of the array multiplication modulo n.",
+  "python_code": "def find_remainder(arr, n): \n    mul = 1\n    for i in range(len(arr)):  \n        mul = (mul * (arr[i] % n)) % n \n    return mul % n ",
+  "test_list": [
+    "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+    "assert find_remainder([1,1,1],1) == 0",
+    "assert find_remainder([1,2,1],2) == 0"
+  ],
+  "code_typescript": "function find_remainder(arr: number[], n: number): number {\n    let mul = 1;\n    for (let i = 0; i < arr.length; i++) {\n        mul = (mul * (arr[i] % n)) % n;\n    }\n    return mul % n;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

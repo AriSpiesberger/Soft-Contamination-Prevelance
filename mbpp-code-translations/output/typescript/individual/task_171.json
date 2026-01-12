@@ -1,0 +1,17 @@
+{
+  "task_id": 171,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the perimeter of a regular pentagon from the length of its sides.",
+  "python_code": "import math\ndef perimeter_pentagon(a):\n  perimeter=(5*a)\n  return perimeter",
+  "test_list": [
+    "assert perimeter_pentagon(5) == 25",
+    "assert perimeter_pentagon(10) == 50",
+    "assert perimeter_pentagon(15) == 75"
+  ],
+  "code_typescript": "function perimeter_pentagon(a: number): number {\n  const perimeter = 5 * a;\n  return perimeter;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

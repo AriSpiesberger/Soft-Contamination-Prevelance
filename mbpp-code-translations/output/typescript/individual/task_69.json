@@ -1,0 +1,17 @@
+{
+  "task_id": 69,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a list contains the given sublist or not.",
+  "python_code": "def is_sublist(l, s):\n\tsub_set = False\n\tif s == []:\n\t\tsub_set = True\n\telif s == l:\n\t\tsub_set = True\n\telif len(s) > len(l):\n\t\tsub_set = False\n\telse:\n\t\tfor i in range(len(l)):\n\t\t\tif l[i] == s[0]:\n\t\t\t\tn = 1\n\t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n\t\t\t\t\tn += 1\t\t\t\t\n\t\t\t\tif n == len(s):\n\t\t\t\t\tsub_set = True\n\treturn sub_set",
+  "test_list": [
+    "assert is_sublist([2,4,3,5,7],[3,7])==False",
+    "assert is_sublist([2,4,3,5,7],[4,3])==True",
+    "assert is_sublist([2,4,3,5,7],[1,6])==False"
+  ],
+  "code_typescript": "function is_sublist<T>(l: T[], s: T[]): boolean {\n    let sub_set: boolean = false;\n    if (s.length === 0) {\n        sub_set = true;\n    } else if (s.length === l.length && s.every((val, idx) => val === l[idx])) {\n        sub_set = true;\n    } else if (s.length > l.length) {\n        sub_set = false;\n    } else {\n        for (let i = 0; i < l.length; i++) {\n            if (l[i] === s[0]) {\n                let n = 1;\n                while (n < s.length && l[i + n] === s[n]) {\n                    n += 1;\n                }\n                if (n === s.length) {\n                    sub_set = true;\n                }\n            }\n        }\n    }\n    return sub_set;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

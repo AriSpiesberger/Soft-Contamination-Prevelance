@@ -1,0 +1,27 @@
+{
+  "task_id": 166,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that counts the number of pairs of integers in a list that xor to an even number.",
+  "code_python": "def find_even_pair(A): \n  count = 0\n  for i in range(0, len(A)): \n    for j in range(i+1, len(A)): \n        if ((A[i] ^ A[j]) % 2 == 0): \n          count += 1\n\n  return count",
+  "test_list": [
+    "assert find_even_pair([5, 4, 7, 2, 1]) == 4",
+    "assert find_even_pair([7, 2, 8, 1, 0, 5, 11]) == 9",
+    "assert find_even_pair([1, 2, 3]) == 1"
+  ],
+  "python_1": "def find_even_pair(A): \n  # Count how many odd numbers exist in the input list\n  odd_count = sum(1 for x in A if x % 2 == 1)\n  # Count how many even numbers exist in the input list\n  even_count = len(A) - odd_count\n  # XOR is even when both numbers have same parity (both odd or both even)\n  # Calculate combinations of odd pairs: C(odd_count, 2)\n  odd_pairs = odd_count * (odd_count - 1) // 2\n  # Calculate combinations of even pairs: C(even_count, 2)\n  even_pairs = even_count * (even_count - 1) // 2\n  # Total even XOR pairs is sum of same-parity pairs\n  return odd_pairs + even_pairs",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_even_pair(A): \n  # Separate elements into two groups based on their least significant bit\n  odds = [x for x in A if x & 1]\n  # Filter out elements where LSB is 0 (even numbers)\n  evens = [x for x in A if not (x & 1)]\n  # Use itertools to generate all 2-combinations from each parity group\n  from itertools import combinations\n  # Generate all pairs of odd numbers - their XOR will be even\n  odd_pairs = list(combinations(odds, 2))\n  # Generate all pairs of even numbers - their XOR will also be even\n  even_pairs = list(combinations(evens, 2))\n  # The total count is simply the number of pairs from both groups combined\n  return len(odd_pairs) + len(even_pairs)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_even_pair(A): \n  # Use reduce to accumulate counts of odd and even numbers in a single pass\n  from functools import reduce\n  # Define a reducer that updates a tuple of (even_count, odd_count) based on each element\n  def count_parity(acc, x):\n    # Unpack the accumulated counts from the tuple\n    even_cnt, odd_cnt = acc\n    # Check if current number is even by examining remainder when divided by 2\n    if x % 2 == 0:\n      # Increment even counter and return updated tuple\n      return (even_cnt + 1, odd_cnt)\n    else:\n      # Increment odd counter and return updated tuple\n      return (even_cnt, odd_cnt + 1)\n  # Apply the reducer across all elements starting with zero counts\n  even_count, odd_count = reduce(count_parity, A, (0, 0))\n  # Compute pairs of evens using the mathematical formula for choosing 2 from n\n  pairs_from_evens = (even_count * (even_count - 1)) >> 1\n  # Compute pairs of odds using bit shift instead of division for efficiency\n  pairs_from_odds = (odd_count * (odd_count - 1)) >> 1\n  # Sum both pair counts since XOR of same-parity numbers always yields even result\n  return pairs_from_evens + pairs_from_odds",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_even_pair(A): \n  # Import Counter to efficiently tally occurrences by parity category\n  from collections import Counter\n  # Map each number to its parity (0 for even, 1 for odd) and count occurrences\n  parity_counts = Counter(x % 2 for x in A)\n  # Extract count of even numbers, defaulting to 0 if none exist\n  num_evens = parity_counts.get(0, 0)\n  # Extract count of odd numbers, defaulting to 0 if none exist\n  num_odds = parity_counts.get(1, 0)\n  # Apply binomial coefficient formula C(n,2) = n*(n-1)/2 for even pairs\n  even_to_even = num_evens * (num_evens - 1) // 2\n  # Same formula for odd pairs since odd XOR odd produces even result\n  odd_to_odd = num_odds * (num_odds - 1) // 2\n  # Aggregate both types of valid pairs into final answer\n  return even_to_even + odd_to_odd",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_even_pair(A): \n  # Use filter with lambda to extract all odd numbers into an iterator\n  odd_iterator = filter(lambda x: x & 1 == 1, A)\n  # Convert the odd iterator to a tuple for length calculation\n  odds = tuple(odd_iterator)\n  # Use filter with lambda to extract all even numbers into an iterator\n  even_iterator = filter(lambda x: x & 1 == 0, A)\n  # Convert the even iterator to a tuple for length calculation\n  evens = tuple(even_iterator)\n  # Store the count of odd numbers for pair calculation\n  o = len(odds)\n  # Store the count of even numbers for pair calculation\n  e = len(evens)\n  # Calculate total pairs using the insight that same-parity XOR yields even\n  # Using integer division via // operator on the product of consecutive integers\n  result = o * (o - 1) // 2 + e * (e - 1) // 2\n  # Return the combined count of valid pairs from both parity groups\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

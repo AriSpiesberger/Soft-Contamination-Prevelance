@@ -1,0 +1,37 @@
+{
+  "task_id": 252,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert complex numbers to polar coordinates.",
+  "python_code": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num) ",
+  "test_list": [
+    "assert convert(1) == (1.0, 0.0)",
+    "assert convert(4) == (4.0,0.0)",
+    "assert convert(5) == (5.0,0.0)"
+  ],
+  "code_javascript": "function convert(numbers) {\n  let real, imag;\n  \n  if (typeof numbers === 'number') {\n    real = numbers;\n    imag = 0;\n  } else if (typeof numbers === 'object' && numbers !== null && 're' in numbers && 'im' in numbers) {\n    real = numbers.re;\n    imag = numbers.im;\n  } else if (Array.isArray(numbers) && numbers.length === 2) {\n    real = numbers[0];\n    imag = numbers[1];\n  } else {\n    real = numbers;\n    imag = 0;\n  }\n  \n  const r = Math.sqrt(real * real + imag * imag);\n  const theta = Math.atan2(imag, real);\n  \n  return [r, theta];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert convert(1) == (1.0, 0.0)",
+      "generated_test": "const result = convert(1);\nconst expected = [1.0, 0.0];\n\nif (Array.isArray(result) && result.length === 2 && result[0] === expected[0] && result[1] === expected[1]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(4) == (4.0,0.0)",
+      "generated_test": "const result = convert(4);\nconst expected = [4.0, 0.0];\n\nif (Array.isArray(result) && result.length === expected.length && \n    result[0] === expected[0] && result[1] === expected[1]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(5) == (5.0,0.0)",
+      "generated_test": "const result = convert(5);\nconst expected = [5.0, 0.0];\n\nif (Array.isArray(result) && result.length === expected.length && \n    result[0] === expected[0] && result[1] === expected[1]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 94,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value.",
+  "python_code": "from operator import itemgetter \ndef index_minimum(test_list):\n  res = min(test_list, key = itemgetter(1))[0]\n  return (res) ",
+  "test_list": [
+    "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+    "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+    "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'"
+  ],
+  "code_rust": "pub fn index_minimum(test_list: Vec<(&str, i32)>) -> &str {\n    test_list\n        .iter()\n        .min_by_key(|&(_, second)| second)\n        .map(|(first, _)| *first)\n        .unwrap()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+      "generated_test": "let result = index_minimum(vec![(\"Rash\", 143), (\"Manjeet\", 200), (\"Varsha\", 100)]);\nlet expected = \"Varsha\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+      "generated_test": "let result = index_minimum(vec![(\"Yash\", 185), (\"Dawood\", 125), (\"Sanya\", 175)]);\nlet expected = \"Dawood\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'",
+      "generated_test": "let result = index_minimum(vec![(\"Sai\", 345), (\"Salman\", 145), (\"Ayesha\", 96)]);\nlet expected = \"Ayesha\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

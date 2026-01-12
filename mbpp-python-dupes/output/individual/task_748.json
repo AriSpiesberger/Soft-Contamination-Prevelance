@@ -1,0 +1,27 @@
+{
+  "task_id": 748,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to put spaces between words starting with capital letters in a given string.",
+  "code_python": "import re\ndef capital_words_spaces(str1):\n  return re.sub(r\"(\\w)([A-Z])\", r\"\\1 \\2\", str1)",
+  "test_list": [
+    "assert capital_words_spaces(\"Python\") == 'Python'",
+    "assert capital_words_spaces(\"PythonProgrammingExamples\") == 'Python Programming Examples'",
+    "assert capital_words_spaces(\"GetReadyToBeCodingFreak\") == 'Get Ready To Be Coding Freak'"
+  ],
+  "python_1": "def capital_words_spaces(str1):\n    # Handle empty string edge case by returning immediately\n    if not str1:\n        return str1\n    \n    # Start building result with the first character unchanged\n    result = str1[0]\n    \n    # Iterate through remaining characters starting from index 1\n    for i in range(1, len(str1)):\n        # Get the current character being processed\n        current_char = str1[i]\n        \n        # Check if current character is an uppercase letter\n        if current_char.isupper():\n            # Insert a space before the uppercase letter to separate words\n            result += ' ' + current_char\n        else:\n            # Append lowercase or non-alpha characters without space\n            result += current_char\n    \n    # Return the final string with spaces inserted before capitals\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def capital_words_spaces(str1):\n    # Return empty string immediately if input is empty\n    if not str1:\n        return str1\n    \n    # Create a list to collect individual characters and spaces\n    chars = []\n    \n    # Use enumerate to track position while iterating through characters\n    for idx, char in enumerate(str1):\n        # Skip space insertion logic for the very first character\n        if idx > 0:\n            # Detect uppercase letters that need a preceding space\n            if char.isupper():\n                # Append space to separate the upcoming capital letter word\n                chars.append(' ')\n        \n        # Add the current character to our collection\n        chars.append(char)\n    \n    # Join all collected characters and spaces into final output string\n    return ''.join(chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def capital_words_spaces(str1):\n    # Guard clause to handle empty string input gracefully\n    if not str1:\n        return str1\n    \n    # Use list comprehension to process each character with its index\n    # Prepend space to uppercase letters that aren't at position 0\n    processed = [(' ' + c if c.isupper() and i > 0 else c) for i, c in enumerate(str1)]\n    \n    # Concatenate all processed character strings into the final result\n    return ''.join(processed)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def capital_words_spaces(str1):\n    # Early return for empty input to avoid unnecessary processing\n    if not str1:\n        return str1\n    \n    # Use reduce-style approach with recursion helper to build result\n    def process_chars(index, accumulator):\n        # Base case: when index reaches string length, return accumulated result\n        if index >= len(str1):\n            return accumulator\n        \n        # Extract current character for analysis\n        current = str1[index]\n        \n        # Determine if we need to prepend space (uppercase and not first char)\n        needs_space = current.isupper() and index > 0\n        \n        # Build new accumulator: add space conditionally then the character\n        new_acc = accumulator + (' ' if needs_space else '') + current\n        \n        # Recursive call to process next character with updated accumulator\n        return process_chars(index + 1, new_acc)\n    \n    # Kick off recursive processing starting at index 0 with empty accumulator\n    return process_chars(0, '')",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def capital_words_spaces(str1):\n    # Handle edge case of empty input by returning it unchanged\n    if not str1:\n        return str1\n    \n    # Split string into segments by finding positions before uppercase letters\n    segments = []\n    \n    # Track the starting position of each word segment\n    start_pos = 0\n    \n    # Scan through string starting from second character to find split points\n    for pos in range(1, len(str1)):\n        # Detect uppercase letter which indicates start of new word\n        if str1[pos].isupper():\n            # Extract substring from start_pos up to current position as one word\n            segments.append(str1[start_pos:pos])\n            # Update start_pos to begin next segment at current uppercase letter\n            start_pos = pos\n    \n    # Capture the final segment from last start position to end of string\n    segments.append(str1[start_pos:])\n    \n    # Combine all word segments with single space delimiter between them\n    return ' '.join(segments)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

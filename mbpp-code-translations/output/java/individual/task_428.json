@@ -1,0 +1,37 @@
+{
+  "task_id": 428,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort the given array by using shell sort.",
+  "python_code": "def shell_sort(my_list):\n    gap = len(my_list) // 2\n    while gap > 0:\n        for i in range(gap, len(my_list)):\n            current_item = my_list[i]\n            j = i\n            while j >= gap and my_list[j - gap] > current_item:\n                my_list[j] = my_list[j - gap]\n                j -= gap\n            my_list[j] = current_item\n        gap //= 2\n\n    return my_list",
+  "test_list": [
+    "assert shell_sort([12, 23, 4, 5, 3, 2, 12, 81, 56, 95]) == [2, 3, 4, 5, 12, 12, 23, 56, 81, 95]",
+    "assert shell_sort([24, 22, 39, 34, 87, 73, 68]) == [22, 24, 34, 39, 68, 73, 87]",
+    "assert shell_sort([32, 30, 16, 96, 82, 83, 74]) == [16, 30, 32, 74, 82, 83, 96]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> shell_sort(ArrayList<Integer> my_list) {\n        int gap = my_list.size() / 2;\n        while (gap > 0) {\n            for (int i = gap; i < my_list.size(); i++) {\n                int current_item = my_list.get(i);\n                int j = i;\n                while (j >= gap && my_list.get(j - gap) > current_item) {\n                    my_list.set(j, my_list.get(j - gap));\n                    j -= gap;\n                }\n                my_list.set(j, current_item);\n            }\n            gap /= 2;\n        }\n        return my_list;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert shell_sort([12, 23, 4, 5, 3, 2, 12, 81, 56, 95]) == [2, 3, 4, 5, 12, 12, 23, 56, 81, 95]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(12);\ninput.add(23);\ninput.add(4);\ninput.add(5);\ninput.add(3);\ninput.add(2);\ninput.add(12);\ninput.add(81);\ninput.add(56);\ninput.add(95);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(2);\nexpected.add(3);\nexpected.add(4);\nexpected.add(5);\nexpected.add(12);\nexpected.add(12);\nexpected.add(23);\nexpected.add(56);\nexpected.add(81);\nexpected.add(95);\n\nArrayList<Integer> result = shell_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert shell_sort([24, 22, 39, 34, 87, 73, 68]) == [22, 24, 34, 39, 68, 73, 87]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(24);\ninput.add(22);\ninput.add(39);\ninput.add(34);\ninput.add(87);\ninput.add(73);\ninput.add(68);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(22);\nexpected.add(24);\nexpected.add(34);\nexpected.add(39);\nexpected.add(68);\nexpected.add(73);\nexpected.add(87);\n\nArrayList<Integer> result = shell_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert shell_sort([32, 30, 16, 96, 82, 83, 74]) == [16, 30, 32, 74, 82, 83, 96]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(32);\ninput.add(30);\ninput.add(16);\ninput.add(96);\ninput.add(82);\ninput.add(83);\ninput.add(74);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(16);\nexpected.add(30);\nexpected.add(32);\nexpected.add(74);\nexpected.add(82);\nexpected.add(83);\nexpected.add(96);\n\nArrayList<Integer> result = shell_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

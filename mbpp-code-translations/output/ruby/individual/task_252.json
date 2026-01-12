@@ -1,0 +1,37 @@
+{
+  "task_id": 252,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert complex numbers to polar coordinates.",
+  "python_code": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num) ",
+  "test_list": [
+    "assert convert(1) == (1.0, 0.0)",
+    "assert convert(4) == (4.0,0.0)",
+    "assert convert(5) == (5.0,0.0)"
+  ],
+  "code_ruby": "def convert(numbers)\n  complex_num = Complex(numbers)\n  r = complex_num.abs\n  theta = complex_num.arg\n  [r, theta]\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert convert(1) == (1.0, 0.0)",
+      "generated_test": "result = convert(1)\nexpected = [1.0, 0.0]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(4) == (4.0,0.0)",
+      "generated_test": "result = convert(4)\nexpected = [4.0, 0.0]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(5) == (5.0,0.0)",
+      "generated_test": "result = convert(5)\nexpected = [5.0, 0.0]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 131,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse only the vowels of a given string (where y is not a vowel).",
+  "python_code": "def reverse_vowels(str1):\n\tvowels = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tvowels += char\n\tresult_string = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tresult_string += vowels[-1]\n\t\t\tvowels = vowels[:-1]\n\t\telse:\n\t\t\tresult_string += char\n\treturn result_string",
+  "test_list": [
+    "assert reverse_vowels(\"Python\") == \"Python\"",
+    "assert reverse_vowels(\"USA\") == \"ASU\"",
+    "assert reverse_vowels(\"ab\") == \"ab\""
+  ],
+  "code_java": "import java.util.*;\n\nclass Solution {\n    public static String reverse_vowels(String str1) {\n        String vowelChars = \"aeiouAEIOU\";\n        StringBuilder vowels = new StringBuilder();\n        \n        for (int i = 0; i < str1.length(); i++) {\n            char c = str1.charAt(i);\n            if (vowelChars.indexOf(c) != -1) {\n                vowels.append(c);\n            }\n        }\n        \n        StringBuilder result_string = new StringBuilder();\n        int vowelIndex = vowels.length() - 1;\n        \n        for (int i = 0; i < str1.length(); i++) {\n            char c = str1.charAt(i);\n            if (vowelChars.indexOf(c) != -1) {\n                result_string.append(vowels.charAt(vowelIndex));\n                vowelIndex--;\n            } else {\n                result_string.append(c);\n            }\n        }\n        \n        return result_string.toString();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert reverse_vowels(\"Python\") == \"Python\"",
+      "generated_test": "String result = reverse_vowels(\"Python\");\nString expected = \"Python\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"USA\") == \"ASU\"",
+      "generated_test": "String result = reverse_vowels(\"USA\");\nString expected = \"ASU\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"ab\") == \"ab\"",
+      "generated_test": "String result = reverse_vowels(\"ab\");\nString expected = \"ab\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

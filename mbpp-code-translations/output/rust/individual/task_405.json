@@ -1,0 +1,37 @@
+{
+  "task_id": 405,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether an element exists within a tuple.",
+  "python_code": "def check_tuplex(tuplex,tuple1): \n  if tuple1 in tuplex:\n    return True\n  else:\n     return False",
+  "test_list": [
+    "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"),'r')==True",
+    "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"),'5')==False",
+    "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\",\"e\"),3)==True"
+  ],
+  "code_rust": "pub fn check_tuplex<T: PartialEq>(tuplex: &[T], tuple1: &T) -> bool {\n    tuplex.contains(tuple1)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"),'r')==True",
+      "generated_test": "let tuplex = [\"w\", \"3\", \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"];\nlet result = check_tuplex(&tuplex, &\"r\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"),'5')==False",
+      "generated_test": "let tuplex = [\"w\", \"3\", \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"];\nlet tuple1 = \"5\";\nlet result = check_tuplex(&tuplex, &tuple1);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\",\"e\"),3)==True",
+      "generated_test": "let tuplex = [\"w\", \"3\", \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"];\nlet result = check_tuplex(&tuplex, &\"3\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

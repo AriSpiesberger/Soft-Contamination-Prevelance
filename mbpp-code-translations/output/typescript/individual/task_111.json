@@ -1,0 +1,17 @@
+{
+  "task_id": 111,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the common elements in given nested lists.",
+  "python_code": "def common_in_nested_lists(nestedlist):\n    result = list(set.intersection(*map(set, nestedlist)))\n    return result",
+  "test_list": [
+    "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+    "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+    "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])"
+  ],
+  "code_typescript": "function common_in_nested_lists<T>(nestedlist: T[][]): T[] {\n    if (nestedlist.length === 0) {\n        return [];\n    }\n    \n    if (nestedlist.length === 1) {\n        return [...new Set(nestedlist[0])];\n    }\n    \n    const sets = nestedlist.map(list => new Set(list));\n    \n    const result: T[] = [];\n    const firstSet = sets[0];\n    \n    for (const item of firstSet) {\n        let inAll = true;\n        for (let i = 1; i < sets.length; i++) {\n            if (!sets[i].has(item)) {\n                inAll = false;\n                break;\n            }\n        }\n        if (inAll) {\n            result.push(item);\n        }\n    }\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

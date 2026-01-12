@@ -1,0 +1,37 @@
+{
+  "task_id": 605,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given integer is a prime number.",
+  "python_code": "def prime_num(num):\n  if num >=1:\n   for i in range(2, num//2):\n     if (num % i) == 0:\n                return False\n     else:\n                return True\n  else:\n          return False",
+  "test_list": [
+    "assert prime_num(13)==True",
+    "assert prime_num(7)==True",
+    "assert prime_num(-1010)==False"
+  ],
+  "code_javascript": "function prime_num(num) {\n  if (num >= 1) {\n    for (let i = 2; i < Math.floor(num / 2); i++) {\n      if (num % i === 0) {\n        return false;\n      } else {\n        return true;\n      }\n    }\n  } else {\n    return false;\n  }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert prime_num(13)==True",
+      "generated_test": "const result = prime_num(13);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert prime_num(7)==True",
+      "generated_test": "const result = prime_num(7);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert prime_num(-1010)==False",
+      "generated_test": "const result = prime_num(-1010);\nconst expected = false;\n\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

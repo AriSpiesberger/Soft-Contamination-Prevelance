@@ -1,0 +1,37 @@
+{
+  "task_id": 453,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of even factors of a number.",
+  "python_code": "import math \ndef sumofFactors(n) : \n    if (n % 2 != 0) : \n        return 0\n    res = 1\n    for i in range(2, (int)(math.sqrt(n)) + 1) :    \n        count = 0\n        curr_sum = 1\n        curr_term = 1\n        while (n % i == 0) : \n            count= count + 1\n            n = n // i \n            if (i == 2 and count == 1) : \n                curr_sum = 0\n            curr_term = curr_term * i \n            curr_sum = curr_sum + curr_term \n        res = res * curr_sum  \n    if (n >= 2) : \n        res = res * (1 + n) \n    return res",
+  "test_list": [
+    "assert sumofFactors(18) == 26",
+    "assert sumofFactors(30) == 48",
+    "assert sumofFactors(6) == 8"
+  ],
+  "code_rust": "pub fn sumofFactors(n: i32) -> i32 {\n    if n % 2 != 0 {\n        return 0;\n    }\n    \n    let mut n = n;\n    let mut res = 1;\n    \n    let sqrt_n = (n as f64).sqrt() as i32;\n    for i in 2..=sqrt_n {\n        let mut count = 0;\n        let mut curr_sum = 1;\n        let mut curr_term = 1;\n        \n        while n % i == 0 {\n            count += 1;\n            n = n / i;\n            \n            if i == 2 && count == 1 {\n                curr_sum = 0;\n            }\n            \n            curr_term = curr_term * i;\n            curr_sum = curr_sum + curr_term;\n        }\n        \n        res = res * curr_sum;\n    }\n    \n    if n >= 2 {\n        res = res * (1 + n);\n    }\n    \n    res\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sumofFactors(18) == 26",
+      "generated_test": "let result = sumofFactors(18);\nlet expected = 26;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sumofFactors(30) == 48",
+      "generated_test": "let result = sumofFactors(30);\nlet expected = 48;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sumofFactors(6) == 8",
+      "generated_test": "let result = sumofFactors(6);\nlet expected = 8;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 292,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find quotient of two numbers (rounded down to the nearest integer).",
+  "code_python": "def find(n,m):  \n    q = n//m \n    return (q)",
+  "test_list": [
+    "assert find(10,3) == 3",
+    "assert find(4,2) == 2",
+    "assert find(20,5) == 4"
+  ],
+  "python_1": "def find(n,m):\n    # Use integer division via the math module for floor division\n    import math\n    # Calculate the floor of the true division result\n    quotient = math.floor(n / m)\n    # Return the integer quotient rounded down\n    return quotient",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find(n,m):\n    # Use Python's built-in divmod to get quotient and remainder in one call\n    quotient, remainder = divmod(n, m)\n    # Return only the quotient portion, ignoring the remainder\n    return quotient",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find(n,m):\n    # Use subtraction to manually count how many times m fits into n\n    count = 0\n    # Store the absolute values to handle the iteration\n    abs_n = abs(n)\n    abs_m = abs(m)\n    # Repeatedly subtract divisor from dividend until dividend is smaller\n    while abs_n >= abs_m:\n        # Each subtraction represents one unit of the quotient\n        abs_n -= abs_m\n        # Track how many complete subtractions we've made\n        count += 1\n    # Determine if the result should be negative based on sign mismatch\n    if (n < 0) != (m < 0):\n        # Negate the count when signs differ between operands\n        return -count\n    # Return the positive quotient when signs match\n    return count",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find(n,m):\n    # Compute floating-point division to get exact ratio\n    exact_ratio = n / m\n    # Convert to integer, truncating toward zero (not floor)\n    truncated = int(exact_ratio)\n    # Check if truncation moved away from zero when we need floor behavior\n    # Floor division requires rounding toward negative infinity, not zero\n    if truncated == exact_ratio:\n        # Perfect division case - no adjustment needed\n        return truncated\n    # Detect if the result is negative (signs differ between n and m)\n    negative_result = (n < 0) != (m < 0)\n    # When result is negative and not exact, int() truncates toward zero but we need floor\n    if negative_result and truncated > exact_ratio:\n        # Subtract 1 to achieve floor behavior for negative non-exact results\n        return truncated - 1\n    # Positive results or exact divisions return the truncated value directly\n    return truncated",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find(n,m):\n    # Leverage Python's operator module for integer floor division\n    import operator\n    # Apply the floordiv operator function which implements the // behavior\n    result = operator.floordiv(n, m)\n    # Return the computed floor division result\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 418,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the element of a list having maximum length.",
+  "python_code": "def Find_Max(lst): \n    maxList = max((x) for x in lst) \n    return maxList",
+  "test_list": [
+    "assert Find_Max([['A'],['A','B'],['A','B','C']]) == ['A','B','C']",
+    "assert Find_Max([[1],[1,2],[1,2,3]]) == [1,2,3]",
+    "assert Find_Max([[1,1],[1,2,3],[1,5,6,1]]) == [1,5,6,1]"
+  ],
+  "code_javascript": "function Find_Max(lst) {\n    let maxList = lst[0];\n    for (let x of lst) {\n        if (x.length > maxList.length) {\n            maxList = x;\n        }\n    }\n    return maxList;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert Find_Max([['A'],['A','B'],['A','B','C']]) == ['A','B','C']",
+      "generated_test": "const result = Find_Max([['A'],['A','B'],['A','B','C']]);\nconst expected = ['A','B','C'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Max([[1],[1,2],[1,2,3]]) == [1,2,3]",
+      "generated_test": "const result = Find_Max([[1], [1, 2], [1, 2, 3]]);\nconst expected = [1, 2, 3];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Max([[1,1],[1,2,3],[1,5,6,1]]) == [1,5,6,1]",
+      "generated_test": "const result = Find_Max([[1,1],[1,2,3],[1,5,6,1]]);\nconst expected = [1,5,6,1];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

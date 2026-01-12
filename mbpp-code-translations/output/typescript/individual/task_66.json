@@ -1,0 +1,17 @@
+{
+  "task_id": 66,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of positive numbers in a list.",
+  "python_code": "def pos_count(list):\n  pos_count= 0\n  for num in list: \n    if num >= 0: \n      pos_count += 1\n  return pos_count ",
+  "test_list": [
+    "assert pos_count([1,-2,3,-4]) == 2",
+    "assert pos_count([3,4,5,-1]) == 3",
+    "assert pos_count([1,2,3,4]) == 4"
+  ],
+  "code_typescript": "function pos_count(list: number[]): number {\n  let posCount: number = 0;\n  for (const num of list) {\n    if (num >= 0) {\n      posCount += 1;\n    }\n  }\n  return posCount;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

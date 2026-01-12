@@ -1,0 +1,17 @@
+{
+  "task_id": 120,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.",
+  "python_code": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max",
+  "test_list": [
+    "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+    "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+    "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484"
+  ],
+  "code_typescript": "function max_product_tuple(list1: [number, number][]): number {\n    const products = list1.map(([x, y]) => Math.abs(x * y));\n    return Math.max(...products);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

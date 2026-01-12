@@ -1,0 +1,37 @@
+{
+  "task_id": 259,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to maximize the given two tuples.",
+  "python_code": "def maximize_elements(test_tup1, test_tup2):\n  res = tuple(tuple(max(a, b) for a, b in zip(tup1, tup2))\n   for tup1, tup2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert maximize_elements(((1, 3), (4, 5), (2, 9), (1, 10)), ((6, 7), (3, 9), (1, 1), (7, 3))) == ((6, 7), (4, 9), (2, 9), (7, 10))",
+    "assert maximize_elements(((2, 4), (5, 6), (3, 10), (2, 11)), ((7, 8), (4, 10), (2, 2), (8, 4))) == ((7, 8), (5, 10), (3, 10), (8, 11))",
+    "assert maximize_elements(((3, 5), (6, 7), (4, 11), (3, 12)), ((8, 9), (5, 11), (3, 3), (9, 5))) == ((8, 9), (6, 11), (4, 11), (9, 12))"
+  ],
+  "code_go": "package main\n\nfunc maximize_elements(test_tup1, test_tup2 [][]int) [][]int {\n\tminLen := len(test_tup1)\n\tif len(test_tup2) < minLen {\n\t\tminLen = len(test_tup2)\n\t}\n\tres := make([][]int, minLen)\n\tfor i := 0; i < minLen; i++ {\n\t\ttup1 := test_tup1[i]\n\t\ttup2 := test_tup2[i]\n\t\tinnerLen := len(tup1)\n\t\tif len(tup2) < innerLen {\n\t\t\tinnerLen = len(tup2)\n\t\t}\n\t\tinner := make([]int, innerLen)\n\t\tfor j := 0; j < innerLen; j++ {\n\t\t\tif tup1[j] > tup2[j] {\n\t\t\t\tinner[j] = tup1[j]\n\t\t\t} else {\n\t\t\t\tinner[j] = tup2[j]\n\t\t\t}\n\t\t}\n\t\tres[i] = inner\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert maximize_elements(((1, 3), (4, 5), (2, 9), (1, 10)), ((6, 7), (3, 9), (1, 1), (7, 3))) == ((6, 7), (4, 9), (2, 9), (7, 10))",
+      "generated_test": "input1 := [][]int{{1, 3}, {4, 5}, {2, 9}, {1, 10}}\ninput2 := [][]int{{6, 7}, {3, 9}, {1, 1}, {7, 3}}\nexpected := [][]int{{6, 7}, {4, 9}, {2, 9}, {7, 10}}\nresult := maximize_elements(input1, input2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert maximize_elements(((2, 4), (5, 6), (3, 10), (2, 11)), ((7, 8), (4, 10), (2, 2), (8, 4))) == ((7, 8), (5, 10), (3, 10), (8, 11))",
+      "generated_test": "input1 := [][]int{{2, 4}, {5, 6}, {3, 10}, {2, 11}}\ninput2 := [][]int{{7, 8}, {4, 10}, {2, 2}, {8, 4}}\nexpected := [][]int{{7, 8}, {5, 10}, {3, 10}, {8, 11}}\nresult := maximize_elements(input1, input2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := 0; j < len(expected[i]); j++ {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert maximize_elements(((3, 5), (6, 7), (4, 11), (3, 12)), ((8, 9), (5, 11), (3, 3), (9, 5))) == ((8, 9), (6, 11), (4, 11), (9, 12))",
+      "generated_test": "input1 := [][]int{{3, 5}, {6, 7}, {4, 11}, {3, 12}}\ninput2 := [][]int{{8, 9}, {5, 11}, {3, 3}, {9, 5}}\nexpected := [][]int{{8, 9}, {6, 11}, {4, 11}, {9, 12}}\nresult := maximize_elements(input1, input2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

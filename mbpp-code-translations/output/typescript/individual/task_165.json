@@ -1,0 +1,17 @@
+{
+  "task_id": 165,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive).",
+  "python_code": "def count_char_position(str1): \n    count_chars = 0\n    for i in range(len(str1)):\n        if ((i == ord(str1[i]) - ord('A')) or \n            (i == ord(str1[i]) - ord('a'))): \n            count_chars += 1\n    return count_chars ",
+  "test_list": [
+    "assert count_char_position(\"xbcefg\") == 2",
+    "assert count_char_position(\"ABcED\") == 3",
+    "assert count_char_position(\"AbgdeF\") == 5"
+  ],
+  "code_typescript": "function count_char_position(str1: string): number {\n    let count_chars = 0;\n    for (let i = 0; i < str1.length; i++) {\n        if ((i === str1.charCodeAt(i) - 'A'.charCodeAt(0)) ||\n            (i === str1.charCodeAt(i) - 'a'.charCodeAt(0))) {\n            count_chars += 1;\n        }\n    }\n    return count_chars;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

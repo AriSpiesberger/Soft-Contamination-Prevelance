@@ -1,0 +1,37 @@
+{
+  "task_id": 627,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the smallest missing number from a sorted list of natural numbers.",
+  "python_code": "def find_First_Missing(array,start=0,end=None):\n    if end is None:\n      end = len(array) - 1   \n    if (start > end): \n        return end + 1\n    if (start != array[start]): \n        return start; \n    mid = int((start + end) / 2) \n    if (array[mid] == mid): \n        return find_First_Missing(array,mid+1,end) \n    return find_First_Missing(array,start,mid) ",
+  "test_list": [
+    "assert find_First_Missing([0,1,2,3]) == 4",
+    "assert find_First_Missing([0,1,2,6,9]) == 3",
+    "assert find_First_Missing([2,3,5,8,9]) == 0"
+  ],
+  "code_go": "package main\n\nfunc find_First_Missing(array []int) int {\n\treturn find_First_Missing_helper(array, 0, len(array)-1)\n}\n\nfunc find_First_Missing_helper(array []int, start int, end int) int {\n\tif start > end {\n\t\treturn end + 1\n\t}\n\tif start != array[start] {\n\t\treturn start\n\t}\n\tmid := (start + end) / 2\n\tif array[mid] == mid {\n\t\treturn find_First_Missing_helper(array, mid+1, end)\n\t}\n\treturn find_First_Missing_helper(array, start, mid)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_First_Missing([0,1,2,3]) == 4",
+      "generated_test": "result := find_First_Missing([]int{0, 1, 2, 3})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_First_Missing([0,1,2,6,9]) == 3",
+      "generated_test": "result := find_First_Missing([]int{0, 1, 2, 6, 9})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_First_Missing([2,3,5,8,9]) == 0",
+      "generated_test": "result := find_First_Missing([]int{2, 3, 5, 8, 9})\nexpected := 0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

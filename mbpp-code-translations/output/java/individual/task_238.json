@@ -1,0 +1,37 @@
+{
+  "task_id": 238,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of non-empty substrings of a given string.",
+  "python_code": "def number_of_substrings(str): \n\tstr_len = len(str); \n\treturn int(str_len * (str_len + 1) / 2); ",
+  "test_list": [
+    "assert number_of_substrings(\"abc\") == 6",
+    "assert number_of_substrings(\"abcd\") == 10",
+    "assert number_of_substrings(\"abcde\") == 15"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int number_of_substrings(String str) {\n        int str_len = str.length();\n        return str_len * (str_len + 1) / 2;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert number_of_substrings(\"abc\") == 6",
+      "generated_test": "int result = number_of_substrings(\"abc\");\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_of_substrings(\"abcd\") == 10",
+      "generated_test": "int result = number_of_substrings(\"abcd\");\nint expected = 10;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_of_substrings(\"abcde\") == 15",
+      "generated_test": "int result = number_of_substrings(\"abcde\");\nint expected = 15;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

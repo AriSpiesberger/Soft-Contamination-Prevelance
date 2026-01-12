@@ -1,0 +1,27 @@
+{
+  "task_id": 631,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace whitespaces with an underscore and vice versa in a given string.",
+  "code_python": "def replace_spaces(text):\n  return \"\".join(\" \" if c == \"_\" else (\"_\" if c == \" \" else c) for c in text)",
+  "test_list": [
+    "assert replace_spaces('Jumanji The Jungle') == 'Jumanji_The_Jungle'",
+    "assert replace_spaces('The_Avengers') == 'The Avengers'",
+    "assert replace_spaces('Fast and Furious') == 'Fast_and_Furious'"
+  ],
+  "python_1": "def replace_spaces(text):\n    # Create a translation table mapping space to underscore and underscore to space\n    translation_table = str.maketrans(' _', '_ ')\n    # Apply the translation table to swap the characters in one operation\n    return text.translate(translation_table)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def replace_spaces(text):\n    # Initialize an empty list to collect transformed characters\n    result = []\n    # Loop through each character position in the input string\n    for i in range(len(text)):\n        # Extract the current character at position i\n        char = text[i]\n        # Check if current character is a space that needs replacement\n        if char == ' ':\n            # Append underscore to result list when space is found\n            result.append('_')\n        # Check if current character is an underscore that needs replacement\n        elif char == '_':\n            # Append space to result list when underscore is found\n            result.append(' ')\n        # Handle all other characters that don't need transformation\n        else:\n            # Keep the original character unchanged in the result\n            result.append(char)\n    # Concatenate all characters in the list into a single string\n    return ''.join(result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def replace_spaces(text):\n    # Use a placeholder character that won't appear in normal text to enable two-step swap\n    placeholder = '\\x00'\n    # First pass: temporarily replace all spaces with the placeholder character\n    temp_result = text.replace(' ', placeholder)\n    # Second pass: convert all underscores to spaces now that original spaces are marked\n    temp_result = temp_result.replace('_', ' ')\n    # Final pass: convert placeholder characters (original spaces) to underscores\n    final_result = temp_result.replace(placeholder, '_')\n    # Return the string with spaces and underscores swapped\n    return final_result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def replace_spaces(text):\n    # Define a mapping dictionary to swap space and underscore characters\n    swap_map = {' ': '_', '_': ' '}\n    # Use map() with lambda to transform each character, defaulting to original if not in swap_map\n    transformed_chars = map(lambda c: swap_map.get(c, c), text)\n    # Join the mapped iterator back into a single string result\n    return ''.join(transformed_chars)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def replace_spaces(text):\n    # Build character substitution rules using a dictionary comprehension approach\n    swap_rules = {ord(' '): '_', ord('_'): ' '}\n    # Iterate through text and apply ordinal-based replacement logic manually\n    output_chars = []\n    # Process the string character by character using enumerate for clarity\n    for position, character in enumerate(text):\n        # Get the Unicode code point of the current character for lookup\n        char_ordinal = ord(character)\n        # Check if this character's ordinal exists in our swap rules dictionary\n        if char_ordinal in swap_rules:\n            # Retrieve the replacement character from the rules mapping\n            output_chars.append(swap_rules[char_ordinal])\n        else:\n            # Preserve the original character when no swap rule applies\n            output_chars.append(character)\n    # Assemble the final string by concatenating all processed characters\n    return ''.join(output_chars)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

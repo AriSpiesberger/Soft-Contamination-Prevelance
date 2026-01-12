@@ -1,0 +1,17 @@
+{
+  "task_id": 459,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove uppercase substrings from a given string.",
+  "python_code": "import re\ndef remove_uppercase(str1):\n  return re.sub('[A-Z]', '', str1)",
+  "test_list": [
+    "assert remove_uppercase('cAstyoUrFavoRitETVshoWs') == 'cstyoravoitshos'",
+    "assert remove_uppercase('wAtchTheinTernEtrAdIo') == 'wtchheinerntrdo'",
+    "assert remove_uppercase('VoicESeaRchAndreComMendaTionS') == 'oiceachndreomendaion'"
+  ],
+  "code_typescript": "function remove_uppercase(str1: string): string {\n  return str1.replace(/[A-Z]/g, '');\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

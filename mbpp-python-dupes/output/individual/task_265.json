@@ -1,0 +1,27 @@
+{
+  "task_id": 265,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and splits a list for every nth element, returning a list of the resulting lists.",
+  "code_python": "def list_split(S, step):\n    return [S[i::step] for i in range(step)]",
+  "test_list": [
+    "assert list_split(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'],3)==[['a', 'd', 'g', 'j', 'm'], ['b', 'e', 'h', 'k', 'n'], ['c', 'f', 'i', 'l']]",
+    "assert list_split([1,2,3,4,5,6,7,8,9,10,11,12,13,14],3)==[[1,4,7,10,13], [2,5,8,11,14], [3,6,9,12]]",
+    "assert list_split(['python','java','C','C++','DBMS','SQL'],2)==[['python', 'C', 'DBMS'], ['java', 'C++', 'SQL']]"
+  ],
+  "python_1": "def list_split(S, step):\n    # Create empty sublists for each of the step groups\n    result = [[] for _ in range(step)]\n    # Iterate through each element with its position\n    for index, element in enumerate(S):\n        # Determine which sublist this element belongs to based on modulo\n        bucket = index % step\n        # Append the element to its designated bucket\n        result[bucket].append(element)\n    # Return the list of grouped sublists\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def list_split(S, step):\n    # Use map to apply a slicing function across all starting positions\n    # range(step) generates indices 0, 1, ..., step-1 for each bucket\n    # lambda with slice extracts every step-th element starting from i\n    return list(map(lambda i: S[i::step], range(step)))",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def list_split(S, step):\n    # Use itertools groupby approach with index-based grouping key\n    from itertools import groupby\n    # Create tuples pairing each element with its bucket number (index mod step)\n    indexed_pairs = [(i % step, elem) for i, elem in enumerate(S)]\n    # Sort pairs by bucket number to group consecutive elements together\n    sorted_pairs = sorted(indexed_pairs, key=lambda x: x[0])\n    # Group the sorted pairs by their bucket identifier\n    grouped = groupby(sorted_pairs, key=lambda x: x[0])\n    # Extract just the elements from each group, discarding the bucket keys\n    result = [[pair[1] for pair in group] for _, group in grouped]\n    # Return the final list of sublists\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def list_split(S, step):\n    # Use reduce to build the result by processing elements one at a time\n    from functools import reduce\n    # Define an accumulator function that places each element in its proper bucket\n    def accumulate(acc, indexed_elem):\n        # Unpack the index and element from the enumerated tuple\n        idx, elem = indexed_elem\n        # Calculate which bucket this element belongs to using modulo\n        bucket_idx = idx % step\n        # Append element to the appropriate bucket and return modified accumulator\n        acc[bucket_idx].append(elem)\n        # Return the accumulator for the next iteration\n        return acc\n    # Initialize the accumulator with step empty lists representing each bucket\n    initial_buckets = [[] for _ in range(step)]\n    # Apply reduce over enumerated list, building buckets incrementally\n    result = reduce(accumulate, enumerate(S), initial_buckets)\n    # Return the fully populated list of sublists\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def list_split(S, step):\n    # Import defaultdict to auto-initialize lists for each bucket key\n    from collections import defaultdict\n    # Create a dictionary that automatically creates empty lists for new keys\n    buckets = defaultdict(list)\n    # Use a while loop with manual index tracking instead of for/enumerate\n    position = 0\n    # Continue until we've processed every element in the input list\n    while position < len(S):\n        # Compute the bucket destination using modular arithmetic on position\n        target_bucket = position % step\n        # Retrieve the current element by direct index access\n        current_element = S[position]\n        # Insert element into its designated bucket within the dictionary\n        buckets[target_bucket].append(current_element)\n        # Advance to the next position in the source list\n        position += 1\n    # Transform dictionary values into a list, ordering by bucket index 0 to step-1\n    output = [buckets[bucket_num] for bucket_num in range(step)]\n    # Deliver the final partitioned result\n    return output",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

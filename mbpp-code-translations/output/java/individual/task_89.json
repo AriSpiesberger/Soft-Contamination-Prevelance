@@ -1,0 +1,37 @@
+{
+  "task_id": 89,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the closest smaller number than n.",
+  "python_code": "def closest_num(N):\n  return (N - 1)",
+  "test_list": [
+    "assert closest_num(11) == 10",
+    "assert closest_num(7) == 6",
+    "assert closest_num(12) == 11"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int closest_num(int N) {\n        return (N - 1);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert closest_num(11) == 10",
+      "generated_test": "int result = closest_num(11);\nint expected = 10;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert closest_num(7) == 6",
+      "generated_test": "int result = closest_num(7);\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert closest_num(12) == 11",
+      "generated_test": "int result = closest_num(12);\nint expected = 11;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

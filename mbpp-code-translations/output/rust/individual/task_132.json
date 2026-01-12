@@ -1,0 +1,37 @@
+{
+  "task_id": 132,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a tuple to a string.",
+  "python_code": "def tup_string(tup1):\n  str =  ''.join(tup1)\n  return str",
+  "test_list": [
+    "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+    "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+    "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")"
+  ],
+  "code_rust": "pub fn tup_string(tup1: &[char]) -> String {\n    tup1.iter().collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+      "generated_test": "let result = tup_string(&['e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's']);\nlet expected = \"exercises\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+      "generated_test": "let result = tup_string(&['p', 'y', 't', 'h', 'o', 'n']);\nlet expected = \"python\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")",
+      "generated_test": "let result = tup_string(&['p', 'r', 'o', 'g', 'r', 'a', 'm']);\nlet expected = \"program\".to_string();\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

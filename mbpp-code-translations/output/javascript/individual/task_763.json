@@ -1,0 +1,37 @@
+{
+  "task_id": 763,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum difference between any two elements in a given array. https://www.geeksforgeeks.org/find-minimum-difference-pair/",
+  "python_code": "def find_min_diff(arr,n): \n    arr = sorted(arr) \n    diff = 10**20 \n    for i in range(n-1): \n        if arr[i+1] - arr[i] < diff: \n            diff = arr[i+1] - arr[i]  \n    return diff ",
+  "test_list": [
+    "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+    "assert find_min_diff((4,3,2,6),4) == 1",
+    "assert find_min_diff((30,5,20,9),4) == 4"
+  ],
+  "code_javascript": "function find_min_diff(arr, n) {\n    arr = [...arr].sort((a, b) => a - b);\n    let diff = 10 ** 20;\n    for (let i = 0; i < n - 1; i++) {\n        if (arr[i + 1] - arr[i] < diff) {\n            diff = arr[i + 1] - arr[i];\n        }\n    }\n    return diff;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+      "generated_test": "const result = find_min_diff([1, 5, 3, 19, 18, 25], 6);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_min_diff((4,3,2,6),4) == 1",
+      "generated_test": "const result = find_min_diff([4, 3, 2, 6], 4);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_min_diff((30,5,20,9),4) == 4",
+      "generated_test": "const result = find_min_diff([30, 5, 20, 9], 4);\nconst expected = 4;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

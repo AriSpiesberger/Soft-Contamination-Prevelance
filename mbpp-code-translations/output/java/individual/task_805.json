@@ -1,0 +1,37 @@
+{
+  "task_id": 805,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the list in a list of lists whose sum of elements is the highest.",
+  "python_code": "def max_sum_list(lists):\n return max(lists, key=sum)",
+  "test_list": [
+    "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+    "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+    "assert max_sum_list([[2,3,1]])==[2,3,1]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Integer> max_sum_list(List<List<Integer>> lists) {\n        List<Integer> maxList = null;\n        int maxSum = Integer.MIN_VALUE;\n        \n        for (List<Integer> list : lists) {\n            int currentSum = 0;\n            for (Integer num : list) {\n                currentSum += num;\n            }\n            if (maxList == null || currentSum > maxSum) {\n                maxSum = currentSum;\n                maxList = list;\n            }\n        }\n        \n        return maxList;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(1); list1.add(2); list1.add(3);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(4); list2.add(5); list2.add(6);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(10); list3.add(11); list3.add(12);\nList<Integer> list4 = new ArrayList<>();\nlist4.add(7); list4.add(8); list4.add(9);\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\ninput.add(list4);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(10); expected.add(11); expected.add(12);\n\nList<Integer> result = max_sum_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> list1 = new ArrayList<>();\nlist1.add(3); list1.add(2); list1.add(1);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(6); list2.add(5); list2.add(4);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(12); list3.add(11); list3.add(10);\ninput.add(list1);\ninput.add(list2);\ninput.add(list3);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(12); expected.add(11); expected.add(10);\n\nList<Integer> result = max_sum_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[2,3,1]])==[2,3,1]",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\nList<Integer> innerList = new ArrayList<>();\ninnerList.add(2);\ninnerList.add(3);\ninnerList.add(1);\ninput.add(innerList);\n\nList<Integer> result = max_sum_list(input);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(2);\nexpected.add(3);\nexpected.add(1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

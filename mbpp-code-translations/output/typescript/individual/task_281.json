@@ -1,0 +1,17 @@
+{
+  "task_id": 281,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check if the elements of a given list are unique or not.",
+  "python_code": "def all_unique(test_list):\n    if len(test_list) > len(set(test_list)):\n        return False\n    return True",
+  "test_list": [
+    "assert all_unique([1,2,3]) == True",
+    "assert all_unique([1,2,1,2]) == False",
+    "assert all_unique([1,2,3,4,5]) == True"
+  ],
+  "code_typescript": "function all_unique<T>(test_list: T[]): boolean {\n    if (test_list.length > new Set(test_list).size) {\n        return false;\n    }\n    return true;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

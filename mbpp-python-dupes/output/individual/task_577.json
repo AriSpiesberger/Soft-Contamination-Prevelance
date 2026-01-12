@@ -1,0 +1,27 @@
+{
+  "task_id": 577,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit in factorial of a given number.",
+  "code_python": "def last_Digit_Factorial(n): \n    if (n == 0): return 1\n    elif (n <= 2): return n  \n    elif (n == 3): return 6\n    elif (n == 4): return 4 \n    else: \n      return 0",
+  "test_list": [
+    "assert last_Digit_Factorial(4) == 4",
+    "assert last_Digit_Factorial(21) == 0",
+    "assert last_Digit_Factorial(30) == 0"
+  ],
+  "python_1": "# Precompute the last digits of factorials for 0! through 4!\nlast_digits_table = [1, 1, 2, 6, 4]\n\ndef last_Digit_Factorial(n): \n    # For n >= 5, factorial always ends in 0 due to 2*5=10 factor\n    if n >= 5:\n        # Return 0 since 5! and beyond contain at least one trailing zero\n        return 0\n    # Use lookup table for small values where last digit is non-zero\n    return last_digits_table[n]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def last_Digit_Factorial(n): \n    # Use dictionary as a switch-case alternative for base cases\n    factorial_last_digits = {0: 1, 1: 1, 2: 2, 3: 6, 4: 4}\n    # Leverage dict.get() with default value 0 for n >= 5 cases\n    # Since 5! = 120 ends in 0, and multiplying by any integer preserves trailing zero\n    return factorial_last_digits.get(n, 0)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def last_Digit_Factorial(n): \n    # For any n >= 5, factorial contains both 2 and 5 as factors, giving trailing zero\n    if n >= 5:\n        # Immediately short-circuit since all larger factorials end in 0\n        return 0\n    # Start with identity element for multiplication\n    result = 1\n    # Compute actual factorial iteratively for small n values (0 to 4)\n    for i in range(1, n + 1):\n        # Multiply running product by current integer in sequence\n        result = result * i\n    # Extract only the ones digit using modulo arithmetic\n    return result % 10",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def last_Digit_Factorial(n): \n    # Use recursion to compute factorial for small values, mathematical shortcut for large\n    if n >= 5:\n        # Any factorial of 5 or greater has at least one factor of 10 (2*5), giving last digit 0\n        return 0\n    # Base case: 0! equals 1 by mathematical definition\n    if n == 0:\n        return 1\n    # Recursive step: multiply n by factorial of (n-1), keeping only last digit\n    previous_factorial_last_digit = last_Digit_Factorial(n - 1)\n    # Compute product and apply modulo 10 to extract rightmost digit\n    current_last_digit = (n * previous_factorial_last_digit) % 10\n    # Return the computed last digit for this factorial\n    return current_last_digit",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def last_Digit_Factorial(n): \n    # Import reduce to apply binary operation cumulatively across a sequence\n    from functools import reduce\n    # Define the range of integers from 1 to n for factorial computation\n    factorial_range = range(1, n + 1) if n > 0 else [1]\n    # Early termination check: factorials of 5+ always have trailing zero due to 2\u00d75 pair\n    if n >= 5:\n        # Short-circuit evaluation avoids unnecessary computation for large inputs\n        return 0\n    # Use reduce with lambda to multiply all numbers in range, computing full factorial\n    full_factorial = reduce(lambda acc, x: acc * x, factorial_range, 1)\n    # Apply modulo 10 to isolate the units digit from the complete factorial value\n    last_digit = full_factorial % 10\n    # Return the extracted rightmost digit as the final answer\n    return last_digit",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

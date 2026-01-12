@@ -1,0 +1,37 @@
+{
+  "task_id": 124,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the angle of a complex number.",
+  "python_code": "import cmath\ndef angle_complex(a,b):\n  cn=complex(a,b)\n  angle=cmath.phase(a+b)\n  return angle",
+  "test_list": [
+    "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double angle_complex(double a, double b) {\n        // Based on the test cases, b is passed as an imaginary number (like 1j)\n        // In the Python code, it creates complex(a,b) but then calculates phase(a+b)\n        // Looking at test cases: angle_complex(0, 1j) expects ~1.5707 (pi/2)\n        // This means when a=0 and b=1j, a+b = 0+1j, and phase of that is pi/2\n        // So the function expects b to represent the imaginary part\n        \n        // In Java, we interpret this as: a is the real part, b is the imaginary coefficient\n        // phase of a complex number (real, imag) = atan2(imag, real)\n        return Math.atan2(b, a);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "double result = angle_complex(0, 1);\ndouble expected = 1.5707963267948966;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+      "generated_test": "double result = angle_complex(2, 1);\ndouble expected = 0.4636476090008061;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "double result = angle_complex(0, 2);\ndouble expected = 1.5707963267948966;\ndouble relTol = 0.001;\nboolean pass = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

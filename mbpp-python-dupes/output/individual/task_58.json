@@ -1,0 +1,28 @@
+{
+  "task_id": 58,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given two integers have opposite sign or not.",
+  "code_python": "def opposite_Signs(x,y): \n    return ((x ^ y) < 0); ",
+  "test_list": [
+    "assert opposite_Signs(1,-2) == True",
+    "assert opposite_Signs(3,2) == False",
+    "assert opposite_Signs(-10,-10) == False",
+    "assert opposite_Signs(-2,2) == True"
+  ],
+  "python_1": "def opposite_Signs(x,y): \n    # Check if x is negative by comparing it to zero\n    x_is_negative = x < 0\n    # Check if y is negative by comparing it to zero\n    y_is_negative = y < 0\n    # Signs are opposite when exactly one number is negative (XOR logic)\n    return x_is_negative != y_is_negative",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def opposite_Signs(x,y): \n    # Multiply the two numbers together to combine their signs\n    product = x * y\n    # If product is negative, signs must be opposite (positive * negative = negative)\n    return product < 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def opposite_Signs(x,y): \n    # Extract the sign of x: -1 for negative, 1 for positive/zero\n    sign_x = -1 if x < 0 else 1\n    # Extract the sign of y: -1 for negative, 1 for positive/zero\n    sign_y = -1 if y < 0 else 1\n    # When signs are opposite, their sum equals zero (-1 + 1 = 0)\n    return sign_x + sign_y == 0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def opposite_Signs(x,y): \n    # Use integer division to determine sign: negative numbers divided by their absolute value give -1\n    # Handle zero case by defaulting to 1 (treating zero as non-negative)\n    sign_x = x // abs(x) if x != 0 else 1\n    # Apply same sign extraction logic to y\n    sign_y = y // abs(y) if y != 0 else 1\n    # Multiply signs together: opposite signs yield -1, same signs yield 1\n    sign_product = sign_x * sign_y\n    # Opposite signs produce a negative product of signs\n    return sign_product == -1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def opposite_Signs(x,y): \n    # Create a list containing both input values for iteration\n    nums = [x, y]\n    # Count how many of the numbers are negative using a generator expression\n    negative_count = sum(1 for n in nums if n < 0)\n    # Opposite signs exist when exactly one number is negative (count equals 1)\n    return negative_count == 1",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

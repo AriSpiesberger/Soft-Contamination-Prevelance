@@ -1,0 +1,37 @@
+{
+  "task_id": 626,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the area of the largest triangle that can be inscribed in a semicircle with a given radius.",
+  "python_code": "def triangle_area(r) :  \n    if r < 0 : \n        return None\n    return r * r ",
+  "test_list": [
+    "assert triangle_area(-1) == None",
+    "assert triangle_area(0) == 0",
+    "assert triangle_area(2) == 4"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Double triangle_area(int r) {\n        if (r < 0) {\n            return null;\n        }\n        return (double) (r * r);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert triangle_area(-1) == None",
+      "generated_test": "Double result = triangle_area(-1);\nDouble expected = null;\nif (result == null && expected == null) {\n    System.out.println(\"PASS\");\n} else if (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert triangle_area(0) == 0",
+      "generated_test": "Double result = triangle_area(0);\nDouble expected = 0.0;\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert triangle_area(2) == 4",
+      "generated_test": "Double result = triangle_area(2);\nDouble expected = 4.0;\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 747,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the longest common subsequence for the given three string sequence. https://www.geeksforgeeks.org/lcs-longest-common-subsequence-three-strings/",
+  "python_code": "def lcs_of_three(X, Y, Z): \n  m = len(X)\n  n = len(Y)\n  o = len(Z)\n  L = [[[0 for i in range(o+1)] for j in range(n+1)] for k in range(m+1)]\n  for i in range(m+1): \n\t  for j in range(n+1): \n\t\t  for k in range(o+1): \n\t\t\t  if (i == 0 or j == 0 or k == 0): \n\t\t\t\t  L[i][j][k] = 0\n\t\t\t  elif (X[i-1] == Y[j-1] and X[i-1] == Z[k-1]): \n\t\t\t\t  L[i][j][k] = L[i-1][j-1][k-1] + 1\n\t\t\t  else: \n\t\t\t\t  L[i][j][k] = max(max(L[i-1][j][k], L[i][j-1][k]), L[i][j][k-1]) \n  return L[m][n][o]",
+  "test_list": [
+    "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+    "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+    "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3"
+  ],
+  "code_rust": "pub fn lcs_of_three(x: &str, y: &str, z: &str) -> usize {\n    let x_chars: Vec<char> = x.chars().collect();\n    let y_chars: Vec<char> = y.chars().collect();\n    let z_chars: Vec<char> = z.chars().collect();\n    \n    let m = x_chars.len();\n    let n = y_chars.len();\n    let o = z_chars.len();\n    \n    let mut l = vec![vec![vec![0usize; o + 1]; n + 1]; m + 1];\n    \n    for i in 0..=m {\n        for j in 0..=n {\n            for k in 0..=o {\n                if i == 0 || j == 0 || k == 0 {\n                    l[i][j][k] = 0;\n                } else if x_chars[i - 1] == y_chars[j - 1] && x_chars[i - 1] == z_chars[k - 1] {\n                    l[i][j][k] = l[i - 1][j - 1][k - 1] + 1;\n                } else {\n                    l[i][j][k] = l[i - 1][j][k].max(l[i][j - 1][k]).max(l[i][j][k - 1]);\n                }\n            }\n        }\n    }\n    \n    l[m][n][o]\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+      "generated_test": "let result = lcs_of_three(\"AGGT12\", \"12TXAYB\", \"12XBA\");\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+      "generated_test": "let result = lcs_of_three(\"Reels\", \"Reelsfor\", \"ReelsforReels\");\nlet expected = 5;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3",
+      "generated_test": "let result = lcs_of_three(\"abcd1e2\", \"bc12ea\", \"bd1ea\");\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

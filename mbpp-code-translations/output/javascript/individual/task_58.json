@@ -1,0 +1,44 @@
+{
+  "task_id": 58,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given two integers have opposite sign or not.",
+  "python_code": "def opposite_Signs(x,y): \n    return ((x ^ y) < 0); ",
+  "test_list": [
+    "assert opposite_Signs(1,-2) == True",
+    "assert opposite_Signs(3,2) == False",
+    "assert opposite_Signs(-10,-10) == False",
+    "assert opposite_Signs(-2,2) == True"
+  ],
+  "code_javascript": "function opposite_Signs(x, y) {\n    return (x ^ y) < 0;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert opposite_Signs(1,-2) == True",
+      "generated_test": "const result = opposite_Signs(1, -2);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert opposite_Signs(3,2) == False",
+      "generated_test": "const result = opposite_Signs(3, 2);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert opposite_Signs(-10,-10) == False",
+      "generated_test": "const result = opposite_Signs(-10, -10);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert opposite_Signs(-2,2) == True",
+      "generated_test": "const result = opposite_Signs(-2, 2);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

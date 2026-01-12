@@ -1,0 +1,37 @@
+{
+  "task_id": 794,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.",
+  "python_code": "import re\ndef text_starta_endb(text):\n        patterns = 'a.*?b$'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert text_starta_endb(\"aabbbb\")",
+    "assert not text_starta_endb(\"aabAbbbc\")",
+    "assert not text_starta_endb(\"accddbbjjj\")"
+  ],
+  "code_rust": "use regex::Regex;\n\npub fn text_starta_endb(text: &str) -> bool {\n    let pattern = Regex::new(r\"a.*?b$\").unwrap();\n    pattern.is_match(text)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert text_starta_endb(\"aabbbb\")",
+      "generated_test": "let result = text_starta_endb(\"aabbbb\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"aabAbbbc\")",
+      "generated_test": "let result = text_starta_endb(\"aabAbbbc\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"accddbbjjj\")",
+      "generated_test": "let result = text_starta_endb(\"accddbbjjj\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

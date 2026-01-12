@@ -1,0 +1,37 @@
+{
+  "task_id": 390,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to apply a given format string to all of the elements in a list.",
+  "python_code": "def add_string(list_, string):\n add_string=[string.format(i) for i in  list_]\n return add_string",
+  "test_list": [
+    "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+    "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+    "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']"
+  ],
+  "code_javascript": "function add_string(list_, string) {\n  return list_.map(i => string.replace('{0}', i));\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+      "generated_test": "const result = add_string([1, 2, 3, 4], 'temp{0}');\nconst expected = ['temp1', 'temp2', 'temp3', 'temp4'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+      "generated_test": "const result = add_string(['a', 'b', 'c', 'd'], 'python{0}');\nconst expected = ['pythona', 'pythonb', 'pythonc', 'pythond'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']",
+      "generated_test": "const result = add_string([5, 6, 7, 8], 'string{0}');\nconst expected = ['string5', 'string6', 'string7', 'string8'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

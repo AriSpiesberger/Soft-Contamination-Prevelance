@@ -1,0 +1,37 @@
+{
+  "task_id": 163,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the area of a regular polygon given the length and number of its sides.",
+  "python_code": "from math import tan, pi\ndef area_polygon(s, l):\n  area = s * (l ** 2) / (4 * tan(pi / s))\n  return area",
+  "test_list": [
+    "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+    "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+    "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)"
+  ],
+  "code_ruby": "def area_polygon(s, l)\n  area = s * (l ** 2) / (4 * Math.tan(Math::PI / s))\n  area\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+      "generated_test": "result = area_polygon(4, 20)\nexpected = 400.0\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+      "generated_test": "result = area_polygon(10, 15)\nexpected = 1731.197\ntolerance = 0.001\n\nif (result - expected).abs <= tolerance * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)",
+      "generated_test": "result = area_polygon(9, 7)\nexpected = 302.909\ntolerance = 0.001\nif (result - expected).abs <= tolerance * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

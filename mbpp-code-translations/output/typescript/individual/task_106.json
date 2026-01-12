@@ -1,0 +1,17 @@
+{
+  "task_id": 106,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to append the given list to the given tuples.",
+  "python_code": "def add_lists(test_list, test_tup):\n  res = tuple(list(test_tup) + test_list)\n  return (res) ",
+  "test_list": [
+    "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+    "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+    "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)"
+  ],
+  "code_typescript": "function add_lists<T>(test_list: T[], test_tup: T[]): T[] {\n  return [...test_tup, ...test_list];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

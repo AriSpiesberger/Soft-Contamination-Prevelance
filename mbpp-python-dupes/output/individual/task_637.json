@@ -1,0 +1,27 @@
+{
+  "task_id": 637,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given amount has no profit and no loss",
+  "code_python": "def noprofit_noloss(actual_cost,sale_amount): \n  if(sale_amount == actual_cost):\n    return True\n  else:\n    return False",
+  "test_list": [
+    "assert noprofit_noloss(1500,1200)==False",
+    "assert noprofit_noloss(100,100)==True",
+    "assert noprofit_noloss(2000,5000)==False"
+  ],
+  "python_1": "def noprofit_noloss(actual_cost,sale_amount): \n  # Calculate the difference between sale and cost to determine profit/loss magnitude\n  difference = sale_amount - actual_cost\n  # Return True only when difference is zero (no profit, no loss scenario)\n  return difference == 0",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def noprofit_noloss(actual_cost,sale_amount): \n  # Use subtraction to compute profit or loss value\n  profit_or_loss = sale_amount - actual_cost\n  # Leverage the fact that zero is falsy in Python to detect break-even\n  # When profit_or_loss is 0, \"not profit_or_loss\" evaluates to True\n  return not profit_or_loss",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def noprofit_noloss(actual_cost,sale_amount): \n  # Create a tuple containing both monetary values for comparison\n  cost_sale_pair = (actual_cost, sale_amount)\n  # Extract unique values using set - if equal, set will have only one element\n  unique_values = set(cost_sale_pair)\n  # Check if the set contains exactly one element, indicating both values are identical\n  # This means actual_cost equals sale_amount, hence no profit and no loss\n  return len(unique_values) == 1",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def noprofit_noloss(actual_cost,sale_amount): \n  # Use a dictionary to map the comparison result directly to boolean output\n  result_map = {True: True, False: False}\n  # Perform equality check and use it as dictionary key to retrieve corresponding boolean\n  comparison_result = actual_cost == sale_amount\n  # Return the mapped value from our lookup table\n  return result_map[comparison_result]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def noprofit_noloss(actual_cost,sale_amount): \n  # Compute the absolute difference between the two monetary amounts\n  absolute_diff = abs(actual_cost - sale_amount)\n  # Use max to create a divisor that avoids division by zero (minimum value of 1)\n  safe_divisor = max(absolute_diff, 1)\n  # Divide the absolute difference by itself (or 1 if zero) - zero divided by 1 equals 0\n  ratio = absolute_diff / safe_divisor\n  # When costs match, ratio is 0 (falsy), so comparison to 0 yields True\n  # When costs differ, ratio is 1 (truthy), so comparison to 0 yields False\n  return ratio == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 226,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove the characters which have odd index values of a given string.",
+  "python_code": "def odd_values_string(str):\n  result = \"\" \n  for i in range(len(str)):\n    if i % 2 == 0:\n      result = result + str[i]\n  return result",
+  "test_list": [
+    "assert odd_values_string('abcdef') == 'ace'",
+    "assert odd_values_string('python') == 'pto'",
+    "assert odd_values_string('data') == 'dt'",
+    "assert odd_values_string('lambs') == 'lms'"
+  ],
+  "code_javascript": "function odd_values_string(str) {\n  let result = \"\";\n  for (let i = 0; i < str.length; i++) {\n    if (i % 2 === 0) {\n      result = result + str[i];\n    }\n  }\n  return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert odd_values_string('abcdef') == 'ace'",
+      "generated_test": "const result = odd_values_string('abcdef');\nconst expected = 'ace';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_values_string('python') == 'pto'",
+      "generated_test": "const result = odd_values_string('python');\nconst expected = 'pto';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_values_string('data') == 'dt'",
+      "generated_test": "const result = odd_values_string('data');\nconst expected = 'dt';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_values_string('lambs') == 'lms'",
+      "generated_test": "const result = odd_values_string('lambs');\nconst expected = 'lms';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

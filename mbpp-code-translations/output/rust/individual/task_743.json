@@ -1,0 +1,37 @@
+{
+  "task_id": 743,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to rotate a given list by specified number of items to the right direction. https://www.geeksforgeeks.org/python-program-right-rotate-list-n/",
+  "python_code": "def rotate_right(list, m):\n  result =  list[-m:] + list[:-m]\n  return result",
+  "test_list": [
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]"
+  ],
+  "code_rust": "pub fn rotate_right<T: Clone>(list: &[T], m: usize) -> Vec<T> {\n    if list.is_empty() || m == 0 {\n        return list.to_vec();\n    }\n    \n    let len = list.len();\n    let m = m % len;\n    \n    if m == 0 {\n        return list.to_vec();\n    }\n    \n    let mut result = Vec::with_capacity(len);\n    result.extend_from_slice(&list[len - m..]);\n    result.extend_from_slice(&list[..len - m]);\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+      "generated_test": "let result = rotate_right(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3);\nlet expected = vec![8, 9, 10, 1, 2, 3, 4, 5, 6, 7];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+      "generated_test": "let result = rotate_right(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);\nlet expected = vec![9, 10, 1, 2, 3, 4, 5, 6, 7, 8];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]",
+      "generated_test": "let result = rotate_right(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5);\nlet expected = vec![6, 7, 8, 9, 10, 1, 2, 3, 4, 5];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

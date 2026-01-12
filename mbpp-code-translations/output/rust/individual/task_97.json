@@ -1,0 +1,37 @@
+{
+  "task_id": 97,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find frequency of each element in a flattened list of lists, returned in a dictionary.",
+  "python_code": "def frequency_lists(list1):\n    list1 = [item for sublist in list1 for item in sublist]\n    dic_data = {}\n    for num in list1:\n        if num in dic_data.keys():\n            dic_data[num] += 1\n        else:\n            key = num\n            value = 1\n            dic_data[key] = value\n    return dic_data\n",
+  "test_list": [
+    "assert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}",
+    "assert frequency_lists([[1,2,3,4],[5,6,7,8],[9,10,11,12]])=={1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1,10:1,11:1,12:1}",
+    "assert frequency_lists([[20,30,40,17],[18,16,14,13],[10,20,30,40]])=={20:2,30:2,40:2,17: 1,18:1, 16: 1,14: 1,13: 1, 10: 1}"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn frequency_lists(list1: Vec<Vec<i32>>) -> HashMap<i32, i32> {\n    let flattened: Vec<i32> = list1.into_iter().flatten().collect();\n    let mut dic_data: HashMap<i32, i32> = HashMap::new();\n    \n    for num in flattened {\n        *dic_data.entry(num).or_insert(0) += 1;\n    }\n    \n    dic_data\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}",
+      "generated_test": "let input = vec![vec![1, 2, 3, 2], vec![4, 5, 6, 2], vec![7, 8, 9, 5]];\nlet result = frequency_lists(input);\n\nlet mut expected: HashMap<i32, i32> = HashMap::new();\nexpected.insert(1, 1);\nexpected.insert(2, 3);\nexpected.insert(3, 1);\nexpected.insert(4, 1);\nexpected.insert(5, 2);\nexpected.insert(6, 1);\nexpected.insert(7, 1);\nexpected.insert(8, 1);\nexpected.insert(9, 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency_lists([[1,2,3,4],[5,6,7,8],[9,10,11,12]])=={1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1,10:1,11:1,12:1}",
+      "generated_test": "let input = vec![vec![1,2,3,4],vec![5,6,7,8],vec![9,10,11,12]];\nlet result = frequency_lists(input);\nlet mut expected: HashMap<i32, i32> = HashMap::new();\nexpected.insert(1, 1);\nexpected.insert(2, 1);\nexpected.insert(3, 1);\nexpected.insert(4, 1);\nexpected.insert(5, 1);\nexpected.insert(6, 1);\nexpected.insert(7, 1);\nexpected.insert(8, 1);\nexpected.insert(9, 1);\nexpected.insert(10, 1);\nexpected.insert(11, 1);\nexpected.insert(12, 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency_lists([[20,30,40,17],[18,16,14,13],[10,20,30,40]])=={20:2,30:2,40:2,17: 1,18:1, 16: 1,14: 1,13: 1, 10: 1}",
+      "generated_test": "let input = vec![vec![20,30,40,17],vec![18,16,14,13],vec![10,20,30,40]];\nlet result = frequency_lists(input);\nlet mut expected: HashMap<i32, i32> = HashMap::new();\nexpected.insert(20, 2);\nexpected.insert(30, 2);\nexpected.insert(40, 2);\nexpected.insert(17, 1);\nexpected.insert(18, 1);\nexpected.insert(16, 1);\nexpected.insert(14, 1);\nexpected.insert(13, 1);\nexpected.insert(10, 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

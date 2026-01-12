@@ -1,0 +1,37 @@
+{
+  "task_id": 245,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.",
+  "python_code": "def max_sum(arr): \n\tMSIBS = arr[:] \n\tfor i in range(len(arr)): \n\t\tfor j in range(0, i): \n\t\t\tif arr[i] > arr[j] and MSIBS[i] < MSIBS[j] + arr[i]: \n\t\t\t\tMSIBS[i] = MSIBS[j] + arr[i] \n\tMSDBS = arr[:] \n\tfor i in range(1, len(arr) + 1): \n\t\tfor j in range(1, i): \n\t\t\tif arr[-i] > arr[-j] and MSDBS[-i] < MSDBS[-j] + arr[-i]: \n\t\t\t\tMSDBS[-i] = MSDBS[-j] + arr[-i] \n\tmax_sum = float(\"-Inf\") \n\tfor i, j, k in zip(MSIBS, MSDBS, arr): \n\t\tmax_sum = max(max_sum, i + j - k) \n\treturn max_sum",
+  "test_list": [
+    "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+    "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+    "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_sum(int[] arr) {\n        int n = arr.length;\n        \n        int[] MSIBS = new int[n];\n        for (int i = 0; i < n; i++) {\n            MSIBS[i] = arr[i];\n        }\n        \n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < i; j++) {\n                if (arr[i] > arr[j] && MSIBS[i] < MSIBS[j] + arr[i]) {\n                    MSIBS[i] = MSIBS[j] + arr[i];\n                }\n            }\n        }\n        \n        int[] MSDBS = new int[n];\n        for (int i = 0; i < n; i++) {\n            MSDBS[i] = arr[i];\n        }\n        \n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j < i; j++) {\n                if (arr[n - i] > arr[n - j] && MSDBS[n - i] < MSDBS[n - j] + arr[n - i]) {\n                    MSDBS[n - i] = MSDBS[n - j] + arr[n - i];\n                }\n            }\n        }\n        \n        int max_sum = Integer.MIN_VALUE;\n        for (int i = 0; i < n; i++) {\n            max_sum = Math.max(max_sum, MSIBS[i] + MSDBS[i] - arr[i]);\n        }\n        \n        return max_sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+      "generated_test": "int[] arr = new int[]{1, 15, 51, 45, 33, 100, 12, 18, 9};\nint expected = 194;\nint result = max_sum(arr);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+      "generated_test": "int[] arr = new int[]{80, 60, 30, 40, 20, 10};\nint result = max_sum(arr);\nint expected = 210;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138",
+      "generated_test": "int[] arr = new int[]{2, 3, 14, 16, 21, 23, 29, 30};\nint result = max_sum(arr);\nint expected = 138;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

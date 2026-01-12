@@ -1,0 +1,37 @@
+{
+  "task_id": 746,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find area of a sector. The function takes the radius and angle as inputs. Function should return None if the angle is larger than 360 degrees.",
+  "python_code": "import math\ndef sector_area(r,a):\n    if a > 360:\n        return None\n    return (math.pi*r**2) * (a/360)",
+  "test_list": [
+    "assert sector_area(4,45)==6.283185307179586",
+    "assert sector_area(9,45)==31.808625617596654",
+    "assert sector_area(9,361)==None"
+  ],
+  "code_javascript": "function sector_area(r, a) {\n    if (a > 360) {\n        return null;\n    }\n    return (Math.PI * r ** 2) * (a / 360);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sector_area(4,45)==6.283185307179586",
+      "generated_test": "const result = sector_area(4, 45);\nconst expected = 6.283185307179586;\nif (Math.abs(result - expected) < 1e-10) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sector_area(9,45)==31.808625617596654",
+      "generated_test": "const result = sector_area(9, 45);\nconst expected = 31.808625617596654;\nif (Math.abs(result - expected) < 1e-10) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sector_area(9,361)==None",
+      "generated_test": "const result = sector_area(9, 361);\nconst expected = null;\n\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected:\", expected);\n    console.log(\"  Got:\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

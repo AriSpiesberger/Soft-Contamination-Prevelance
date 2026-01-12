@@ -1,0 +1,37 @@
+{
+  "task_id": 98,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to multiply all the numbers in a list and divide with the length of the list.",
+  "python_code": "def multiply_num(numbers):  \n    total = 1\n    for x in numbers:\n        total *= x  \n    return total/len(numbers) ",
+  "test_list": [
+    "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)"
+  ],
+  "code_ruby": "def multiply_num(numbers)\n  total = numbers.reduce(1) { |acc, x| acc * x }\n  total.to_f / numbers.length\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+      "generated_test": "result = multiply_num([8, 2, 3, -1, 7])\nexpected = -67.2\nif (result - expected).abs <= 0.001 * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+      "generated_test": "result = multiply_num([-10, -20, -30])\nexpected = -2000.0\nif (result - expected).abs <= 0.001 * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)",
+      "generated_test": "result = multiply_num([19, 15, 18])\nexpected = 1710.0\nif (result - expected).abs <= 0.001 * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

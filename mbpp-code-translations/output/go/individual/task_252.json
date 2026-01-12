@@ -1,0 +1,37 @@
+{
+  "task_id": 252,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert complex numbers to polar coordinates.",
+  "python_code": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num) ",
+  "test_list": [
+    "assert convert(1) == (1.0, 0.0)",
+    "assert convert(4) == (4.0,0.0)",
+    "assert convert(5) == (5.0,0.0)"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n\t\"math/cmplx\"\n)\n\nfunc convert(numbers complex128) [2]float64 {\n\tr, theta := cmplx.Polar(numbers)\n\treturn [2]float64{r, theta}\n}\n\nfunc convertFromFloat(numbers float64) [2]float64 {\n\tc := complex(numbers, 0)\n\tr, theta := cmplx.Polar(c)\n\treturn [2]float64{r, theta}\n}\n\nfunc convertFromInt(numbers int) [2]float64 {\n\tc := complex(float64(numbers), 0)\n\tr, theta := cmplx.Polar(c)\n\t// Handle the case where theta might be -0.0, normalize to 0.0\n\tif theta == 0 || math.IsNaN(theta) {\n\t\ttheta = 0.0\n\t}\n\treturn [2]float64{r, theta}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert convert(1) == (1.0, 0.0)",
+      "generated_test": "result := convertFromInt(1)\nexpected := [2]float64{1.0, 0.0}\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(4) == (4.0,0.0)",
+      "generated_test": "result := convertFromInt(4)\nexpected := [2]float64{4.0, 0.0}\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert(5) == (5.0,0.0)",
+      "generated_test": "result := convertFromInt(5)\nexpected := [2]float64{5.0, 0.0}\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

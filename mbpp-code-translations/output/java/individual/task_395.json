@@ -1,0 +1,37 @@
+{
+  "task_id": 395,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first non-repeated character in a given string.",
+  "python_code": "def first_non_repeating_character(str1):\n  char_order = []\n  ctr = {}\n  for c in str1:\n    if c in ctr:\n      ctr[c] += 1\n    else:\n      ctr[c] = 1 \n      char_order.append(c)\n  for c in char_order:\n    if ctr[c] == 1:\n      return c\n  return None",
+  "test_list": [
+    "assert first_non_repeating_character(\"abcabc\") == None",
+    "assert first_non_repeating_character(\"abc\") == \"a\"",
+    "assert first_non_repeating_character(\"ababc\") == \"c\""
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.HashMap;\n\npublic class Solution {\n    public static String first_non_repeating_character(String str1) {\n        ArrayList<Character> char_order = new ArrayList<>();\n        HashMap<Character, Integer> ctr = new HashMap<>();\n        \n        for (int i = 0; i < str1.length(); i++) {\n            char c = str1.charAt(i);\n            if (ctr.containsKey(c)) {\n                ctr.put(c, ctr.get(c) + 1);\n            } else {\n                ctr.put(c, 1);\n                char_order.add(c);\n            }\n        }\n        \n        for (char c : char_order) {\n            if (ctr.get(c) == 1) {\n                return String.valueOf(c);\n            }\n        }\n        \n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert first_non_repeating_character(\"abcabc\") == None",
+      "generated_test": "String result = first_non_repeating_character(\"abcabc\");\nString expected = null;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_non_repeating_character(\"abc\") == \"a\"",
+      "generated_test": "String result = first_non_repeating_character(\"abc\");\nString expected = \"a\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_non_repeating_character(\"ababc\") == \"c\"",
+      "generated_test": "String result = first_non_repeating_character(\"ababc\");\nString expected = \"c\";\nif (expected.equals(result)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

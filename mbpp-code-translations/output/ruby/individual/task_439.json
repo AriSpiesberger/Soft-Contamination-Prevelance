@@ -1,0 +1,37 @@
+{
+  "task_id": 439,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to join a list of multiple integers into a single integer.",
+  "python_code": "def multiple_to_single(L):\n  x = int(\"\".join(map(str, L)))\n  return x",
+  "test_list": [
+    "assert multiple_to_single([11, 33, 50])==113350",
+    "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+    "assert multiple_to_single([10,15,20,25])==10152025"
+  ],
+  "code_ruby": "def multiple_to_single(l)\n  l.map(&:to_s).join.to_i\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert multiple_to_single([11, 33, 50])==113350",
+      "generated_test": "result = multiple_to_single([11, 33, 50])\nexpected = 113350\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiple_to_single([-1,2,3,4,5,6])==-123456",
+      "generated_test": "result = multiple_to_single([-1, 2, 3, 4, 5, 6])\nexpected = -123456\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiple_to_single([10,15,20,25])==10152025",
+      "generated_test": "result = multiple_to_single([10,15,20,25])\nexpected = 10152025\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

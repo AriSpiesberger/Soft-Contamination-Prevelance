@@ -1,0 +1,37 @@
+{
+  "task_id": 227,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum of three numbers.",
+  "python_code": "def min_of_three(a,b,c): \n      if (a <= b) and (a <= c): \n        smallest = a \n      elif (b <= a) and (b <= c): \n        smallest = b \n      else: \n        smallest = c \n      return smallest ",
+  "test_list": [
+    "assert min_of_three(10,20,0)==0",
+    "assert min_of_three(19,15,18)==15",
+    "assert min_of_three(-10,-20,-30)==-30"
+  ],
+  "code_javascript": "function min_of_three(a, b, c) {\n    let smallest;\n    if ((a <= b) && (a <= c)) {\n        smallest = a;\n    } else if ((b <= a) && (b <= c)) {\n        smallest = b;\n    } else {\n        smallest = c;\n    }\n    return smallest;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert min_of_three(10,20,0)==0",
+      "generated_test": "const result = min_of_three(10, 20, 0);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_of_three(19,15,18)==15",
+      "generated_test": "const result = min_of_three(19, 15, 18);\nconst expected = 15;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_of_three(-10,-20,-30)==-30",
+      "generated_test": "const result = min_of_three(-10, -20, -30);\nconst expected = -30;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 470,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the pairwise addition of the neighboring elements of the given tuple.",
+  "python_code": "def add_pairwise(test_tup):\n  res = tuple(i + j for i, j in zip(test_tup, test_tup[1:]))\n  return (res) ",
+  "test_list": [
+    "assert add_pairwise((1, 5, 7, 8, 10)) == (6, 12, 15, 18)",
+    "assert add_pairwise((2, 6, 8, 9, 11)) == (8, 14, 17, 20)",
+    "assert add_pairwise((3, 7, 9, 10, 12)) == (10, 16, 19, 22)"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> add_pairwise(ArrayList<Integer> test_tup) {\n        ArrayList<Integer> res = new ArrayList<>();\n        for (int i = 0; i < test_tup.size() - 1; i++) {\n            res.add(test_tup.get(i) + test_tup.get(i + 1));\n        }\n        return res;\n    }\n    \n    public static int[] add_pairwise(int[] test_tup) {\n        if (test_tup.length <= 1) {\n            return new int[0];\n        }\n        int[] res = new int[test_tup.length - 1];\n        for (int i = 0; i < test_tup.length - 1; i++) {\n            res[i] = test_tup[i] + test_tup[i + 1];\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert add_pairwise((1, 5, 7, 8, 10)) == (6, 12, 15, 18)",
+      "generated_test": "int[] input = new int[]{1, 5, 7, 8, 10};\nint[] expected = new int[]{6, 12, 15, 18};\nint[] result = add_pairwise(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(expected[i]);\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.length; i++) {\n        gotStr.append(result[i]);\n        if (i < result.length - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_pairwise((2, 6, 8, 9, 11)) == (8, 14, 17, 20)",
+      "generated_test": "int[] input = new int[]{2, 6, 8, 9, 11};\nint[] expected = new int[]{8, 14, 17, 20};\nint[] result = add_pairwise(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(expected[i]);\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.length; i++) {\n        gotStr.append(result[i]);\n        if (i < result.length - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_pairwise((3, 7, 9, 10, 12)) == (10, 16, 19, 22)",
+      "generated_test": "int[] input = new int[]{3, 7, 9, 10, 12};\nint[] expected = new int[]{10, 16, 19, 22};\nint[] result = add_pairwise(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(expected[i]);\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.length; i++) {\n        gotStr.append(result[i]);\n        if (i < result.length - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

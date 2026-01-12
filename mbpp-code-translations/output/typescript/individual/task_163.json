@@ -1,0 +1,17 @@
+{
+  "task_id": 163,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the area of a regular polygon given the length and number of its sides.",
+  "python_code": "from math import tan, pi\ndef area_polygon(s, l):\n  area = s * (l ** 2) / (4 * tan(pi / s))\n  return area",
+  "test_list": [
+    "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+    "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+    "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)"
+  ],
+  "code_typescript": "function area_polygon(s: number, l: number): number {\n  const area = s * (l ** 2) / (4 * Math.tan(Math.PI / s));\n  return area;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

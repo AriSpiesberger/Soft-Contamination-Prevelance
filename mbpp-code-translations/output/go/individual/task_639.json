@@ -1,0 +1,37 @@
+{
+  "task_id": 639,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.",
+  "python_code": "def sample_nam(sample_names):\n  sample_names=list(filter(lambda el:el[0].isupper() and el[1:].islower(),sample_names))\n  return len(''.join(sample_names))",
+  "test_list": [
+    "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+    "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+    "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6"
+  ],
+  "code_go": "package main\n\nfunc sample_nam(sample_names []string) int {\n\ttotal := 0\n\tfor _, name := range sample_names {\n\t\tif len(name) == 0 {\n\t\t\tcontinue\n\t\t}\n\t\tfirstChar := rune(name[0])\n\t\tif firstChar >= 'A' && firstChar <= 'Z' {\n\t\t\trest := name[1:]\n\t\t\tallLower := true\n\t\t\tfor _, ch := range rest {\n\t\t\t\tif ch < 'a' || ch > 'z' {\n\t\t\t\t\tallLower = false\n\t\t\t\t\tbreak\n\t\t\t\t}\n\t\t\t}\n\t\t\tif allLower {\n\t\t\t\ttotal += len(name)\n\t\t\t}\n\t\t}\n\t}\n\treturn total\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+      "generated_test": "result := sample_nam([]string{\"sally\", \"Dylan\", \"rebecca\", \"Diana\", \"Joanne\", \"keith\"})\nexpected := 16\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+      "generated_test": "result := sample_nam([]string{\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"})\nexpected := 10\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6",
+      "generated_test": "result := sample_nam([]string{\"abcd\", \"Python\", \"abba\", \"aba\"})\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

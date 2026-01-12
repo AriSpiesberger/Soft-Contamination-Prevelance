@@ -1,0 +1,27 @@
+{
+  "task_id": 132,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a tuple to a string.",
+  "code_python": "def tup_string(tup1):\n  str =  ''.join(tup1)\n  return str",
+  "test_list": [
+    "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+    "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+    "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")"
+  ],
+  "python_1": "def tup_string(tup1):\n  # Initialize an empty string to accumulate characters\n  result = \"\"\n  # Loop through each character element in the tuple\n  for char in tup1:\n    # Concatenate each character to build the final string\n    result = result + char\n  # Return the fully constructed string from tuple elements\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def tup_string(tup1):\n  # Use reduce pattern with functools to concatenate all characters\n  from functools import reduce\n  # Apply lambda function to successively combine each character pair into one string\n  result = reduce(lambda acc, char: acc + char, tup1, \"\")\n  # Return the accumulated string after all reductions complete\n  return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def tup_string(tup1):\n  # Convert tuple to list to enable list-based string construction\n  char_list = list(tup1)\n  # Use str.join on the list representation instead of tuple directly\n  result = str.join(\"\", char_list)\n  # Return the concatenated string formed from list elements\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def tup_string(tup1):\n  # Handle edge case of empty tuple by returning empty string immediately\n  if len(tup1) == 0:\n    return \"\"\n  # Use recursive approach: base case when tuple has single element\n  if len(tup1) == 1:\n    # Return the single character as the base string\n    return tup1[0]\n  # Recursive case: combine first character with result of processing remainder\n  # Slice tuple from index 1 onwards to get remaining elements\n  return tup1[0] + tup_string(tup1[1:])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def tup_string(tup1):\n  # Use a while loop with index tracking for manual iteration control\n  index = 0\n  # Create empty list to collect characters before final join\n  chars = []\n  # Continue looping until we've processed every tuple element\n  while index < len(tup1):\n    # Append current character to our collection list\n    chars.append(tup1[index])\n    # Move to next position in tuple\n    index += 1\n  # Convert accumulated character list to string using separator\n  return \"\".join(chars)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 128,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find words that are longer than n characters from a given list of words.",
+  "python_code": "def long_words(n, str):\n    word_len = []\n    txt = str.split(\" \")\n    for x in txt:\n        if len(x) > n:\n            word_len.append(x)\n    return word_len\t",
+  "test_list": [
+    "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+    "assert long_words(2,\"writing a program\")==['writing','program']",
+    "assert long_words(5,\"sorting list\")==['sorting']"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static ArrayList<String> long_words(int n, String str) {\n        ArrayList<String> word_len = new ArrayList<>();\n        String[] txt = str.split(\" \");\n        for (String x : txt) {\n            if (x.length() > n) {\n                word_len.add(x);\n            }\n        }\n        return word_len;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+      "generated_test": "ArrayList<String> result = long_words(3, \"python is a programming language\");\nArrayList<String> expected = new ArrayList<>();\nexpected.add(\"python\");\nexpected.add(\"programming\");\nexpected.add(\"language\");\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(2,\"writing a program\")==['writing','program']",
+      "generated_test": "ArrayList<String> result = long_words(2, \"writing a program\");\nArrayList<String> expected = new ArrayList<>();\nexpected.add(\"writing\");\nexpected.add(\"program\");\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(5,\"sorting list\")==['sorting']",
+      "generated_test": "ArrayList<String> result = long_words(5, \"sorting list\");\nArrayList<String> expected = new ArrayList<>();\nexpected.add(\"sorting\");\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

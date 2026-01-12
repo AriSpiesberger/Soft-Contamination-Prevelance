@@ -1,0 +1,37 @@
+{
+  "task_id": 11,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove first and last occurrence of a given character from the string.",
+  "python_code": "def remove_Occ(s,ch): \n    for i in range(len(s)): \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    for i in range(len(s) - 1,-1,-1):  \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    return s ",
+  "test_list": [
+    "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+    "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+    "assert remove_Occ(\"PHP\",\"P\") == \"H\""
+  ],
+  "code_go": "package main\n\nfunc remove_Occ(s string, ch string) string {\n\tif len(ch) == 0 {\n\t\treturn s\n\t}\n\t\n\ttarget := rune(ch[0])\n\trunes := []rune(s)\n\t\n\t// Remove first occurrence\n\tfor i := 0; i < len(runes); i++ {\n\t\tif runes[i] == target {\n\t\t\trunes = append(runes[:i], runes[i+1:]...)\n\t\t\tbreak\n\t\t}\n\t}\n\t\n\t// Remove last occurrence\n\tfor i := len(runes) - 1; i >= 0; i-- {\n\t\tif runes[i] == target {\n\t\t\trunes = append(runes[:i], runes[i+1:]...)\n\t\t\tbreak\n\t\t}\n\t}\n\t\n\treturn string(runes)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+      "generated_test": "result := remove_Occ(\"hello\", \"l\")\nexpected := \"heo\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+      "generated_test": "result := remove_Occ(\"abcda\", \"a\")\nexpected := \"bcd\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_Occ(\"PHP\",\"P\") == \"H\"",
+      "generated_test": "result := remove_Occ(\"PHP\", \"P\")\nexpected := \"H\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

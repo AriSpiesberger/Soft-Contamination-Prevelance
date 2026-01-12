@@ -1,0 +1,37 @@
+{
+  "task_id": 465,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to drop empty items from a given dictionary.",
+  "python_code": "def drop_empty(dict1):\n  dict1 = {key:value for (key, value) in dict1.items() if value is not None}\n  return dict1",
+  "test_list": [
+    "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+    "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+    "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn drop_empty(dict1: HashMap<String, Option<String>>) -> HashMap<String, String> {\n    dict1\n        .into_iter()\n        .filter_map(|(key, value)| value.map(|v| (key, v)))\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+      "generated_test": "let mut input: HashMap<String, Option<String>> = HashMap::new();\ninput.insert(\"c1\".to_string(), Some(\"Red\".to_string()));\ninput.insert(\"c2\".to_string(), Some(\"Green\".to_string()));\ninput.insert(\"c3\".to_string(), None);\n\nlet result = drop_empty(input);\n\nlet mut expected: HashMap<String, String> = HashMap::new();\nexpected.insert(\"c1\".to_string(), \"Red\".to_string());\nexpected.insert(\"c2\".to_string(), \"Green\".to_string());\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+      "generated_test": "let mut input: HashMap<String, Option<String>> = HashMap::new();\ninput.insert(\"c1\".to_string(), Some(\"Red\".to_string()));\ninput.insert(\"c2\".to_string(), None);\ninput.insert(\"c3\".to_string(), None);\n\nlet mut expected: HashMap<String, String> = HashMap::new();\nexpected.insert(\"c1\".to_string(), \"Red\".to_string());\n\nlet result = drop_empty(input);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}",
+      "generated_test": "let mut input: HashMap<String, Option<String>> = HashMap::new();\ninput.insert(\"c1\".to_string(), None);\ninput.insert(\"c2\".to_string(), Some(\"Green\".to_string()));\ninput.insert(\"c3\".to_string(), None);\n\nlet result = drop_empty(input);\n\nlet mut expected: HashMap<String, String> = HashMap::new();\nexpected.insert(\"c2\".to_string(), \"Green\".to_string());\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

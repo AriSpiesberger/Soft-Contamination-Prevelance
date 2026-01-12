@@ -1,0 +1,37 @@
+{
+  "task_id": 477,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert the given string to lower case.",
+  "python_code": "def is_lower(string):\n  return (string.lower())",
+  "test_list": [
+    "assert is_lower(\"InValid\") == \"invalid\"",
+    "assert is_lower(\"TruE\") == \"true\"",
+    "assert is_lower(\"SenTenCE\") == \"sentence\""
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strings\"\n)\n\nfunc is_lower(s string) string {\n\treturn strings.ToLower(s)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert is_lower(\"InValid\") == \"invalid\"",
+      "generated_test": "result := is_lower(\"InValid\")\nexpected := \"invalid\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_lower(\"TruE\") == \"true\"",
+      "generated_test": "result := is_lower(\"TruE\")\nexpected := \"true\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_lower(\"SenTenCE\") == \"sentence\"",
+      "generated_test": "result := is_lower(\"SenTenCE\")\nexpected := \"sentence\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

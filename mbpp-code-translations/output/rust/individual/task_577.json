@@ -1,0 +1,37 @@
+{
+  "task_id": 577,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit in factorial of a given number.",
+  "python_code": "def last_Digit_Factorial(n): \n    if (n == 0): return 1\n    elif (n <= 2): return n  \n    elif (n == 3): return 6\n    elif (n == 4): return 4 \n    else: \n      return 0",
+  "test_list": [
+    "assert last_Digit_Factorial(4) == 4",
+    "assert last_Digit_Factorial(21) == 0",
+    "assert last_Digit_Factorial(30) == 0"
+  ],
+  "code_rust": "pub fn last_Digit_Factorial(n: i32) -> i32 {\n    if n == 0 {\n        1\n    } else if n <= 2 {\n        n\n    } else if n == 3 {\n        6\n    } else if n == 4 {\n        4\n    } else {\n        0\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert last_Digit_Factorial(4) == 4",
+      "generated_test": "let result = last_Digit_Factorial(4);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit_Factorial(21) == 0",
+      "generated_test": "let result = last_Digit_Factorial(21);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit_Factorial(30) == 0",
+      "generated_test": "let result = last_Digit_Factorial(30);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 406,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find whether the parity of a given number is odd.",
+  "python_code": "def find_Parity(x): \n    y = x ^ (x >> 1); \n    y = y ^ (y >> 2); \n    y = y ^ (y >> 4); \n    y = y ^ (y >> 8); \n    y = y ^ (y >> 16); \n    if (y & 1): \n        return True\n    return False",
+  "test_list": [
+    "assert find_Parity(12) == False",
+    "assert find_Parity(7) == True",
+    "assert find_Parity(10) == False"
+  ],
+  "code_javascript": "function find_Parity(x) {\n    let y = x ^ (x >> 1);\n    y = y ^ (y >> 2);\n    y = y ^ (y >> 4);\n    y = y ^ (y >> 8);\n    y = y ^ (y >> 16);\n    if (y & 1) {\n        return true;\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_Parity(12) == False",
+      "generated_test": "const result = find_Parity(12);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Parity(7) == True",
+      "generated_test": "const result = find_Parity(7);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Parity(10) == False",
+      "generated_test": "const result = find_Parity(10);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

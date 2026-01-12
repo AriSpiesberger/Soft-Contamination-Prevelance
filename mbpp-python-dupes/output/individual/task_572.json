@@ -1,0 +1,27 @@
+{
+  "task_id": 572,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove duplicate numbers from a given number of lists.",
+  "code_python": "def two_unique_nums(nums):\n  return [i for i in nums if nums.count(i)==1]",
+  "test_list": [
+    "assert two_unique_nums([1,2,3,2,3,4,5]) == [1, 4, 5]",
+    "assert two_unique_nums([1,2,3,2,4,5]) == [1, 3, 4, 5]",
+    "assert two_unique_nums([1,2,3,4,5]) == [1, 2, 3, 4, 5]"
+  ],
+  "python_1": "def two_unique_nums(nums):\n    # Build a frequency dictionary to count occurrences of each number\n    frequency = {}\n    # Traverse each number in the input list\n    for num in nums:\n        # Update the count for this number, defaulting to 0 if not seen before\n        frequency[num] = frequency.get(num, 0) + 1\n    # Initialize empty list to collect numbers that appear exactly once\n    result = []\n    # Iterate through original list to preserve order of elements\n    for num in nums:\n        # Check if this number has a count of exactly 1 (unique)\n        if frequency[num] == 1:\n            # Append unique numbers to our result list\n            result.append(num)\n    # Return the filtered list containing only non-duplicate numbers\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def two_unique_nums(nums):\n    # Use Counter from collections to efficiently tally all occurrences\n    from collections import Counter\n    # Create a Counter object that maps each number to its frequency\n    counts = Counter(nums)\n    # Filter using filter() with a lambda that checks for single occurrence\n    unique_filter = filter(lambda x: counts[x] == 1, nums)\n    # Convert the filter iterator back to a list for the final result\n    return list(unique_filter)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def two_unique_nums(nums):\n    # Identify all numbers that appear more than once by finding set intersection with duplicates\n    seen = set()\n    # Track numbers we've encountered that have appeared at least twice\n    duplicates = set()\n    # Single pass to identify which numbers are duplicates\n    for num in nums:\n        # If already seen, mark as duplicate; otherwise add to seen set\n        if num in seen:\n            duplicates.add(num)\n        else:\n            seen.add(num)\n    # Build result by excluding any number found in the duplicates set\n    result = []\n    # Preserve original order by iterating through input list\n    for num in nums:\n        # Only include numbers that never appeared more than once\n        if num not in duplicates:\n            result.append(num)\n    # Return list containing only elements with exactly one occurrence\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def two_unique_nums(nums):\n    # Use list comprehension with a generator expression to count duplicates inline\n    # Create a set of all values that occur multiple times using a nested comprehension\n    duplicated_values = {n for n in nums if sum(1 for x in nums if x == n) > 1}\n    # Initialize accumulator list using reduce-style approach with list concatenation\n    from functools import reduce\n    # Define a reducer function that appends non-duplicate items to accumulated list\n    def accumulate_unique(acc, item):\n        # Check if current item is NOT in our precomputed duplicates set\n        if item not in duplicated_values:\n            # Extend accumulator with single-element list containing the unique item\n            return acc + [item]\n        # Return accumulator unchanged when item is a duplicate\n        return acc\n    # Apply reduce to fold over the input list, starting with empty accumulator\n    result = reduce(accumulate_unique, nums, [])\n    # Return the accumulated list of elements appearing exactly once\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def two_unique_nums(nums):\n    # Import defaultdict to automatically handle missing keys with default integer value 0\n    from collections import defaultdict\n    # Create a defaultdict that returns 0 for any uninitialized key access\n    freq_map = defaultdict(int)\n    # Enumerate through list to build frequency table in one sweep\n    for val in nums:\n        # Increment the counter for this value directly without checking existence\n        freq_map[val] += 1\n    # Use itertools compress to select elements based on a boolean selector sequence\n    from itertools import compress\n    # Generate a boolean mask where True means element appears exactly once\n    selector_mask = (freq_map[num] == 1 for num in nums)\n    # Compress filters nums keeping only positions where selector_mask is True\n    filtered_iterator = compress(nums, selector_mask)\n    # Materialize the iterator into a concrete list to return\n    return list(filtered_iterator)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

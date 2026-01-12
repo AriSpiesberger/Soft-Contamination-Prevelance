@@ -1,0 +1,37 @@
+{
+  "task_id": 776,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count those characters which have vowels as their neighbors in the given string.",
+  "python_code": "def count_vowels(test_str):\n  res = 0\n  vow_list = ['a', 'e', 'i', 'o', 'u']\n  for idx in range(1, len(test_str) - 1):\n    if test_str[idx] not in vow_list and (test_str[idx - 1] in vow_list or test_str[idx + 1] in vow_list):\n      res += 1\n  if test_str[0] not in vow_list and test_str[1] in vow_list:\n    res += 1\n  if test_str[-1] not in vow_list and test_str[-2] in vow_list:\n    res += 1\n  return (res) ",
+  "test_list": [
+    "assert count_vowels('bestinstareels') == 7",
+    "assert count_vowels('partofthejourneyistheend') == 12",
+    "assert count_vowels('amazonprime') == 5"
+  ],
+  "code_go": "package main\n\nfunc count_vowels(test_str string) int {\n\tres := 0\n\tvowels := map[rune]bool{\n\t\t'a': true,\n\t\t'e': true,\n\t\t'i': true,\n\t\t'o': true,\n\t\t'u': true,\n\t}\n\t\n\trunes := []rune(test_str)\n\tlength := len(runes)\n\t\n\tfor idx := 1; idx < length-1; idx++ {\n\t\tif !vowels[runes[idx]] && (vowels[runes[idx-1]] || vowels[runes[idx+1]]) {\n\t\t\tres++\n\t\t}\n\t}\n\t\n\tif !vowels[runes[0]] && vowels[runes[1]] {\n\t\tres++\n\t}\n\t\n\tif !vowels[runes[length-1]] && vowels[runes[length-2]] {\n\t\tres++\n\t}\n\t\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_vowels('bestinstareels') == 7",
+      "generated_test": "result := count_vowels(\"bestinstareels\")\nexpected := 7\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_vowels('partofthejourneyistheend') == 12",
+      "generated_test": "result := count_vowels(\"partofthejourneyistheend\")\nexpected := 12\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_vowels('amazonprime') == 5",
+      "generated_test": "result := count_vowels(\"amazonprime\")\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

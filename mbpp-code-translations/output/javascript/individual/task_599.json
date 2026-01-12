@@ -1,0 +1,37 @@
+{
+  "task_id": 599,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find sum and average of first n natural numbers.",
+  "python_code": "def sum_average(number):\n total = 0\n for value in range(1, number + 1):\n    total = total + value\n average = total / number\n return (total,average)",
+  "test_list": [
+    "assert sum_average(10)==(55, 5.5)",
+    "assert sum_average(15)==(120, 8.0)",
+    "assert sum_average(20)==(210, 10.5)"
+  ],
+  "code_javascript": "function sum_average(number) {\n  let total = 0;\n  for (let value = 1; value <= number; value++) {\n    total = total + value;\n  }\n  let average = total / number;\n  return [total, average];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sum_average(10)==(55, 5.5)",
+      "generated_test": "const result = sum_average(10);\nconst expected = [55, 5.5];\nif (result[0] === expected[0] && result[1] === expected[1]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_average(15)==(120, 8.0)",
+      "generated_test": "const result = sum_average(15);\nconst expected = [120, 8.0];\nif (result[0] === expected[0] && result[1] === expected[1]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_average(20)==(210, 10.5)",
+      "generated_test": "const result = sum_average(20);\nconst expected = [210, 10.5];\nif (result[0] === expected[0] && result[1] === expected[1]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 454,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a word containing 'z'.",
+  "python_code": "import re\ndef text_match_wordz(text):\n        patterns = '\\w*z.\\w*'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_wordz(\"pythonz.\")==True",
+    "assert text_match_wordz(\"xyz.\")==True",
+    "assert text_match_wordz(\"  lang  .\")==False"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc text_match_wordz(text string) bool {\n\tpattern := `\\w*z.\\w*`\n\tmatched, _ := regexp.MatchString(pattern, text)\n\treturn matched\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert text_match_wordz(\"pythonz.\")==True",
+      "generated_test": "result := text_match_wordz(\"pythonz.\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_wordz(\"xyz.\")==True",
+      "generated_test": "result := text_match_wordz(\"xyz.\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_wordz(\"  lang  .\")==False",
+      "generated_test": "result := text_match_wordz(\"  lang  .\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

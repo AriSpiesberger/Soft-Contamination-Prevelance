@@ -1,0 +1,37 @@
+{
+  "task_id": 607,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to search a string for a regex pattern. The function should return the matching subtring, a start index and an end index.",
+  "python_code": "import re\n\ndef find_literals(text, pattern):\n  match = re.search(pattern, text)\n  s = match.start()\n  e = match.end()\n  return (match.re.pattern, s, e)",
+  "test_list": [
+    "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+    "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+    "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc find_literals(text, pattern string) (string, int, int) {\n\tre := regexp.MustCompile(pattern)\n\tloc := re.FindStringIndex(text)\n\treturn pattern, loc[0], loc[1]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+      "generated_test": "result, start, end := find_literals(\"The quick brown fox jumps over the lazy dog.\", \"fox\")\nexpectedStr := \"fox\"\nexpectedStart := 16\nexpectedEnd := 19\n\nif result == expectedStr && start == expectedStart && end == expectedEnd {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%q, %d, %d)\\n\", expectedStr, expectedStart, expectedEnd)\n\tfmt.Printf(\"  Got: (%q, %d, %d)\\n\", result, start, end)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+      "generated_test": "result0, result1, result2 := find_literals(\"Its been a very crazy procedure right\", \"crazy\")\nexpected0 := \"crazy\"\nexpected1 := 16\nexpected2 := 21\n\nif result0 == expected0 && result1 == expected1 && result2 == expected2 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v, %v)\\n\", expected0, expected1, expected2)\n\tfmt.Printf(\"  Got: (%v, %v, %v)\\n\", result0, result1, result2)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)",
+      "generated_test": "expected := struct {\n\tmatch string\n\tstart int\n\tend   int\n}{\"will\", 35, 39}\n\nmatch, start, end := find_literals(\"Hardest choices required strongest will\", \"will\")\n\nif match == expected.match && start == expected.start && end == expected.end {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%q, %d, %d)\\n\", expected.match, expected.start, expected.end)\n\tfmt.Printf(\"  Got: (%q, %d, %d)\\n\", match, start, end)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 436,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to return the negative numbers in a list.",
+  "python_code": "def neg_nos(list1):\n  out = []\n  for num in list1: \n    if num < 0: \n      out.append(num)\n  return out ",
+  "test_list": [
+    "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+    "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+    "assert neg_nos([-7,-6,8,9]) == [-7,-6]"
+  ],
+  "code_typescript": "function neg_nos(list1: number[]): number[] {\n  const out: number[] = [];\n  for (const num of list1) {\n    if (num < 0) {\n      out.push(num);\n    }\n  }\n  return out;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 104,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "python_code": "def sort_sublists(input_list):\n    result = [sorted(x, key = lambda x:x[0]) for x in input_list] \n    return result\n",
+  "test_list": [
+    "assert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists(([\" red \",\"green\" ],[\"blue \",\" black\"],[\" orange\",\"brown\"]))==[[' red ', 'green'], [' black', 'blue '], [' orange', 'brown']]",
+    "assert sort_sublists(([\"zilver\",\"gold\"], [\"magnesium\",\"aluminium\"], [\"steel\", \"bronze\"]))==[['gold', 'zilver'],['aluminium', 'magnesium'], ['bronze', 'steel']]"
+  ],
+  "code_rust": "pub fn sort_sublists(input_list: Vec<Vec<String>>) -> Vec<Vec<String>> {\n    input_list\n        .into_iter()\n        .map(|mut sublist| {\n            sublist.sort_by(|a, b| {\n                let first_char_a = a.chars().next();\n                let first_char_b = b.chars().next();\n                first_char_a.cmp(&first_char_b)\n            });\n            sublist\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+      "generated_test": "let input: Vec<Vec<String>> = vec![\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"black\".to_string(), \"white\".to_string()],\n    vec![\"white\".to_string(), \"black\".to_string(), \"orange\".to_string()],\n];\nlet expected: Vec<Vec<String>> = vec![\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"black\".to_string(), \"white\".to_string()],\n    vec![\"black\".to_string(), \"orange\".to_string(), \"white\".to_string()],\n];\nlet result = sort_sublists(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists(([\" red \",\"green\" ],[\"blue \",\" black\"],[\" orange\",\"brown\"]))==[[' red ', 'green'], [' black', 'blue '], [' orange', 'brown']]",
+      "generated_test": "let input: Vec<Vec<String>> = vec![\n    vec![\" red \".to_string(), \"green\".to_string()],\n    vec![\"blue \".to_string(), \" black\".to_string()],\n    vec![\" orange\".to_string(), \"brown\".to_string()],\n];\nlet expected: Vec<Vec<String>> = vec![\n    vec![\" red \".to_string(), \"green\".to_string()],\n    vec![\" black\".to_string(), \"blue \".to_string()],\n    vec![\" orange\".to_string(), \"brown\".to_string()],\n];\nlet result = sort_sublists(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists(([\"zilver\",\"gold\"], [\"magnesium\",\"aluminium\"], [\"steel\", \"bronze\"]))==[['gold', 'zilver'],['aluminium', 'magnesium'], ['bronze', 'steel']]",
+      "generated_test": "let input: Vec<Vec<String>> = vec![\n    vec![\"zilver\".to_string(), \"gold\".to_string()],\n    vec![\"magnesium\".to_string(), \"aluminium\".to_string()],\n    vec![\"steel\".to_string(), \"bronze\".to_string()],\n];\nlet expected: Vec<Vec<String>> = vec![\n    vec![\"gold\".to_string(), \"zilver\".to_string()],\n    vec![\"aluminium\".to_string(), \"magnesium\".to_string()],\n    vec![\"bronze\".to_string(), \"steel\".to_string()],\n];\nlet result = sort_sublists(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

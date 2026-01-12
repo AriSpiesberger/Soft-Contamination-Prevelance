@@ -1,0 +1,62 @@
+================================================================================
+MBPP PYTHON SEMANTIC DUPLICATES - INTEGRITY REPORT
+================================================================================
+Generated: 2026-01-10T02:49:51.769535
+
+================================================================================
+OVERALL STATISTICS
+================================================================================
+Total tasks: 427
+Total duplicate slots: 2135
+Successful duplicates: 2106
+Failed duplicates: 29
+Success rate: 98.64%
+
+================================================================================
+PER-SLOT STATISTICS
+================================================================================
+python_1: 421 success, 6 failed (98.6%)
+python_2: 421 success, 6 failed (98.6%)
+python_3: 421 success, 6 failed (98.6%)
+python_4: 422 success, 5 failed (98.8%)
+python_5: 421 success, 6 failed (98.6%)
+
+================================================================================
+BY SPLIT STATISTICS
+================================================================================
+prompt: 7 tasks, 35/35 duplicates (100.0%)
+test: 257 tasks, 1270/1285 duplicates (98.8%)
+validation: 43 tasks, 211/215 duplicates (98.1%)
+train: 120 tasks, 590/600 duplicates (98.3%)
+
+================================================================================
+INCOMPLETE TASKS (missing duplicates)
+================================================================================
+Total incomplete tasks: 6
+
+Task ID    Split        Success    Failed     Prompt
+--------------------------------------------------------------------------------
+229        test         0/5       5/5       Write a function that takes in an array and an integer n, an...
+438        test         0/5       5/5       Write a function to count bidirectional tuple pairs....
+461        test         0/5       5/5       Write a python function to count the upper case characters i...
+769        train        0/5       5/5       Write a python function to get the difference between two li...
+802        train        0/5       5/5       Write a python function to count the number of rotations req...
+579        validation   1/5       4/5       Write a function to find the dissimilar elements in the give...
+
+================================================================================
+LABEL INTEGRITY CHECK
+================================================================================
+Tasks with source_split: 427/427
+Tasks with source_config: 427/427
+[OK] All tasks have proper labels
+
+================================================================================
+DATA CHARACTERISTICS
+================================================================================
+Original code length: min=36, max=906, avg=154
+Duplicate code length: min=106, max=5533, avg=795
+Comments per duplicate: min=1, max=44, avg=7.4
+
+================================================================================
+END OF REPORT
+================================================================================

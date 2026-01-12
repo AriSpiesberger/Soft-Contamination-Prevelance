@@ -1,0 +1,21 @@
+{
+  "task_id": 799,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that rotate left bits by d bits a given number. We assume that the number is 32 bit.",
+  "python_code": "def left_rotate(n,d):   \n    INT_BITS = 32\n    return (n << d)|(n >> (INT_BITS - d))  ",
+  "test_list": [
+    "assert left_rotate(16,2) == 64",
+    "assert left_rotate(10,2) == 40",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(0b0001,3) == 0b1000",
+    "assert left_rotate(0b0101,3) == 0b101000",
+    "assert left_rotate(0b11101,3) == 0b11101000"
+  ],
+  "code_typescript": "function left_rotate(n: number, d: number): number {\n    const INT_BITS = 32;\n    return ((n << d) | (n >>> (INT_BITS - d))) >>> 0;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 7,
+  "code_typescript_tests_failed": 0
+}

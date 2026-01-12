@@ -1,0 +1,37 @@
+{
+  "task_id": 106,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to append the given list to the given tuples.",
+  "python_code": "def add_lists(test_list, test_tup):\n  res = tuple(list(test_tup) + test_list)\n  return (res) ",
+  "test_list": [
+    "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+    "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+    "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)"
+  ],
+  "code_rust": "pub fn add_lists(test_list: &[i32], test_tup: &[i32]) -> Vec<i32> {\n    let mut res: Vec<i32> = test_tup.to_vec();\n    res.extend(test_list);\n    res\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+      "generated_test": "let result = add_lists(&[5, 6, 7], &[9, 10]);\nlet expected = vec![9, 10, 5, 6, 7];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+      "generated_test": "let result = add_lists(&[6, 7, 8], &[10, 11]);\nlet expected: Vec<i32> = vec![10, 11, 6, 7, 8];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)",
+      "generated_test": "let result = add_lists(&[7, 8, 9], &[11, 12]);\nlet expected = vec![11, 12, 7, 8, 9];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

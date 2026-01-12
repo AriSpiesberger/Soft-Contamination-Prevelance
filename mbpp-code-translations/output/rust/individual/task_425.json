@@ -1,0 +1,37 @@
+{
+  "task_id": 425,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of sublists containing a particular element.",
+  "python_code": "def count_element_in_list(list1, x): \n    ctr = 0\n    for i in range(len(list1)): \n        if x in list1[i]: \n            ctr+= 1          \n    return ctr",
+  "test_list": [
+    "assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3",
+    "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'A')==3",
+    "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'E')==1"
+  ],
+  "code_rust": "pub fn count_element_in_list<T: PartialEq>(list1: &[Vec<T>], x: &T) -> usize {\n    let mut ctr = 0;\n    for sublist in list1.iter() {\n        if sublist.contains(x) {\n            ctr += 1;\n        }\n    }\n    ctr\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3",
+      "generated_test": "let list1: Vec<Vec<i32>> = vec![vec![1, 3], vec![5, 7], vec![1, 11], vec![1, 15, 7]];\nlet result = count_element_in_list(&list1, &1);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'A')==3",
+      "generated_test": "let list1: Vec<Vec<char>> = vec![vec!['A', 'B'], vec!['A', 'C'], vec!['A', 'D', 'E'], vec!['B', 'C', 'D']];\nlet result = count_element_in_list(&list1, &'A');\nlet expected: usize = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'E')==1",
+      "generated_test": "let list1: Vec<Vec<char>> = vec![\n    vec!['A', 'B'],\n    vec!['A', 'C'],\n    vec!['A', 'D', 'E'],\n    vec!['B', 'C', 'D'],\n];\nlet result = count_element_in_list(&list1, &'E');\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

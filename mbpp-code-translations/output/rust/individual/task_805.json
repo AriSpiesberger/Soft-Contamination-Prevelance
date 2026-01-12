@@ -1,0 +1,37 @@
+{
+  "task_id": 805,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the list in a list of lists whose sum of elements is the highest.",
+  "python_code": "def max_sum_list(lists):\n return max(lists, key=sum)",
+  "test_list": [
+    "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+    "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+    "assert max_sum_list([[2,3,1]])==[2,3,1]"
+  ],
+  "code_rust": "pub fn max_sum_list(lists: Vec<Vec<i32>>) -> Vec<i32> {\n    lists\n        .into_iter()\n        .max_by_key(|list| list.iter().sum::<i32>())\n        .unwrap_or_default()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+      "generated_test": "let result = max_sum_list(vec![vec![1,2,3], vec![4,5,6], vec![10,11,12], vec![7,8,9]]);\nlet expected = vec![10, 11, 12];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+      "generated_test": "let result = max_sum_list(vec![vec![3,2,1], vec![6,5,4], vec![12,11,10]]);\nlet expected = vec![12,11,10];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[2,3,1]])==[2,3,1]",
+      "generated_test": "let result = max_sum_list(vec![vec![2, 3, 1]]);\nlet expected = vec![2, 3, 1];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

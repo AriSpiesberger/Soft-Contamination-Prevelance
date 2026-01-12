@@ -1,0 +1,37 @@
+{
+  "task_id": 94,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value.",
+  "python_code": "from operator import itemgetter \ndef index_minimum(test_list):\n  res = min(test_list, key = itemgetter(1))[0]\n  return (res) ",
+  "test_list": [
+    "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+    "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+    "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'"
+  ],
+  "code_java": "import java.util.List;\n\npublic class Solution {\n    public static String index_minimum(List<List<Object>> test_list) {\n        if (test_list == null || test_list.isEmpty()) {\n            return null;\n        }\n        \n        List<Object> minTuple = test_list.get(0);\n        int minSecondValue = ((Number) minTuple.get(1)).intValue();\n        \n        for (int i = 1; i < test_list.size(); i++) {\n            List<Object> tuple = test_list.get(i);\n            int secondValue = ((Number) tuple.get(1)).intValue();\n            if (secondValue < minSecondValue) {\n                minSecondValue = secondValue;\n                minTuple = tuple;\n            }\n        }\n        \n        return (String) minTuple.get(0);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+      "generated_test": "List<List<Object>> testList = new java.util.ArrayList<>();\nList<Object> tuple1 = new java.util.ArrayList<>();\ntuple1.add(\"Rash\");\ntuple1.add(143);\ntestList.add(tuple1);\nList<Object> tuple2 = new java.util.ArrayList<>();\ntuple2.add(\"Manjeet\");\ntuple2.add(200);\ntestList.add(tuple2);\nList<Object> tuple3 = new java.util.ArrayList<>();\ntuple3.add(\"Varsha\");\ntuple3.add(100);\ntestList.add(tuple3);\n\nString result = index_minimum(testList);\nString expected = \"Varsha\";\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+      "generated_test": "List<List<Object>> testList = new java.util.ArrayList<>();\nList<Object> tuple1 = new java.util.ArrayList<>();\ntuple1.add(\"Yash\");\ntuple1.add(185);\ntestList.add(tuple1);\nList<Object> tuple2 = new java.util.ArrayList<>();\ntuple2.add(\"Dawood\");\ntuple2.add(125);\ntestList.add(tuple2);\nList<Object> tuple3 = new java.util.ArrayList<>();\ntuple3.add(\"Sanya\");\ntuple3.add(175);\ntestList.add(tuple3);\n\nString result = index_minimum(testList);\nString expected = \"Dawood\";\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'",
+      "generated_test": "List<List<Object>> testList = new java.util.ArrayList<>();\nList<Object> tuple1 = new java.util.ArrayList<>();\ntuple1.add(\"Sai\");\ntuple1.add(345);\ntestList.add(tuple1);\nList<Object> tuple2 = new java.util.ArrayList<>();\ntuple2.add(\"Salman\");\ntuple2.add(145);\ntestList.add(tuple2);\nList<Object> tuple3 = new java.util.ArrayList<>();\ntuple3.add(\"Ayesha\");\ntuple3.add(96);\ntestList.add(tuple3);\n\nString result = index_minimum(testList);\nString expected = \"Ayesha\";\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

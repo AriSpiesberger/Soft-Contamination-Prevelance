@@ -1,0 +1,27 @@
+{
+  "task_id": 276,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in the radius and height of a cylinder and returns the the volume.",
+  "code_python": "def volume_cylinder(r,h):\n  volume=3.1415*r*r*h\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_cylinder(10,5), 1570.7500000000002, rel_tol=0.001)",
+    "assert math.isclose(volume_cylinder(4,5), 251.32000000000002, rel_tol=0.001)",
+    "assert math.isclose(volume_cylinder(4,10), 502.64000000000004, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef volume_cylinder(r, h):\n    # Define pi constant to match expected precision in test cases\n    PI = 3.1415\n    # Calculate base area using exponentiation operator for squaring radius\n    base_area = PI * (r ** 2)\n    # Multiply base area by height to get cylinder volume\n    cylinder_volume = base_area * h\n    # Return the computed volume\n    return cylinder_volume",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "import math\n\ndef volume_cylinder(r, h):\n    # Use pow() built-in function instead of * or ** for radius squaring\n    radius_squared = pow(r, 2)\n    # Store pi approximation matching the expected test precision\n    pi_value = 3.1415\n    # Compute volume using functional chaining with multiplication\n    result = pi_value * radius_squared * h\n    # Return computed cylinder volume\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 2,
+  "python_3": "import math\n\ndef volume_cylinder(r, h):\n    # Use reduce-like multiplication by storing factors in a list\n    factors = [3.1415, r, r, h]\n    # Initialize accumulator for product calculation\n    volume = 1\n    # Iterate through each factor to compute running product\n    for factor in factors:\n        # Multiply accumulator by current factor\n        volume *= factor\n    # Return the accumulated product representing cylinder volume\n    return volume",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\nfrom functools import reduce\n\ndef volume_cylinder(r, h):\n    # Define pi with precision matching expected test outputs\n    pi_const = 3.1415\n    # Create tuple of all multiplicands for volume formula\n    components = (pi_const, r, r, h)\n    # Apply reduce with lambda to multiply all components together\n    volume = reduce(lambda acc, x: acc * x, components)\n    # Return the final computed cylinder volume\n    return volume",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef volume_cylinder(r, h):\n    # Store pi approximation as required for test precision\n    pi_approx = 3.1415\n    # Use math.prod() to compute product of all volume factors at once\n    volume = math.prod([pi_approx, r, r, h])\n    # Return the cylinder volume computed via product aggregation\n    return volume",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

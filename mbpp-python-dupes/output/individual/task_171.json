@@ -1,0 +1,27 @@
+{
+  "task_id": 171,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the perimeter of a regular pentagon from the length of its sides.",
+  "code_python": "import math\ndef perimeter_pentagon(a):\n  perimeter=(5*a)\n  return perimeter",
+  "test_list": [
+    "assert perimeter_pentagon(5) == 25",
+    "assert perimeter_pentagon(10) == 50",
+    "assert perimeter_pentagon(15) == 75"
+  ],
+  "python_1": "def perimeter_pentagon(a):\n    # A pentagon has exactly 5 sides of equal length\n    num_sides = 5\n    # Accumulator to sum up all side lengths\n    total_perimeter = 0\n    # Loop through each of the 5 sides and add the side length\n    for side in range(num_sides):\n        # Add the length of one side to the running total\n        total_perimeter += a\n    # Return the sum of all five sides\n    return total_perimeter",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def perimeter_pentagon(a):\n    # Define a list representing each of the five sides of the pentagon\n    sides = [a] * 5\n    # Use the built-in sum function to aggregate all side lengths\n    perimeter = sum(sides)\n    # Return the computed perimeter value\n    return perimeter",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def perimeter_pentagon(a):\n    # Use recursion base case: when we've counted all 5 sides, return 0\n    def add_sides(remaining_sides, side_length):\n        # Base case: no more sides to add\n        if remaining_sides == 0:\n            return 0\n        # Recursive case: add current side plus result of remaining sides\n        return side_length + add_sides(remaining_sides - 1, side_length)\n    # Pentagon has 5 sides, so we start with 5 and recurse down\n    return add_sides(5, a)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def perimeter_pentagon(a):\n    # Use functools.reduce to apply repeated addition across all sides\n    from functools import reduce\n    # Create a generator expression that yields the side length 5 times\n    pentagon_sides = (a for _ in range(5))\n    # Apply reduce with a lambda that accumulates the sum of all sides\n    perimeter = reduce(lambda accumulated, side: accumulated + side, pentagon_sides, 0)\n    # Return the perimeter computed via functional reduction\n    return perimeter",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def perimeter_pentagon(a):\n    # Use eval to dynamically construct and evaluate an arithmetic expression\n    expression = \" + \".join([str(a)] * 5)\n    # Parse and compute the string \"a + a + a + a + a\" at runtime\n    perimeter = eval(expression)\n    # Return the evaluated sum which represents the pentagon's perimeter\n    return perimeter",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

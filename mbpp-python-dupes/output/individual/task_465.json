@@ -1,0 +1,27 @@
+{
+  "task_id": 465,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to drop empty items from a given dictionary.",
+  "code_python": "def drop_empty(dict1):\n  dict1 = {key:value for (key, value) in dict1.items() if value is not None}\n  return dict1",
+  "test_list": [
+    "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+    "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+    "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}"
+  ],
+  "python_1": "def drop_empty(dict1):\n    # Create a new empty dictionary to store non-None entries\n    result = {}\n    # Iterate through each key in the input dictionary\n    for key in dict1:\n        # Retrieve the value associated with the current key\n        value = dict1[key]\n        # Only add to result if the value is not None\n        if value is not None:\n            # Insert the key-value pair into the result dictionary\n            result[key] = value\n    # Return the filtered dictionary without None values\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def drop_empty(dict1):\n    # Use filter function with lambda to select only items where value is not None\n    filtered_items = filter(lambda item: item[1] is not None, dict1.items())\n    # Convert the filtered iterator back into a dictionary using dict constructor\n    result = dict(filtered_items)\n    # Return the newly constructed dictionary without None values\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def drop_empty(dict1):\n    # Start with a shallow copy to avoid modifying the original dictionary\n    result = dict1.copy()\n    # Build a list of keys that have None values to avoid dict size change during iteration\n    keys_to_remove = [key for key, value in result.items() if value is None]\n    # Remove each identified key from the copied dictionary\n    for key in keys_to_remove:\n        # Use del statement to remove the key-value pair in place\n        del result[key]\n    # Return the modified copy with all None values removed\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def drop_empty(dict1):\n    # Use pop method in a loop to extract non-None values into new dict\n    result = {}\n    # Get all keys as a list since we need to iterate through them\n    all_keys = list(dict1.keys())\n    # Process each key one by one using index-based iteration\n    index = 0\n    # Continue while there are still keys to process\n    while index < len(all_keys):\n        # Extract the current key from our keys list\n        current_key = all_keys[index]\n        # Retrieve value using get method with default fallback\n        current_value = dict1.get(current_key)\n        # Check if retrieved value passes the non-None test\n        if current_value is not None:\n            # Use setdefault to add entry only if key doesn't exist yet\n            result.setdefault(current_key, current_value)\n        # Move to next key by incrementing the index counter\n        index += 1\n    # Return the assembled dictionary containing only valid entries\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def drop_empty(dict1):\n    # Import reduce function for functional-style accumulation\n    from functools import reduce\n    # Define a helper function that adds non-None pairs to accumulator dict\n    def accumulate_non_empty(acc, key):\n        # Check if the value associated with this key is not None\n        if dict1[key] is not None:\n            # Merge accumulator with new single-entry dict using unpacking\n            return {**acc, key: dict1[key]}\n        # Return unchanged accumulator when value is None\n        return acc\n    # Apply reduce across all keys, building up result dictionary from empty start\n    result = reduce(accumulate_non_empty, dict1.keys(), {})\n    # Return the fully accumulated dictionary with only valid entries\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

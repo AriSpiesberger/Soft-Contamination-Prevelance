@@ -1,0 +1,37 @@
+{
+  "task_id": 557,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to toggle the case of all characters in a string.",
+  "python_code": "def toggle_string(string):\n string1 = string.swapcase()\n return string1",
+  "test_list": [
+    "assert toggle_string(\"Python\")==(\"pYTHON\")",
+    "assert toggle_string(\"Pangram\")==(\"pANGRAM\")",
+    "assert toggle_string(\"LIttLE\")==(\"liTTle\")"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"unicode\"\n)\n\nfunc toggle_string(s string) string {\n\tresult := make([]rune, 0, len(s))\n\tfor _, r := range s {\n\t\tif unicode.IsUpper(r) {\n\t\t\tresult = append(result, unicode.ToLower(r))\n\t\t} else if unicode.IsLower(r) {\n\t\t\tresult = append(result, unicode.ToUpper(r))\n\t\t} else {\n\t\t\tresult = append(result, r)\n\t\t}\n\t}\n\treturn string(result)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert toggle_string(\"Python\")==(\"pYTHON\")",
+      "generated_test": "result := toggle_string(\"Python\")\nexpected := \"pYTHON\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_string(\"Pangram\")==(\"pANGRAM\")",
+      "generated_test": "result := toggle_string(\"Pangram\")\nexpected := \"pANGRAM\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_string(\"LIttLE\")==(\"liTTle\")",
+      "generated_test": "result := toggle_string(\"LIttLE\")\nexpected := \"liTTle\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

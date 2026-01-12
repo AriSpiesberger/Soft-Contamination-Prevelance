@@ -1,0 +1,27 @@
+{
+  "task_id": 264,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate a dog's age in dog's years.",
+  "code_python": "def dog_age(h_age):\n if h_age < 0:\n \texit()\n elif h_age <= 2:\n\t d_age = h_age * 10.5\n else:\n\t d_age = 21 + (h_age - 2)*4\n return d_age",
+  "test_list": [
+    "assert dog_age(12)==61",
+    "assert dog_age(15)==73",
+    "assert dog_age(24)==109"
+  ],
+  "python_1": "def dog_age(h_age):\n    # Guard clause to handle invalid negative ages\n    if h_age < 0:\n        exit()\n    # Use a dictionary to map age ranges to calculation functions\n    age_calculators = {\n        # Lambda for ages 0-2: multiply by 10.5 years per human year\n        'young': lambda x: x * 10.5,\n        # Lambda for ages over 2: first 2 years count as 21, then 4 per year after\n        'adult': lambda x: 21 + (x - 2) * 4\n    }\n    # Determine which category the dog falls into based on threshold\n    category = 'young' if h_age <= 2 else 'adult'\n    # Look up the appropriate calculator and apply it to get dog years\n    result = age_calculators[category](h_age)\n    # Return the computed dog age\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def dog_age(h_age):\n    # Validate input - terminate program for impossible negative ages\n    if h_age < 0:\n        exit()\n    # Calculate the baseline of 21 dog years for the first 2 human years\n    first_two_years_contribution = min(h_age, 2) * 10.5\n    # Compute remaining years after the initial 2-year puppy phase\n    remaining_years = max(0, h_age - 2)\n    # Each year beyond age 2 adds 4 dog years (slower aging rate)\n    additional_years_contribution = remaining_years * 4\n    # Sum both aging phases to get total dog years\n    d_age = first_two_years_contribution + additional_years_contribution\n    # Return the calculated age in dog years\n    return d_age",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def dog_age(h_age):\n    # Reject biologically impossible negative ages by terminating execution\n    if h_age < 0:\n        exit()\n    # Start accumulator at zero to build up dog years iteratively\n    d_age = 0\n    # Process each whole year of human age sequentially\n    year = 0\n    # Loop through years, applying different multipliers based on life stage\n    while year < h_age:\n        # Determine how much of this year to count (handles fractional ages)\n        portion = min(1, h_age - year)\n        # First two years of life: rapid development at 10.5 dog years per human year\n        if year < 2:\n            # Apply puppy aging rate for this portion of time\n            d_age += portion * 10.5\n        # After maturity: slower aging at 4 dog years per human year\n        else:\n            # Apply adult aging rate for this portion of time\n            d_age += portion * 4\n        # Advance to examine the next year of the dog's life\n        year += 1\n    # Deliver the fully computed age in dog years\n    return d_age",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def dog_age(h_age):\n    # Guard against invalid negative age input by exiting program\n    if h_age < 0:\n        exit()\n    # Define the age threshold where aging rate changes from puppy to adult\n    puppy_adult_boundary = 2\n    # Define the rapid aging multiplier for puppies (first 2 years)\n    puppy_rate = 10.5\n    # Define the slower aging multiplier for adult dogs (after 2 years)\n    adult_rate = 4\n    # Use ternary expression to select formula based on age bracket\n    # For young dogs: simple multiplication; for older dogs: base 21 plus adult years\n    d_age = (h_age * puppy_rate) if h_age <= puppy_adult_boundary else (puppy_adult_boundary * puppy_rate + (h_age - puppy_adult_boundary) * adult_rate)\n    # Return computed dog years using single expression evaluation\n    return d_age",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def dog_age(h_age):\n    # Early termination for biologically invalid age values\n    if h_age < 0:\n        exit()\n    # Create a list of tuples defining age brackets and their multipliers\n    age_brackets = [(2, 10.5), (float('inf'), 4)]\n    # Track cumulative dog years as we process each bracket\n    d_age = 0\n    # Keep track of human years already accounted for\n    years_processed = 0\n    # Iterate through each age bracket to compute contribution\n    for bracket_limit, multiplier in age_brackets:\n        # Calculate years falling within this specific bracket\n        years_in_bracket = min(h_age, bracket_limit) - years_processed\n        # Only add contribution if there are positive years in this bracket\n        if years_in_bracket > 0:\n            # Multiply years in bracket by appropriate aging factor\n            d_age += years_in_bracket * multiplier\n            # Update the running total of processed human years\n            years_processed += years_in_bracket\n        # Stop processing if we've accounted for all human years\n        if years_processed >= h_age:\n            break\n    # Deliver the final dog age calculation result\n    return d_age",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

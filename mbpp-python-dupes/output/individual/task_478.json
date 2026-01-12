@@ -1,0 +1,27 @@
+{
+  "task_id": 478,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove lowercase substrings from a given string.",
+  "code_python": "import re\ndef remove_lowercase(str1):\n return re.sub('[a-z]', '', str1)",
+  "test_list": [
+    "assert remove_lowercase(\"PYTHon\")==('PYTH')",
+    "assert remove_lowercase(\"FInD\")==('FID')",
+    "assert remove_lowercase(\"STRinG\")==('STRG')"
+  ],
+  "python_1": "def remove_lowercase(str1):\n    # Initialize empty string to accumulate non-lowercase characters\n    result = \"\"\n    # Process each character in the input string one at a time\n    for char in str1:\n        # Check if character falls outside lowercase ASCII range (a-z)\n        if not (char >= 'a' and char <= 'z'):\n            # Append uppercase or non-letter characters to result\n            result = result + char\n    # Return the filtered string containing only non-lowercase characters\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_lowercase(str1):\n    # Use list comprehension to filter characters, checking ASCII values directly\n    filtered_chars = [c for c in str1 if ord(c) < ord('a') or ord(c) > ord('z')]\n    # Join the filtered character list back into a single string\n    return ''.join(filtered_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_lowercase(str1):\n    # Use filter function with lambda to select only non-lowercase characters\n    filtered_iterator = filter(lambda c: not c.islower(), str1)\n    # Convert the filter iterator to a string by joining all characters\n    return ''.join(filtered_iterator)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_lowercase(str1):\n    # Define the complete set of lowercase letters to check against\n    lowercase_set = set('abcdefghijklmnopqrstuvwxyz')\n    # Use a generator expression with set membership test for efficient lookup\n    non_lowercase_gen = (char for char in str1 if char not in lowercase_set)\n    # Materialize the generator into a final string result\n    return ''.join(non_lowercase_gen)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_lowercase(str1):\n    # Use str.translate with a translation table that maps lowercase letters to None\n    lowercase_letters = 'abcdefghijklmnopqrstuvwxyz'\n    # Create a translation table where each lowercase letter maps to None (deletion)\n    deletion_table = str.maketrans('', '', lowercase_letters)\n    # Apply the translation table to remove all lowercase characters in one pass\n    return str1.translate(deletion_table)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

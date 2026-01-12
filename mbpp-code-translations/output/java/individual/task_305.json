@@ -1,0 +1,37 @@
+{
+  "task_id": 305,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return two words from a list of words starting with letter 'p'.",
+  "python_code": "import re\ndef start_withp(words):\n for w in words:\n        m = re.match(\"(P\\w+)\\W(P\\w+)\", w)\n        if m:\n            return m.groups()",
+  "test_list": [
+    "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+    "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+    "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')"
+  ],
+  "code_java": "import java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\npublic class Solution {\n    public static String[] start_withp(String[] words) {\n        Pattern pattern = Pattern.compile(\"(P\\\\w+)\\\\W(P\\\\w+)\");\n        for (String w : words) {\n            Matcher m = pattern.matcher(w);\n            if (m.find()) {\n                return new String[] { m.group(1), m.group(2) };\n            }\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+      "generated_test": "String[] result = start_withp(new String[]{\"Python PHP\", \"Java JavaScript\", \"c c++\"});\nString[] expected = new String[]{\"Python\", \"PHP\"};\nboolean pass = result != null && result.length == expected.length;\nif (pass) {\n    for (int i = 0; i < expected.length; i++) {\n        if (!expected[i].equals(result[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [Python, PHP]\");\n    String got = result == null ? \"null\" : \"[\" + String.join(\", \", result) + \"]\";\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+      "generated_test": "String[] result = start_withp(new String[]{\"Python Programming\", \"Java Programming\"});\nString[] expected = new String[]{\"Python\", \"Programming\"};\nif (result != null && result.length == expected.length && result[0].equals(expected[0]) && result[1].equals(expected[1])) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [Python, Programming]\");\n    if (result == null) {\n        System.out.println(\"  Got: null\");\n    } else {\n        System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')",
+      "generated_test": "String[] result = start_withp(new String[]{\"Pqrst Pqr\", \"qrstuv\"});\nString[] expected = new String[]{\"Pqrst\", \"Pqr\"};\nif (result != null && result.length == expected.length && result[0].equals(expected[0]) && result[1].equals(expected[1])) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [Pqrst, Pqr]\");\n    if (result == null) {\n        System.out.println(\"  Got: null\");\n    } else {\n        System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

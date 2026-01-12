@@ -1,0 +1,37 @@
+{
+  "task_id": 769,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to get the difference between two lists.",
+  "python_code": "def Diff(li1,li2):\n    return list(set(li1)-set(li2)) + list(set(li2)-set(li1))\n ",
+  "test_list": [
+    "assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]",
+    "assert (Diff([1,2,3,4,5], [6,7,1])) == [2,3,4,5,6,7]",
+    "assert (Diff([1,2,3], [6,7,1])) == [2,3,6,7]"
+  ],
+  "code_go": "package main\n\nimport \"sort\"\n\nfunc Diff(li1, li2 []int) []int {\n\tset1 := make(map[int]bool)\n\tset2 := make(map[int]bool)\n\t\n\tfor _, v := range li1 {\n\t\tset1[v] = true\n\t}\n\t\n\tfor _, v := range li2 {\n\t\tset2[v] = true\n\t}\n\t\n\tresult := []int{}\n\t\n\t// Elements in set1 but not in set2\n\tfor v := range set1 {\n\t\tif !set2[v] {\n\t\t\tresult = append(result, v)\n\t\t}\n\t}\n\t\n\t// Elements in set2 but not in set1\n\tfor v := range set2 {\n\t\tif !set1[v] {\n\t\t\tresult = append(result, v)\n\t\t}\n\t}\n\t\n\tsort.Ints(result)\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]",
+      "generated_test": "result := Diff([]int{10, 15, 20, 25, 30, 35, 40}, []int{25, 40, 35})\nexpected := []int{10, 15, 20, 30}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert (Diff([1,2,3,4,5], [6,7,1])) == [2,3,4,5,6,7]",
+      "generated_test": "result := Diff([]int{1, 2, 3, 4, 5}, []int{6, 7, 1})\nexpected := []int{2, 3, 4, 5, 6, 7}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert (Diff([1,2,3], [6,7,1])) == [2,3,6,7]",
+      "generated_test": "result := Diff([]int{1, 2, 3}, []int{6, 7, 1})\nexpected := []int{2, 3, 6, 7}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

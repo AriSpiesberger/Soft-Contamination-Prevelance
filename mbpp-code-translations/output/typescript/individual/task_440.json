@@ -1,0 +1,17 @@
+{
+  "task_id": 440,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb and their positions in a given sentence.",
+  "python_code": "import re\ndef find_adverb_position(text):\n for m in re.finditer(r\"\\w+ly\", text):\n    return (m.start(), m.end(), m.group(0))",
+  "test_list": [
+    "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+    "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+    "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')"
+  ],
+  "code_typescript": "function find_adverb_position(text: string): [number, number, string] | null {\n    const regex = /\\w+ly/g;\n    const match = regex.exec(text);\n    if (match) {\n        return [match.index, match.index + match[0].length, match[0]];\n    }\n    return null;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

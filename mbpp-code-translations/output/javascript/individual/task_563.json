@@ -1,0 +1,37 @@
+{
+  "task_id": 563,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks from a string.",
+  "python_code": "import re\ndef extract_values(text):\n return (re.findall(r'\"(.*?)\"', text))",
+  "test_list": [
+    "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+    "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+    "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']"
+  ],
+  "code_javascript": "function extract_values(text) {\n    const matches = [];\n    const regex = /\"(.*?)\"/g;\n    let match;\n    while ((match = regex.exec(text)) !== null) {\n        matches.push(match[1]);\n    }\n    return matches;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+      "generated_test": "const result = extract_values('\"Python\", \"PHP\", \"Java\"');\nconst expected = ['Python', 'PHP', 'Java'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+      "generated_test": "const result = extract_values('\"python\",\"program\",\"language\"');\nconst expected = ['python', 'program', 'language'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']",
+      "generated_test": "const result = extract_values('\"red\",\"blue\",\"green\",\"yellow\"');\nconst expected = ['red', 'blue', 'green', 'yellow'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

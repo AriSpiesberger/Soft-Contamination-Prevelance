@@ -1,0 +1,37 @@
+{
+  "task_id": 596,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the size in bytes of the given tuple.",
+  "python_code": "import sys \ndef tuple_size(tuple_list):\n  return (sys.getsizeof(tuple_list)) ",
+  "test_list": [
+    "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+    "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+    "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))"
+  ],
+  "code_ruby": "require 'objspace'\n\ndef tuple_size(tuple_list)\n  ObjectSpace.memsize_of(tuple_list)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+      "generated_test": "require 'objspace'\n\ndef tuple_size(tuple_list)\n  ObjectSpace.memsize_of(tuple_list)\nend\n\ntest_input = [\"A\", 1, \"B\", 2, \"C\", 3]\nresult = tuple_size(test_input)\nexpected = ObjectSpace.memsize_of(test_input)\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+      "generated_test": "require 'objspace'\n\ndef tuple_size(tuple_list)\n  ObjectSpace.memsize_of(tuple_list)\nend\n\ntest_array = [1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"]\nresult = tuple_size(test_array)\nexpected = ObjectSpace.memsize_of(test_array)\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))",
+      "generated_test": "require 'objspace'\n\ndef tuple_size(tuple_list)\n  ObjectSpace.memsize_of(tuple_list)\nend\n\ntest_input = [[1, \"Lion\"], [2, \"Tiger\"], [3, \"Fox\"], [4, \"Wolf\"]]\nresult = tuple_size(test_input)\nexpected = ObjectSpace.memsize_of(test_input)\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 611,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which given a matrix represented as a list of lists returns the max of the n'th column.",
+  "code_python": "def max_of_nth(test_list, N):\n  res = max([sub[N] for sub in test_list])\n  return (res) ",
+  "test_list": [
+    "assert max_of_nth([[5, 6, 7], [1, 3, 5], [8, 9, 19]], 2) == 19",
+    "assert max_of_nth([[6, 7, 8], [2, 4, 6], [9, 10, 20]], 1) == 10",
+    "assert max_of_nth([[7, 8, 9], [3, 5, 7], [10, 11, 21]], 1) == 11"
+  ],
+  "python_1": "def max_of_nth(test_list, N):\n  # Use map to extract the N'th element from each row in the matrix\n  nth_column = map(lambda row: row[N], test_list)\n  # Apply max to the iterator of column values and return result\n  return max(nth_column)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def max_of_nth(test_list, N):\n    # Initialize result with negative infinity to handle any numeric values\n    result = float('-inf')\n    # Iterate through each row index in the matrix\n    for i in range(len(test_list)):\n        # Extract the element at column N from current row\n        current_value = test_list[i][N]\n        # Update result if current element exceeds previous maximum\n        if current_value > result:\n            result = current_value\n    # Return the largest value found in column N\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def max_of_nth(test_list, N):\n    # Import reduce to perform a cumulative operation across column values\n    from functools import reduce\n    # Extract all values from column N using generator expression\n    column_values = (row[N] for row in test_list)\n    # Apply reduce with a lambda that keeps the larger of two values at each step\n    result = reduce(lambda a, b: a if a > b else b, column_values)\n    # Return the maximum value found through successive comparisons\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def max_of_nth(test_list, N):\n    # Use zip with unpacking to transpose the matrix, converting rows to columns\n    transposed = zip(*test_list)\n    # Convert the zip iterator to a list to allow indexed access\n    columns_list = list(transposed)\n    # Access the N'th column directly from the transposed structure\n    target_column = columns_list[N]\n    # Apply max function to the tuple representing the desired column\n    return max(target_column)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def max_of_nth(test_list, N):\n    # Extract the N'th column as a standalone list using list comprehension\n    column_n = [row[N] for row in test_list]\n    # Sort the column values in ascending order to organize them\n    column_n.sort()\n    # The maximum value will be at the last position after sorting\n    max_value = column_n[-1]\n    # Return the final element which represents the column maximum\n    return max_value",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

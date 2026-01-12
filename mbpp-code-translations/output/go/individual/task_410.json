@@ -1,0 +1,37 @@
+{
+  "task_id": 410,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum value in a given heterogeneous list.",
+  "python_code": "def min_val(listval):\n     min_val = min(i for i in listval if isinstance(i, int))\n     return min_val",
+  "test_list": [
+    "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+    "assert min_val(['Python', 15, 20, 25])==15",
+    "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc min_val(listval []interface{}) int {\n\tminValue := math.MaxInt\n\tfound := false\n\t\n\tfor _, item := range listval {\n\t\tvar val int\n\t\tvar isNum bool\n\t\t\n\t\tswitch v := item.(type) {\n\t\tcase int:\n\t\t\tval = v\n\t\t\tisNum = true\n\t\tcase int8:\n\t\t\tval = int(v)\n\t\t\tisNum = true\n\t\tcase int16:\n\t\t\tval = int(v)\n\t\t\tisNum = true\n\t\tcase int32:\n\t\t\tval = int(v)\n\t\t\tisNum = true\n\t\tcase int64:\n\t\t\tval = int(v)\n\t\t\tisNum = true\n\t\tcase float32:\n\t\t\tval = int(v)\n\t\t\tisNum = true\n\t\tcase float64:\n\t\t\tval = int(v)\n\t\t\tisNum = true\n\t\tdefault:\n\t\t\tisNum = false\n\t\t}\n\t\t\n\t\tif isNum {\n\t\t\tif !found || val < minValue {\n\t\t\t\tminValue = val\n\t\t\t\tfound = true\n\t\t\t}\n\t\t}\n\t}\n\t\n\treturn minValue\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+      "generated_test": "result := min_val([]interface{}{\"Python\", 3, 2, 4, 5, \"version\"})\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_val(['Python', 15, 20, 25])==15",
+      "generated_test": "result := min_val([]interface{}{\"Python\", 15, 20, 25})\nexpected := 15\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20",
+      "generated_test": "input := []interface{}{\"Python\", 30, 20, 40, 50, \"version\"}\nresult := min_val(input)\nexpected := 20\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

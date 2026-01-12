@@ -1,0 +1,27 @@
+{
+  "task_id": 65,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a list and sum all of its elements.",
+  "code_python": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total",
+  "test_list": [
+    "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+    "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+    "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210"
+  ],
+  "python_1": "def recursive_list_sum(data_list):\n    # Use generator expression to lazily process each element\n    def flatten_and_sum(items):\n        # Iterate through each item in the current level\n        for item in items:\n            # Check if current item is a nested list using isinstance\n            if isinstance(item, list):\n                # Recursively yield from nested list's sum contribution\n                yield from flatten_and_sum(item)\n            else:\n                # Yield the numeric value for summation\n                yield item\n    # Sum all yielded values from the generator\n    return sum(flatten_and_sum(data_list))",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def recursive_list_sum(data_list):\n    # Flatten the nested structure into a single-level list first\n    def flatten(nested):\n        # Create accumulator list to collect all numeric values\n        result = []\n        # Process each item in the current level of nesting\n        for item in nested:\n            # Detect nested lists by checking if item is a list instance\n            if isinstance(item, list):\n                # Extend result with flattened contents of nested list\n                result.extend(flatten(item))\n            else:\n                # Append scalar value directly to result list\n                result.append(item)\n        # Return the accumulated flat list for this level\n        return result\n    # First flatten the entire structure, then sum all elements at once\n    flattened_list = flatten(data_list)\n    # Use built-in sum on the completely flattened list\n    return sum(flattened_list)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def recursive_list_sum(data_list):\n    # Use reduce to accumulate the sum across all elements\n    from functools import reduce\n    # Define the accumulator function that handles both scalars and lists\n    def accumulator(running_total, current_element):\n        # Determine if we need to recurse deeper into a nested structure\n        if type(current_element) is list:\n            # Recursively compute sum of nested list and add to running total\n            return running_total + recursive_list_sum(current_element)\n        else:\n            # Simply add the numeric value to our running total\n            return running_total + current_element\n    # Apply reduce with our custom accumulator, starting from zero\n    return reduce(accumulator, data_list, 0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def recursive_list_sum(data_list):\n    # Use a stack-based iterative approach to avoid recursion entirely\n    stack = [data_list]\n    # Accumulator for the final sum of all numeric elements\n    total = 0\n    # Continue processing while there are items on the stack\n    while stack:\n        # Pop the most recently added item from the stack\n        current = stack.pop()\n        # Check if the current item is itself a list that needs expansion\n        if isinstance(current, list):\n            # Push each element of the list onto the stack for later processing\n            for item in current:\n                # Add items in reverse order to maintain left-to-right processing\n                stack.append(item)\n        else:\n            # Current item is a number, add it directly to our running total\n            total = total + current\n    # Return the sum of all numeric values found at any nesting level\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def recursive_list_sum(data_list):\n    # Convert nested list to string representation for parsing\n    str_repr = str(data_list)\n    # Remove all bracket characters to extract only numbers and separators\n    cleaned = str_repr.replace('[', '').replace(']', '')\n    # Split the cleaned string by comma and space to isolate individual numbers\n    number_strings = cleaned.split(', ')\n    # Initialize accumulator for summing parsed integer values\n    total = 0\n    # Process each extracted number string individually\n    for num_str in number_strings:\n        # Strip any remaining whitespace from the number string\n        stripped = num_str.strip()\n        # Skip empty strings that may result from splitting edge cases\n        if stripped:\n            # Convert string representation back to integer and accumulate\n            total = total + int(stripped)\n    # Return the computed sum of all numeric elements across all nesting levels\n    return total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

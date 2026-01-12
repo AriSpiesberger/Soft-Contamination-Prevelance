@@ -1,0 +1,17 @@
+{
+  "task_id": 131,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse only the vowels of a given string (where y is not a vowel).",
+  "python_code": "def reverse_vowels(str1):\n\tvowels = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tvowels += char\n\tresult_string = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tresult_string += vowels[-1]\n\t\t\tvowels = vowels[:-1]\n\t\telse:\n\t\t\tresult_string += char\n\treturn result_string",
+  "test_list": [
+    "assert reverse_vowels(\"Python\") == \"Python\"",
+    "assert reverse_vowels(\"USA\") == \"ASU\"",
+    "assert reverse_vowels(\"ab\") == \"ab\""
+  ],
+  "code_typescript": "function reverse_vowels(str1: string): string {\n    const vowelSet = \"aeiouAEIOU\";\n    let vowels = \"\";\n    \n    for (const char of str1) {\n        if (vowelSet.includes(char)) {\n            vowels += char;\n        }\n    }\n    \n    let result_string = \"\";\n    for (const char of str1) {\n        if (vowelSet.includes(char)) {\n            result_string += vowels[vowels.length - 1];\n            vowels = vowels.slice(0, -1);\n        } else {\n            result_string += char;\n        }\n    }\n    \n    return result_string;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

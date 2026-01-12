@@ -1,0 +1,37 @@
+{
+  "task_id": 393,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the list with maximum length.",
+  "python_code": "def max_length_list(input_list):\n    max_length = max(len(x) for x in input_list )   \n    max_list = max(input_list, key = lambda i: len(i))    \n    return(max_length, max_list)",
+  "test_list": [
+    "assert max_length_list([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])",
+    "assert max_length_list([[1,2,3,4,5],[1,2,3,4],[1,2,3],[1,2],[1]])==(5,[1,2,3,4,5])",
+    "assert max_length_list([[3,4,5],[6,7,8,9],[10,11,12]])==(4,[6,7,8,9])"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Object[] max_length_list(ArrayList<ArrayList<Integer>> input_list) {\n        int max_length = 0;\n        for (ArrayList<Integer> x : input_list) {\n            if (x.size() > max_length) {\n                max_length = x.size();\n            }\n        }\n        \n        ArrayList<Integer> max_list = null;\n        for (ArrayList<Integer> x : input_list) {\n            if (x.size() == max_length) {\n                max_list = x;\n                break;\n            }\n        }\n        \n        return new Object[]{max_length, max_list};\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_length_list([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])",
+      "generated_test": "ArrayList<ArrayList<Integer>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(0)));\ninput.add(new ArrayList<>(Arrays.asList(1, 3)));\ninput.add(new ArrayList<>(Arrays.asList(5, 7)));\ninput.add(new ArrayList<>(Arrays.asList(9, 11)));\ninput.add(new ArrayList<>(Arrays.asList(13, 15, 17)));\n\nObject[] result = max_length_list(input);\n\nint expectedLength = 3;\nArrayList<Integer> expectedList = new ArrayList<>(Arrays.asList(13, 15, 17));\n\nboolean pass = true;\nif (!result[0].equals(expectedLength)) {\n    pass = false;\n}\nif (!result[1].equals(expectedList)) {\n    pass = false;\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (3, [13, 15, 17])\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_length_list([[1,2,3,4,5],[1,2,3,4],[1,2,3],[1,2],[1]])==(5,[1,2,3,4,5])",
+      "generated_test": "ArrayList<ArrayList<Integer>> input_list = new ArrayList<>();\nArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1); list1.add(2); list1.add(3); list1.add(4); list1.add(5);\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(1); list2.add(2); list2.add(3); list2.add(4);\nArrayList<Integer> list3 = new ArrayList<>();\nlist3.add(1); list3.add(2); list3.add(3);\nArrayList<Integer> list4 = new ArrayList<>();\nlist4.add(1); list4.add(2);\nArrayList<Integer> list5 = new ArrayList<>();\nlist5.add(1);\ninput_list.add(list1);\ninput_list.add(list2);\ninput_list.add(list3);\ninput_list.add(list4);\ninput_list.add(list5);\n\nObject[] result = max_length_list(input_list);\n\nint expectedLength = 5;\nArrayList<Integer> expectedList = new ArrayList<>();\nexpectedList.add(1); expectedList.add(2); expectedList.add(3); expectedList.add(4); expectedList.add(5);\n\nboolean pass = (Integer)result[0] == expectedLength && result[1].equals(expectedList);\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (5, [1, 2, 3, 4, 5])\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_length_list([[3,4,5],[6,7,8,9],[10,11,12]])==(4,[6,7,8,9])",
+      "generated_test": "ArrayList<ArrayList<Integer>> input_list = new ArrayList<>();\nArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(3); list1.add(4); list1.add(5);\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(6); list2.add(7); list2.add(8); list2.add(9);\nArrayList<Integer> list3 = new ArrayList<>();\nlist3.add(10); list3.add(11); list3.add(12);\ninput_list.add(list1);\ninput_list.add(list2);\ninput_list.add(list3);\n\nObject[] result = max_length_list(input_list);\n\nint expectedLength = 4;\nArrayList<Integer> expectedList = new ArrayList<>();\nexpectedList.add(6); expectedList.add(7); expectedList.add(8); expectedList.add(9);\n\nboolean pass = true;\nif (!result[0].equals(expectedLength)) {\n    pass = false;\n}\nif (!result[1].equals(expectedList)) {\n    pass = false;\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (4, [6, 7, 8, 9])\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

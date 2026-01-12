@@ -1,0 +1,37 @@
+{
+  "task_id": 747,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the longest common subsequence for the given three string sequence. https://www.geeksforgeeks.org/lcs-longest-common-subsequence-three-strings/",
+  "python_code": "def lcs_of_three(X, Y, Z): \n  m = len(X)\n  n = len(Y)\n  o = len(Z)\n  L = [[[0 for i in range(o+1)] for j in range(n+1)] for k in range(m+1)]\n  for i in range(m+1): \n\t  for j in range(n+1): \n\t\t  for k in range(o+1): \n\t\t\t  if (i == 0 or j == 0 or k == 0): \n\t\t\t\t  L[i][j][k] = 0\n\t\t\t  elif (X[i-1] == Y[j-1] and X[i-1] == Z[k-1]): \n\t\t\t\t  L[i][j][k] = L[i-1][j-1][k-1] + 1\n\t\t\t  else: \n\t\t\t\t  L[i][j][k] = max(max(L[i-1][j][k], L[i][j-1][k]), L[i][j][k-1]) \n  return L[m][n][o]",
+  "test_list": [
+    "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+    "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+    "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3"
+  ],
+  "code_ruby": "def lcs_of_three(x, y, z)\n  m = x.length\n  n = y.length\n  o = z.length\n  \n  l = Array.new(m + 1) { Array.new(n + 1) { Array.new(o + 1, 0) } }\n  \n  (0..m).each do |i|\n    (0..n).each do |j|\n      (0..o).each do |k|\n        if i == 0 || j == 0 || k == 0\n          l[i][j][k] = 0\n        elsif x[i - 1] == y[j - 1] && x[i - 1] == z[k - 1]\n          l[i][j][k] = l[i - 1][j - 1][k - 1] + 1\n        else\n          l[i][j][k] = [l[i - 1][j][k], l[i][j - 1][k], l[i][j][k - 1]].max\n        end\n      end\n    end\n  end\n  \n  l[m][n][o]\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+      "generated_test": "result = lcs_of_three('AGGT12', '12TXAYB', '12XBA')\nexpected = 2\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+      "generated_test": "result = lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels')\nexpected = 5\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3",
+      "generated_test": "result = lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea')\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

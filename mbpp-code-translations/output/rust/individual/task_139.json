@@ -1,0 +1,37 @@
+{
+  "task_id": 139,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the circumference of a circle.",
+  "python_code": "def circle_circumference(r):\n  perimeter=2*3.1415*r\n  return perimeter",
+  "test_list": [
+    "assert math.isclose(circle_circumference(10), 62.830000000000005, rel_tol=0.001)",
+    "assert math.isclose(circle_circumference(5), 31.415000000000003, rel_tol=0.001)",
+    "assert math.isclose(circle_circumference(4), 25.132, rel_tol=0.001)"
+  ],
+  "code_rust": "pub fn circle_circumference(r: f64) -> f64 {\n    let perimeter = 2.0 * 3.1415 * r;\n    perimeter\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert math.isclose(circle_circumference(10), 62.830000000000005, rel_tol=0.001)",
+      "generated_test": "let result = circle_circumference(10.0);\nlet expected = 62.830000000000005;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(circle_circumference(5), 31.415000000000003, rel_tol=0.001)",
+      "generated_test": "let result = circle_circumference(5.0);\nlet expected = 31.415000000000003;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(circle_circumference(4), 25.132, rel_tol=0.001)",
+      "generated_test": "let result = circle_circumference(4.0);\nlet expected = 25.132;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 396,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string starts and ends with the same character or not.",
+  "python_code": "import re  \nregex = r'^[a-z]$|^([a-z]).*\\1$'\ndef check_char(string): \n\tif(re.search(regex, string)): \n\t\treturn \"Valid\" \n\telse: \n\t\treturn \"Invalid\" ",
+  "test_list": [
+    "assert check_char(\"abba\") == \"Valid\"",
+    "assert check_char(\"a\") == \"Valid\"",
+    "assert check_char(\"abcd\") == \"Invalid\""
+  ],
+  "code_go": "package main\n\nfunc check_char(s string) string {\n\tif len(s) == 0 {\n\t\treturn \"Invalid\"\n\t}\n\t\n\t// Single lowercase letter\n\tif len(s) == 1 && s[0] >= 'a' && s[0] <= 'z' {\n\t\treturn \"Valid\"\n\t}\n\t\n\t// Starts and ends with same lowercase letter\n\tif s[0] >= 'a' && s[0] <= 'z' && s[0] == s[len(s)-1] {\n\t\treturn \"Valid\"\n\t}\n\t\n\treturn \"Invalid\"\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_char(\"abba\") == \"Valid\"",
+      "generated_test": "result := check_char(\"abba\")\nexpected := \"Valid\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_char(\"a\") == \"Valid\"",
+      "generated_test": "result := check_char(\"a\")\nexpected := \"Valid\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_char(\"abcd\") == \"Invalid\"",
+      "generated_test": "result := check_char(\"abcd\")\nexpected := \"Invalid\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

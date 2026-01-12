@@ -1,0 +1,27 @@
+{
+  "task_id": 796,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write function to find the sum of all items in the given dictionary.",
+  "code_python": "def return_sum(dict):\n  sum = 0\n  for i in dict.values():\n    sum = sum + i\n  return sum",
+  "test_list": [
+    "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+    "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+    "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124"
+  ],
+  "python_1": "# Use built-in sum() function with dictionary values for a concise one-liner approach\ndef return_sum(dict):\n    # Extract all values from dictionary and pass directly to sum() for aggregation\n    return sum(dict.values())",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Use functools.reduce to accumulate values through functional programming approach\nfrom functools import reduce\n\n# Define function that accepts a dictionary parameter\ndef return_sum(dict):\n    # Extract dictionary values and convert to list for reduction\n    values_list = list(dict.values())\n    # Handle empty dictionary edge case by returning 0\n    if not values_list:\n        return 0\n    # Apply reduce with lambda to fold all values into single sum via successive addition\n    return reduce(lambda accumulator, current: accumulator + current, values_list)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Use recursion to sum dictionary values by processing one key at a time\ndef return_sum(dict):\n    # Convert dictionary keys to a list for indexed access during recursion\n    keys = list(dict.keys())\n    # Define inner recursive helper function that processes keys by index\n    def recursive_sum(index):\n        # Base case: when index exceeds key count, return zero to stop recursion\n        if index >= len(keys):\n            return 0\n        # Recursive case: add current key's value to sum of remaining values\n        return dict[keys[index]] + recursive_sum(index + 1)\n    # Initiate recursion starting from first key at index 0\n    return recursive_sum(0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Use while loop with pop() to destructively consume dictionary copy and accumulate sum\ndef return_sum(dict):\n    # Create shallow copy to avoid modifying original dictionary during iteration\n    dict_copy = dict.copy()\n    # Initialize accumulator variable to track running total of values\n    total = 0\n    # Continue looping as long as there are items remaining in the copy\n    while dict_copy:\n        # Remove and retrieve an arbitrary key-value pair from dictionary\n        key, value = dict_copy.popitem()\n        # Add the extracted value to our running total\n        total = total + value\n    # Return the accumulated sum of all dictionary values\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Use list comprehension to extract values and sum via unpacking with math.fsum for numeric aggregation\nimport math\n\n# Define the main function that takes a dictionary as input\ndef return_sum(dict):\n    # Build a list of all values using list comprehension over dictionary items\n    extracted_values = [v for k, v in dict.items()]\n    # Use math.fsum for accurate floating-point summation, then cast to int for integer result\n    result = math.fsum(extracted_values)\n    # Convert back to integer since our test cases expect integer arithmetic\n    return int(result)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

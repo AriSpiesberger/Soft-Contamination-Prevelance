@@ -1,0 +1,37 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "python_code": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "code_rust": "pub fn colon_tuplex(tuplex: (&str, i32, Vec<i32>, bool), m: usize, n: i32) -> (String, i32, Vec<i32>, bool) {\n    let mut result = (\n        tuplex.0.to_string(),\n        tuplex.1,\n        tuplex.2.clone(),\n        tuplex.3,\n    );\n    \n    if m == 2 {\n        result.2.push(n);\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+      "generated_test": "let result = colon_tuplex((\"HELLO\", 5, vec![], true), 2, 50);\nlet expected = (String::from(\"HELLO\"), 5, vec![50], true);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+      "generated_test": "let result = colon_tuplex((\"HELLO\", 5, vec![], true), 2, 100);\nlet expected = (String::from(\"HELLO\"), 5, vec![100], true);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)",
+      "generated_test": "let result = colon_tuplex((\"HELLO\", 5, vec![], true), 2, 500);\nlet expected = (String::from(\"HELLO\"), 5, vec![500], true);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

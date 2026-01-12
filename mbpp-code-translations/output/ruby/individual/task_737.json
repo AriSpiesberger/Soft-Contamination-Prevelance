@@ -1,0 +1,37 @@
+{
+  "task_id": 737,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string is starting with a vowel or not using regex.",
+  "python_code": "import re \nregex = '^[aeiouAEIOU][A-Za-z0-9_]*'\ndef check_str(string): \n\treturn re.search(regex, string)",
+  "test_list": [
+    "assert check_str(\"annie\")",
+    "assert not check_str(\"dawood\")",
+    "assert check_str(\"Else\")"
+  ],
+  "code_ruby": "def check_str(string)\n  regex = /^[aeiouAEIOU][A-Za-z0-9_]*/\n  !!(string =~ regex)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert check_str(\"annie\")",
+      "generated_test": "result = check_str(\"annie\")\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not check_str(\"dawood\")",
+      "generated_test": "result = check_str(\"dawood\")\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_str(\"Else\")",
+      "generated_test": "result = check_str(\"Else\")\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

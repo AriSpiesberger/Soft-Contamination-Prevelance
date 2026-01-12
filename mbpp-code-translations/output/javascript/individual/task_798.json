@@ -1,0 +1,37 @@
+{
+  "task_id": 798,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of an array.",
+  "python_code": "def _sum(arr):  \n    sum=0\n    for i in arr: \n        sum = sum + i      \n    return(sum)  ",
+  "test_list": [
+    "assert _sum([1, 2, 3]) == 6",
+    "assert _sum([15, 12, 13, 10]) == 50",
+    "assert _sum([0, 1, 2]) == 3"
+  ],
+  "code_javascript": "function _sum(arr) {\n    let sum = 0;\n    for (let i of arr) {\n        sum = sum + i;\n    }\n    return sum;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert _sum([1, 2, 3]) == 6",
+      "generated_test": "const result = _sum([1, 2, 3]);\nconst expected = 6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert _sum([15, 12, 13, 10]) == 50",
+      "generated_test": "const result = _sum([15, 12, 13, 10]);\nconst expected = 50;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert _sum([0, 1, 2]) == 3",
+      "generated_test": "const result = _sum([0, 1, 2]);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

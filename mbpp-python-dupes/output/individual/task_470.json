@@ -1,0 +1,27 @@
+{
+  "task_id": 470,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the pairwise addition of the neighboring elements of the given tuple.",
+  "code_python": "def add_pairwise(test_tup):\n  res = tuple(i + j for i, j in zip(test_tup, test_tup[1:]))\n  return (res) ",
+  "test_list": [
+    "assert add_pairwise((1, 5, 7, 8, 10)) == (6, 12, 15, 18)",
+    "assert add_pairwise((2, 6, 8, 9, 11)) == (8, 14, 17, 20)",
+    "assert add_pairwise((3, 7, 9, 10, 12)) == (10, 16, 19, 22)"
+  ],
+  "python_1": "def add_pairwise(test_tup):\n    # Initialize empty list to accumulate pairwise sums\n    result = []\n    # Loop through indices from 0 to second-to-last element\n    for i in range(len(test_tup) - 1):\n        # Compute sum of current element and its right neighbor\n        pair_sum = test_tup[i] + test_tup[i + 1]\n        # Append the computed sum to our result collection\n        result.append(pair_sum)\n    # Convert the list to tuple format for return value\n    return tuple(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def add_pairwise(test_tup):\n    # Use map with lambda to apply addition across two offset sequences\n    pairwise_sums = map(lambda x, y: x + y, test_tup[:-1], test_tup[1:])\n    # Convert the map iterator directly to tuple for final output\n    return tuple(pairwise_sums)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def add_pairwise(test_tup):\n    # Use list comprehension with explicit index arithmetic instead of zip\n    result = [test_tup[idx] + test_tup[idx + 1] for idx in range(len(test_tup) - 1)]\n    # Convert accumulated list of neighbor sums into immutable tuple\n    return tuple(result)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def add_pairwise(test_tup):\n    # Use reduce pattern with accumulator to build result incrementally\n    from functools import reduce\n    # Define reducer that processes each index and builds up the tuple\n    def accumulator(acc, idx):\n        # Append sum of consecutive elements at current index position\n        return acc + (test_tup[idx] + test_tup[idx + 1],)\n    # Generate range of valid indices for pairwise operations\n    indices = range(len(test_tup) - 1)\n    # Apply reduce starting with empty tuple, accumulating pairwise sums\n    return reduce(accumulator, indices, ())",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def add_pairwise(test_tup):\n    # Import operator module to use built-in addition function\n    from operator import add\n    # Create iterator starting from second element for right-side pairing\n    shifted_iter = iter(test_tup[1:])\n    # Create iterator for left-side elements excluding the last one\n    base_iter = iter(test_tup[:-1])\n    # Apply operator.add to corresponding pairs using map with two iterators\n    summed_pairs = map(add, base_iter, shifted_iter)\n    # Materialize the lazy iterator into a concrete tuple structure\n    return tuple(summed_pairs)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

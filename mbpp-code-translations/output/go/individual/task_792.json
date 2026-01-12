@@ -1,0 +1,37 @@
+{
+  "task_id": 792,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of lists in a given number of lists.",
+  "python_code": "def count_list(input_list): \n    return len(input_list)",
+  "test_list": [
+    "assert count_list([[1, 3], [5, 7], [9, 11], [13, 15, 17]]) == 4",
+    "assert count_list([[1,2],[2,3],[4,5]]) == 3",
+    "assert count_list([[1,0],[2,0]]) == 2"
+  ],
+  "code_go": "package main\n\nfunc count_list(input_list [][]int) int {\n\treturn len(input_list)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 5,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_list([[1, 3], [5, 7], [9, 11], [13, 15, 17]]) == 4",
+      "generated_test": "result := count_list([][]int{{1, 3}, {5, 7}, {9, 11}, {13, 15, 17}})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_list([[1,2],[2,3],[4,5]]) == 3",
+      "generated_test": "input := [][]int{{1, 2}, {2, 3}, {4, 5}}\nexpected := 3\ngot := count_list(input)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_list([[1,0],[2,0]]) == 2",
+      "generated_test": "result := count_list([][]int{{1, 0}, {2, 0}})\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

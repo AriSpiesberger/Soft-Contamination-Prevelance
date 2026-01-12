@@ -1,0 +1,17 @@
+{
+  "task_id": 235,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to set all even bits of a given number.",
+  "python_code": "def even_bit_set_number(n): \n    count = 0;res = 0;temp = n \n    while(temp > 0): \n        if (count % 2 == 1): \n            res |= (1 << count)\n        count+=1\n        temp >>= 1\n    return (n | res) ",
+  "test_list": [
+    "assert even_bit_set_number(10) == 10",
+    "assert even_bit_set_number(20) == 30",
+    "assert even_bit_set_number(30) == 30"
+  ],
+  "code_typescript": "function even_bit_set_number(n: number): number {\n    let count: number = 0;\n    let res: number = 0;\n    let temp: number = n;\n    \n    while (temp > 0) {\n        if (count % 2 === 1) {\n            res |= (1 << count);\n        }\n        count += 1;\n        temp >>= 1;\n    }\n    \n    return (n | res);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

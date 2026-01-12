@@ -1,0 +1,37 @@
+{
+  "task_id": 294,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum value in a given heterogeneous list.",
+  "python_code": "def max_val(listval):\n     max_val = max(i for i in listval if isinstance(i, int)) \n     return(max_val)",
+  "test_list": [
+    "assert max_val(['Python', 3, 2, 4, 5, 'version'])==5",
+    "assert max_val(['Python', 15, 20, 25])==25",
+    "assert max_val(['Python', 30, 20, 40, 50, 'version'])==50"
+  ],
+  "code_go": "package main\n\nfunc max_val(listval []interface{}) int {\n\tvar maxVal int\n\tfound := false\n\t\n\tfor _, item := range listval {\n\t\tvar val int\n\t\tvar isInt bool\n\t\t\n\t\tswitch v := item.(type) {\n\t\tcase int:\n\t\t\tval = v\n\t\t\tisInt = true\n\t\tcase int64:\n\t\t\tval = int(v)\n\t\t\tisInt = true\n\t\tcase int32:\n\t\t\tval = int(v)\n\t\t\tisInt = true\n\t\t}\n\t\t\n\t\tif isInt {\n\t\t\tif !found || val > maxVal {\n\t\t\t\tmaxVal = val\n\t\t\t\tfound = true\n\t\t\t}\n\t\t}\n\t}\n\t\n\treturn maxVal\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_val(['Python', 3, 2, 4, 5, 'version'])==5",
+      "generated_test": "listval := []interface{}{\"Python\", 3, 2, 4, 5, \"version\"}\nresult := max_val(listval)\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_val(['Python', 15, 20, 25])==25",
+      "generated_test": "result := max_val([]interface{}{\"Python\", 15, 20, 25})\nexpected := 25\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_val(['Python', 30, 20, 40, 50, 'version'])==50",
+      "generated_test": "input := []interface{}{\"Python\", 30, 20, 40, 50, \"version\"}\nresult := max_val(input)\nexpected := 50\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

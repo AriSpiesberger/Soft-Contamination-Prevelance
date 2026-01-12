@@ -1,0 +1,37 @@
+{
+  "task_id": 111,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the common elements in given nested lists.",
+  "python_code": "def common_in_nested_lists(nestedlist):\n    result = list(set.intersection(*map(set, nestedlist)))\n    return result",
+  "test_list": [
+    "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+    "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+    "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])"
+  ],
+  "code_go": "package main\n\nfunc common_in_nested_lists(nestedlist [][]int) []int {\n\tif len(nestedlist) == 0 {\n\t\treturn []int{}\n\t}\n\n\t// Start with a set of elements from the first list\n\tcommon := make(map[int]bool)\n\tfor _, elem := range nestedlist[0] {\n\t\tcommon[elem] = true\n\t}\n\n\t// Intersect with each subsequent list\n\tfor i := 1; i < len(nestedlist); i++ {\n\t\t// Create a set from the current list\n\t\tcurrentSet := make(map[int]bool)\n\t\tfor _, elem := range nestedlist[i] {\n\t\t\tcurrentSet[elem] = true\n\t\t}\n\n\t\t// Keep only elements that are in both sets\n\t\tfor elem := range common {\n\t\t\tif !currentSet[elem] {\n\t\t\t\tdelete(common, elem)\n\t\t\t}\n\t\t}\n\t}\n\n\t// Convert the map to a slice\n\tresult := make([]int, 0, len(common))\n\tfor elem := range common {\n\t\tresult = append(result, elem)\n\t}\n\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+      "generated_test": "input := [][]int{{12, 18, 23, 25, 45}, {7, 12, 18, 24, 28}, {1, 5, 8, 12, 15, 16, 18}}\nresult := common_in_nested_lists(input)\nexpected := []int{18, 12}\n\n// Convert both to sets (maps) for comparison\nresultSet := make(map[int]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\nexpectedSet := make(map[int]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+      "generated_test": "input := [][]int{{12, 5, 23, 25, 45}, {7, 11, 5, 23, 28}, {1, 5, 8, 18, 23, 16}}\nexpected := map[int]bool{5: true, 23: true}\n\nresult := common_in_nested_lists(input)\n\n// Convert result to set for comparison\nresultSet := make(map[int]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expected)\nif pass {\n\tfor k := range expected {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", []int{5, 23})\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])",
+      "generated_test": "input := [][]int{{2, 3, 4, 1}, {4, 5}, {6, 4, 8}, {4, 5}, {6, 8, 4}}\nresult := common_in_nested_lists(input)\nexpected := []int{4}\n\n// Convert result to set (map)\nresultSet := make(map[int]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\n// Convert expected to set (map)\nexpectedSet := make(map[int]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

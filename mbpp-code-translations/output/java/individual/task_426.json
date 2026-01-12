@@ -1,0 +1,37 @@
+{
+  "task_id": 426,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to filter odd numbers.",
+  "python_code": "def filter_oddnumbers(nums):\n odd_nums = list(filter(lambda x: x%2 != 0, nums))\n return odd_nums",
+  "test_list": [
+    "assert filter_oddnumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1,3,5,7,9]",
+    "assert filter_oddnumbers([10,20,45,67,84,93])==[45,67,93]",
+    "assert filter_oddnumbers([5,7,9,8,6,4,3])==[5,7,9,3]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Integer> filter_oddnumbers(List<Integer> nums) {\n        ArrayList<Integer> odd_nums = new ArrayList<>();\n        for (Integer x : nums) {\n            if (x % 2 != 0) {\n                odd_nums.add(x);\n            }\n        }\n        return odd_nums;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert filter_oddnumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1,3,5,7,9]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(2);\ninput.add(3);\ninput.add(4);\ninput.add(5);\ninput.add(6);\ninput.add(7);\ninput.add(8);\ninput.add(9);\ninput.add(10);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(3);\nexpected.add(5);\nexpected.add(7);\nexpected.add(9);\n\nList<Integer> result = filter_oddnumbers(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert filter_oddnumbers([10,20,45,67,84,93])==[45,67,93]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(10);\ninput.add(20);\ninput.add(45);\ninput.add(67);\ninput.add(84);\ninput.add(93);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(45);\nexpected.add(67);\nexpected.add(93);\n\nList<Integer> result = filter_oddnumbers(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert filter_oddnumbers([5,7,9,8,6,4,3])==[5,7,9,3]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(5);\ninput.add(7);\ninput.add(9);\ninput.add(8);\ninput.add(6);\ninput.add(4);\ninput.add(3);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(5);\nexpected.add(7);\nexpected.add(9);\nexpected.add(3);\n\nList<Integer> result = filter_oddnumbers(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

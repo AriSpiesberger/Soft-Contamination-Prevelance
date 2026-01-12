@@ -1,0 +1,37 @@
+{
+  "task_id": 470,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the pairwise addition of the neighboring elements of the given tuple.",
+  "python_code": "def add_pairwise(test_tup):\n  res = tuple(i + j for i, j in zip(test_tup, test_tup[1:]))\n  return (res) ",
+  "test_list": [
+    "assert add_pairwise((1, 5, 7, 8, 10)) == (6, 12, 15, 18)",
+    "assert add_pairwise((2, 6, 8, 9, 11)) == (8, 14, 17, 20)",
+    "assert add_pairwise((3, 7, 9, 10, 12)) == (10, 16, 19, 22)"
+  ],
+  "code_rust": "pub fn add_pairwise(test_tup: &[i32]) -> Vec<i32> {\n    test_tup.windows(2)\n        .map(|w| w[0] + w[1])\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert add_pairwise((1, 5, 7, 8, 10)) == (6, 12, 15, 18)",
+      "generated_test": "let result = add_pairwise(&[1, 5, 7, 8, 10]);\nlet expected = vec![6, 12, 15, 18];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_pairwise((2, 6, 8, 9, 11)) == (8, 14, 17, 20)",
+      "generated_test": "let result = add_pairwise(&[2, 6, 8, 9, 11]);\nlet expected = vec![8, 14, 17, 20];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_pairwise((3, 7, 9, 10, 12)) == (10, 16, 19, 22)",
+      "generated_test": "let result = add_pairwise(&[3, 7, 9, 10, 12]);\nlet expected = vec![10, 16, 19, 22];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

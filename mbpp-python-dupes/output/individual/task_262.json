@@ -1,0 +1,27 @@
+{
+  "task_id": 262,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer L and splits the given list into two parts where the length of the first part of the list is L, and returns the resulting lists in a tuple.",
+  "code_python": "def split_two_parts(list1, L):\n    return list1[:L], list1[L:]",
+  "test_list": [
+    "assert split_two_parts([1,1,2,3,4,4,5,1],3)==([1, 1, 2], [3, 4, 4, 5, 1])",
+    "assert split_two_parts(['a', 'b', 'c', 'd'],2)==(['a', 'b'], ['c', 'd'])",
+    "assert split_two_parts(['p', 'y', 't', 'h', 'o', 'n'],4)==(['p', 'y', 't', 'h'], ['o', 'n'])"
+  ],
+  "python_1": "def split_two_parts(list1, L):\n    # Initialize empty list to hold the first portion\n    first_part = []\n    # Initialize empty list to hold the second portion\n    second_part = []\n    # Iterate through each index and element in the input list\n    for index, element in enumerate(list1):\n        # Check if current index falls within the first L elements\n        if index < L:\n            # Append element to first part when index is less than L\n            first_part.append(element)\n        # Handle elements that belong to the second portion\n        else:\n            # Append element to second part for indices >= L\n            second_part.append(element)\n    # Return both lists as a tuple matching expected output format\n    return (first_part, second_part)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def split_two_parts(list1, L):\n    # Use list comprehension to extract elements where index is below threshold L\n    first_part = [list1[i] for i in range(len(list1)) if i < L]\n    # Use list comprehension to gather remaining elements at or beyond position L\n    second_part = [list1[i] for i in range(len(list1)) if i >= L]\n    # Bundle both resulting lists into a tuple for the return value\n    return (first_part, second_part)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def split_two_parts(list1, L):\n    # Convert the input list to a deque for efficient left-side removal operations\n    from collections import deque\n    # Create a deque copy to avoid modifying the original list\n    working_queue = deque(list1)\n    # Prepare an accumulator list for the first L elements\n    first_part = []\n    # Pop exactly L elements from the front of the queue into first_part\n    for _ in range(L):\n        # Transfer one element at a time from queue front to first_part\n        first_part.append(working_queue.popleft())\n    # Convert remaining deque elements directly to a list for second part\n    second_part = list(working_queue)\n    # Package both parts as a tuple matching the expected return format\n    return (first_part, second_part)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def split_two_parts(list1, L):\n    # Use itertools islice to lazily extract the first L elements without copying\n    from itertools import islice\n    # Create an iterator from the original list to enable sequential consumption\n    list_iterator = iter(list1)\n    # Consume exactly L elements from the iterator and materialize into a list\n    first_part = list(islice(list_iterator, L))\n    # Drain all remaining elements from the exhausted iterator into second list\n    second_part = list(list_iterator)\n    # Return the two partitions bundled as a tuple\n    return (first_part, second_part)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def split_two_parts(list1, L):\n    # Use recursion helper to build first part by collecting elements one by one\n    def collect_first(lst, count, acc):\n        # Base case: collected enough elements or list exhausted\n        if count == 0 or not lst:\n            # Return accumulated first part and remaining list as second part\n            return acc, lst\n        # Recursive case: take head element and continue with rest\n        return collect_first(lst[1:], count - 1, acc + [lst[0]])\n    # Invoke recursive collector starting with empty accumulator\n    first_part, second_part = collect_first(list1, L, [])\n    # Package results as tuple matching expected output signature\n    return (first_part, second_part)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

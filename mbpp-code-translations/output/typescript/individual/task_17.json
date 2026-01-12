@@ -1,0 +1,17 @@
+{
+  "task_id": 17,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the perimeter of a square given its side length as input.",
+  "python_code": "def square_perimeter(a):\n  perimeter=4*a\n  return perimeter",
+  "test_list": [
+    "assert square_perimeter(10)==40",
+    "assert square_perimeter(5)==20",
+    "assert square_perimeter(4)==16"
+  ],
+  "code_typescript": "function square_perimeter(a: number): number {\n  const perimeter = 4 * a;\n  return perimeter;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

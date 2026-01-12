@@ -1,0 +1,17 @@
+{
+  "task_id": 782,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of all odd length subarrays. https://www.geeksforgeeks.org/sum-of-all-odd-length-subarrays/",
+  "python_code": "def odd_length_sum(arr):\n    Sum = 0\n    l = len(arr)\n    for i in range(l):\n        Sum += ((((i + 1) *(l - i) + 1) // 2) * arr[i])\n    return Sum",
+  "test_list": [
+    "assert odd_length_sum([1,2,4]) == 14",
+    "assert odd_length_sum([1,2,1,2]) == 15",
+    "assert odd_length_sum([1,7]) == 8"
+  ],
+  "code_typescript": "function odd_length_sum(arr: number[]): number {\n    let sum = 0;\n    const l = arr.length;\n    for (let i = 0; i < l; i++) {\n        sum += Math.floor(((i + 1) * (l - i) + 1) / 2) * arr[i];\n    }\n    return sum;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

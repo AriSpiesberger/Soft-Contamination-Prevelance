@@ -1,0 +1,27 @@
+{
+  "task_id": 588,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the difference between largest and smallest value in a given list.",
+  "code_python": "def big_diff(nums):\n     diff= max(nums)-min(nums)\n     return diff",
+  "test_list": [
+    "assert big_diff([1,2,3,4]) == 3",
+    "assert big_diff([4,5,12]) == 8",
+    "assert big_diff([9,2,3]) == 7"
+  ],
+  "python_1": "def big_diff(nums):\n    # Sort the list to arrange elements from smallest to largest\n    sorted_nums = sorted(nums)\n    # First element after sorting is the minimum value\n    smallest = sorted_nums[0]\n    # Last element after sorting is the maximum value\n    largest = sorted_nums[-1]\n    # Calculate the range by subtracting minimum from maximum\n    diff = largest - smallest\n    # Return the computed difference\n    return diff",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def big_diff(nums):\n    # Initialize both min and max trackers with the first element\n    smallest = nums[0]\n    # Use same starting point for largest to handle any input range\n    largest = nums[0]\n    # Traverse each number in the list to find extremes manually\n    for num in nums:\n        # Update smallest if current number is lower than tracked minimum\n        if num < smallest:\n            smallest = num\n        # Update largest if current number exceeds tracked maximum\n        if num > largest:\n            largest = num\n    # Compute and return the range between extremes\n    return largest - smallest",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def big_diff(nums):\n    # Use reduce to find minimum by comparing pairs and keeping smaller value\n    from functools import reduce\n    # Apply lambda that returns smaller of two values across entire list\n    smallest = reduce(lambda a, b: a if a < b else b, nums)\n    # Apply lambda that returns larger of two values across entire list\n    largest = reduce(lambda a, b: a if a > b else b, nums)\n    # Subtract the accumulated minimum from the accumulated maximum\n    return largest - smallest",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def big_diff(nums):\n    # Convert list to an iterator to process elements one at a time\n    iterator = iter(nums)\n    # Extract first element to serve as initial reference for both extremes\n    first = next(iterator)\n    # Set up a tuple to track (minimum, maximum) starting with first element\n    extremes = (first, first)\n    # Process remaining elements by unpacking current extremes each iteration\n    for num in iterator:\n        # Destructure tuple to access current tracked minimum and maximum\n        current_min, current_max = extremes\n        # Reconstruct tuple with updated min using conditional expression\n        # and updated max, evaluating both bounds in single assignment\n        extremes = (num if num < current_min else current_min,\n                    num if num > current_max else current_max)\n    # Unpack final extremes tuple to get definitive minimum and maximum\n    final_min, final_max = extremes\n    # Compute difference by subtracting smallest from largest value found\n    return final_max - final_min",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def big_diff(nums):\n    # Use recursion helper to find minimum value in list\n    def find_min(lst, idx=0, current_min=None):\n        # Base case: if index reaches list length, return accumulated minimum\n        if idx == len(lst):\n            return current_min\n        # On first call, initialize current minimum with first element\n        if current_min is None:\n            current_min = lst[0]\n        # Compare current element with tracked minimum, keep smaller\n        new_min = lst[idx] if lst[idx] < current_min else current_min\n        # Recurse to next index with updated minimum tracker\n        return find_min(lst, idx + 1, new_min)\n    \n    # Use recursion helper to find maximum value in list\n    def find_max(lst, idx=0, current_max=None):\n        # Base case: if index reaches list length, return accumulated maximum\n        if idx == len(lst):\n            return current_max\n        # On first call, initialize current maximum with first element\n        if current_max is None:\n            current_max = lst[0]\n        # Compare current element with tracked maximum, keep larger\n        new_max = lst[idx] if lst[idx] > current_max else current_max\n        # Recurse to next index with updated maximum tracker\n        return find_max(lst, idx + 1, new_max)\n    \n    # Invoke recursive minimum finder on input list\n    smallest = find_min(nums)\n    # Invoke recursive maximum finder on input list\n    largest = find_max(nums)\n    # Compute range by subtracting minimum from maximum\n    return largest - smallest",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

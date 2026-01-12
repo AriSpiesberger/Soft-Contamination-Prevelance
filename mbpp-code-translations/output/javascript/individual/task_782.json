@@ -1,0 +1,37 @@
+{
+  "task_id": 782,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of all odd length subarrays. https://www.geeksforgeeks.org/sum-of-all-odd-length-subarrays/",
+  "python_code": "def odd_length_sum(arr):\n    Sum = 0\n    l = len(arr)\n    for i in range(l):\n        Sum += ((((i + 1) *(l - i) + 1) // 2) * arr[i])\n    return Sum",
+  "test_list": [
+    "assert odd_length_sum([1,2,4]) == 14",
+    "assert odd_length_sum([1,2,1,2]) == 15",
+    "assert odd_length_sum([1,7]) == 8"
+  ],
+  "code_javascript": "function odd_length_sum(arr) {\n    let Sum = 0;\n    const l = arr.length;\n    for (let i = 0; i < l; i++) {\n        Sum += Math.floor(((i + 1) * (l - i) + 1) / 2) * arr[i];\n    }\n    return Sum;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert odd_length_sum([1,2,4]) == 14",
+      "generated_test": "const result = odd_length_sum([1, 2, 4]);\nconst expected = 14;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_length_sum([1,2,1,2]) == 15",
+      "generated_test": "const result = odd_length_sum([1, 2, 1, 2]);\nconst expected = 15;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_length_sum([1,7]) == 8",
+      "generated_test": "const result = odd_length_sum([1, 7]);\nconst expected = 8;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

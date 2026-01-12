@@ -1,0 +1,37 @@
+{
+  "task_id": 109,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.",
+  "python_code": "def odd_Equivalent(s,n): \n    count=0\n    for i in range(0,n): \n        if (s[i] == '1'): \n            count = count + 1\n    return count ",
+  "test_list": [
+    "assert odd_Equivalent(\"011001\",6) == 3",
+    "assert odd_Equivalent(\"11011\",5) == 4",
+    "assert odd_Equivalent(\"1010\",4) == 2"
+  ],
+  "code_ruby": "def odd_Equivalent(s, n)\n  count = 0\n  (0...n).each do |i|\n    if s[i] == '1'\n      count += 1\n    end\n  end\n  count\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert odd_Equivalent(\"011001\",6) == 3",
+      "generated_test": "result = odd_Equivalent(\"011001\", 6)\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_Equivalent(\"11011\",5) == 4",
+      "generated_test": "result = odd_Equivalent(\"11011\", 5)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_Equivalent(\"1010\",4) == 2",
+      "generated_test": "result = odd_Equivalent(\"1010\", 4)\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

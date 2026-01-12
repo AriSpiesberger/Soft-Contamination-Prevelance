@@ -1,0 +1,17 @@
+{
+  "task_id": 472,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given list contains consecutive numbers or not.",
+  "python_code": "def check_Consecutive(l): \n    return sorted(l) == list(range(min(l),max(l)+1)) ",
+  "test_list": [
+    "assert check_Consecutive([1,2,3,4,5]) == True",
+    "assert check_Consecutive([1,2,3,5,6]) == False",
+    "assert check_Consecutive([1,2,1]) == False"
+  ],
+  "code_typescript": "function check_Consecutive(l: number[]): boolean {\n    if (l.length === 0) {\n        return true;\n    }\n    \n    const sorted = [...l].sort((a, b) => a - b);\n    const minVal = Math.min(...l);\n    const maxVal = Math.max(...l);\n    \n    const expected: number[] = [];\n    for (let i = minVal; i <= maxVal; i++) {\n        expected.push(i);\n    }\n    \n    if (sorted.length !== expected.length) {\n        return false;\n    }\n    \n    for (let i = 0; i < sorted.length; i++) {\n        if (sorted[i] !== expected[i]) {\n            return false;\n        }\n    }\n    \n    return true;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

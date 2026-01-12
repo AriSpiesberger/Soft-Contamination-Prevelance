@@ -1,0 +1,44 @@
+{
+  "task_id": 58,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given two integers have opposite sign or not.",
+  "python_code": "def opposite_Signs(x,y): \n    return ((x ^ y) < 0); ",
+  "test_list": [
+    "assert opposite_Signs(1,-2) == True",
+    "assert opposite_Signs(3,2) == False",
+    "assert opposite_Signs(-10,-10) == False",
+    "assert opposite_Signs(-2,2) == True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean opposite_Signs(int x, int y) {\n        return ((x ^ y) < 0);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert opposite_Signs(1,-2) == True",
+      "generated_test": "boolean result = opposite_Signs(1, -2);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert opposite_Signs(3,2) == False",
+      "generated_test": "boolean result = opposite_Signs(3, 2);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert opposite_Signs(-10,-10) == False",
+      "generated_test": "boolean result = opposite_Signs(-10, -10);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert opposite_Signs(-2,2) == True",
+      "generated_test": "boolean result = opposite_Signs(-2, 2);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

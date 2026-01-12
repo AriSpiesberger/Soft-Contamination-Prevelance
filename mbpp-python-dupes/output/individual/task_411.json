@@ -1,0 +1,27 @@
+{
+  "task_id": 411,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given snake case string to camel case string.",
+  "code_python": "import re\ndef snake_to_camel(word):\n  return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('android_tv') == 'AndroidTv'",
+    "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+    "assert snake_to_camel('apple_watch') == 'AppleWatch'"
+  ],
+  "python_1": "import re\n\ndef snake_to_camel(word):\n    # Use regex substitution to find underscore followed by a letter and capitalize it\n    result = re.sub(r'_([a-zA-Z])', lambda m: m.group(1).upper(), word)\n    # Capitalize the very first character of the resulting string\n    result = result[0].upper() + result[1:] if result else result\n    # Return the fully converted camel case string\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def snake_to_camel(word):\n    # Initialize empty list to accumulate transformed word parts\n    result_parts = []\n    # Split the input string on underscores to get individual segments\n    segments = word.split('_')\n    # Use enumerate to iterate through segments with their index positions\n    for index, segment in enumerate(segments):\n        # Check if the current segment is non-empty (handles consecutive underscores)\n        if segment:\n            # Apply title() method which capitalizes first letter and lowercases rest\n            result_parts.append(segment.title())\n        # Handle empty segments from consecutive underscores by preserving underscore\n        else:\n            result_parts.append('_')\n    # Concatenate all transformed parts into final camel case string\n    return ''.join(result_parts)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def snake_to_camel(word):\n    # Start with the original string that will be transformed character by character\n    result = \"\"\n    # Flag to track if next character should be capitalized (after underscore)\n    capitalize_next = True\n    # Index variable for while loop traversal through the string\n    i = 0\n    # Continue processing until we've examined every character in the input\n    while i < len(word):\n        # Extract the character at current position for examination\n        current_char = word[i]\n        # Check if we've encountered an underscore delimiter\n        if current_char == '_':\n            # Set flag so the next alphabetic character gets capitalized\n            capitalize_next = True\n        # Handle the case where this character should be made uppercase\n        elif capitalize_next:\n            # Convert to uppercase and append to our result string\n            result += current_char.upper()\n            # Reset the flag since we've applied the capitalization\n            capitalize_next = False\n        # Default case: regular character that doesn't need capitalization\n        else:\n            # Simply append the character unchanged to preserve original casing\n            result += current_char\n        # Move to the next character position in the input string\n        i += 1\n    # Return the fully constructed camel case string\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def snake_to_camel(word):\n    # Use reduce pattern with functools to process string transformation functionally\n    from functools import reduce\n    # Define a reducer function that processes character by character with state\n    def process_char(acc, char):\n        # Unpack accumulator tuple containing result string and capitalize flag\n        result, should_cap = acc\n        # When underscore is found, return current result with flag set to capitalize next\n        if char == '_':\n            return (result, True)\n        # When flag is set, uppercase the character and reset flag to False\n        if should_cap:\n            return (result + char.upper(), False)\n        # Default behavior: append character as-is and maintain flag state\n        return (result + char, False)\n    # Apply reduce over each character starting with empty string and True flag for first char\n    final_result, _ = reduce(process_char, word, ('', True))\n    # Return the accumulated camel case string after processing all characters\n    return final_result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def snake_to_camel(word):\n    # Use map function to apply capitalization transformation to each segment\n    segments = word.split('_')\n    # Define a helper that capitalizes non-empty strings or returns underscore for empty ones\n    def transform_segment(s):\n        # Return underscore placeholder for empty segments (from consecutive underscores)\n        if not s:\n            return '_'\n        # Manually build capitalized version: uppercase first char + rest of string\n        return s[0].upper() + s[1:]\n    # Apply transformation function to every segment using map for functional style\n    transformed = map(transform_segment, segments)\n    # Convert map iterator to list then join all pieces into final camel case result\n    return ''.join(list(transformed))",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 87,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to merge three dictionaries into a single dictionary.",
+  "python_code": "import collections as ct\ndef merge_dictionaries_three(dict1,dict2, dict3):\n    merged_dict = dict(ct.ChainMap({},dict1,dict2,dict3))\n    return merged_dict",
+  "test_list": [
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{ \"O\": \"Orange\", \"W\": \"White\", \"B\": \"Black\" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}",
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{\"L\":\"lavender\",\"B\":\"Blue\"})=={'W': 'White', 'P': 'Pink', 'B': 'Black', 'R': 'Red', 'G': 'Green', 'L': 'lavender'}",
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" },{\"L\":\"lavender\",\"B\":\"Blue\"},{ \"G\": \"Green\", \"W\": \"White\" })=={'B': 'Black', 'P': 'Pink', 'R': 'Red', 'G': 'Green', 'L': 'lavender', 'W': 'White'}"
+  ],
+  "code_go": "package main\n\nfunc merge_dictionaries_three(dict1, dict2, dict3 map[string]string) map[string]string {\n\tmerged_dict := make(map[string]string)\n\t\n\t// ChainMap in Python gives priority to earlier dictionaries\n\t// So we need to add dict3 first, then dict2, then dict1\n\t// This way, dict1's values will overwrite dict2's, which overwrite dict3's\n\tfor k, v := range dict3 {\n\t\tmerged_dict[k] = v\n\t}\n\tfor k, v := range dict2 {\n\t\tmerged_dict[k] = v\n\t}\n\tfor k, v := range dict1 {\n\t\tmerged_dict[k] = v\n\t}\n\t\n\treturn merged_dict\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{ \"O\": \"Orange\", \"W\": \"White\", \"B\": \"Black\" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}",
+      "generated_test": "dict1 := map[string]string{\"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\"}\ndict2 := map[string]string{\"G\": \"Green\", \"W\": \"White\"}\ndict3 := map[string]string{\"O\": \"Orange\", \"W\": \"White\", \"B\": \"Black\"}\n\nresult := merge_dictionaries_three(dict1, dict2, dict3)\nexpected := map[string]string{\"B\": \"Black\", \"R\": \"Red\", \"P\": \"Pink\", \"G\": \"Green\", \"W\": \"White\", \"O\": \"Orange\"}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{\"L\":\"lavender\",\"B\":\"Blue\"})=={'W': 'White', 'P': 'Pink', 'B': 'Black', 'R': 'Red', 'G': 'Green', 'L': 'lavender'}",
+      "generated_test": "dict1 := map[string]string{\"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\"}\ndict2 := map[string]string{\"G\": \"Green\", \"W\": \"White\"}\ndict3 := map[string]string{\"L\": \"lavender\", \"B\": \"Blue\"}\n\nresult := merge_dictionaries_three(dict1, dict2, dict3)\n\nexpected := map[string]string{\"W\": \"White\", \"P\": \"Pink\", \"B\": \"Black\", \"R\": \"Red\", \"G\": \"Green\", \"L\": \"lavender\"}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" },{\"L\":\"lavender\",\"B\":\"Blue\"},{ \"G\": \"Green\", \"W\": \"White\" })=={'B': 'Black', 'P': 'Pink', 'R': 'Red', 'G': 'Green', 'L': 'lavender', 'W': 'White'}",
+      "generated_test": "dict1 := map[string]string{\"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\"}\ndict2 := map[string]string{\"L\": \"lavender\", \"B\": \"Blue\"}\ndict3 := map[string]string{\"G\": \"Green\", \"W\": \"White\"}\n\nresult := merge_dictionaries_three(dict1, dict2, dict3)\n\nexpected := map[string]string{\"B\": \"Black\", \"P\": \"Pink\", \"R\": \"Red\", \"G\": \"Green\", \"L\": \"lavender\", \"W\": \"White\"}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

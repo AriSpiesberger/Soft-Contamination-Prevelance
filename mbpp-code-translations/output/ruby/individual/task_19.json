@@ -1,0 +1,37 @@
+{
+  "task_id": 19,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether a given array of integers contains any duplicate element.",
+  "python_code": "def test_duplicate(arraynums):\n    nums_set = set(arraynums)    \n    return len(arraynums) != len(nums_set)     ",
+  "test_list": [
+    "assert test_duplicate(([1,2,3,4,5]))==False",
+    "assert test_duplicate(([1,2,3,4, 4]))==True",
+    "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True"
+  ],
+  "code_ruby": "def test_duplicate(arraynums)\n  nums_set = arraynums.uniq\n  arraynums.length != nums_set.length\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert test_duplicate(([1,2,3,4,5]))==False",
+      "generated_test": "result = test_duplicate([1,2,3,4,5])\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_duplicate(([1,2,3,4, 4]))==True",
+      "generated_test": "result = test_duplicate([1,2,3,4,4])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True",
+      "generated_test": "result = test_duplicate([1,1,2,2,3,3,4,4,5])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

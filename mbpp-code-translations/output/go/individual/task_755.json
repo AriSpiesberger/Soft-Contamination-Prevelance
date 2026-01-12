@@ -1,0 +1,44 @@
+{
+  "task_id": 755,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the second smallest number in a list.",
+  "python_code": "def second_smallest(numbers):\n  unique_numbers = list(set(numbers))\n  unique_numbers.sort()\n  if len(unique_numbers) < 2:\n    return None\n  else:\n    return unique_numbers[1]",
+  "test_list": [
+    "assert second_smallest([1, 2, -8, -2, 0, -2])==-2",
+    "assert second_smallest([1, 1, -0.5, 0, 2, -2, -2])==-0.5",
+    "assert second_smallest([2,2])==None",
+    "assert second_smallest([2,2,2])==None"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\nfunc second_smallest(numbers []float64) interface{} {\n\tif len(numbers) == 0 {\n\t\treturn nil\n\t}\n\n\t// Create a set of unique numbers\n\tuniqueMap := make(map[float64]bool)\n\tfor _, num := range numbers {\n\t\tuniqueMap[num] = true\n\t}\n\n\t// Convert map keys to slice\n\tuniqueNumbers := make([]float64, 0, len(uniqueMap))\n\tfor num := range uniqueMap {\n\t\tuniqueNumbers = append(uniqueNumbers, num)\n\t}\n\n\t// Sort the unique numbers\n\tsort.Float64s(uniqueNumbers)\n\n\t// Check if we have at least 2 unique numbers\n\tif len(uniqueNumbers) < 2 {\n\t\treturn nil\n\t}\n\n\treturn uniqueNumbers[1]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert second_smallest([1, 2, -8, -2, 0, -2])==-2",
+      "generated_test": "result := second_smallest([]float64{1, 2, -8, -2, 0, -2})\nexpected := float64(-2)\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert second_smallest([1, 1, -0.5, 0, 2, -2, -2])==-0.5",
+      "generated_test": "result := second_smallest([]float64{1, 1, -0.5, 0, 2, -2, -2})\nexpected := -0.5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert second_smallest([2,2])==None",
+      "generated_test": "result := second_smallest([]float64{2, 2})\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected: nil\")\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert second_smallest([2,2,2])==None",
+      "generated_test": "result := second_smallest([]float64{2, 2, 2})\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected: nil\")\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

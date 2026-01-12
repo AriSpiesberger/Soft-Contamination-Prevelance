@@ -1,0 +1,37 @@
+{
+  "task_id": 99,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.",
+  "python_code": "def decimal_to_binary(n): \n    return bin(n).replace(\"0b\",\"\") ",
+  "test_list": [
+    "assert decimal_to_binary(8) == '1000'",
+    "assert decimal_to_binary(18) == '10010'",
+    "assert decimal_to_binary(7) == '111'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strconv\"\n)\n\nfunc decimal_to_binary(n int) string {\n\treturn strconv.FormatInt(int64(n), 2)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert decimal_to_binary(8) == '1000'",
+      "generated_test": "result := decimal_to_binary(8)\nexpected := \"1000\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert decimal_to_binary(18) == '10010'",
+      "generated_test": "result := decimal_to_binary(18)\nexpected := \"10010\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert decimal_to_binary(7) == '111'",
+      "generated_test": "result := decimal_to_binary(7)\nexpected := \"111\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

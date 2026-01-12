@@ -1,0 +1,37 @@
+{
+  "task_id": 164,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to determine if the sum of the divisors of two integers are the same.",
+  "python_code": "import math \ndef div_sum(n): \n  total = 1\n  i = 2\n\n  while i * i <= n:\n    if (n % i == 0):\n      total = (total + i + math.floor(n / i))\n    i += 1\n\n  return total\n\ndef are_equivalent(num1, num2): \n    return div_sum(num1) == div_sum(num2); ",
+  "test_list": [
+    "assert are_equivalent(36, 57) == False",
+    "assert are_equivalent(2, 4) == False",
+    "assert are_equivalent(23, 47) == True"
+  ],
+  "code_rust": "pub fn div_sum(n: i32) -> i32 {\n    let mut total = 1;\n    let mut i = 2;\n    \n    while i * i <= n {\n        if n % i == 0 {\n            total = total + i + n / i;\n        }\n        i += 1;\n    }\n    \n    total\n}\n\npub fn are_equivalent(num1: i32, num2: i32) -> bool {\n    div_sum(num1) == div_sum(num2)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert are_equivalent(36, 57) == False",
+      "generated_test": "let result = are_equivalent(36, 57);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert are_equivalent(2, 4) == False",
+      "generated_test": "let result = are_equivalent(2, 4);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert are_equivalent(23, 47) == True",
+      "generated_test": "let result = are_equivalent(23, 47);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 471,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the product of the array multiplication modulo n.",
+  "python_code": "def find_remainder(arr, n): \n    mul = 1\n    for i in range(len(arr)):  \n        mul = (mul * (arr[i] % n)) % n \n    return mul % n ",
+  "test_list": [
+    "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+    "assert find_remainder([1,1,1],1) == 0",
+    "assert find_remainder([1,2,1],2) == 0"
+  ],
+  "code_rust": "pub fn find_remainder(arr: &[i64], n: i64) -> i64 {\n    let mut mul: i64 = 1;\n    for &item in arr.iter() {\n        mul = (mul * (item % n)) % n;\n    }\n    mul % n\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+      "generated_test": "let arr = [100i64, 10, 5, 25, 35, 14];\nlet result = find_remainder(&arr, 11);\nlet expected = 9;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_remainder([1,1,1],1) == 0",
+      "generated_test": "let result = find_remainder(&[1, 1, 1], 1);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_remainder([1,2,1],2) == 0",
+      "generated_test": "let arr = [1i64, 2i64, 1i64];\nlet result = find_remainder(&arr, 2);\nlet expected = 0i64;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

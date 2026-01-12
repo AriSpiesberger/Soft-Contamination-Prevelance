@@ -1,0 +1,17 @@
+{
+  "task_id": 760,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether a list of numbers contains only one distinct element or not.",
+  "python_code": "def unique_Element(arr):\n    s = set(arr)\n    return len(s) == 1",
+  "test_list": [
+    "assert unique_Element([1,1,1]) == True",
+    "assert unique_Element([1,2,1,2]) == False",
+    "assert unique_Element([1,2,3,4,5]) == False"
+  ],
+  "code_typescript": "function unique_Element(arr: number[]): boolean {\n    const s = new Set(arr);\n    return s.size === 1;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

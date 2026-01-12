@@ -1,0 +1,17 @@
+{
+  "task_id": 230,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a string and character, replaces blank spaces in the string with the character, and returns the string.",
+  "python_code": "def replace_blank(str1,char):\n str2 = str1.replace(' ', char)\n return str2",
+  "test_list": [
+    "assert replace_blank(\"hello people\",'@')==(\"hello@people\")",
+    "assert replace_blank(\"python program language\",'$')==(\"python$program$language\")",
+    "assert replace_blank(\"blank space\",\"-\")==(\"blank-space\")"
+  ],
+  "code_typescript": "function replace_blank(str1: string, char: string): string {\n    const str2 = str1.split(' ').join(char);\n    return str2;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

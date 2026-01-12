@@ -1,0 +1,37 @@
+{
+  "task_id": 7,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find all words which are at least 4 characters long in a string.",
+  "python_code": "import re\ndef find_char_long(text):\n  return (re.findall(r\"\\b\\w{4,}\\b\", text))",
+  "test_list": [
+    "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+    "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+    "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])"
+  ],
+  "code_javascript": "function find_char_long(text) {\n  const matches = text.match(/\\b\\w{4,}\\b/g);\n  return matches ? matches : [];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+      "generated_test": "const result = find_char_long('Please move back to stream');\nconst expected = ['Please', 'move', 'back', 'stream'];\n\nconst resultSet = new Set(result);\nconst expectedSet = new Set(expected);\n\nconst pass = resultSet.size === expectedSet.size && [...expectedSet].every(item => resultSet.has(item));\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify([...expectedSet].sort()));\n  console.log(\"  Got: \" + JSON.stringify([...resultSet].sort()));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+      "generated_test": "const result = find_char_long('Jing Eco and Tech');\nconst expected = ['Jing', 'Tech'];\n\nconst resultSet = new Set(result);\nconst expectedSet = new Set(expected);\n\nconst pass = resultSet.size === expectedSet.size && [...expectedSet].every(item => resultSet.has(item));\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify([...expectedSet].sort()));\n  console.log(\"  Got: \" + JSON.stringify([...resultSet].sort()));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])",
+      "generated_test": "const result = find_char_long('Jhingai wulu road Zone 3');\nconst expected = ['Jhingai', 'wulu', 'road', 'Zone'];\n\nconst resultSet = new Set(result);\nconst expectedSet = new Set(expected);\n\nconst pass = resultSet.size === expectedSet.size && [...expectedSet].every(item => resultSet.has(item));\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify([...expectedSet].sort()));\n  console.log(\"  Got: \" + JSON.stringify([...resultSet].sort()));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

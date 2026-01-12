@@ -1,0 +1,27 @@
+{
+  "task_id": 461,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the upper case characters in a given string.",
+  "code_python": "def upper_ctr(str):\n    upper_ctr = 0\n    for i in range(len(str)):\n          if str[i] >= 'A' and str[i] <= 'Z': upper_ctr += 1\n          return upper_ctr",
+  "test_list": [
+    "assert upper_ctr('PYthon') == 1",
+    "assert upper_ctr('BigData') == 1",
+    "assert upper_ctr('program') == 0"
+  ],
+  "python_1": "def upper_ctr(str):\n    # Use the built-in isupper() method with sum and generator expression\n    # This counts True values (1) for each uppercase character found\n    return sum(1 for char in str if char.isupper())",
+  "python_1_status": "failed",
+  "python_1_attempts": 3,
+  "python_2": "def upper_ctr(str):\n    # Use the built-in isupper() method with sum() for a functional approach\n    # Generator expression yields 1 for each uppercase character, 0 otherwise\n    return sum(1 for char in str if char.isupper())",
+  "python_2_status": "failed",
+  "python_2_attempts": 3,
+  "python_3": "def upper_ctr(str):\n    # Use the built-in isupper() method with sum() for a Pythonic one-liner approach\n    # Generator expression yields 1 for each uppercase character, 0 otherwise\n    return sum(1 for char in str if char.isupper())",
+  "python_3_status": "failed",
+  "python_3_attempts": 3,
+  "python_4": "def upper_ctr(str):\n    # Use Python's built-in isupper() method with sum() for a functional approach\n    # Generator expression yields 1 for each uppercase character, 0 otherwise\n    return sum(1 for char in str if char.isupper())",
+  "python_4_status": "failed",
+  "python_4_attempts": 3,
+  "python_5": "def upper_ctr(str):\n    # Use generator expression with isupper() method to identify uppercase chars\n    # Sum converts True values to 1 and counts them automatically\n    return sum(1 for char in str if char.isupper())",
+  "python_5_status": "failed",
+  "python_5_attempts": 3
+}

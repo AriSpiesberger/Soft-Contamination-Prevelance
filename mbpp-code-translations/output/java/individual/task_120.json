@@ -1,0 +1,37 @@
+{
+  "task_id": 120,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.",
+  "python_code": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max",
+  "test_list": [
+    "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+    "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+    "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_product_tuple(ArrayList<int[]> list1) {\n        int result_max = Integer.MIN_VALUE;\n        for (int[] pair : list1) {\n            int product = Math.abs(pair[0] * pair[1]);\n            if (product > result_max) {\n                result_max = product;\n            }\n        }\n        return result_max;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+      "generated_test": "ArrayList<int[]> input = new ArrayList<>();\ninput.add(new int[]{2, 7});\ninput.add(new int[]{2, 6});\ninput.add(new int[]{1, 8});\ninput.add(new int[]{4, 9});\n\nint result = max_product_tuple(input);\nint expected = 36;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+      "generated_test": "ArrayList<int[]> list1 = new ArrayList<>();\nlist1.add(new int[]{10, 20});\nlist1.add(new int[]{15, 2});\nlist1.add(new int[]{5, 10});\n\nint result = max_product_tuple(list1);\nint expected = 200;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484",
+      "generated_test": "ArrayList<int[]> input = new ArrayList<>();\ninput.add(new int[]{11, 44});\ninput.add(new int[]{10, 15});\ninput.add(new int[]{20, 5});\ninput.add(new int[]{12, 9});\n\nint expected = 484;\nint result = max_product_tuple(input);\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

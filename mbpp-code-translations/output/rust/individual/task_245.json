@@ -1,0 +1,37 @@
+{
+  "task_id": 245,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.",
+  "python_code": "def max_sum(arr): \n\tMSIBS = arr[:] \n\tfor i in range(len(arr)): \n\t\tfor j in range(0, i): \n\t\t\tif arr[i] > arr[j] and MSIBS[i] < MSIBS[j] + arr[i]: \n\t\t\t\tMSIBS[i] = MSIBS[j] + arr[i] \n\tMSDBS = arr[:] \n\tfor i in range(1, len(arr) + 1): \n\t\tfor j in range(1, i): \n\t\t\tif arr[-i] > arr[-j] and MSDBS[-i] < MSDBS[-j] + arr[-i]: \n\t\t\t\tMSDBS[-i] = MSDBS[-j] + arr[-i] \n\tmax_sum = float(\"-Inf\") \n\tfor i, j, k in zip(MSIBS, MSDBS, arr): \n\t\tmax_sum = max(max_sum, i + j - k) \n\treturn max_sum",
+  "test_list": [
+    "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+    "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+    "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+  ],
+  "code_rust": "pub fn max_sum(arr: &[i32]) -> i32 {\n    if arr.is_empty() {\n        return i32::MIN;\n    }\n    \n    let n = arr.len();\n    \n    // MSIBS - Maximum Sum Increasing Bitonic Subsequence (from left)\n    let mut msibs: Vec<i32> = arr.to_vec();\n    for i in 0..n {\n        for j in 0..i {\n            if arr[i] > arr[j] && msibs[i] < msibs[j] + arr[i] {\n                msibs[i] = msibs[j] + arr[i];\n            }\n        }\n    }\n    \n    // MSDBS - Maximum Sum Decreasing Bitonic Subsequence (from right)\n    let mut msdbs: Vec<i32> = arr.to_vec();\n    for i in 1..=n {\n        for j in 1..i {\n            let idx_i = n - i;\n            let idx_j = n - j;\n            if arr[idx_i] > arr[idx_j] && msdbs[idx_i] < msdbs[idx_j] + arr[idx_i] {\n                msdbs[idx_i] = msdbs[idx_j] + arr[idx_i];\n            }\n        }\n    }\n    \n    // Find maximum sum\n    let mut max_sum_val = i32::MIN;\n    for i in 0..n {\n        let current = msibs[i] + msdbs[i] - arr[i];\n        if current > max_sum_val {\n            max_sum_val = current;\n        }\n    }\n    \n    max_sum_val\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+      "generated_test": "let result = max_sum(&[1, 15, 51, 45, 33, 100, 12, 18, 9]);\nlet expected = 194;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+      "generated_test": "let result = max_sum(&[80, 60, 30, 40, 20, 10]);\nlet expected = 210;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138",
+      "generated_test": "let result = max_sum(&[2, 3, 14, 16, 21, 23, 29, 30]);\nlet expected = 138;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 793,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last position of an element in a sorted array.",
+  "python_code": "def last(arr,x):\n    n = len(arr)\n    low = 0\n    high = n - 1\n    res = -1  \n    while (low <= high):\n        mid = (low + high) // 2 \n        if arr[mid] > x:\n            high = mid - 1\n        elif arr[mid] < x:\n            low = mid + 1\n        else:\n            res = mid\n            low = mid + 1\n    return res",
+  "test_list": [
+    "assert last([1,2,3],1) == 0",
+    "assert last([1,1,1,2,3,4],1) == 2",
+    "assert last([2,3,2,3,6,8,9],3) == 3"
+  ],
+  "code_ruby": "def last(arr, x)\n  n = arr.length\n  low = 0\n  high = n - 1\n  res = -1\n  while low <= high\n    mid = (low + high) / 2\n    if arr[mid] > x\n      high = mid - 1\n    elsif arr[mid] < x\n      low = mid + 1\n    else\n      res = mid\n      low = mid + 1\n    end\n  end\n  res\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert last([1,2,3],1) == 0",
+      "generated_test": "result = last([1,2,3], 1)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last([1,1,1,2,3,4],1) == 2",
+      "generated_test": "result = last([1,1,1,2,3,4], 1)\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last([2,3,2,3,6,8,9],3) == 3",
+      "generated_test": "result = last([2,3,2,3,6,8,9], 3)\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

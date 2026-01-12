@@ -1,0 +1,27 @@
+{
+  "task_id": 88,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the frequency of all the elements in a list, returned as a dictionary.",
+  "code_python": "import collections\ndef freq_count(list1):\n  freq_count= collections.Counter(list1)\n  return freq_count",
+  "test_list": [
+    "assert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})",
+    "assert freq_count([1,2,3,4,3,2,4,1,3,1,4])==({1:3, 2:2,3:3,4:3})",
+    "assert freq_count([5,6,7,4,9,10,4,5,6,7,9,5])==({10:1,5:3,6:2,7:2,4:2,9:2})"
+  ],
+  "python_1": "def freq_count(list1):\n    # Create an empty dictionary to store element frequencies\n    freq_dict = {}\n    # Loop through each element in the input list\n    for element in list1:\n        # Check if this element has been seen before in our dictionary\n        if element in freq_dict:\n            # Increment the count for this existing element\n            freq_dict[element] += 1\n        else:\n            # Initialize count to 1 for first occurrence of this element\n            freq_dict[element] = 1\n    # Return the completed frequency dictionary\n    return freq_dict",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def freq_count(list1):\n    # Use dictionary's get method to provide default value of 0 for new keys\n    freq_dict = {}\n    # Iterate over each item using enumerate to process sequentially\n    for item in list1:\n        # Retrieve current count with default 0, then add 1 in single expression\n        freq_dict[item] = freq_dict.get(item, 0) + 1\n    # Return the populated frequency mapping\n    return freq_dict",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def freq_count(list1):\n    # Convert list to set to get unique elements for iteration\n    unique_elements = set(list1)\n    # Build dictionary using comprehension with count method for each unique value\n    freq_dict = {elem: list1.count(elem) for elem in unique_elements}\n    # Return the dictionary mapping elements to their occurrence counts\n    return freq_dict",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "from functools import reduce\n\ndef freq_count(list1):\n    # Define a reducer function that updates frequency dict for each element\n    def update_freq(acc, elem):\n        # Merge existing dict with updated count for current element using spread-like syntax\n        acc[elem] = acc.get(elem, 0) + 1\n        # Return the modified accumulator dictionary for next iteration\n        return acc\n    # Apply reduce to fold the list into a single frequency dictionary\n    freq_dict = reduce(update_freq, list1, {})\n    # Return the final aggregated frequency mapping\n    return freq_dict",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "from collections import defaultdict\n\ndef freq_count(list1):\n    # Initialize defaultdict with int factory to auto-create zero values for missing keys\n    freq_dict = defaultdict(int)\n    # Process each element, leveraging defaultdict's auto-initialization feature\n    for element in list1:\n        # Directly increment without checking existence - defaultdict handles missing keys\n        freq_dict[element] += 1\n    # Convert defaultdict back to regular dict for clean return type\n    return dict(freq_dict)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

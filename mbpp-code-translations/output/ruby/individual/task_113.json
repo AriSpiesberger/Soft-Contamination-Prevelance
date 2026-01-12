@@ -1,0 +1,37 @@
+{
+  "task_id": 113,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string represents an integer or not.",
+  "python_code": "def check_integer(text):\n text = text.strip()\n if len(text) < 1:\n    return None\n else:\n     if all(text[i] in \"0123456789\" for i in range(len(text))):\n          return True\n     elif (text[0] in \"+-\") and \\\n         all(text[i] in \"0123456789\" for i in range(1,len(text))):\n         return True\n     else:\n        return False",
+  "test_list": [
+    "assert check_integer(\"python\")==False",
+    "assert check_integer(\"1\")==True",
+    "assert check_integer(\"12345\")==True"
+  ],
+  "code_ruby": "def check_integer(text)\n  text = text.strip\n  if text.length < 1\n    return nil\n  else\n    if text.chars.all? { |c| \"0123456789\".include?(c) }\n      return true\n    elsif \"+-\".include?(text[0]) && text.length > 1 && text[1..].chars.all? { |c| \"0123456789\".include?(c) }\n      return true\n    else\n      return false\n    end\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert check_integer(\"python\")==False",
+      "generated_test": "result = check_integer(\"python\")\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"1\")==True",
+      "generated_test": "result = check_integer(\"1\")\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"12345\")==True",
+      "generated_test": "result = check_integer(\"12345\")\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

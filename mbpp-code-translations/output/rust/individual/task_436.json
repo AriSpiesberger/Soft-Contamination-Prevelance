@@ -1,0 +1,37 @@
+{
+  "task_id": 436,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to return the negative numbers in a list.",
+  "python_code": "def neg_nos(list1):\n  out = []\n  for num in list1: \n    if num < 0: \n      out.append(num)\n  return out ",
+  "test_list": [
+    "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+    "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+    "assert neg_nos([-7,-6,8,9]) == [-7,-6]"
+  ],
+  "code_rust": "pub fn neg_nos(list1: &[i32]) -> Vec<i32> {\n    let mut out = Vec::new();\n    for &num in list1 {\n        if num < 0 {\n            out.push(num);\n        }\n    }\n    out\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+      "generated_test": "let result = neg_nos(&[-1, 4, 5, -6]);\nlet expected: Vec<i32> = vec![-1, -6];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+      "generated_test": "let result = neg_nos(&[-1, -2, 3, 4]);\nlet expected: Vec<i32> = vec![-1, -2];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert neg_nos([-7,-6,8,9]) == [-7,-6]",
+      "generated_test": "let result = neg_nos(&[-7, -6, 8, 9]);\nlet expected: Vec<i32> = vec![-7, -6];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

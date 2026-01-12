@@ -1,0 +1,27 @@
+{
+  "task_id": 600,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given number is even or not.",
+  "code_python": "def is_Even(n) : \n    if (n^1 == n+1) :\n        return True; \n    else :\n        return False; ",
+  "test_list": [
+    "assert is_Even(1) == False",
+    "assert is_Even(2) == True",
+    "assert is_Even(3) == False"
+  ],
+  "python_1": "# Define function to check if a number is even\ndef is_Even(n):\n    # Use modulo operator to get remainder when divided by 2\n    remainder = n % 2\n    # Even numbers have zero remainder when divided by 2\n    if remainder == 0:\n        # Return True for even numbers\n        return True\n    else:\n        # Return False for odd numbers\n        return False",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Define function to determine if input number is even\ndef is_Even(n):\n    # Use bitwise AND with 1 to check the least significant bit\n    # Even numbers have 0 as their last bit, odd numbers have 1\n    last_bit = n & 1\n    # Convert the bit check directly to boolean: 0 means even (True), 1 means odd (False)\n    # Using not operator to flip the result since 0 should give True\n    return not last_bit",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Define function to check if a number is even\ndef is_Even(n):\n    # Divide the number by 2 using integer division\n    half = n // 2\n    # Multiply the result back by 2 to reconstruct the original if even\n    reconstructed = half * 2\n    # Compare reconstructed value with original - they match only for even numbers\n    return reconstructed == n",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Define function to check evenness using string representation approach\ndef is_Even(n):\n    # Convert the absolute value to handle negative numbers consistently\n    abs_n = abs(n)\n    # Convert number to string to access individual digits\n    num_str = str(abs_n)\n    # Extract the last character which represents the ones digit\n    last_digit_char = num_str[-1]\n    # Convert the last digit character back to an integer\n    last_digit = int(last_digit_char)\n    # Define a set containing all digits that indicate even numbers\n    even_digits = {0, 2, 4, 6, 8}\n    # Check if the last digit belongs to the set of even digits\n    return last_digit in even_digits",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Define function to check if a number is even using division remainder approach\ndef is_Even(n):\n    # Use divmod to get both quotient and remainder in one operation\n    quotient, remainder = divmod(n, 2)\n    # Even numbers yield zero remainder, so we check for equality with 0\n    is_remainder_zero = remainder == 0\n    # Return the boolean result directly\n    return is_remainder_zero",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 284,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and element and checks whether all items in the list are equal to the given element.",
+  "python_code": "def check_element(list,element):\n  check_element=all(v== element for v in list)\n  return check_element",
+  "test_list": [
+    "assert check_element([\"green\", \"orange\", \"black\", \"white\"],'blue')==False",
+    "assert check_element([1,2,3,4],7)==False",
+    "assert check_element([\"green\", \"green\", \"green\", \"green\"],'green')==True"
+  ],
+  "code_ruby": "def check_element(list, element)\n  list.all? { |v| v == element }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert check_element([\"green\", \"orange\", \"black\", \"white\"],'blue')==False",
+      "generated_test": "result = check_element([\"green\", \"orange\", \"black\", \"white\"], \"blue\")\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_element([1,2,3,4],7)==False",
+      "generated_test": "result = check_element([1, 2, 3, 4], 7)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_element([\"green\", \"green\", \"green\", \"green\"],'green')==True",
+      "generated_test": "result = check_element([\"green\", \"green\", \"green\", \"green\"], \"green\")\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

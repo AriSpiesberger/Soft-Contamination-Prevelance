@@ -1,0 +1,27 @@
+{
+  "task_id": 227,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum of three numbers.",
+  "code_python": "def min_of_three(a,b,c): \n      if (a <= b) and (a <= c): \n        smallest = a \n      elif (b <= a) and (b <= c): \n        smallest = b \n      else: \n        smallest = c \n      return smallest ",
+  "test_list": [
+    "assert min_of_three(10,20,0)==0",
+    "assert min_of_three(19,15,18)==15",
+    "assert min_of_three(-10,-20,-30)==-30"
+  ],
+  "python_1": "def min_of_three(a,b,c): \n    # Use Python's built-in min function with a list of the three values\n    # This leverages optimized C implementation under the hood\n    return min([a, b, c])",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def min_of_three(a,b,c): \n    # Start by assuming the first parameter is the smallest\n    smallest = a\n    # Compare current smallest with second parameter and update if smaller\n    if b < smallest:\n        smallest = b\n    # Compare current smallest with third parameter and update if smaller\n    if c < smallest:\n        smallest = c\n    # Return the value that survived all comparisons\n    return smallest",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def min_of_three(a,b,c): \n    # Use nested ternary expressions to chain comparisons in a single return\n    # First compare a and b to get the smaller of the two\n    # Then compare that result with c to get the overall minimum\n    return a if a <= b and a <= c else (b if b <= c else c)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def min_of_three(a,b,c): \n    # Create a tuple containing all three input values for iteration\n    values = (a, b, c)\n    # Initialize result with the first element as our starting minimum candidate\n    result = values[0]\n    # Loop through remaining elements starting from index 1\n    for i in range(1, len(values)):\n        # Extract current element being compared against running minimum\n        current = values[i]\n        # Update result only when current element is strictly smaller\n        if current < result:\n            # Replace running minimum with the new smaller value found\n            result = current\n    # Return the smallest value discovered after examining all elements\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def min_of_three(a,b,c): \n    # Use reduce-style approach by nesting helper comparisons\n    # Define a lambda that returns the smaller of two values\n    get_smaller = lambda x, y: x if x <= y else y\n    # First reduction: find minimum between first two parameters\n    min_of_first_two = get_smaller(a, b)\n    # Second reduction: compare intermediate result with third parameter\n    final_minimum = get_smaller(min_of_first_two, c)\n    # Return the value that won both comparison rounds\n    return final_minimum",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

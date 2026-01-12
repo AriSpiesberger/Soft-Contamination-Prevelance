@@ -1,0 +1,37 @@
+{
+  "task_id": 475,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a dictionary by value.",
+  "python_code": "from collections import Counter\ndef sort_counter(dict1):\n x = Counter(dict1)\n sort_counter=x.most_common()\n return sort_counter",
+  "test_list": [
+    "assert sort_counter({'Math':81, 'Physics':83, 'Chemistry':87})==[('Chemistry', 87), ('Physics', 83), ('Math', 81)]",
+    "assert sort_counter({'Math':400, 'Physics':300, 'Chemistry':250})==[('Math', 400), ('Physics', 300), ('Chemistry', 250)]",
+    "assert sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250})==[('Chemistry', 1250), ('Physics', 1000), ('Math', 900)]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\ntype Pair struct {\n\tKey   string\n\tValue int\n}\n\nfunc sort_counter(dict1 map[string]int) [][]interface{} {\n\tpairs := make([]Pair, 0, len(dict1))\n\tfor k, v := range dict1 {\n\t\tpairs = append(pairs, Pair{Key: k, Value: v})\n\t}\n\n\tsort.SliceStable(pairs, func(i, j int) bool {\n\t\treturn pairs[i].Value > pairs[j].Value\n\t})\n\n\tresult := make([][]interface{}, len(pairs))\n\tfor i, p := range pairs {\n\t\tresult[i] = []interface{}{p.Key, p.Value}\n\t}\n\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sort_counter({'Math':81, 'Physics':83, 'Chemistry':87})==[('Chemistry', 87), ('Physics', 83), ('Math', 81)]",
+      "generated_test": "input := map[string]int{\"Math\": 81, \"Physics\": 83, \"Chemistry\": 87}\nresult := sort_counter(input)\nexpected := [][]interface{}{{\"Chemistry\", 87}, {\"Physics\", 83}, {\"Math\", 81}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tif result[i][0] != expected[i][0] || result[i][1] != expected[i][1] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_counter({'Math':400, 'Physics':300, 'Chemistry':250})==[('Math', 400), ('Physics', 300), ('Chemistry', 250)]",
+      "generated_test": "input := map[string]int{\"Math\": 400, \"Physics\": 300, \"Chemistry\": 250}\nresult := sort_counter(input)\nexpected := [][]interface{}{{\"Math\", 400}, {\"Physics\", 300}, {\"Chemistry\", 250}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tif result[i][0].(string) != expected[i][0].(string) || result[i][1].(int) != expected[i][1].(int) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250})==[('Chemistry', 1250), ('Physics', 1000), ('Math', 900)]",
+      "generated_test": "input := map[string]int{\"Math\": 900, \"Physics\": 1000, \"Chemistry\": 1250}\nresult := sort_counter(input)\nexpected := [][]interface{}{{\"Chemistry\", 1250}, {\"Physics\", 1000}, {\"Math\", 900}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tif result[i][0] != expected[i][0] || result[i][1] != expected[i][1] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 255,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and length n, and generates all combinations (with repetition) of the elements of the list and returns a list with a tuple for each combination.",
+  "python_code": "from itertools import combinations_with_replacement \ndef combinations_colors(l, n):\n    return list(combinations_with_replacement(l,n))\n",
+  "test_list": [
+    "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],1)==[('Red',), ('Green',), ('Blue',)]",
+    "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],2)==[('Red', 'Red'), ('Red', 'Green'), ('Red', 'Blue'), ('Green', 'Green'), ('Green', 'Blue'), ('Blue', 'Blue')]",
+    "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],3)==[('Red', 'Red', 'Red'), ('Red', 'Red', 'Green'), ('Red', 'Red', 'Blue'), ('Red', 'Green', 'Green'), ('Red', 'Green', 'Blue'), ('Red', 'Blue', 'Blue'), ('Green', 'Green', 'Green'), ('Green', 'Green', 'Blue'), ('Green', 'Blue', 'Blue'), ('Blue', 'Blue', 'Blue')]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<List<String>> combinations_colors(List<String> l, int n) {\n        List<List<String>> result = new ArrayList<>();\n        List<String> current = new ArrayList<>();\n        generateCombinations(l, n, 0, current, result);\n        return result;\n    }\n    \n    private static void generateCombinations(List<String> l, int n, int start, List<String> current, List<List<String>> result) {\n        if (current.size() == n) {\n            result.add(new ArrayList<>(current));\n            return;\n        }\n        \n        for (int i = start; i < l.size(); i++) {\n            current.add(l.get(i));\n            generateCombinations(l, n, i, current, result);\n            current.remove(current.size() - 1);\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],1)==[('Red',), ('Green',), ('Blue',)]",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"Red\");\ninput.add(\"Green\");\ninput.add(\"Blue\");\n\nList<List<String>> result = combinations_colors(input, 1);\n\nList<List<String>> expected = new ArrayList<>();\nList<String> exp1 = new ArrayList<>();\nexp1.add(\"Red\");\nexpected.add(exp1);\nList<String> exp2 = new ArrayList<>();\nexp2.add(\"Green\");\nexpected.add(exp2);\nList<String> exp3 = new ArrayList<>();\nexp3.add(\"Blue\");\nexpected.add(exp3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],2)==[('Red', 'Red'), ('Red', 'Green'), ('Red', 'Blue'), ('Green', 'Green'), ('Green', 'Blue'), ('Blue', 'Blue')]",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"Red\");\ninput.add(\"Green\");\ninput.add(\"Blue\");\n\nList<List<String>> result = combinations_colors(input, 2);\n\nList<List<String>> expected = new ArrayList<>();\nList<String> t1 = new ArrayList<>(); t1.add(\"Red\"); t1.add(\"Red\"); expected.add(t1);\nList<String> t2 = new ArrayList<>(); t2.add(\"Red\"); t2.add(\"Green\"); expected.add(t2);\nList<String> t3 = new ArrayList<>(); t3.add(\"Red\"); t3.add(\"Blue\"); expected.add(t3);\nList<String> t4 = new ArrayList<>(); t4.add(\"Green\"); t4.add(\"Green\"); expected.add(t4);\nList<String> t5 = new ArrayList<>(); t5.add(\"Green\"); t5.add(\"Blue\"); expected.add(t5);\nList<String> t6 = new ArrayList<>(); t6.add(\"Blue\"); t6.add(\"Blue\"); expected.add(t6);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert combinations_colors( [\"Red\",\"Green\",\"Blue\"],3)==[('Red', 'Red', 'Red'), ('Red', 'Red', 'Green'), ('Red', 'Red', 'Blue'), ('Red', 'Green', 'Green'), ('Red', 'Green', 'Blue'), ('Red', 'Blue', 'Blue'), ('Green', 'Green', 'Green'), ('Green', 'Green', 'Blue'), ('Green', 'Blue', 'Blue'), ('Blue', 'Blue', 'Blue')]",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"Red\");\ninput.add(\"Green\");\ninput.add(\"Blue\");\n\nList<List<String>> result = combinations_colors(input, 3);\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(List.of(\"Red\", \"Red\", \"Red\")));\nexpected.add(new ArrayList<>(List.of(\"Red\", \"Red\", \"Green\")));\nexpected.add(new ArrayList<>(List.of(\"Red\", \"Red\", \"Blue\")));\nexpected.add(new ArrayList<>(List.of(\"Red\", \"Green\", \"Green\")));\nexpected.add(new ArrayList<>(List.of(\"Red\", \"Green\", \"Blue\")));\nexpected.add(new ArrayList<>(List.of(\"Red\", \"Blue\", \"Blue\")));\nexpected.add(new ArrayList<>(List.of(\"Green\", \"Green\", \"Green\")));\nexpected.add(new ArrayList<>(List.of(\"Green\", \"Green\", \"Blue\")));\nexpected.add(new ArrayList<>(List.of(\"Green\", \"Blue\", \"Blue\")));\nexpected.add(new ArrayList<>(List.of(\"Blue\", \"Blue\", \"Blue\")));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

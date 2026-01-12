@@ -1,0 +1,37 @@
+{
+  "task_id": 569,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "python_code": "def sort_sublists(list1):\n    result = list(map(sorted,list1)) \n    return result",
+  "test_list": [
+    "assert sort_sublists([['green', 'orange'], ['black', 'white'], ['white', 'black', 'orange']])==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])==[['green', 'orange'], ['black'], ['green', 'orange'], ['white']]",
+    "assert sort_sublists([['a','b'],['d','c'],['g','h'] , ['f','e']])==[['a', 'b'], ['c', 'd'], ['g', 'h'], ['e', 'f']]"
+  ],
+  "code_rust": "pub fn sort_sublists(list1: Vec<Vec<String>>) -> Vec<Vec<String>> {\n    list1\n        .into_iter()\n        .map(|mut sublist| {\n            sublist.sort();\n            sublist\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sort_sublists([['green', 'orange'], ['black', 'white'], ['white', 'black', 'orange']])==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+      "generated_test": "let input: Vec<Vec<String>> = vec![\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"black\".to_string(), \"white\".to_string()],\n    vec![\"white\".to_string(), \"black\".to_string(), \"orange\".to_string()],\n];\nlet expected: Vec<Vec<String>> = vec![\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"black\".to_string(), \"white\".to_string()],\n    vec![\"black\".to_string(), \"orange\".to_string(), \"white\".to_string()],\n];\nlet result = sort_sublists(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])==[['green', 'orange'], ['black'], ['green', 'orange'], ['white']]",
+      "generated_test": "let input: Vec<Vec<String>> = vec![\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"black\".to_string()],\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"white\".to_string()],\n];\nlet expected: Vec<Vec<String>> = vec![\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"black\".to_string()],\n    vec![\"green\".to_string(), \"orange\".to_string()],\n    vec![\"white\".to_string()],\n];\nlet result = sort_sublists(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists([['a','b'],['d','c'],['g','h'] , ['f','e']])==[['a', 'b'], ['c', 'd'], ['g', 'h'], ['e', 'f']]",
+      "generated_test": "let input: Vec<Vec<String>> = vec![\n    vec![\"a\".to_string(), \"b\".to_string()],\n    vec![\"d\".to_string(), \"c\".to_string()],\n    vec![\"g\".to_string(), \"h\".to_string()],\n    vec![\"f\".to_string(), \"e\".to_string()],\n];\nlet expected: Vec<Vec<String>> = vec![\n    vec![\"a\".to_string(), \"b\".to_string()],\n    vec![\"c\".to_string(), \"d\".to_string()],\n    vec![\"g\".to_string(), \"h\".to_string()],\n    vec![\"e\".to_string(), \"f\".to_string()],\n];\nlet result = sort_sublists(input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

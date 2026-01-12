@@ -1,0 +1,17 @@
+{
+  "task_id": 739,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the index of smallest triangular number with n digits. https://www.geeksforgeeks.org/index-of-smallest-triangular-number-with-n-digits/",
+  "python_code": "import math \ndef find_Index(n): \n    x = math.sqrt(2 * math.pow(10,(n - 1)))\n    return round(x)",
+  "test_list": [
+    "assert find_Index(2) == 4",
+    "assert find_Index(3) == 14",
+    "assert find_Index(4) == 45"
+  ],
+  "code_typescript": "function find_Index(n: number): number {\n    const x = Math.sqrt(2 * Math.pow(10, (n - 1)));\n    return Math.round(x);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

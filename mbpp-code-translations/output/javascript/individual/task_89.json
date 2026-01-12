@@ -1,0 +1,37 @@
+{
+  "task_id": 89,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the closest smaller number than n.",
+  "python_code": "def closest_num(N):\n  return (N - 1)",
+  "test_list": [
+    "assert closest_num(11) == 10",
+    "assert closest_num(7) == 6",
+    "assert closest_num(12) == 11"
+  ],
+  "code_javascript": "function closest_num(N) {\n  return N - 1;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert closest_num(11) == 10",
+      "generated_test": "const result = closest_num(11);\nconst expected = 10;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert closest_num(7) == 6",
+      "generated_test": "const result = closest_num(7);\nconst expected = 6;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert closest_num(12) == 11",
+      "generated_test": "const result = closest_num(12);\nconst expected = 11;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

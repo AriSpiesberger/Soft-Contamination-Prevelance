@@ -1,0 +1,17 @@
+{
+  "task_id": 635,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort the given list.",
+  "python_code": "import heapq as hq\ndef heap_sort(iterable):\n    h = []\n    for value in iterable:\n        hq.heappush(h, value)\n    return [hq.heappop(h) for i in range(len(h))]",
+  "test_list": [
+    "assert heap_sort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+    "assert heap_sort([25, 35, 22, 85, 14, 65, 75, 25, 58])==[14, 22, 25, 25, 35, 58, 65, 75, 85]",
+    "assert heap_sort( [7, 1, 9, 5])==[1,5,7,9]"
+  ],
+  "code_typescript": "function heap_sort(iterable: number[]): number[] {\n    const h: number[] = [];\n    \n    function heappush(heap: number[], value: number): void {\n        heap.push(value);\n        let index = heap.length - 1;\n        while (index > 0) {\n            const parentIndex = Math.floor((index - 1) / 2);\n            if (heap[parentIndex] <= heap[index]) break;\n            [heap[parentIndex], heap[index]] = [heap[index], heap[parentIndex]];\n            index = parentIndex;\n        }\n    }\n    \n    function heappop(heap: number[]): number {\n        if (heap.length === 0) throw new Error(\"Heap is empty\");\n        if (heap.length === 1) return heap.pop()!;\n        \n        const result = heap[0];\n        heap[0] = heap.pop()!;\n        let index = 0;\n        \n        while (true) {\n            const leftChild = 2 * index + 1;\n            const rightChild = 2 * index + 2;\n            let smallest = index;\n            \n            if (leftChild < heap.length && heap[leftChild] < heap[smallest]) {\n                smallest = leftChild;\n            }\n            if (rightChild < heap.length && heap[rightChild] < heap[smallest]) {\n                smallest = rightChild;\n            }\n            \n            if (smallest === index) break;\n            \n            [heap[index], heap[smallest]] = [heap[smallest], heap[index]];\n            index = smallest;\n        }\n        \n        return result;\n    }\n    \n    for (const value of iterable) {\n        heappush(h, value);\n    }\n    \n    const result: number[] = [];\n    const length = h.length;\n    for (let i = 0; i < length; i++) {\n        result.push(heappop(h));\n    }\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

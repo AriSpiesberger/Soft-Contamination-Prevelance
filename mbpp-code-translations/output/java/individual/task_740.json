@@ -1,0 +1,37 @@
+{
+  "task_id": 740,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given tuple to a key-value dictionary using adjacent elements. https://www.geeksforgeeks.org/python-convert-tuple-to-adjacent-pair-dictionary/",
+  "python_code": "def tuple_to_dict(test_tup):\n  res = dict(test_tup[idx : idx + 2] for idx in range(0, len(test_tup), 2))\n  return (res) ",
+  "test_list": [
+    "assert tuple_to_dict((1, 5, 7, 10, 13, 5)) == {1: 5, 7: 10, 13: 5}",
+    "assert tuple_to_dict((1, 2, 3, 4, 5, 6)) == {1: 2, 3: 4, 5: 6}",
+    "assert tuple_to_dict((7, 8, 9, 10, 11, 12)) == {7: 8, 9: 10, 11: 12}"
+  ],
+  "code_java": "import java.util.HashMap;\n\npublic class Solution {\n    public static HashMap<Integer, Integer> tuple_to_dict(int[] test_tup) {\n        HashMap<Integer, Integer> res = new HashMap<>();\n        for (int idx = 0; idx < test_tup.length; idx += 2) {\n            if (idx + 1 < test_tup.length) {\n                res.put(test_tup[idx], test_tup[idx + 1]);\n            }\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert tuple_to_dict((1, 5, 7, 10, 13, 5)) == {1: 5, 7: 10, 13: 5}",
+      "generated_test": "int[] input = new int[]{1, 5, 7, 10, 13, 5};\nHashMap<Integer, Integer> expected = new HashMap<>();\nexpected.put(1, 5);\nexpected.put(7, 10);\nexpected.put(13, 5);\nHashMap<Integer, Integer> result = tuple_to_dict(input);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_to_dict((1, 2, 3, 4, 5, 6)) == {1: 2, 3: 4, 5: 6}",
+      "generated_test": "int[] input = new int[]{1, 2, 3, 4, 5, 6};\nHashMap<Integer, Integer> result = tuple_to_dict(input);\n\nHashMap<Integer, Integer> expected = new HashMap<>();\nexpected.put(1, 2);\nexpected.put(3, 4);\nexpected.put(5, 6);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_to_dict((7, 8, 9, 10, 11, 12)) == {7: 8, 9: 10, 11: 12}",
+      "generated_test": "int[] input = new int[]{7, 8, 9, 10, 11, 12};\nHashMap<Integer, Integer> result = tuple_to_dict(input);\n\nHashMap<Integer, Integer> expected = new HashMap<>();\nexpected.put(7, 8);\nexpected.put(9, 10);\nexpected.put(11, 12);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

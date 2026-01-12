@@ -1,0 +1,37 @@
+{
+  "task_id": 273,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two tuples and subtracts the elements of the first tuple by the elements of the second tuple with the same index.",
+  "python_code": "def substract_elements(test_tup1, test_tup2):\n  res = tuple(map(lambda i, j: i - j, test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert substract_elements((10, 4, 5), (2, 5, 18)) == (8, -1, -13)",
+    "assert substract_elements((11, 2, 3), (24, 45 ,16)) == (-13, -43, -13)",
+    "assert substract_elements((7, 18, 9), (10, 11, 12)) == (-3, 7, -3)"
+  ],
+  "code_rust": "pub fn substract_elements(test_tup1: &[i32], test_tup2: &[i32]) -> Vec<i32> {\n    test_tup1\n        .iter()\n        .zip(test_tup2.iter())\n        .map(|(i, j)| i - j)\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert substract_elements((10, 4, 5), (2, 5, 18)) == (8, -1, -13)",
+      "generated_test": "let result = substract_elements(&[10, 4, 5], &[2, 5, 18]);\nlet expected = vec![8, -1, -13];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert substract_elements((11, 2, 3), (24, 45 ,16)) == (-13, -43, -13)",
+      "generated_test": "let result = substract_elements(&[11, 2, 3], &[24, 45, 16]);\nlet expected = vec![-13, -43, -13];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert substract_elements((7, 18, 9), (10, 11, 12)) == (-3, 7, -3)",
+      "generated_test": "let result = substract_elements(&[7, 18, 9], &[10, 11, 12]);\nlet expected = vec![-3, 7, -3];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

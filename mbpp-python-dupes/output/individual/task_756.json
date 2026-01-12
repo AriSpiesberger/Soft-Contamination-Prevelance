@@ -1,0 +1,30 @@
+{
+  "task_id": 756,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by one or more 'b's. https://www.w3resource.com/python-exercises/re/python-re-exercise-3.php",
+  "code_python": "import re\ndef text_match_zero_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_zero_one(\"ac\")==False",
+    "assert text_match_zero_one(\"dc\")==False",
+    "assert text_match_zero_one(\"abbbba\")==True",
+    "assert text_match_zero_one(\"dsabbbba\")==True",
+    "assert text_match_zero_one(\"asbbbba\")==False",
+    "assert text_match_zero_one(\"abaaa\")==True"
+  ],
+  "python_1": "import re\ndef text_match_zero_one(text):\n        # Use greedy quantifier ab+ to match 'a' followed by one or more 'b's\n        patterns = 'ab+'\n        # Attempt to find the pattern anywhere in the input string\n        match_result = re.search(patterns, text)\n        # Convert match object to boolean directly using bool() for cleaner code\n        return bool(match_result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef text_match_zero_one(text):\n        # Compile the regex pattern into a reusable pattern object for efficiency\n        pattern_obj = re.compile('ab+')\n        # Use findall to get a list of all matches in the text\n        matches = pattern_obj.findall(text)\n        # Check if the matches list is non-empty (truthy) to determine if pattern exists\n        return len(matches) > 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef text_match_zero_one(text):\n        # Define pattern using raw string with word boundary consideration\n        pattern = r'ab+'\n        # Use re.match would only check start, so we need to iterate through possible starting positions\n        # Loop through each index position in the text string\n        for i in range(len(text)):\n                # Attempt to match the pattern starting at current position using match on substring\n                result = re.match(pattern, text[i:])\n                # If a match is found at this position, immediately return True\n                if result:\n                        return True\n        # No match found at any position, return False\n        return False",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\ndef text_match_zero_one(text):\n        # Use re.fullmatch would require exact match, so we need a different approach\n        # Create an iterator that yields all non-overlapping matches as match objects\n        match_iterator = re.finditer(r'ab+', text)\n        # Attempt to retrieve the first match using next() with a default of None\n        first_match = next(match_iterator, None)\n        # Return True if at least one match exists, False otherwise\n        return first_match is not None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\ndef text_match_zero_one(text):\n        # Split the text using 'ab+' pattern as delimiter - if pattern exists, split will produce results\n        pattern = r'ab+'\n        # Use re.split to divide text wherever the pattern matches\n        split_result = re.split(pattern, text)\n        # If the pattern was found, split creates more pieces than original (len > 1)\n        # Or if pattern matches entire string, we get empty strings\n        original_parts = text.split('a')\n        # Count total occurrences by comparing split result length with original\n        pattern_found = len(split_result) != 1 or (len(split_result) == 1 and split_result[0] != text)\n        # However, above logic is complex - simpler: if split result differs from [text], pattern was matched\n        # Re-evaluate: split returns [text] unchanged only if no match occurred\n        return split_result != [text]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 77,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find whether a number is divisible by 11.",
+  "python_code": "def is_Diff(n): \n    return (n % 11 == 0) ",
+  "test_list": [
+    "assert is_Diff (12345) == False",
+    "assert is_Diff(1212112) == True",
+    "assert is_Diff(1212) == False"
+  ],
+  "code_ruby": "def is_Diff(n)\n  n % 11 == 0\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert is_Diff (12345) == False",
+      "generated_test": "result = is_Diff(12345)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Diff(1212112) == True",
+      "generated_test": "result = is_Diff(1212112)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Diff(1212) == False",
+      "generated_test": "result = is_Diff(1212)\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

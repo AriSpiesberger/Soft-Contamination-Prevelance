@@ -1,0 +1,27 @@
+{
+  "task_id": 623,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the n-th power of each number in a list.",
+  "code_python": "def nth_nums(nums,n):\n nth_nums = list(map(lambda x: x ** n, nums))\n return nth_nums",
+  "test_list": [
+    "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+    "assert nth_nums([12,15],5)==([248832, 759375])"
+  ],
+  "python_1": "def nth_nums(nums, n):\n    # Create empty list to accumulate the powered results\n    result = []\n    # Process each number in the input list sequentially\n    for num in nums:\n        # Raise current number to the nth power and append to result\n        result.append(num ** n)\n    # Return the complete list of nth powers\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def nth_nums(nums, n):\n    # Use list comprehension as a concise alternative to map/lambda\n    # Each element x is raised to power n using the exponentiation operator\n    return [x ** n for x in nums]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def nth_nums(nums, n):\n    # Use pow() built-in function instead of ** operator for exponentiation\n    def power_func(x):\n        # Apply the power operation using the built-in pow function\n        return pow(x, n)\n    # Transform the list by applying power_func to each element via map\n    powered_iterator = map(power_func, nums)\n    # Convert the map iterator to a list and return the result\n    return list(powered_iterator)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def nth_nums(nums, n):\n    # Import functools to access reduce for cumulative multiplication approach\n    from functools import reduce\n    # Define helper that multiplies a number by itself n times using reduce\n    def power_by_multiplication(base, exponent):\n        # Handle edge case where exponent is zero, returning 1\n        if exponent == 0:\n            return 1\n        # Create a list of 'exponent' copies of base for repeated multiplication\n        factors = [base] * exponent\n        # Use reduce to multiply all factors together, computing base^exponent\n        return reduce(lambda acc, val: acc * val, factors)\n    # Build result using list comprehension with our custom power function\n    result = [power_by_multiplication(num, n) for num in nums]\n    # Return the list containing each number raised to the nth power\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def nth_nums(nums, n):\n    # Import the operator module to use its exponentiation function\n    import operator\n    # Use functools.partial to create a specialized power function with fixed exponent\n    from functools import partial\n    # Define a reversed power function since operator.pow takes base first then exponent\n    def reversed_pow(exponent, base):\n        # Apply exponentiation with arguments swapped for partial application\n        return operator.pow(base, exponent)\n    # Create a partial function with n pre-bound as the exponent argument\n    power_n = partial(reversed_pow, n)\n    # Apply the partial function to each element and convert iterator to list\n    return list(map(power_n, nums))",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

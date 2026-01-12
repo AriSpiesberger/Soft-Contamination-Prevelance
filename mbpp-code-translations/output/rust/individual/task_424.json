@@ -1,0 +1,37 @@
+{
+  "task_id": 424,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract only the rear index element of each string in the given tuple.",
+  "python_code": "def extract_rear(test_tuple):\n  res = list(sub[len(sub) - 1] for sub in test_tuple)\n  return (res) ",
+  "test_list": [
+    "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+    "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+    "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']"
+  ],
+  "code_rust": "pub fn extract_rear(test_tuple: &[&str]) -> Vec<char> {\n    test_tuple\n        .iter()\n        .filter_map(|sub| sub.chars().last())\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+      "generated_test": "let result = extract_rear(&[\"Mers\", \"for\", \"Vers\"]);\nlet expected: Vec<char> = vec!['s', 'r', 's'];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+      "generated_test": "let result = extract_rear(&[\"Avenge\", \"for\", \"People\"]);\nlet expected: Vec<char> = vec!['e', 'r', 'e'];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']",
+      "generated_test": "let result = extract_rear(&[\"Gotta\", \"get\", \"go\"]);\nlet expected: Vec<char> = vec!['a', 't', 'o'];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

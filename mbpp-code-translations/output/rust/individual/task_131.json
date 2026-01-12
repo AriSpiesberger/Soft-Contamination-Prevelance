@@ -1,0 +1,37 @@
+{
+  "task_id": 131,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse only the vowels of a given string (where y is not a vowel).",
+  "python_code": "def reverse_vowels(str1):\n\tvowels = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tvowels += char\n\tresult_string = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tresult_string += vowels[-1]\n\t\t\tvowels = vowels[:-1]\n\t\telse:\n\t\t\tresult_string += char\n\treturn result_string",
+  "test_list": [
+    "assert reverse_vowels(\"Python\") == \"Python\"",
+    "assert reverse_vowels(\"USA\") == \"ASU\"",
+    "assert reverse_vowels(\"ab\") == \"ab\""
+  ],
+  "code_rust": "pub fn reverse_vowels(str1: &str) -> String {\n    let vowels_set = \"aeiouAEIOU\";\n    \n    let vowels: Vec<char> = str1\n        .chars()\n        .filter(|c| vowels_set.contains(*c))\n        .collect();\n    \n    let mut vowel_index = vowels.len();\n    let mut result_string = String::new();\n    \n    for char in str1.chars() {\n        if vowels_set.contains(char) {\n            vowel_index -= 1;\n            result_string.push(vowels[vowel_index]);\n        } else {\n            result_string.push(char);\n        }\n    }\n    \n    result_string\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert reverse_vowels(\"Python\") == \"Python\"",
+      "generated_test": "let result = reverse_vowels(\"Python\");\nlet expected = \"Python\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"USA\") == \"ASU\"",
+      "generated_test": "let result = reverse_vowels(\"USA\");\nlet expected = \"ASU\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"ab\") == \"ab\"",
+      "generated_test": "let result = reverse_vowels(\"ab\");\nlet expected = \"ab\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

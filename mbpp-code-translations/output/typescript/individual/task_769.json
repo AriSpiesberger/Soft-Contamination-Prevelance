@@ -1,0 +1,17 @@
+{
+  "task_id": 769,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to get the difference between two lists.",
+  "python_code": "def Diff(li1,li2):\n    return list(set(li1)-set(li2)) + list(set(li2)-set(li1))\n ",
+  "test_list": [
+    "assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]",
+    "assert (Diff([1,2,3,4,5], [6,7,1])) == [2,3,4,5,6,7]",
+    "assert (Diff([1,2,3], [6,7,1])) == [2,3,6,7]"
+  ],
+  "code_typescript": "function Diff<T>(li1: T[], li2: T[]): T[] {\n    const set1 = new Set(li1);\n    const set2 = new Set(li2);\n    \n    const diff1 = [...set1].filter(x => !set2.has(x));\n    const diff2 = [...set2].filter(x => !set1.has(x));\n    \n    return [...diff1, ...diff2];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

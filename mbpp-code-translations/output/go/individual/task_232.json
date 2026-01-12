@@ -1,0 +1,37 @@
+{
+  "task_id": 232,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and returns a list containing the n largest items from the list.",
+  "python_code": "import heapq\ndef larg_nnum(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest",
+  "test_list": [
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"container/heap\"\n)\n\ntype IntHeap []int\n\nfunc (h IntHeap) Len() int           { return len(h) }\nfunc (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\n\nfunc (h *IntHeap) Push(x interface{}) {\n\t*h = append(*h, x.(int))\n}\n\nfunc (h *IntHeap) Pop() interface{} {\n\told := *h\n\tn := len(old)\n\tx := old[n-1]\n\t*h = old[0 : n-1]\n\treturn x\n}\n\nfunc larg_nnum(list1 []int, n int) []int {\n\tif n <= 0 {\n\t\treturn []int{}\n\t}\n\tif n >= len(list1) {\n\t\tresult := make([]int, len(list1))\n\t\tcopy(result, list1)\n\t\treturn result\n\t}\n\n\th := &IntHeap{}\n\theap.Init(h)\n\n\tfor _, val := range list1 {\n\t\tif h.Len() < n {\n\t\t\theap.Push(h, val)\n\t\t} else if val > (*h)[0] {\n\t\t\theap.Pop(h)\n\t\t\theap.Push(h, val)\n\t\t}\n\t}\n\n\tresult := make([]int, h.Len())\n\tfor i := h.Len() - 1; i >= 0; i-- {\n\t\tresult[i] = heap.Pop(h).(int)\n\t}\n\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+      "generated_test": "result := larg_nnum([]int{10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100}, 2)\nexpected := []int{100, 90}\n\n// Convert both to sets (maps) for comparison\nresultSet := make(map[int]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\nexpectedSet := make(map[int]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+      "generated_test": "result := larg_nnum([]int{10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100}, 5)\nexpected := []int{100, 90, 80, 70, 60}\n\n// Convert both to sets (maps) for comparison\nresultSet := make(map[int]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\nexpectedSet := make(map[int]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])",
+      "generated_test": "result := larg_nnum([]int{10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100}, 3)\nexpected := []int{100, 90, 80}\n\n// Convert both to sets (maps) for comparison\nresultSet := make(map[int]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\nexpectedSet := make(map[int]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

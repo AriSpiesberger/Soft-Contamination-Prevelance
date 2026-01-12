@@ -1,0 +1,37 @@
+{
+  "task_id": 104,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "python_code": "def sort_sublists(input_list):\n    result = [sorted(x, key = lambda x:x[0]) for x in input_list] \n    return result\n",
+  "test_list": [
+    "assert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists(([\" red \",\"green\" ],[\"blue \",\" black\"],[\" orange\",\"brown\"]))==[[' red ', 'green'], [' black', 'blue '], [' orange', 'brown']]",
+    "assert sort_sublists(([\"zilver\",\"gold\"], [\"magnesium\",\"aluminium\"], [\"steel\", \"bronze\"]))==[['gold', 'zilver'],['aluminium', 'magnesium'], ['bronze', 'steel']]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<List<String>> sort_sublists(List<List<String>> input_list) {\n        List<List<String>> result = new ArrayList<>();\n        for (List<String> sublist : input_list) {\n            List<String> sortedSublist = new ArrayList<>(sublist);\n            sortedSublist.sort((a, b) -> {\n                if (a.length() == 0 && b.length() == 0) return 0;\n                if (a.length() == 0) return -1;\n                if (b.length() == 0) return 1;\n                return Character.compare(a.charAt(0), b.charAt(0));\n            });\n            result.add(sortedSublist);\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(\"green\", \"orange\")));\ninput.add(new ArrayList<>(Arrays.asList(\"black\", \"white\")));\ninput.add(new ArrayList<>(Arrays.asList(\"white\", \"black\", \"orange\")));\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\"green\", \"orange\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"black\", \"white\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"black\", \"orange\", \"white\")));\n\nList<List<String>> result = sort_sublists(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists(([\" red \",\"green\" ],[\"blue \",\" black\"],[\" orange\",\"brown\"]))==[[' red ', 'green'], [' black', 'blue '], [' orange', 'brown']]",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(\" red \", \"green\")));\ninput.add(new ArrayList<>(Arrays.asList(\"blue \", \" black\")));\ninput.add(new ArrayList<>(Arrays.asList(\" orange\", \"brown\")));\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\" red \", \"green\")));\nexpected.add(new ArrayList<>(Arrays.asList(\" black\", \"blue \")));\nexpected.add(new ArrayList<>(Arrays.asList(\" orange\", \"brown\")));\n\nList<List<String>> result = sort_sublists(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists(([\"zilver\",\"gold\"], [\"magnesium\",\"aluminium\"], [\"steel\", \"bronze\"]))==[['gold', 'zilver'],['aluminium', 'magnesium'], ['bronze', 'steel']]",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(\"zilver\", \"gold\")));\ninput.add(new ArrayList<>(Arrays.asList(\"magnesium\", \"aluminium\")));\ninput.add(new ArrayList<>(Arrays.asList(\"steel\", \"bronze\")));\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\"gold\", \"zilver\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"aluminium\", \"magnesium\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"bronze\", \"steel\")));\n\nList<List<String>> result = sort_sublists(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

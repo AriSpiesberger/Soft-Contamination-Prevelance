@@ -1,0 +1,17 @@
+{
+  "task_id": 105,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count true booleans in the given list.",
+  "python_code": "def count(lst):   \n    return sum(lst) ",
+  "test_list": [
+    "assert count([True,False,True]) == 2",
+    "assert count([False,False]) == 0",
+    "assert count([True,True,True]) == 3"
+  ],
+  "code_typescript": "function count(lst: boolean[]): number {\n    return lst.filter(x => x === true).length;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 440,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb and their positions in a given sentence.",
+  "python_code": "import re\ndef find_adverb_position(text):\n for m in re.finditer(r\"\\w+ly\", text):\n    return (m.start(), m.end(), m.group(0))",
+  "test_list": [
+    "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+    "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+    "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')"
+  ],
+  "code_java": "import java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\npublic class Solution {\n    public static Object[] find_adverb_position(String text) {\n        Pattern pattern = Pattern.compile(\"\\\\w+ly\");\n        Matcher matcher = pattern.matcher(text);\n        if (matcher.find()) {\n            return new Object[]{matcher.start(), matcher.end(), matcher.group(0)};\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+      "generated_test": "Object[] result = find_adverb_position(\"clearly!! we can see the sky\");\nObject[] expected = new Object[]{0, 7, \"clearly\"};\n\nboolean pass = true;\nif (result == null || result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (0, 7, 'clearly')\");\n    String got = result == null ? \"null\" : \"(\" + result[0] + \", \" + result[1] + \", '\" + result[2] + \"')\";\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+      "generated_test": "Object[] result = find_adverb_position(\"seriously!! there are many roses\");\nObject[] expected = new Object[]{0, 9, \"seriously\"};\n\nboolean pass = true;\nif (result == null || result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (0, 9, 'seriously')\");\n    String got = result == null ? \"null\" : \"(\" + result[0] + \", \" + result[1] + \", '\" + result[2] + \"')\";\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')",
+      "generated_test": "Object[] result = find_adverb_position(\"unfortunately!! sita is going to home\");\nObject[] expected = new Object[]{0, 13, \"unfortunately\"};\n\nboolean pass = true;\nif (result == null || result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (0, 13, 'unfortunately')\");\n    String got = result == null ? \"null\" : \"(\" + result[0] + \", \" + result[1] + \", '\" + result[2] + \"')\";\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

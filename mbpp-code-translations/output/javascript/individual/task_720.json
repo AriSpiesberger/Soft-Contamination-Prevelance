@@ -1,0 +1,37 @@
+{
+  "task_id": 720,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add a dictionary to the tuple. The output should be a tuple.",
+  "python_code": "def add_dict_to_tuple(test_tup, test_dict):\n  test_tup = list(test_tup)\n  test_tup.append(test_dict)\n  test_tup = tuple(test_tup)\n  return (test_tup) ",
+  "test_list": [
+    "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+    "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+    "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})"
+  ],
+  "code_javascript": "function add_dict_to_tuple(test_tup, test_dict) {\n  let result = [...test_tup];\n  result.push(test_dict);\n  return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+      "generated_test": "const result = add_dict_to_tuple([4, 5, 6], {\"MSAM\": 1, \"is\": 2, \"best\": 3});\nconst expected = [4, 5, 6, {\"MSAM\": 1, \"is\": 2, \"best\": 3}];\n\nconst resultMatch = JSON.stringify(result) === JSON.stringify(expected);\n\nif (resultMatch) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+      "generated_test": "const result = add_dict_to_tuple([1, 2, 3], {\"UTS\": 2, \"is\": 3, \"Worst\": 4});\nconst expected = [1, 2, 3, {\"UTS\": 2, \"is\": 3, \"Worst\": 4}];\n\nfunction deepEqual(a, b) {\n  if (a === b) return true;\n  if (typeof a !== typeof b) return false;\n  if (typeof a !== 'object' || a === null || b === null) return false;\n  if (Array.isArray(a) !== Array.isArray(b)) return false;\n  const keysA = Object.keys(a);\n  const keysB = Object.keys(b);\n  if (keysA.length !== keysB.length) return false;\n  for (const key of keysA) {\n    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;\n  }\n  return true;\n}\n\nif (deepEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})",
+      "generated_test": "const result = add_dict_to_tuple([8, 9, 10], {\"POS\": 3, \"is\": 4, \"Okay\": 5});\nconst expected = [8, 9, 10, {\"POS\": 3, \"is\": 4, \"Okay\": 5}];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expectedStr);\n  console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

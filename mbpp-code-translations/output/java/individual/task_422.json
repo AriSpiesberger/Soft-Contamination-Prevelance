@@ -1,0 +1,37 @@
+{
+  "task_id": 422,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the average of cubes of first n natural numbers.",
+  "python_code": "def find_Average_Of_Cube(n):  \n    sum = 0\n    for i in range(1, n + 1): \n        sum += i * i * i  \n    return round(sum / n, 6) ",
+  "test_list": [
+    "assert find_Average_Of_Cube(2) == 4.5",
+    "assert find_Average_Of_Cube(3) == 12",
+    "assert find_Average_Of_Cube(1) == 1"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double find_Average_Of_Cube(int n) {\n        long sum = 0;\n        for (int i = 1; i <= n; i++) {\n            sum += (long) i * i * i;\n        }\n        double average = (double) sum / n;\n        return Math.round(average * 1000000.0) / 1000000.0;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_Average_Of_Cube(2) == 4.5",
+      "generated_test": "double result = find_Average_Of_Cube(2);\ndouble expected = 4.5;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Average_Of_Cube(3) == 12",
+      "generated_test": "double result = find_Average_Of_Cube(3);\ndouble expected = 12;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Average_Of_Cube(1) == 1",
+      "generated_test": "double result = find_Average_Of_Cube(1);\ndouble expected = 1.0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

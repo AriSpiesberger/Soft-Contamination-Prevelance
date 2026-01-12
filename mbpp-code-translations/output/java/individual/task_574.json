@@ -1,0 +1,37 @@
+{
+  "task_id": 574,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cylinder.",
+  "python_code": "def surfacearea_cylinder(r,h):\n  surfacearea=((2*3.1415*r*r) +(2*3.1415*r*h))\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cylinder(10,5)==942.45",
+    "assert surfacearea_cylinder(4,5)==226.18800000000002",
+    "assert surfacearea_cylinder(4,10)==351.848"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double surfacearea_cylinder(double r, double h) {\n        double surfacearea = ((2 * 3.1415 * r * r) + (2 * 3.1415 * r * h));\n        return surfacearea;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert surfacearea_cylinder(10,5)==942.45",
+      "generated_test": "double result = surfacearea_cylinder(10, 5);\ndouble expected = 942.45;\nif (Math.abs(result - expected) < 0.01) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cylinder(4,5)==226.18800000000002",
+      "generated_test": "double result = surfacearea_cylinder(4, 5);\ndouble expected = 226.18800000000002;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cylinder(4,10)==351.848",
+      "generated_test": "double result = surfacearea_cylinder(4, 10);\ndouble expected = 351.848;\nif (Math.abs(result - expected) < 0.001) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

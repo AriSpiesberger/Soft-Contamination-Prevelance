@@ -1,0 +1,37 @@
+{
+  "task_id": 394,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if given tuple contains no duplicates.",
+  "python_code": "def check_distinct(test_tup):\n  res = True\n  temp = set()\n  for ele in test_tup:\n    if ele in temp:\n      res = False\n      break\n    temp.add(ele)\n  return res ",
+  "test_list": [
+    "assert check_distinct((1, 4, 5, 6, 1, 4)) == False",
+    "assert check_distinct((1, 4, 5, 6)) == True",
+    "assert check_distinct((2, 3, 4, 5, 6)) == True"
+  ],
+  "code_go": "package main\n\nfunc check_distinct(test_tup []interface{}) bool {\n\tres := true\n\ttemp := make(map[interface{}]bool)\n\tfor _, ele := range test_tup {\n\t\tif temp[ele] {\n\t\t\tres = false\n\t\t\tbreak\n\t\t}\n\t\ttemp[ele] = true\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_distinct((1, 4, 5, 6, 1, 4)) == False",
+      "generated_test": "result := check_distinct([]interface{}{1, 4, 5, 6, 1, 4})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_distinct((1, 4, 5, 6)) == True",
+      "generated_test": "result := check_distinct([]interface{}{1, 4, 5, 6})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_distinct((2, 3, 4, 5, 6)) == True",
+      "generated_test": "result := check_distinct([]interface{}{2, 3, 4, 5, 6})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "python_code": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "code_rust": "pub fn first_repeated_char(str1: &str) -> Option<char> {\n    let chars: Vec<char> = str1.chars().collect();\n    for (index, c) in chars.iter().enumerate() {\n        let count = chars[..=index].iter().filter(|&x| x == c).count();\n        if count > 1 {\n            return Some(*c);\n        }\n    }\n    None\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert first_repeated_char(\"abcabc\") == \"a\"",
+      "generated_test": "let result = first_repeated_char(\"abcabc\");\nlet expected = Some('a');\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"abc\") == None",
+      "generated_test": "let result = first_repeated_char(\"abc\");\nlet expected: Option<char> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"123123\") == \"1\"",
+      "generated_test": "let result = first_repeated_char(\"123123\");\nlet expected = Some('1');\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

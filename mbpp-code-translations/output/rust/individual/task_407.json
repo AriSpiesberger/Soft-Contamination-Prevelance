@@ -1,0 +1,37 @@
+{
+  "task_id": 407,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create the next bigger number by rearranging the digits of a given number.",
+  "python_code": "def rearrange_bigger(n):\n    nums = list(str(n))\n    for i in range(len(nums)-2,-1,-1):\n        if nums[i] < nums[i+1]:\n            z = nums[i:]\n            y = min(filter(lambda x: x > z[0], z))\n            z.remove(y)\n            z.sort()\n            nums[i:] = [y] + z\n            return int(\"\".join(nums))\n    return False",
+  "test_list": [
+    "assert rearrange_bigger(12)==21",
+    "assert rearrange_bigger(10)==False",
+    "assert rearrange_bigger(102)==120"
+  ],
+  "code_rust": "pub fn rearrange_bigger(n: i64) -> Option<i64> {\n    let mut nums: Vec<char> = n.to_string().chars().collect();\n    let len = nums.len();\n    \n    if len < 2 {\n        return None;\n    }\n    \n    for i in (0..len-1).rev() {\n        if nums[i] < nums[i + 1] {\n            let mut z: Vec<char> = nums[i..].to_vec();\n            \n            // Find minimum character greater than z[0]\n            let y = z.iter()\n                .filter(|&&x| x > z[0])\n                .min()\n                .copied()\n                .unwrap();\n            \n            // Remove first occurrence of y from z\n            if let Some(pos) = z.iter().position(|&x| x == y) {\n                z.remove(pos);\n            }\n            \n            // Sort the remaining characters\n            z.sort();\n            \n            // Reconstruct nums[i:] = [y] + z\n            nums.truncate(i);\n            nums.push(y);\n            nums.extend(z);\n            \n            // Convert back to number\n            let result: String = nums.into_iter().collect();\n            return result.parse::<i64>().ok();\n        }\n    }\n    \n    None\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert rearrange_bigger(12)==21",
+      "generated_test": "let result = rearrange_bigger(12);\nlet expected = Some(21);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(10)==False",
+      "generated_test": "let result = rearrange_bigger(10);\nlet expected: Option<i64> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(102)==120",
+      "generated_test": "let result = rearrange_bigger(102);\nlet expected = Some(120);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

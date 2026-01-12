@@ -1,0 +1,37 @@
+{
+  "task_id": 131,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse only the vowels of a given string (where y is not a vowel).",
+  "python_code": "def reverse_vowels(str1):\n\tvowels = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tvowels += char\n\tresult_string = \"\"\n\tfor char in str1:\n\t\tif char in \"aeiouAEIOU\":\n\t\t\tresult_string += vowels[-1]\n\t\t\tvowels = vowels[:-1]\n\t\telse:\n\t\t\tresult_string += char\n\treturn result_string",
+  "test_list": [
+    "assert reverse_vowels(\"Python\") == \"Python\"",
+    "assert reverse_vowels(\"USA\") == \"ASU\"",
+    "assert reverse_vowels(\"ab\") == \"ab\""
+  ],
+  "code_go": "package main\n\nfunc reverse_vowels(str1 string) string {\n\tvowels := \"\"\n\tfor _, char := range str1 {\n\t\tif isVowel(char) {\n\t\t\tvowels += string(char)\n\t\t}\n\t}\n\t\n\tresult := \"\"\n\tvowelIndex := len(vowels) - 1\n\t\n\tfor _, char := range str1 {\n\t\tif isVowel(char) {\n\t\t\tresult += string(vowels[vowelIndex])\n\t\t\tvowelIndex--\n\t\t} else {\n\t\t\tresult += string(char)\n\t\t}\n\t}\n\t\n\treturn result\n}\n\nfunc isVowel(char rune) bool {\n\tswitch char {\n\tcase 'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U':\n\t\treturn true\n\t}\n\treturn false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert reverse_vowels(\"Python\") == \"Python\"",
+      "generated_test": "result := reverse_vowels(\"Python\")\nexpected := \"Python\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"USA\") == \"ASU\"",
+      "generated_test": "result := reverse_vowels(\"USA\")\nexpected := \"ASU\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_vowels(\"ab\") == \"ab\"",
+      "generated_test": "result := reverse_vowels(\"ab\")\nexpected := \"ab\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

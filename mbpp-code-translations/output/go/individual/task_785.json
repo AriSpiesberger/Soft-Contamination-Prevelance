@@ -1,0 +1,44 @@
+{
+  "task_id": 785,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert tuple string to integer tuple.",
+  "python_code": "def tuple_str_int(test_str):\n  res = tuple(int(num) for num in test_str.replace('(', '').replace(')', '').replace('...', '').split(', '))\n  return (res) ",
+  "test_list": [
+    "assert tuple_str_int(\"(7, 8, 9)\") == (7, 8, 9)",
+    "assert tuple_str_int(\"(1, 2, 3)\") == (1, 2, 3)",
+    "assert tuple_str_int(\"(4, 5, 6)\") == (4, 5, 6)",
+    "assert tuple_str_int(\"(7, 81, 19)\") == (7, 81, 19)"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc tuple_str_int(test_str string) []int {\n\t// Remove parentheses and ellipsis\n\ts := strings.Replace(test_str, \"(\", \"\", -1)\n\ts = strings.Replace(s, \")\", \"\", -1)\n\ts = strings.Replace(s, \"...\", \"\", -1)\n\t\n\t// Split by \", \"\n\tparts := strings.Split(s, \", \")\n\t\n\tvar res []int\n\tfor _, part := range parts {\n\t\tpart = strings.TrimSpace(part)\n\t\tif part == \"\" {\n\t\t\tcontinue\n\t\t}\n\t\tnum, err := strconv.Atoi(part)\n\t\tif err == nil {\n\t\t\tres = append(res, num)\n\t\t}\n\t}\n\t\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert tuple_str_int(\"(7, 8, 9)\") == (7, 8, 9)",
+      "generated_test": "result := tuple_str_int(\"(7, 8, 9)\")\nexpected := []int{7, 8, 9}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(1, 2, 3)\") == (1, 2, 3)",
+      "generated_test": "result := tuple_str_int(\"(1, 2, 3)\")\nexpected := []int{1, 2, 3}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(4, 5, 6)\") == (4, 5, 6)",
+      "generated_test": "result := tuple_str_int(\"(4, 5, 6)\")\nexpected := []int{4, 5, 6}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(7, 81, 19)\") == (7, 81, 19)",
+      "generated_test": "result := tuple_str_int(\"(7, 81, 19)\")\nexpected := []int{7, 81, 19}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

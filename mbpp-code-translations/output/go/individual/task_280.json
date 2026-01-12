@@ -1,0 +1,37 @@
+{
+  "task_id": 280,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in an array and element and returns a tuple containing a boolean that indicates if the element is in the array and the index position of the element (or -1 if the element is not found).",
+  "python_code": "def sequential_search(dlist, item):\n    pos = 0\n    found = False\n    while pos < len(dlist) and not found:\n        if dlist[pos] == item:\n            found = True\n        else:\n            pos = pos + 1\n    return found, pos",
+  "test_list": [
+    "assert sequential_search([11,23,58,31,56,77,43,12,65,19],31) == (True, 3)",
+    "assert sequential_search([12, 32, 45, 62, 35, 47, 44, 61],61) == (True, 7)",
+    "assert sequential_search([9, 10, 17, 19, 22, 39, 48, 56],48) == (True, 6)"
+  ],
+  "code_go": "package main\n\nfunc sequential_search(dlist []int, item int) (bool, int) {\n    pos := 0\n    found := false\n    for pos < len(dlist) && !found {\n        if dlist[pos] == item {\n            found = true\n        } else {\n            pos = pos + 1\n        }\n    }\n    return found, pos\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sequential_search([11,23,58,31,56,77,43,12,65,19],31) == (True, 3)",
+      "generated_test": "found, pos := sequential_search([]int{11, 23, 58, 31, 56, 77, 43, 12, 65, 19}, 31)\nexpectedFound := true\nexpectedPos := 3\nif found == expectedFound && pos == expectedPos {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expectedFound, expectedPos)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", found, pos)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sequential_search([12, 32, 45, 62, 35, 47, 44, 61],61) == (True, 7)",
+      "generated_test": "found, pos := sequential_search([]int{12, 32, 45, 62, 35, 47, 44, 61}, 61)\nexpectedFound := true\nexpectedPos := 7\nif found == expectedFound && pos == expectedPos {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expectedFound, expectedPos)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", found, pos)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sequential_search([9, 10, 17, 19, 22, 39, 48, 56],48) == (True, 6)",
+      "generated_test": "found, pos := sequential_search([]int{9, 10, 17, 19, 22, 39, 48, 56}, 48)\nexpectedFound := true\nexpectedPos := 6\nif found == expectedFound && pos == expectedPos {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%v, %v)\\n\", expectedFound, expectedPos)\n\tfmt.Printf(\"  Got: (%v, %v)\\n\", found, pos)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

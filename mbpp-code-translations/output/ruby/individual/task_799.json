@@ -1,0 +1,65 @@
+{
+  "task_id": 799,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that rotate left bits by d bits a given number. We assume that the number is 32 bit.",
+  "python_code": "def left_rotate(n,d):   \n    INT_BITS = 32\n    return (n << d)|(n >> (INT_BITS - d))  ",
+  "test_list": [
+    "assert left_rotate(16,2) == 64",
+    "assert left_rotate(10,2) == 40",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(0b0001,3) == 0b1000",
+    "assert left_rotate(0b0101,3) == 0b101000",
+    "assert left_rotate(0b11101,3) == 0b11101000"
+  ],
+  "code_ruby": "def left_rotate(n, d)\n  int_bits = 32\n  mask = (1 << int_bits) - 1\n  ((n << d) | (n >> (int_bits - d))) & mask\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 2,
+  "code_ruby_tests_passed": 7,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert left_rotate(16,2) == 64",
+      "generated_test": "result = left_rotate(16, 2)\nexpected = 64\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(10,2) == 40",
+      "generated_test": "result = left_rotate(10, 2)\nexpected = 40\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(99,3) == 792",
+      "generated_test": "result = left_rotate(99, 3)\nexpected = 792\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(99,3) == 792",
+      "generated_test": "result = left_rotate(99, 3)\nexpected = 792\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(0b0001,3) == 0b1000",
+      "generated_test": "result = left_rotate(0b0001, 3)\nexpected = 0b1000\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(0b0101,3) == 0b101000",
+      "generated_test": "result = left_rotate(0b0101, 3)\nexpected = 0b101000\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(0b11101,3) == 0b11101000",
+      "generated_test": "result = left_rotate(0b11101, 3)\nexpected = 0b11101000\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 630,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract all the adjacent coordinates of the given coordinate tuple.",
+  "python_code": "def adjac(ele, sub = []): \n  if not ele: \n     yield sub \n  else: \n     yield from [idx for j in range(ele[0] - 1, ele[0] + 2) \n                for idx in adjac(ele[1:], sub + [j])] \ndef get_coordinates(test_tup):\n  return list(adjac(test_tup))",
+  "test_list": [
+    "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+    "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+    "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]"
+  ],
+  "code_typescript": "function adjac(ele: number[], sub: number[] = []): number[][] {\n  if (ele.length === 0) {\n    return [sub];\n  } else {\n    const result: number[][] = [];\n    for (let j = ele[0] - 1; j <= ele[0] + 1; j++) {\n      const subResults = adjac(ele.slice(1), [...sub, j]);\n      result.push(...subResults);\n    }\n    return result;\n  }\n}\n\nfunction get_coordinates(test_tup: number[]): number[][] {\n  return adjac(test_tup);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

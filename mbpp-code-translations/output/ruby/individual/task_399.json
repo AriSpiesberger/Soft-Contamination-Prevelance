@@ -1,0 +1,37 @@
+{
+  "task_id": 399,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to perform the mathematical bitwise xor operation across the given tuples.",
+  "python_code": "def bitwise_xor(test_tup1, test_tup2):\n  res = tuple(ele1 ^ ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+    "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+    "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)"
+  ],
+  "code_ruby": "def bitwise_xor(test_tup1, test_tup2)\n  test_tup1.zip(test_tup2).map { |ele1, ele2| ele1 ^ ele2 }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+      "generated_test": "result = bitwise_xor([10, 4, 6, 9], [5, 2, 3, 3])\nexpected = [15, 6, 5, 10]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+      "generated_test": "result = bitwise_xor([11, 5, 7, 10], [6, 3, 4, 4])\nexpected = [13, 6, 3, 14]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)",
+      "generated_test": "result = bitwise_xor([12, 6, 8, 11], [7, 4, 5, 6])\nexpected = [11, 2, 13, 13]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 80,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth tetrahedral number.",
+  "code_python": "def tetrahedral_number(n): \n\treturn (n * (n + 1) * (n + 2)) / 6",
+  "test_list": [
+    "assert tetrahedral_number(5) == 35",
+    "assert tetrahedral_number(6) == 56",
+    "assert tetrahedral_number(7) == 84"
+  ],
+  "python_1": "def tetrahedral_number(n): \n    # Initialize accumulator to sum up triangular numbers\n    total = 0\n    # Iterate through each layer of the tetrahedron from 1 to n\n    for i in range(1, n + 1):\n        # Calculate the i-th triangular number (sum of 1 to i)\n        triangular = i * (i + 1) // 2\n        # Add current triangular number to running total\n        total += triangular\n    # Return the accumulated sum as a float to match expected output type\n    return float(total)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def tetrahedral_number(n): \n    # Use recursion base case: tetrahedral number of 1 is simply 1\n    if n == 1:\n        # Return 1.0 as float to maintain consistent return type\n        return 1.0\n    # Recursively compute by adding n-th triangular number to previous tetrahedral\n    previous_tetrahedral = tetrahedral_number(n - 1)\n    # Calculate the n-th triangular number which forms the current layer\n    current_triangular = n * (n + 1) / 2\n    # Sum the current layer with all previous layers to build the tetrahedron\n    return previous_tetrahedral + current_triangular",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def tetrahedral_number(n): \n    # Import reduce to apply cumulative binary operation across sequence\n    from functools import reduce\n    # Generate list of triangular numbers from 1 to n using list comprehension\n    triangular_numbers = [k * (k + 1) // 2 for k in range(1, n + 1)]\n    # Use reduce to sum all triangular numbers, which yields the tetrahedral number\n    result = reduce(lambda acc, x: acc + x, triangular_numbers, 0)\n    # Convert to float for consistency with expected output format\n    return float(result)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def tetrahedral_number(n): \n    # Use nested sum comprehensions to directly count unit spheres in tetrahedron\n    # Outer sum iterates over each horizontal layer from bottom (layer 1) to top (layer n)\n    total = sum(\n        # Inner sum computes triangular number for layer i by summing 1+2+...+i\n        sum(j for j in range(1, i + 1))\n        # Each layer i contains a triangular arrangement of i*(i+1)/2 spheres\n        for i in range(1, n + 1)\n    )\n    # Cast to float to match the division behavior of the original formula\n    return float(total)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def tetrahedral_number(n): \n    # Compute binomial coefficient C(n+2, 3) which equals the nth tetrahedral number\n    # This exploits the combinatorial identity: T_n = C(n+2, 3) = (n+2)! / (3! * (n-1)!)\n    numerator = 1\n    # Multiply the three consecutive integers starting from n\n    for factor in [n, n + 1, n + 2]:\n        # Accumulate the product of n * (n+1) * (n+2)\n        numerator *= factor\n    # Compute 3 factorial which is the denominator in the binomial formula\n    denominator = 1\n    # Multiply 1 * 2 * 3 to get 6 using a loop for clarity\n    for k in range(1, 4):\n        # Build up factorial incrementally through multiplication\n        denominator *= k\n    # Divide product by 6 to obtain the tetrahedral number as a float\n    return numerator / denominator",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

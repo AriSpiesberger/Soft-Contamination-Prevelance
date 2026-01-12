@@ -1,0 +1,37 @@
+{
+  "task_id": 265,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and splits a list for every nth element, returning a list of the resulting lists.",
+  "python_code": "def list_split(S, step):\n    return [S[i::step] for i in range(step)]",
+  "test_list": [
+    "assert list_split(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'],3)==[['a', 'd', 'g', 'j', 'm'], ['b', 'e', 'h', 'k', 'n'], ['c', 'f', 'i', 'l']]",
+    "assert list_split([1,2,3,4,5,6,7,8,9,10,11,12,13,14],3)==[[1,4,7,10,13], [2,5,8,11,14], [3,6,9,12]]",
+    "assert list_split(['python','java','C','C++','DBMS','SQL'],2)==[['python', 'C', 'DBMS'], ['java', 'C++', 'SQL']]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\nimport java.util.Arrays;\n\npublic class Solution {\n    public static List<List<String>> list_split(List<String> S, int step) {\n        List<List<String>> result = new ArrayList<>();\n        for (int i = 0; i < step; i++) {\n            List<String> sublist = new ArrayList<>();\n            for (int j = i; j < S.size(); j += step) {\n                sublist.add(S.get(j));\n            }\n            result.add(sublist);\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert list_split(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'],3)==[['a', 'd', 'g', 'j', 'm'], ['b', 'e', 'h', 'k', 'n'], ['c', 'f', 'i', 'l']]",
+      "generated_test": "List<String> input = new ArrayList<>(Arrays.asList(\"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"g\", \"h\", \"i\", \"j\", \"k\", \"l\", \"m\", \"n\"));\nList<List<String>> result = list_split(input, 3);\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\"a\", \"d\", \"g\", \"j\", \"m\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"b\", \"e\", \"h\", \"k\", \"n\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"c\", \"f\", \"i\", \"l\")));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert list_split([1,2,3,4,5,6,7,8,9,10,11,12,13,14],3)==[[1,4,7,10,13], [2,5,8,11,14], [3,6,9,12]]",
+      "generated_test": "List<String> input = Arrays.asList(\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\",\"14\");\nList<List<String>> result = list_split(input, 3);\nList<List<String>> expected = Arrays.asList(\n    Arrays.asList(\"1\",\"4\",\"7\",\"10\",\"13\"),\n    Arrays.asList(\"2\",\"5\",\"8\",\"11\",\"14\"),\n    Arrays.asList(\"3\",\"6\",\"9\",\"12\")\n);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert list_split(['python','java','C','C++','DBMS','SQL'],2)==[['python', 'C', 'DBMS'], ['java', 'C++', 'SQL']]",
+      "generated_test": "List<String> input = Arrays.asList(\"python\", \"java\", \"C\", \"C++\", \"DBMS\", \"SQL\");\nList<List<String>> result = list_split(input, 2);\nList<List<String>> expected = Arrays.asList(\n    Arrays.asList(\"python\", \"C\", \"DBMS\"),\n    Arrays.asList(\"java\", \"C++\", \"SQL\")\n);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

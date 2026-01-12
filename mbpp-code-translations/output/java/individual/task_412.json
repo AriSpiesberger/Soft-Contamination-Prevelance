@@ -1,0 +1,37 @@
+{
+  "task_id": 412,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove odd numbers from a given list.",
+  "python_code": "def remove_odd(l):\n    for i in l:\n        if i % 2 != 0:\n            l.remove(i)\n    return l",
+  "test_list": [
+    "assert remove_odd([1,2,3]) == [2]",
+    "assert remove_odd([2,4,6]) == [2,4,6]",
+    "assert remove_odd([10,20,3]) == [10,20]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> remove_odd(ArrayList<Integer> l) {\n        ArrayList<Integer> toRemove = new ArrayList<>();\n        for (Integer i : l) {\n            if (i % 2 != 0) {\n                toRemove.add(i);\n            }\n        }\n        for (Integer i : toRemove) {\n            l.remove(i);\n        }\n        return l;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert remove_odd([1,2,3]) == [2]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(2);\ninput.add(3);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(2);\n\nArrayList<Integer> result = remove_odd(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_odd([2,4,6]) == [2,4,6]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(2);\ninput.add(4);\ninput.add(6);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(2);\nexpected.add(4);\nexpected.add(6);\n\nArrayList<Integer> result = remove_odd(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_odd([10,20,3]) == [10,20]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(10);\ninput.add(20);\ninput.add(3);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(10);\nexpected.add(20);\n\nArrayList<Integer> result = remove_odd(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 728,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function takes as input two lists [a_1,...,a_n], [b_1,...,b_n] and returns [a_1+b_1,...,a_n+b_n].",
+  "python_code": "def sum_list(lst1,lst2):\n  res_list = [lst1[i] + lst2[i] for i in range(len(lst1))] \n  return res_list",
+  "test_list": [
+    "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+    "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+    "assert sum_list([15,20,30],[15,45,75])==[30,65,105]"
+  ],
+  "code_javascript": "function sum_list(lst1, lst2) {\n  const res_list = lst1.map((val, i) => val + lst2[i]);\n  return res_list;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+      "generated_test": "const result = sum_list([10, 20, 30], [15, 25, 35]);\nconst expected = [25, 45, 65];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+      "generated_test": "const result = sum_list([1,2,3],[5,6,7]);\nconst expected = [6,8,10];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_list([15,20,30],[15,45,75])==[30,65,105]",
+      "generated_test": "const result = sum_list([15, 20, 30], [15, 45, 75]);\nconst expected = [30, 65, 105];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 576,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether a list is sublist of another or not.",
+  "python_code": "def is_Sub_Array(A,B): \n    n = len(A)\n    m = len(B)\n    i = 0; j = 0; \n    while (i < n and j < m):  \n        if (A[i] == B[j]): \n            i += 1; \n            j += 1; \n            if (j == m): \n                return True;  \n        else: \n            i = i - j + 1; \n            j = 0;       \n    return False; ",
+  "test_list": [
+    "assert is_Sub_Array([1,4,3,5],[1,2]) == False",
+    "assert is_Sub_Array([1,2,1],[1,2,1]) == True",
+    "assert is_Sub_Array([1,0,2,2],[2,2,0]) ==False"
+  ],
+  "code_javascript": "function is_Sub_Array(A, B) {\n    const n = A.length;\n    const m = B.length;\n    let i = 0;\n    let j = 0;\n    while (i < n && j < m) {\n        if (A[i] === B[j]) {\n            i += 1;\n            j += 1;\n            if (j === m) {\n                return true;\n            }\n        } else {\n            i = i - j + 1;\n            j = 0;\n        }\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert is_Sub_Array([1,4,3,5],[1,2]) == False",
+      "generated_test": "const result = is_Sub_Array([1,4,3,5], [1,2]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Sub_Array([1,2,1],[1,2,1]) == True",
+      "generated_test": "const result = is_Sub_Array([1,2,1], [1,2,1]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Sub_Array([1,0,2,2],[2,2,0]) ==False",
+      "generated_test": "const result = is_Sub_Array([1,0,2,2], [2,2,0]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

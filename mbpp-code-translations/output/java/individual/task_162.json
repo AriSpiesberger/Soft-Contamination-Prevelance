@@ -1,0 +1,37 @@
+{
+  "task_id": 162,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum (n - 2*i) from i=0 to n // 2, for instance n + (n-2) + (n-4)... (until n-x =< 0).",
+  "python_code": "def sum_series(n):\n  if n < 1:\n    return 0\n  else:\n    return n + sum_series(n - 2)",
+  "test_list": [
+    "assert sum_series(6) == 12",
+    "assert sum_series(10) == 30",
+    "assert sum_series(9) == 25"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int sum_series(int n) {\n        if (n < 1) {\n            return 0;\n        } else {\n            return n + sum_series(n - 2);\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sum_series(6) == 12",
+      "generated_test": "int result = sum_series(6);\nint expected = 12;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_series(10) == 30",
+      "generated_test": "int result = sum_series(10);\nint expected = 30;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_series(9) == 25",
+      "generated_test": "int result = sum_series(9);\nint expected = 25;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

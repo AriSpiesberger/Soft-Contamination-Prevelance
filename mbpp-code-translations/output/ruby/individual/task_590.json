@@ -1,0 +1,37 @@
+{
+  "task_id": 590,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert polar coordinates to rectangular coordinates.",
+  "python_code": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)",
+  "test_list": [
+    "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))"
+  ],
+  "code_ruby": "def polar_rect(x, y)\n  # Create complex number from x and y\n  cn = Complex(x, y)\n  \n  # Convert to polar coordinates (magnitude and phase)\n  magnitude = cn.abs\n  phase = cn.arg\n  cn_polar = [magnitude, phase]\n  \n  # Create complex from polar: rect(r, theta) = r * e^(i*theta)\n  cn1 = Complex.polar(2, Math::PI)\n  \n  [cn_polar, cn1]\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+      "generated_test": "result = polar_rect(3, 4)\n\nexpected_polar = [5.0, 0.9272952180016122]\nexpected_rect = Complex(-2, 2.4492935982947064e-16)\n\n# Check polar coordinates with tolerance\npolar_match = (result[0][0] - expected_polar[0]).abs < 1e-10 && \n              (result[0][1] - expected_polar[1]).abs < 1e-10\n\n# Check rectangular complex number with tolerance\nrect_match = (result[1].real - expected_rect.real).abs < 1e-10 && \n             (result[1].imag - expected_rect.imag).abs < 1e-10\n\nif polar_match && rect_match\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{[expected_polar, expected_rect]}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+      "generated_test": "result = polar_rect(4, 7)\n\nexpected_polar = [8.06225774829855, 1.0516502125483738]\nexpected_rect = Complex(-2, 2.4492935982947064e-16)\n\ntolerance = 1e-10\n\npolar_match = (result[0][0] - expected_polar[0]).abs < tolerance && \n              (result[0][1] - expected_polar[1]).abs < tolerance\n\nrect_match = (result[1].real - expected_rect.real).abs < tolerance && \n             (result[1].imag - expected_rect.imag).abs < tolerance\n\nif polar_match && rect_match\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: [#{expected_polar}, #{expected_rect}]\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))",
+      "generated_test": "result = polar_rect(15, 17)\n\nexpected_polar = [22.67156809750927, 0.8478169733934057]\nexpected_complex = Complex(-2, 2.4492935982947064e-16)\n\ntolerance = 1e-10\n\npolar_match = (result[0][0] - expected_polar[0]).abs < tolerance && \n              (result[0][1] - expected_polar[1]).abs < tolerance\n\ncomplex_match = (result[1].real - expected_complex.real).abs < tolerance && \n                (result[1].imag - expected_complex.imag).abs < tolerance\n\nif polar_match && complex_match\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: [#{expected_polar}, #{expected_complex}]\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

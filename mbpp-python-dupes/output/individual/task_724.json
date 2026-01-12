@@ -1,0 +1,28 @@
+{
+  "task_id": 724,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes base and power as arguments and calculate the sum of all digits of the base to the specified power.",
+  "code_python": "def power_base_sum(base, power):\n    return sum([int(i) for i in str(pow(base, power))])",
+  "test_list": [
+    "assert power_base_sum(2,100)==115",
+    "assert power_base_sum(8,10)==37",
+    "assert power_base_sum(8,15)==62",
+    "assert power_base_sum(3,3)==9"
+  ],
+  "python_1": "def power_base_sum(base, power):\n    # Compute the exponential result using the ** operator instead of pow()\n    result = base ** power\n    # Initialize accumulator variable to store running sum of digits\n    digit_sum = 0\n    # Use map to convert each character to integer, avoiding list comprehension\n    digit_iterator = map(int, str(result))\n    # Iterate through each digit yielded by the map object\n    for digit in digit_iterator:\n        # Add current digit to our running total\n        digit_sum += digit\n    # Return the accumulated sum of all digits\n    return digit_sum",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def power_base_sum(base, power):\n    # Calculate the large number by raising base to the given power\n    number = base ** power\n    # Initialize a variable to accumulate the digit sum\n    total = 0\n    # Continue extracting digits while there are still digits remaining\n    while number > 0:\n        # Extract the rightmost digit using modulo 10 operation\n        last_digit = number % 10\n        # Add the extracted digit to our running total\n        total += last_digit\n        # Remove the rightmost digit by integer division by 10\n        number //= 10\n    # Return the sum of all extracted digits\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def power_base_sum(base, power):\n    # Use the built-in pow function to compute base raised to power\n    computed_value = pow(base, power)\n    # Convert the number to a string representation for digit access\n    digit_string = str(computed_value)\n    # Apply a generator expression with sum() for memory-efficient digit summation\n    digit_sum = sum(int(char) for char in digit_string)\n    # Return the computed sum of all individual digits\n    return digit_sum",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def power_base_sum(base, power):\n    # Import reduce for functional-style accumulation over an iterable\n    from functools import reduce\n    # Compute exponentiation and immediately convert to string of digits\n    digit_chars = str(base ** power)\n    # Use reduce to fold the digit string into a single sum value\n    # Lambda takes running total and next char, converts char to int and adds\n    result = reduce(lambda acc, ch: acc + int(ch), digit_chars, 0)\n    # Return the folded result which represents sum of all digits\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def power_base_sum(base, power):\n    # Leverage recursion helper to process digits one at a time from string\n    def recursive_digit_sum(digit_str, index):\n        # Base case: when index reaches string length, return zero to terminate\n        if index == len(digit_str):\n            return 0\n        # Extract single character at current position and convert to integer\n        current_digit = int(digit_str[index])\n        # Recursively sum remaining digits and add to current digit value\n        return current_digit + recursive_digit_sum(digit_str, index + 1)\n    # Perform exponentiation to get the large number result\n    exponential_result = base ** power\n    # Transform numeric result into string for character-by-character processing\n    string_representation = str(exponential_result)\n    # Kick off recursive summation starting from the leftmost digit (index 0)\n    return recursive_digit_sum(string_representation, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

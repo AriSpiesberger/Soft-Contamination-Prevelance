@@ -1,0 +1,37 @@
+{
+  "task_id": 623,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the n-th power of each number in a list.",
+  "python_code": "def nth_nums(nums,n):\n nth_nums = list(map(lambda x: x ** n, nums))\n return nth_nums",
+  "test_list": [
+    "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+    "assert nth_nums([12,15],5)==([248832, 759375])"
+  ],
+  "code_javascript": "function nth_nums(nums, n) {\n    return nums.map(x => x ** n);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+      "generated_test": "const result = nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);\nconst expected = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+      "generated_test": "const result = nth_nums([10, 20, 30], 3);\nconst expected = [1000, 8000, 27000];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert nth_nums([12,15],5)==([248832, 759375])",
+      "generated_test": "const result = nth_nums([12, 15], 5);\nconst expected = [248832, 759375];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

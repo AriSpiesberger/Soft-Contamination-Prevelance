@@ -1,0 +1,27 @@
+{
+  "task_id": 96,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the number of divisors of a given integer.",
+  "code_python": "def divisor(n):\n  for i in range(n):\n    x = len([i for i in range(1,n+1) if not n % i])\n  return x",
+  "test_list": [
+    "assert divisor(15) == 4",
+    "assert divisor(12) == 6",
+    "assert divisor(9) == 3"
+  ],
+  "python_1": "def divisor(n):\n    # Initialize a counter to track the total number of divisors\n    count = 0\n    # Start checking from 1 up to the square root of n for efficiency\n    i = 1\n    # Continue while i squared is less than or equal to n\n    while i * i <= n:\n        # Check if i evenly divides n\n        if n % i == 0:\n            # If i equals n/i, we found a perfect square divisor, count once\n            if i == n // i:\n                count += 1\n            # Otherwise, both i and n/i are distinct divisors, count both\n            else:\n                count += 2\n        # Move to the next potential divisor\n        i += 1\n    # Return the total count of divisors found\n    return count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def divisor(n):\n    # Use a set to store unique divisors found\n    divisors = set()\n    # Iterate through potential divisors from 1 to n (inclusive)\n    for candidate in range(1, n + 1):\n        # Check if candidate divides n without remainder\n        if n % candidate == 0:\n            # Add the valid divisor to our set\n            divisors.add(candidate)\n    # Return the size of the set which represents count of unique divisors\n    return len(divisors)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def divisor(n):\n    # Use filter function with lambda to select numbers that divide n evenly\n    divisor_filter = filter(lambda x: n % x == 0, range(1, n + 1))\n    # Convert the filter object to a list to enable counting\n    divisor_list = list(divisor_filter)\n    # Return the length of the filtered list as the divisor count\n    return len(divisor_list)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def divisor(n):\n    # Use recursion with a helper that accumulates count starting from divisor 1\n    def count_divisors(current, num):\n        # Base case: when current exceeds num, no more divisors to check\n        if current > num:\n            return 0\n        # Check if current value divides num evenly, contributing 1 if true\n        contribution = 1 if num % current == 0 else 0\n        # Recursively check next potential divisor and add to running total\n        return contribution + count_divisors(current + 1, num)\n    # Initiate recursive counting starting from smallest possible divisor\n    return count_divisors(1, n)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def divisor(n):\n    # Use reduce from functools to accumulate divisor count in functional style\n    from functools import reduce\n    # Create a range of all candidate divisors from 1 through n\n    candidates = range(1, n + 1)\n    # Apply reduce to count divisors: add 1 for each number that divides n evenly\n    total = reduce(lambda acc, x: acc + (1 if n % x == 0 else 0), candidates, 0)\n    # Return the accumulated sum which represents total divisor count\n    return total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

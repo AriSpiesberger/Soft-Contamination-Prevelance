@@ -1,0 +1,17 @@
+{
+  "task_id": 252,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert complex numbers to polar coordinates.",
+  "python_code": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num) ",
+  "test_list": [
+    "assert convert(1) == (1.0, 0.0)",
+    "assert convert(4) == (4.0,0.0)",
+    "assert convert(5) == (5.0,0.0)"
+  ],
+  "code_typescript": "function convert(numbers: number | { re: number; im: number }): [number, number] {\n  let re: number;\n  let im: number;\n  \n  if (typeof numbers === 'number') {\n    re = numbers;\n    im = 0;\n  } else {\n    re = numbers.re;\n    im = numbers.im;\n  }\n  \n  const r = Math.sqrt(re * re + im * im);\n  const theta = Math.atan2(im, re);\n  \n  return [r, theta];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

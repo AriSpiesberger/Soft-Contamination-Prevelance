@@ -1,0 +1,37 @@
+{
+  "task_id": 116,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given tuple of positive integers into a single integer.",
+  "python_code": "def tuple_to_int(nums):\n    result = int(''.join(map(str,nums)))\n    return result",
+  "test_list": [
+    "assert tuple_to_int((1,2,3))==123",
+    "assert tuple_to_int((4,5,6))==456",
+    "assert tuple_to_int((5,6,7))==567"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int tuple_to_int(int[] nums) {\n        StringBuilder sb = new StringBuilder();\n        for (int num : nums) {\n            sb.append(num);\n        }\n        return Integer.parseInt(sb.toString());\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert tuple_to_int((1,2,3))==123",
+      "generated_test": "int result = tuple_to_int(new int[]{1, 2, 3});\nint expected = 123;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_to_int((4,5,6))==456",
+      "generated_test": "int result = tuple_to_int(new int[]{4, 5, 6});\nint expected = 456;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_to_int((5,6,7))==567",
+      "generated_test": "int[] input = new int[]{5, 6, 7};\nint result = tuple_to_int(input);\nint expected = 567;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

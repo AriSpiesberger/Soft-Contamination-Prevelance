@@ -1,0 +1,17 @@
+{
+  "task_id": 573,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to calculate the product of the unique numbers in a given list.",
+  "python_code": "def unique_product(list_data):\n    temp = list(set(list_data))\n    p = 1\n    for i in temp:\n        p *= i\n    return p",
+  "test_list": [
+    "assert unique_product([10, 20, 30, 40, 20, 50, 60, 40]) ==  720000000",
+    "assert unique_product([1, 2, 3, 1,]) == 6",
+    "assert unique_product([7, 8, 9, 0, 1, 1]) == 0"
+  ],
+  "code_typescript": "function unique_product(list_data: number[]): number {\n    const temp = [...new Set(list_data)];\n    let p = 1;\n    for (const i of temp) {\n        p *= i;\n    }\n    return p;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

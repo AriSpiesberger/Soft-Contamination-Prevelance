@@ -1,0 +1,37 @@
+{
+  "task_id": 63,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum difference between available pairs in the given tuple list.",
+  "python_code": "def max_difference(test_list):\n  temp = [abs(b - a) for a, b in test_list]\n  res = max(temp)\n  return (res) ",
+  "test_list": [
+    "assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7",
+    "assert max_difference([(4, 6), (2, 17), (9, 13), (11, 12)]) == 15",
+    "assert max_difference([(12, 35), (21, 27), (13, 23), (41, 22)]) == 23"
+  ],
+  "code_javascript": "function max_difference(test_list) {\n  const temp = test_list.map(([a, b]) => Math.abs(b - a));\n  const res = Math.max(...temp);\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7",
+      "generated_test": "const result = max_difference([[3, 5], [1, 7], [10, 3], [1, 2]]);\nconst expected = 7;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_difference([(4, 6), (2, 17), (9, 13), (11, 12)]) == 15",
+      "generated_test": "const result = max_difference([[4, 6], [2, 17], [9, 13], [11, 12]]);\nconst expected = 15;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_difference([(12, 35), (21, 27), (13, 23), (41, 22)]) == 23",
+      "generated_test": "const result = max_difference([[12, 35], [21, 27], [13, 23], [41, 22]]);\nconst expected = 23;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 624,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert a given string to uppercase.",
+  "python_code": "def is_upper(string):\n  return (string.upper())",
+  "test_list": [
+    "assert is_upper(\"person\") ==\"PERSON\"",
+    "assert is_upper(\"final\") == \"FINAL\"",
+    "assert is_upper(\"Valid\") == \"VALID\""
+  ],
+  "code_javascript": "function is_upper(string) {\n  return string.toUpperCase();\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert is_upper(\"person\") ==\"PERSON\"",
+      "generated_test": "const result = is_upper(\"person\");\nconst expected = \"PERSON\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_upper(\"final\") == \"FINAL\"",
+      "generated_test": "const result = is_upper(\"final\");\nconst expected = \"FINAL\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_upper(\"Valid\") == \"VALID\"",
+      "generated_test": "const result = is_upper(\"Valid\");\nconst expected = \"VALID\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

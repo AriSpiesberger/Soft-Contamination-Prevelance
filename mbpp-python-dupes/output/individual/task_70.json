@@ -1,0 +1,27 @@
+{
+  "task_id": 70,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "code_python": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1",
+  "test_list": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "python_1": "# Define the main function that checks if all tuples have equal length\ndef find_equal_tuple(Input):\n    # Handle edge case where input list is empty - considered equal by convention\n    if not Input:\n        return True\n    # Use set comprehension to collect all unique tuple lengths\n    lengths = {len(t) for t in Input}\n    # If all tuples have same length, the set will contain exactly one element\n    return len(lengths) == 1\n\n# Define wrapper function that calls the main logic function\ndef get_equal(Input):\n    # Directly return the boolean result from find_equal_tuple\n    return find_equal_tuple(Input)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Define the main function to check tuple length equality\ndef find_equal_tuple(Input):\n    # Return True immediately for empty input - no tuples means trivially equal\n    if not Input:\n        return True\n    # Extract the length of the first tuple as our reference baseline\n    reference_length = len(Input[0])\n    # Use all() with generator expression - short-circuits on first mismatch\n    return all(len(t) == reference_length for t in Input)\n\n# Define the wrapper function as required by the test interface\ndef get_equal(Input):\n    # Delegate to the main logic function and return its boolean result\n    return find_equal_tuple(Input)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Define the main function using map and reduce-style logic\ndef find_equal_tuple(Input):\n    # Early return True when input is empty - vacuous truth applies\n    if not Input:\n        return True\n    # Transform each tuple into its length using map function\n    lengths = list(map(len, Input))\n    # Get the first length to compare against all others\n    first_len = lengths[0]\n    # Count how many lengths match the first one using map with comparison\n    matches = list(map(lambda x: x == first_len, lengths))\n    # Return True only if every element in matches is True\n    return False not in matches\n\n# Define wrapper function required by test cases\ndef get_equal(Input):\n    # Simply forward the call to the main implementation\n    return find_equal_tuple(Input)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Define the main function using recursion to check tuple lengths\ndef find_equal_tuple(Input):\n    # Base case: empty list or single tuple means all lengths are trivially equal\n    if len(Input) <= 1:\n        return True\n    # Compare first tuple's length with second tuple's length directly\n    if len(Input[0]) != len(Input[1]):\n        # Mismatch found between first two tuples, return False immediately\n        return False\n    # Recursive call: check remaining tuples by removing the first element\n    return find_equal_tuple(Input[1:])\n\n# Define the wrapper function that interfaces with test cases\ndef get_equal(Input):\n    # Invoke recursive checker and return its boolean result\n    return find_equal_tuple(Input)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Define the main function using reduce from functools for a functional approach\ndef find_equal_tuple(Input):\n    # Import reduce function for accumulating comparison results\n    from functools import reduce\n    # Handle empty input as a special case - return True by convention\n    if not Input:\n        return True\n    # Handle single tuple case - trivially all same length\n    if len(Input) == 1:\n        return True\n    # Create a list of all tuple lengths using list comprehension\n    all_lengths = [len(t) for t in Input]\n    # Use reduce to check if each consecutive pair of lengths are equal\n    # Reduce accumulates True only if all adjacent lengths match\n    result = reduce(lambda acc, curr: acc if acc is False else (curr if acc == curr else False), all_lengths)\n    # If result is not False, all lengths were equal, so compare against first length\n    return result == all_lengths[0]\n\n# Define the wrapper function to match expected test interface\ndef get_equal(Input):\n    # Delegate to main function and return its boolean evaluation\n    return find_equal_tuple(Input)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

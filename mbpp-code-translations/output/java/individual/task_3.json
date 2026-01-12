@@ -1,0 +1,18 @@
+{
+  "task_id": 3,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to identify non-prime numbers.",
+  "python_code": "import math\ndef is_not_prime(n):\n    result = False\n    for i in range(2,int(math.sqrt(n)) + 1):\n        if n % i == 0:\n            result = True\n    return result",
+  "test_list": [
+    "assert is_not_prime(2) == False",
+    "assert is_not_prime(10) == True",
+    "assert is_not_prime(35) == True",
+    "assert is_not_prime(37) == False"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean is_not_prime(int n) {\n        boolean result = false;\n        for (int i = 2; i <= (int) Math.sqrt(n); i++) {\n            if (n % i == 0) {\n                result = true;\n            }\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0
+}

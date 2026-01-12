@@ -1,0 +1,18 @@
+{
+  "task_id": 3,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to identify non-prime numbers.",
+  "python_code": "import math\ndef is_not_prime(n):\n    result = False\n    for i in range(2,int(math.sqrt(n)) + 1):\n        if n % i == 0:\n            result = True\n    return result",
+  "test_list": [
+    "assert is_not_prime(2) == False",
+    "assert is_not_prime(10) == True",
+    "assert is_not_prime(35) == True",
+    "assert is_not_prime(37) == False"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc is_not_prime(n int) bool {\n\tresult := false\n\tfor i := 2; i <= int(math.Sqrt(float64(n))); i++ {\n\t\tif n%i == 0 {\n\t\t\tresult = true\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0
+}

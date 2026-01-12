@@ -1,0 +1,37 @@
+{
+  "task_id": 433,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the entered number is greater than the elements of the given array.",
+  "python_code": "def check_greater(arr, number):\n  arr.sort()\n  return number > arr[-1]",
+  "test_list": [
+    "assert check_greater([1, 2, 3, 4, 5], 4) == False",
+    "assert check_greater([2, 3, 4, 5, 6], 8) == True",
+    "assert check_greater([9, 7, 4, 8, 6, 1], 11) == True"
+  ],
+  "code_rust": "pub fn check_greater(arr: &[i32], number: i32) -> bool {\n    if arr.is_empty() {\n        return false;\n    }\n    let max = arr.iter().max().unwrap();\n    number > *max\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_greater([1, 2, 3, 4, 5], 4) == False",
+      "generated_test": "let result = check_greater(&[1, 2, 3, 4, 5], 4);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_greater([2, 3, 4, 5, 6], 8) == True",
+      "generated_test": "let result = check_greater(&[2, 3, 4, 5, 6], 8);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_greater([9, 7, 4, 8, 6, 1], 11) == True",
+      "generated_test": "let result = check_greater(&[9, 7, 4, 8, 6, 1], 11);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

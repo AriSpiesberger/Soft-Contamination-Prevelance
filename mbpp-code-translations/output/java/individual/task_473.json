@@ -1,0 +1,37 @@
+{
+  "task_id": 473,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the tuple intersection of elements in the given tuple list irrespective of their order.",
+  "python_code": "def tuple_intersection(test_list1, test_list2):\n  res = set([tuple(sorted(ele)) for ele in test_list1]) & set([tuple(sorted(ele)) for ele in test_list2])\n  return (res)",
+  "test_list": [
+    "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+    "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+    "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Set<List<Integer>> tuple_intersection(List<List<Integer>> test_list1, List<List<Integer>> test_list2) {\n        Set<List<Integer>> set1 = new HashSet<>();\n        for (List<Integer> ele : test_list1) {\n            List<Integer> sorted = new ArrayList<>(ele);\n            Collections.sort(sorted);\n            set1.add(sorted);\n        }\n        \n        Set<List<Integer>> set2 = new HashSet<>();\n        for (List<Integer> ele : test_list2) {\n            List<Integer> sorted = new ArrayList<>(ele);\n            Collections.sort(sorted);\n            set2.add(sorted);\n        }\n        \n        set1.retainAll(set2);\n        \n        return set1;\n    }\n    \n    public static Set<List<Integer>> tuple_intersection(int[][] test_list1, int[][] test_list2) {\n        Set<List<Integer>> set1 = new HashSet<>();\n        for (int[] ele : test_list1) {\n            List<Integer> sorted = new ArrayList<>();\n            for (int val : ele) {\n                sorted.add(val);\n            }\n            Collections.sort(sorted);\n            set1.add(sorted);\n        }\n        \n        Set<List<Integer>> set2 = new HashSet<>();\n        for (int[] ele : test_list2) {\n            List<Integer> sorted = new ArrayList<>();\n            for (int val : ele) {\n                sorted.add(val);\n            }\n            Collections.sort(sorted);\n            set2.add(sorted);\n        }\n        \n        set1.retainAll(set2);\n        \n        return set1;\n    }\n    \n    public static Set<List<Integer>> tuple_intersection(Integer[][] test_list1, Integer[][] test_list2) {\n        Set<List<Integer>> set1 = new HashSet<>();\n        for (Integer[] ele : test_list1) {\n            List<Integer> sorted = new ArrayList<>(Arrays.asList(ele));\n            Collections.sort(sorted);\n            set1.add(sorted);\n        }\n        \n        Set<List<Integer>> set2 = new HashSet<>();\n        for (Integer[] ele : test_list2) {\n            List<Integer> sorted = new ArrayList<>(Arrays.asList(ele));\n            Collections.sort(sorted);\n            set2.add(sorted);\n        }\n        \n        set1.retainAll(set2);\n        \n        return set1;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 4,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+      "generated_test": "int[][] test_list1 = new int[][]{{3, 4}, {5, 6}, {9, 10}, {4, 5}};\nint[][] test_list2 = new int[][]{{5, 4}, {3, 4}, {6, 5}, {9, 11}};\n\nSet<List<Integer>> result = tuple_intersection(test_list1, test_list2);\n\nSet<List<Integer>> expected = new HashSet<>();\nexpected.add(Arrays.asList(4, 5));\nexpected.add(Arrays.asList(3, 4));\nexpected.add(Arrays.asList(5, 6));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+      "generated_test": "int[][] test_list1 = new int[][]{{4, 1}, {7, 4}, {11, 13}, {17, 14}};\nint[][] test_list2 = new int[][]{{1, 4}, {7, 4}, {16, 12}, {10, 13}};\n\nSet<List<Integer>> result = tuple_intersection(test_list1, test_list2);\n\nSet<List<Integer>> expected = new HashSet<>();\nexpected.add(Arrays.asList(4, 7));\nexpected.add(Arrays.asList(1, 4));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}",
+      "generated_test": "int[][] list1 = new int[][]{{2, 1}, {3, 2}, {1, 3}, {1, 4}};\nint[][] list2 = new int[][]{{11, 2}, {2, 3}, {6, 2}, {1, 3}};\n\nSet<List<Integer>> result = tuple_intersection(list1, list2);\n\nSet<List<Integer>> expected = new HashSet<>();\nexpected.add(Arrays.asList(1, 3));\nexpected.add(Arrays.asList(2, 3));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 145,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum difference between any two elements in a given array.",
+  "python_code": "def max_Abs_Diff(arr): \n    n = len(arr)\n    minEle = arr[0] \n    maxEle = arr[0] \n    for i in range(1, n): \n        minEle = min(minEle,arr[i]) \n        maxEle = max(maxEle,arr[i]) \n    return (maxEle - minEle) ",
+  "test_list": [
+    "assert max_Abs_Diff((2,1,5,3)) == 4",
+    "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+    "assert max_Abs_Diff((3,2,1)) == 2"
+  ],
+  "code_rust": "pub fn max_Abs_Diff(arr: &[i32]) -> i32 {\n    if arr.is_empty() {\n        return 0;\n    }\n    \n    let mut min_ele = arr[0];\n    let mut max_ele = arr[0];\n    \n    for i in 1..arr.len() {\n        min_ele = min_ele.min(arr[i]);\n        max_ele = max_ele.max(arr[i]);\n    }\n    \n    max_ele - min_ele\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_Abs_Diff((2,1,5,3)) == 4",
+      "generated_test": "let result = max_Abs_Diff(&[2, 1, 5, 3]);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+      "generated_test": "let result = max_Abs_Diff(&[9, 3, 2, 5, 1]);\nlet expected = 8;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Abs_Diff((3,2,1)) == 2",
+      "generated_test": "let result = max_Abs_Diff(&[3, 2, 1]);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

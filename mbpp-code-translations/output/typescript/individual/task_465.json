@@ -1,0 +1,17 @@
+{
+  "task_id": 465,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to drop empty items from a given dictionary.",
+  "python_code": "def drop_empty(dict1):\n  dict1 = {key:value for (key, value) in dict1.items() if value is not None}\n  return dict1",
+  "test_list": [
+    "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+    "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+    "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}"
+  ],
+  "code_typescript": "function drop_empty<T>(dict1: Record<string, T | null>): Record<string, T> {\n  const result: Record<string, T> = {};\n  for (const [key, value] of Object.entries(dict1)) {\n    if (value !== null) {\n      result[key] = value;\n    }\n  }\n  return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 135,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth hexagonal number.",
+  "python_code": "def hexagonal_num(n): \n\treturn n*(2*n - 1) ",
+  "test_list": [
+    "assert hexagonal_num(10) == 190",
+    "assert hexagonal_num(5) == 45",
+    "assert hexagonal_num(7) == 91"
+  ],
+  "code_ruby": "def hexagonal_num(n)\n  n * (2 * n - 1)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert hexagonal_num(10) == 190",
+      "generated_test": "result = hexagonal_num(10)\nexpected = 190\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert hexagonal_num(5) == 45",
+      "generated_test": "result = hexagonal_num(5)\nexpected = 45\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert hexagonal_num(7) == 91",
+      "generated_test": "result = hexagonal_num(7)\nexpected = 91\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

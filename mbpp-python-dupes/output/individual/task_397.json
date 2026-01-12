@@ -1,0 +1,27 @@
+{
+  "task_id": 397,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median of three numbers.",
+  "code_python": "def median_numbers(a,b,c):\n if a > b:\n    if a < c:\n        median = a\n    elif b > c:\n        median = b\n    else:\n        median = c\n else:\n    if a > c:\n        median = a\n    elif b < c:\n        median = b\n    else:\n        median = c\n return median",
+  "test_list": [
+    "assert median_numbers(25,55,65)==55.0",
+    "assert median_numbers(20,10,30)==20.0",
+    "assert median_numbers(15,45,75)==45.0"
+  ],
+  "python_1": "# Define function that takes three numeric arguments\ndef median_numbers(a, b, c):\n    # Create a list containing all three input numbers\n    numbers = [a, b, c]\n    # Sort the list in ascending order to arrange values from smallest to largest\n    numbers.sort()\n    # The median of three sorted numbers is always the middle element at index 1\n    median = numbers[1]\n    # Convert to float to match expected test output format\n    return float(median)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def median_numbers(a, b, c):\n    # Use max and min functions to mathematically isolate the middle value\n    # The median equals the total sum minus the extreme values (max and min)\n    total_sum = a + b + c\n    # Find the largest value among all three inputs\n    largest = max(a, b, c)\n    # Find the smallest value among all three inputs\n    smallest = min(a, b, c)\n    # Subtract extremes from sum to obtain the middle value (median)\n    median = total_sum - largest - smallest\n    # Cast result to float for consistent output format with test assertions\n    return float(median)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def median_numbers(a, b, c):\n    # Use Python's sorted() function which returns a new sorted list without modifying original\n    sorted_values = sorted([a, b, c])\n    # Access the middle element directly using index 1 from the 3-element sorted list\n    middle_value = sorted_values[1]\n    # Multiply by 1.0 to convert integer to float for test compatibility\n    return middle_value * 1.0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def median_numbers(a, b, c):\n    # Use a conditional expression chain to find the middle value through pairwise comparisons\n    # Check if 'a' lies between 'b' and 'c' by verifying it satisfies both boundary conditions\n    if (b <= a <= c) or (c <= a <= b):\n        # 'a' is the median since it falls within the range defined by the other two\n        result = a\n    # Check if 'b' lies between 'a' and 'c' using similar boundary logic\n    elif (a <= b <= c) or (c <= b <= a):\n        # 'b' is the median as it sits in the middle position\n        result = b\n    # If neither 'a' nor 'b' is the median, then 'c' must be by elimination\n    else:\n        # 'c' is the remaining candidate and therefore the median value\n        result = c\n    # Add 0.0 to coerce the integer result into a floating point number\n    return result + 0.0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def median_numbers(a, b, c):\n    # Leverage Python's statistics module for a clean, library-based solution\n    import statistics\n    # Bundle the three input values into a tuple for processing\n    values = (a, b, c)\n    # Use the built-in median function which handles odd-length sequences optimally\n    computed_median = statistics.median(values)\n    # Ensure floating point return type by dividing by 1 (identity operation with type coercion)\n    return computed_median / 1",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

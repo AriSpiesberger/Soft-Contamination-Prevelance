@@ -1,0 +1,37 @@
+{
+  "task_id": 441,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cube of a given size.",
+  "python_code": "def surfacearea_cube(l):\n  surfacearea= 6*l*l\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cube(5)==150",
+    "assert surfacearea_cube(3)==54",
+    "assert surfacearea_cube(10)==600"
+  ],
+  "code_ruby": "def surfacearea_cube(l)\n  6 * l * l\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert surfacearea_cube(5)==150",
+      "generated_test": "result = surfacearea_cube(5)\nexpected = 150\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cube(3)==54",
+      "generated_test": "result = surfacearea_cube(3)\nexpected = 54\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cube(10)==600",
+      "generated_test": "result = surfacearea_cube(10)\nexpected = 600\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

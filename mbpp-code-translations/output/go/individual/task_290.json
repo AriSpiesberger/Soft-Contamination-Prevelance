@@ -1,0 +1,37 @@
+{
+  "task_id": 290,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the list of maximum length in a list of lists.",
+  "python_code": "def max_length(list1):\n    max_length = max(len(x) for x in  list1 )  \n    max_list = max((x) for x in   list1)\n    return(max_length, max_list)",
+  "test_list": [
+    "assert max_length([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])",
+    "assert max_length([[1], [5, 7], [10, 12, 14,15]])==(4, [10, 12, 14,15])",
+    "assert max_length([[5], [15,20,25]])==(3, [15,20,25])"
+  ],
+  "code_go": "package main\n\nfunc max_length(list1 [][]int) (int, []int) {\n\tif len(list1) == 0 {\n\t\treturn 0, nil\n\t}\n\n\tmaxLen := len(list1[0])\n\tmaxList := list1[0]\n\n\tfor _, x := range list1 {\n\t\tif len(x) > maxLen {\n\t\t\tmaxLen = len(x)\n\t\t}\n\t}\n\n\t// Find the max list (lexicographically largest)\n\tfor _, x := range list1 {\n\t\tif compareSlices(x, maxList) > 0 {\n\t\t\tmaxList = x\n\t\t}\n\t}\n\n\t// Return a copy of maxList\n\tresult := make([]int, len(maxList))\n\tcopy(result, maxList)\n\n\treturn maxLen, result\n}\n\nfunc compareSlices(a, b []int) int {\n\tminLen := len(a)\n\tif len(b) < minLen {\n\t\tminLen = len(b)\n\t}\n\n\tfor i := 0; i < minLen; i++ {\n\t\tif a[i] < b[i] {\n\t\t\treturn -1\n\t\t}\n\t\tif a[i] > b[i] {\n\t\t\treturn 1\n\t\t}\n\t}\n\n\tif len(a) < len(b) {\n\t\treturn -1\n\t}\n\tif len(a) > len(b) {\n\t\treturn 1\n\t}\n\treturn 0\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_length([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])",
+      "generated_test": "input := [][]int{{0}, {1, 3}, {5, 7}, {9, 11}, {13, 15, 17}}\nexpectedLen := 3\nexpectedList := []int{13, 15, 17}\n\ngotLen, gotList := max_length(input)\n\n// Check if results match\npass := gotLen == expectedLen && len(gotList) == len(expectedList)\nif pass {\n\tfor i := range expectedList {\n\t\tif gotList[i] != expectedList[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %v)\\n\", expectedLen, expectedList)\n\tfmt.Printf(\"  Got: (%d, %v)\\n\", gotLen, gotList)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_length([[1], [5, 7], [10, 12, 14,15]])==(4, [10, 12, 14,15])",
+      "generated_test": "input := [][]int{{1}, {5, 7}, {10, 12, 14, 15}}\nexpectedLen := 4\nexpectedList := []int{10, 12, 14, 15}\n\ngotLen, gotList := max_length(input)\n\n// Check if results match\npass := gotLen == expectedLen && len(gotList) == len(expectedList)\nif pass {\n\tfor i := range expectedList {\n\t\tif gotList[i] != expectedList[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %v)\\n\", expectedLen, expectedList)\n\tfmt.Printf(\"  Got: (%d, %v)\\n\", gotLen, gotList)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_length([[5], [15,20,25]])==(3, [15,20,25])",
+      "generated_test": "input := [][]int{{5}, {15, 20, 25}}\nexpectedLen := 3\nexpectedList := []int{15, 20, 25}\n\ngotLen, gotList := max_length(input)\n\npass := true\nif gotLen != expectedLen {\n\tpass = false\n}\nif len(gotList) != len(expectedList) {\n\tpass = false\n} else {\n\tfor i := range expectedList {\n\t\tif gotList[i] != expectedList[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %v)\\n\", expectedLen, expectedList)\n\tfmt.Printf(\"  Got: (%d, %v)\\n\", gotLen, gotList)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

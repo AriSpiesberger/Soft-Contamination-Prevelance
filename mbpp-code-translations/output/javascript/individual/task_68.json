@@ -1,0 +1,37 @@
+{
+  "task_id": 68,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given array is monotonic or not.",
+  "python_code": "def is_Monotonic(A): \n    return (all(A[i] <= A[i + 1] for i in range(len(A) - 1)) or\n            all(A[i] >= A[i + 1] for i in range(len(A) - 1))) ",
+  "test_list": [
+    "assert is_Monotonic([6, 5, 4, 4]) == True",
+    "assert is_Monotonic([1, 2, 2, 3]) == True",
+    "assert is_Monotonic([1, 3, 2]) == False"
+  ],
+  "code_javascript": "function is_Monotonic(A) {\n    const isIncreasing = A.every((val, i) => i === A.length - 1 || A[i] <= A[i + 1]);\n    const isDecreasing = A.every((val, i) => i === A.length - 1 || A[i] >= A[i + 1]);\n    return isIncreasing || isDecreasing;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert is_Monotonic([6, 5, 4, 4]) == True",
+      "generated_test": "const result = is_Monotonic([6, 5, 4, 4]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 2, 2, 3]) == True",
+      "generated_test": "const result = is_Monotonic([1, 2, 2, 3]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 3, 2]) == False",
+      "generated_test": "const result = is_Monotonic([1, 3, 2]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

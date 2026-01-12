@@ -1,0 +1,37 @@
+{
+  "task_id": 113,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string represents an integer or not.",
+  "python_code": "def check_integer(text):\n text = text.strip()\n if len(text) < 1:\n    return None\n else:\n     if all(text[i] in \"0123456789\" for i in range(len(text))):\n          return True\n     elif (text[0] in \"+-\") and \\\n         all(text[i] in \"0123456789\" for i in range(1,len(text))):\n         return True\n     else:\n        return False",
+  "test_list": [
+    "assert check_integer(\"python\")==False",
+    "assert check_integer(\"1\")==True",
+    "assert check_integer(\"12345\")==True"
+  ],
+  "code_rust": "pub fn check_integer(text: &str) -> Option<bool> {\n    let text = text.trim();\n    if text.is_empty() {\n        return None;\n    }\n    \n    let chars: Vec<char> = text.chars().collect();\n    \n    if chars.iter().all(|c| c.is_ascii_digit()) {\n        return Some(true);\n    }\n    \n    if (chars[0] == '+' || chars[0] == '-') && chars.len() > 1 {\n        if chars[1..].iter().all(|c| c.is_ascii_digit()) {\n            return Some(true);\n        }\n    }\n    \n    Some(false)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_integer(\"python\")==False",
+      "generated_test": "let result = check_integer(\"python\");\nlet expected = Some(false);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"1\")==True",
+      "generated_test": "let result = check_integer(\"1\");\nlet expected = Some(true);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"12345\")==True",
+      "generated_test": "let result = check_integer(\"12345\");\nlet expected = Some(true);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

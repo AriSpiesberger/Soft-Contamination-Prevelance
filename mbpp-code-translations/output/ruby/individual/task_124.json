@@ -1,0 +1,37 @@
+{
+  "task_id": 124,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the angle of a complex number.",
+  "python_code": "import cmath\ndef angle_complex(a,b):\n  cn=complex(a,b)\n  angle=cmath.phase(a+b)\n  return angle",
+  "test_list": [
+    "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)"
+  ],
+  "code_ruby": "def angle_complex(a, b)\n  cn = Complex(a, b)\n  (a + b).arg\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "expected = 1.5707963267948966\nresult = angle_complex(0, Complex(0, 1))\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+      "generated_test": "result = angle_complex(2, Complex(0, 1))\nexpected = 0.4636476090008061\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "result = angle_complex(0, Complex(0, 2))\nexpected = 1.5707963267948966\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

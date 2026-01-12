@@ -1,0 +1,37 @@
+{
+  "task_id": 171,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the perimeter of a regular pentagon from the length of its sides.",
+  "python_code": "import math\ndef perimeter_pentagon(a):\n  perimeter=(5*a)\n  return perimeter",
+  "test_list": [
+    "assert perimeter_pentagon(5) == 25",
+    "assert perimeter_pentagon(10) == 50",
+    "assert perimeter_pentagon(15) == 75"
+  ],
+  "code_go": "package main\n\nfunc perimeter_pentagon(a int) int {\n\tperimeter := 5 * a\n\treturn perimeter\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert perimeter_pentagon(5) == 25",
+      "generated_test": "result := perimeter_pentagon(5)\nexpected := 25\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perimeter_pentagon(10) == 50",
+      "generated_test": "result := perimeter_pentagon(10)\nexpected := 50\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perimeter_pentagon(15) == 75",
+      "generated_test": "result := perimeter_pentagon(15)\nexpected := 75\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

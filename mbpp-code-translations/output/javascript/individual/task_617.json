@@ -1,0 +1,37 @@
+{
+  "task_id": 617,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check for the number of jumps required of given length to reach a point of form (d, 0) from origin in a 2d plane.",
+  "python_code": "def min_Jumps(steps, d): \n    (a, b) = steps\n    temp = a \n    a = min(a, b) \n    b = max(temp, b) \n    if (d >= b): \n        return (d + b - 1) / b \n    if (d == 0): \n        return 0\n    if (d == a): \n        return 1\n    else:\n        return 2",
+  "test_list": [
+    "assert min_Jumps((3,4),11)==3.5",
+    "assert min_Jumps((3,4),0)==0",
+    "assert min_Jumps((11,14),11)==1"
+  ],
+  "code_javascript": "function min_Jumps(steps, d) {\n    let [a, b] = steps;\n    let temp = a;\n    a = Math.min(a, b);\n    b = Math.max(temp, b);\n    if (d >= b) {\n        return (d + b - 1) / b;\n    }\n    if (d === 0) {\n        return 0;\n    }\n    if (d === a) {\n        return 1;\n    } else {\n        return 2;\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert min_Jumps((3,4),11)==3.5",
+      "generated_test": "const result = min_Jumps([3, 4], 11);\nconst expected = 3.5;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Jumps((3,4),0)==0",
+      "generated_test": "const result = min_Jumps([3, 4], 0);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Jumps((11,14),11)==1",
+      "generated_test": "let result = min_Jumps([11, 14], 11);\nlet expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

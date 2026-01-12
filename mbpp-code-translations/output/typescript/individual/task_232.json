@@ -1,0 +1,17 @@
+{
+  "task_id": 232,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and returns a list containing the n largest items from the list.",
+  "python_code": "import heapq\ndef larg_nnum(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest",
+  "test_list": [
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])"
+  ],
+  "code_typescript": "function larg_nnum<T>(list1: T[], n: number): T[] {\n    const sorted = [...list1].sort((a, b) => {\n        if (a < b) return 1;\n        if (a > b) return -1;\n        return 0;\n    });\n    return sorted.slice(0, n);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

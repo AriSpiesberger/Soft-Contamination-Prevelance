@@ -1,0 +1,44 @@
+{
+  "task_id": 723,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "The input is defined as two lists of the same length. Write a function to count indices where the lists have the same values.",
+  "python_code": "from operator import eq\ndef count_same_pair(nums1, nums2):\n    result = sum(map(eq, nums1, nums2))\n    return result",
+  "test_list": [
+    "assert count_same_pair([1, 2, 3, 4, 5, 6, 7, 8],[2, 2, 3, 1, 2, 6, 7, 9])==4",
+    "assert count_same_pair([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==11",
+    "assert count_same_pair([2, 4, -6, -9, 11, -12, 14, -5, 17],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==1",
+    "assert count_same_pair([0, 1, 1, 2],[0, 1, 2, 2])==3"
+  ],
+  "code_go": "package main\n\nfunc count_same_pair(nums1, nums2 []int) int {\n\tresult := 0\n\tfor i := 0; i < len(nums1) && i < len(nums2); i++ {\n\t\tif nums1[i] == nums2[i] {\n\t\t\tresult++\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_same_pair([1, 2, 3, 4, 5, 6, 7, 8],[2, 2, 3, 1, 2, 6, 7, 9])==4",
+      "generated_test": "result := count_same_pair([]int{1, 2, 3, 4, 5, 6, 7, 8}, []int{2, 2, 3, 1, 2, 6, 7, 9})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_same_pair([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==11",
+      "generated_test": "result := count_same_pair([]int{0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8}, []int{2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8})\nexpected := 11\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_same_pair([2, 4, -6, -9, 11, -12, 14, -5, 17],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==1",
+      "generated_test": "nums1 := []int{2, 4, -6, -9, 11, -12, 14, -5, 17}\nnums2 := []int{2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8}\nexpected := 1\nresult := count_same_pair(nums1, nums2)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_same_pair([0, 1, 1, 2],[0, 1, 2, 2])==3",
+      "generated_test": "result := count_same_pair([]int{0, 1, 1, 2}, []int{0, 1, 2, 2})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 773,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the occurrence and position of the substrings within a string. Return None if there is no match.",
+  "python_code": "import re\ndef occurance_substring(text,pattern):\n for match in re.finditer(pattern, text):\n    s = match.start()\n    e = match.end()\n    return (text[s:e], s, e)",
+  "test_list": [
+    "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+    "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+    "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+    "assert occurance_substring('c++ programming, c++ language','python')==None"
+  ],
+  "code_rust": "pub fn occurance_substring(text: &str, pattern: &str) -> Option<(String, usize, usize)> {\n    if let Some(start) = text.find(pattern) {\n        let end = start + pattern.len();\n        Some((pattern.to_string(), start, end))\n    } else {\n        None\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 4,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+      "generated_test": "let result = occurance_substring(\"python programming, python language\", \"python\");\nlet expected = Some((String::from(\"python\"), 0, 6));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+      "generated_test": "let result = occurance_substring(\"python programming,programming language\", \"programming\");\nlet expected = Some((\"programming\".to_string(), 7, 18));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+      "generated_test": "let result = occurance_substring(\"python programming,programming language\", \"language\");\nlet expected = Some((\"language\".to_string(), 31, 39));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('c++ programming, c++ language','python')==None",
+      "generated_test": "let result = occurance_substring(\"c++ programming, c++ language\", \"python\");\nlet expected: Option<(String, usize, usize)> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

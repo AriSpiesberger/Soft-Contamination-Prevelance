@@ -1,0 +1,17 @@
+{
+  "task_id": 586,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a list at the nth eelment and add the first part to the end.",
+  "python_code": "def split_Arr(l, n):\n  return l[n:] + l[:n]",
+  "test_list": [
+    "assert split_Arr([12,10,5,6,52,36],2) == [5,6,52,36,12,10]",
+    "assert split_Arr([1,2,3,4],1) == [2,3,4,1]",
+    "assert split_Arr([0,1,2,3,4,5,6,7],3) == [3,4,5,6,7,0,1,2]"
+  ],
+  "code_typescript": "function split_Arr<T>(l: T[], n: number): T[] {\n  return [...l.slice(n), ...l.slice(0, n)];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

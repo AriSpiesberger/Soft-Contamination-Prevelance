@@ -1,0 +1,27 @@
+{
+  "task_id": 612,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function which takes a list of lists, where each sublist has two elements, and returns a list of two lists where the first list has the first element of each sublist and the second one has the second.",
+  "code_python": "def merge(lst):  \n    return [list(ele) for ele in list(zip(*lst))] ",
+  "test_list": [
+    "assert merge([['x', 'y'], ['a', 'b'], ['m', 'n']]) == [['x', 'a', 'm'], ['y', 'b', 'n']]",
+    "assert merge([[1, 2], [3, 4], [5, 6], [7, 8]]) == [[1, 3, 5, 7], [2, 4, 6, 8]]",
+    "assert merge([['x', 'y','z' ], ['a', 'b','c'], ['m', 'n','o']]) == [['x', 'a', 'm'], ['y', 'b', 'n'],['z', 'c','o']]"
+  ],
+  "python_1": "def merge(lst):  \n    # Handle empty input by returning empty list\n    if not lst:\n        return []\n    # Determine how many elements are in each sublist (columns to create)\n    num_columns = len(lst[0])\n    # Initialize the result as a list of empty lists, one per column\n    result = [[] for _ in range(num_columns)]\n    # Iterate through each sublist in the input\n    for sublist in lst:\n        # Iterate through each element position in the current sublist\n        for i, element in enumerate(sublist):\n            # Append the element to the corresponding output list based on its position\n            result[i].append(element)\n    # Return the transposed structure as list of lists\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def merge(lst):  \n    # Return empty list immediately if input is empty\n    if not lst:\n        return []\n    # Use map to apply list constructor to each tuple from zip, creating transposed structure\n    result = list(map(list, zip(*lst)))\n    # Return the transposed list of lists\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def merge(lst):  \n    # Early return for empty input case\n    if not lst:\n        return []\n    # Determine the number of result lists needed based on sublist length\n    num_result_lists = len(lst[0])\n    # Use nested list comprehension: outer iterates column indices, inner gathers all elements at that index\n    result = [[sublist[col_idx] for sublist in lst] for col_idx in range(num_result_lists)]\n    # Return the transposed matrix as list of lists\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def merge(lst):  \n    # Guard clause: return empty list when no sublists provided\n    if not lst:\n        return []\n    # Calculate number of elements per sublist to know how many output lists we need\n    width = len(lst[0])\n    # Pre-allocate result structure with empty lists for each column position\n    result = []\n    # Build each transposed row one at a time using index-based column extraction\n    col = 0\n    # Continue until we've processed all column positions\n    while col < width:\n        # Extract all elements at current column index from every sublist using functional reduce pattern\n        from functools import reduce\n        # Accumulate elements at position 'col' across all sublists into a single list\n        transposed_row = reduce(lambda acc, sublist: acc + [sublist[col]], lst, [])\n        # Append the newly formed transposed row to our result\n        result.append(transposed_row)\n        # Move to next column position\n        col += 1\n    # Return the fully transposed matrix structure\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def merge(lst):  \n    # Return empty list for empty input to handle edge case\n    if not lst:\n        return []\n    # Determine dimensions: number of sublists and elements per sublist\n    num_rows = len(lst)\n    # Get the width by checking first sublist's length\n    num_cols = len(lst[0])\n    # Use a recursive helper function to build each transposed column\n    def build_column(col_index, row_index, accumulated):\n        # Base case: when we've processed all rows, return the accumulated column\n        if row_index >= num_rows:\n            return accumulated\n        # Recursive case: grab element at current position and continue to next row\n        return build_column(col_index, row_index + 1, accumulated + [lst[row_index][col_index]])\n    # Use another recursive function to build all columns of the result\n    def build_result(current_col, accumulated_result):\n        # Base case: all columns processed, return final result\n        if current_col >= num_cols:\n            return accumulated_result\n        # Recursive step: build current column and add to result, then process next column\n        new_column = build_column(current_col, 0, [])\n        # Recursively build remaining columns with current column appended to result\n        return build_result(current_col + 1, accumulated_result + [new_column])\n    # Initiate the recursive transposition starting from column 0 with empty result\n    return build_result(0, [])",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

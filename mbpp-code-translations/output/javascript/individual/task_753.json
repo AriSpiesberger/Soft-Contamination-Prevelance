@@ -1,0 +1,37 @@
+{
+  "task_id": 753,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum k records from tuple list. https://www.geeksforgeeks.org/python-find-minimum-k-records-from-tuple-list/ - in this case a verbatim copy of test cases",
+  "python_code": "def min_k(test_list, K):\n  res = sorted(test_list, key = lambda x: x[1])[:K]\n  return (res) ",
+  "test_list": [
+    "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+    "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+    "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]"
+  ],
+  "code_javascript": "function min_k(test_list, K) {\n  const res = [...test_list].sort((a, b) => a[1] - b[1]).slice(0, K);\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+      "generated_test": "const result = min_k([['Manjeet', 10], ['Akshat', 4], ['Akash', 2], ['Nikhil', 8]], 2);\nconst expected = [['Akash', 2], ['Akshat', 4]];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+      "generated_test": "const result = min_k([['Sanjeev', 11], ['Angat', 5], ['Akash', 3], ['Nepin', 9]], 3);\nconst expected = [['Akash', 3], ['Angat', 5], ['Nepin', 9]];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expectedStr);\n  console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]",
+      "generated_test": "const result = min_k([['tanmay', 14], ['Amer', 11], ['Ayesha', 9], ['SKD', 16]], 1);\nconst expected = [['Ayesha', 9]];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expectedStr);\n  console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

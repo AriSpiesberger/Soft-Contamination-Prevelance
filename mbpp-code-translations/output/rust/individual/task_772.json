@@ -1,0 +1,37 @@
+{
+  "task_id": 772,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all the words with k length in the given string.",
+  "python_code": "def remove_length(test_str, K):\n  temp = test_str.split()\n  res = [ele for ele in temp if len(ele) != K]\n  res = ' '.join(res)\n  return (res) ",
+  "test_list": [
+    "assert remove_length('The person is most value tet', 3) == 'person is most value'",
+    "assert remove_length('If you told me about this ok', 4) == 'If you me about ok'",
+    "assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'"
+  ],
+  "code_rust": "pub fn remove_length(test_str: &str, k: usize) -> String {\n    let temp: Vec<&str> = test_str.split_whitespace().collect();\n    let res: Vec<&str> = temp.into_iter().filter(|ele| ele.len() != k).collect();\n    res.join(\" \")\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert remove_length('The person is most value tet', 3) == 'person is most value'",
+      "generated_test": "let result = remove_length(\"The person is most value tet\", 3);\nlet expected = \"person is most value\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_length('If you told me about this ok', 4) == 'If you me about ok'",
+      "generated_test": "let result = remove_length(\"If you told me about this ok\", 4);\nlet expected = \"If you me about ok\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'",
+      "generated_test": "let result = remove_length(\"Forces of darkeness is come into the play\", 4);\nlet expected = \"Forces of darkeness is the\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

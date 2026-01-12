@@ -1,0 +1,27 @@
+{
+  "task_id": 426,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to filter odd numbers.",
+  "code_python": "def filter_oddnumbers(nums):\n odd_nums = list(filter(lambda x: x%2 != 0, nums))\n return odd_nums",
+  "test_list": [
+    "assert filter_oddnumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1,3,5,7,9]",
+    "assert filter_oddnumbers([10,20,45,67,84,93])==[45,67,93]",
+    "assert filter_oddnumbers([5,7,9,8,6,4,3])==[5,7,9,3]"
+  ],
+  "python_1": "def filter_oddnumbers(nums):\n    # Create empty list to accumulate odd numbers\n    odd_nums = []\n    # Traverse each element in the input list using for loop\n    for num in nums:\n        # Check if number is odd using modulo operator\n        if num % 2 != 0:\n            # Append odd number to result list\n            odd_nums.append(num)\n    # Return the collected odd numbers\n    return odd_nums",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def filter_oddnumbers(nums):\n    # Use list comprehension as a more Pythonic filtering approach\n    return [n for n in nums if n & 1]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def filter_oddnumbers(nums):\n    # Use recursive approach with index tracking, starting from position 0\n    def helper(index):\n        # Base case: return empty list when we've processed all elements\n        if index >= len(nums):\n            return []\n        # Recursively get odd numbers from the rest of the list\n        rest = helper(index + 1)\n        # Check if current element at index is odd using modulo\n        if nums[index] % 2 != 0:\n            # Prepend current odd number to the results from recursion\n            return [nums[index]] + rest\n        # Skip even numbers by returning only the recursive result\n        return rest\n    # Initiate recursion starting from the first index\n    return helper(0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def filter_oddnumbers(nums):\n    # Convert input to iterator for sequential processing\n    iterator = iter(nums)\n    # Initialize result list to collect odd values\n    result = []\n    # Use while True loop with try-except for iteration control\n    while True:\n        # Attempt to fetch next element from iterator\n        try:\n            # Retrieve the next number using next() built-in\n            current = next(iterator)\n        # Catch StopIteration to detect end of sequence\n        except StopIteration:\n            # Exit loop when iterator is exhausted\n            break\n        # Perform oddness check using floor division comparison\n        if current // 2 != current / 2:\n            # Odd number found, extend result with single-element list\n            result.extend([current])\n    # Return accumulated odd numbers\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def filter_oddnumbers(nums):\n    # Use reduce to build result list by accumulating odd numbers one by one\n    from functools import reduce\n    # Define accumulator function that appends odd numbers to running list\n    def accumulate_odd(acc, num):\n        # Check oddness by verifying remainder when divided by 2 equals 1\n        if num % 2 == 1 or num % 2 == -1:\n            # Concatenate current odd number to accumulated list\n            return acc + [num]\n        # Return unchanged accumulator for even numbers\n        return acc\n    # Apply reduce with empty list as initial accumulator value\n    return reduce(accumulate_odd, nums, [])",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

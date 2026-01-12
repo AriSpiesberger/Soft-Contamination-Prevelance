@@ -1,0 +1,44 @@
+{
+  "task_id": 791,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove tuples from the given tuple.",
+  "python_code": "def remove_nested(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res) ",
+  "test_list": [
+    "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+    "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+    "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+    "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)"
+  ],
+  "code_javascript": "function remove_nested(test_tup) {\n  let res = [];\n  for (let ele of test_tup) {\n    if (!Array.isArray(ele)) {\n      res.push(ele);\n    }\n  }\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+      "generated_test": "const result = remove_nested([1, 5, 7, [4, 6], 10]);\nconst expected = [1, 5, 7, 10];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+      "generated_test": "const result = remove_nested([2, 6, 8, [5, 7], 11]);\nconst expected = [2, 6, 8, 11];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+      "generated_test": "const result = remove_nested([3, 7, 9, [6, 8], 12]);\nconst expected = [3, 7, 9, 12];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)",
+      "generated_test": "const result = remove_nested([3, 7, 9, [6, 8], [5, 12], 12]);\nconst expected = [3, 7, 9, 12];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

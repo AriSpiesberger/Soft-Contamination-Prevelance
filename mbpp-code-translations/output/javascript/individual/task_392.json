@@ -1,0 +1,37 @@
+{
+  "task_id": 392,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum sum possible by using the given equation f(n) = max( (f(n/2) + f(n/3) + f(n/4) + f(n/5)), n).",
+  "python_code": "def get_max_sum (n):\n\tres = list()\n\tres.append(0)\n\tres.append(1)\n\ti = 2\n\twhile i<n + 1:\n\t\tres.append(max(i, (res[int(i / 2)] \n\t\t\t\t\t\t+ res[int(i / 3)] +\n\t\t\t\t\t\t\tres[int(i / 4)]\n\t\t\t\t\t\t+ res[int(i / 5)])))\n\t\ti = i + 1\n\treturn res[n]",
+  "test_list": [
+    "assert get_max_sum(60) == 106",
+    "assert get_max_sum(10) == 12",
+    "assert get_max_sum(2) == 2"
+  ],
+  "code_javascript": "function get_max_sum(n) {\n\tlet res = [];\n\tres.push(0);\n\tres.push(1);\n\tlet i = 2;\n\twhile (i < n + 1) {\n\t\tres.push(Math.max(i, (res[Math.floor(i / 2)] \n\t\t\t\t\t\t+ res[Math.floor(i / 3)] +\n\t\t\t\t\t\t\tres[Math.floor(i / 4)]\n\t\t\t\t\t\t+ res[Math.floor(i / 5)])));\n\t\ti = i + 1;\n\t}\n\treturn res[n];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert get_max_sum(60) == 106",
+      "generated_test": "const result = get_max_sum(60);\nconst expected = 106;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_max_sum(10) == 12",
+      "generated_test": "const result = get_max_sum(10);\nconst expected = 12;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_max_sum(2) == 2",
+      "generated_test": "const result = get_max_sum(2);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

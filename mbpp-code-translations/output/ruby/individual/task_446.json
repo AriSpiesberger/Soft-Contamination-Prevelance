@@ -1,0 +1,37 @@
+{
+  "task_id": 446,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the occurence of all elements of list in a tuple.",
+  "python_code": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    count = 0\n    for item in tup: \n        if item in lst: \n            count+= 1 \n    return count  ",
+  "test_list": [
+    "assert count_Occurrence(('a', 'a', 'c', 'b', 'd'),['a', 'b'] ) == 3",
+    "assert count_Occurrence((1, 2, 3, 1, 4, 6, 7, 1, 4),[1, 4, 7]) == 6",
+    "assert count_Occurrence((1,2,3,4,5,6),[1,2]) == 2"
+  ],
+  "code_ruby": "def count_Occurrence(tup, lst)\n  count = 0\n  tup.each do |item|\n    if lst.include?(item)\n      count += 1\n    end\n  end\n  count\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert count_Occurrence(('a', 'a', 'c', 'b', 'd'),['a', 'b'] ) == 3",
+      "generated_test": "result = count_Occurrence(['a', 'a', 'c', 'b', 'd'], ['a', 'b'])\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Occurrence((1, 2, 3, 1, 4, 6, 7, 1, 4),[1, 4, 7]) == 6",
+      "generated_test": "result = count_Occurrence([1, 2, 3, 1, 4, 6, 7, 1, 4], [1, 4, 7])\nexpected = 6\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Occurrence((1,2,3,4,5,6),[1,2]) == 2",
+      "generated_test": "result = count_Occurrence([1,2,3,4,5,6], [1,2])\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

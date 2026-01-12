@@ -1,0 +1,37 @@
+{
+  "task_id": 4,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n largest integers from a given list of numbers, returned in descending order.",
+  "python_code": "import heapq as hq\ndef heap_queue_largest(nums,n):\n  largest_nums = hq.nlargest(n, nums)\n  return largest_nums",
+  "test_list": [
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]",
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]",
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<Integer> heap_queue_largest(List<Integer> nums, int n) {\n        if (nums == null || nums.isEmpty() || n <= 0) {\n            return new ArrayList<>();\n        }\n        \n        n = Math.min(n, nums.size());\n        \n        // Use MIN heap to keep track of n largest elements\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n        \n        for (int num : nums) {\n            minHeap.offer(num);\n            if (minHeap.size() > n) {\n                minHeap.poll();\n            }\n        }\n        \n        // Extract elements into a list\n        List<Integer> result = new ArrayList<>();\n        while (!minHeap.isEmpty()) {\n            result.add(minHeap.poll());\n        }\n        \n        // Reverse to get descending order\n        Collections.reverse(result);\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 6,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(25);\ninput.add(35);\ninput.add(22);\ninput.add(85);\ninput.add(14);\ninput.add(65);\ninput.add(75);\ninput.add(22);\ninput.add(58);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(85);\nexpected.add(75);\nexpected.add(65);\n\nList<Integer> result = heap_queue_largest(input, 3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]",
+      "generated_test": "List<Integer> result = heap_queue_largest(Arrays.asList(25, 35, 22, 85, 14, 65, 75, 22, 58), 2);\nList<Integer> expected = Arrays.asList(85, 75);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(25);\ninput.add(35);\ninput.add(22);\ninput.add(85);\ninput.add(14);\ninput.add(65);\ninput.add(75);\ninput.add(22);\ninput.add(58);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(85);\nexpected.add(75);\nexpected.add(65);\nexpected.add(58);\nexpected.add(35);\n\nList<Integer> result = heap_queue_largest(input, 5);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

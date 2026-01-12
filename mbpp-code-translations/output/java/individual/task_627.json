@@ -1,0 +1,37 @@
+{
+  "task_id": 627,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the smallest missing number from a sorted list of natural numbers.",
+  "python_code": "def find_First_Missing(array,start=0,end=None):\n    if end is None:\n      end = len(array) - 1   \n    if (start > end): \n        return end + 1\n    if (start != array[start]): \n        return start; \n    mid = int((start + end) / 2) \n    if (array[mid] == mid): \n        return find_First_Missing(array,mid+1,end) \n    return find_First_Missing(array,start,mid) ",
+  "test_list": [
+    "assert find_First_Missing([0,1,2,3]) == 4",
+    "assert find_First_Missing([0,1,2,6,9]) == 3",
+    "assert find_First_Missing([2,3,5,8,9]) == 0"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static int find_First_Missing(ArrayList<Integer> array, int start, Integer end) {\n        if (end == null) {\n            end = array.size() - 1;\n        }\n        if (start > end) {\n            return end + 1;\n        }\n        if (start != array.get(start)) {\n            return start;\n        }\n        int mid = (start + end) / 2;\n        if (array.get(mid) == mid) {\n            return find_First_Missing(array, mid + 1, end);\n        }\n        return find_First_Missing(array, start, mid);\n    }\n    \n    public static int find_First_Missing(ArrayList<Integer> array) {\n        return find_First_Missing(array, 0, null);\n    }\n    \n    public static int find_First_Missing(int[] array) {\n        ArrayList<Integer> list = new ArrayList<>();\n        for (int num : array) {\n            list.add(num);\n        }\n        return find_First_Missing(list, 0, null);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_First_Missing([0,1,2,3]) == 4",
+      "generated_test": "int[] input0 = new int[]{0,1,2,3};\nint expected = 4;\nint result = find_First_Missing(input0);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_First_Missing([0,1,2,6,9]) == 3",
+      "generated_test": "int[] input = new int[]{0,1,2,6,9};\nint expected = 3;\nint result = find_First_Missing(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_First_Missing([2,3,5,8,9]) == 0",
+      "generated_test": "int result = find_First_Missing(new int[]{2,3,5,8,9});\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

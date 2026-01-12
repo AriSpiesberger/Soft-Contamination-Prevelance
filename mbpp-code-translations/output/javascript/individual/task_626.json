@@ -1,0 +1,37 @@
+{
+  "task_id": 626,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the area of the largest triangle that can be inscribed in a semicircle with a given radius.",
+  "python_code": "def triangle_area(r) :  \n    if r < 0 : \n        return None\n    return r * r ",
+  "test_list": [
+    "assert triangle_area(-1) == None",
+    "assert triangle_area(0) == 0",
+    "assert triangle_area(2) == 4"
+  ],
+  "code_javascript": "function triangle_area(r) {\n    if (r < 0) {\n        return null;\n    }\n    return r * r;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert triangle_area(-1) == None",
+      "generated_test": "const result = triangle_area(-1);\nconst expected = null;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert triangle_area(0) == 0",
+      "generated_test": "const result = triangle_area(0);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert triangle_area(2) == 4",
+      "generated_test": "const result = triangle_area(2);\nconst expected = 4;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

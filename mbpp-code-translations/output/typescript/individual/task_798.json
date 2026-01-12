@@ -1,0 +1,17 @@
+{
+  "task_id": 798,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of an array.",
+  "python_code": "def _sum(arr):  \n    sum=0\n    for i in arr: \n        sum = sum + i      \n    return(sum)  ",
+  "test_list": [
+    "assert _sum([1, 2, 3]) == 6",
+    "assert _sum([15, 12, 13, 10]) == 50",
+    "assert _sum([0, 1, 2]) == 3"
+  ],
+  "code_typescript": "function _sum(arr: number[]): number {\n    let sum = 0;\n    for (const i of arr) {\n        sum = sum + i;\n    }\n    return sum;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

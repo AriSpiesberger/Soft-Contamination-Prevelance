@@ -1,0 +1,37 @@
+{
+  "task_id": 295,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return the sum of all divisors of a number.",
+  "python_code": "def sum_div(number):\n    divisors = [1]\n    for i in range(2, number):\n        if (number % i)==0:\n            divisors.append(i)\n    return sum(divisors)",
+  "test_list": [
+    "assert sum_div(8)==7",
+    "assert sum_div(12)==16",
+    "assert sum_div(7)==1"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int sum_div(int number) {\n        ArrayList<Integer> divisors = new ArrayList<>();\n        divisors.add(1);\n        for (int i = 2; i < number; i++) {\n            if (number % i == 0) {\n                divisors.add(i);\n            }\n        }\n        int sum = 0;\n        for (int d : divisors) {\n            sum += d;\n        }\n        return sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sum_div(8)==7",
+      "generated_test": "int result = sum_div(8);\nint expected = 7;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_div(12)==16",
+      "generated_test": "int result = sum_div(12);\nint expected = 16;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_div(7)==1",
+      "generated_test": "int result = sum_div(7);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

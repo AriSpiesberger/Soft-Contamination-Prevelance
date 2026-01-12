@@ -1,0 +1,27 @@
+{
+  "task_id": 797,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of all odd natural numbers within the range l and r.",
+  "code_python": "def sum_odd(n): \n    terms = (n + 1)//2\n    sum1 = terms * terms \n    return sum1  \ndef sum_in_range(l,r): \n    return sum_odd(r) - sum_odd(l - 1)",
+  "test_list": [
+    "assert sum_in_range(2,5) == 8",
+    "assert sum_in_range(5,7) == 12",
+    "assert sum_in_range(7,13) == 40"
+  ],
+  "python_1": "def sum_in_range(l, r):\n    # Initialize accumulator to store running total of odd numbers\n    total = 0\n    # Determine the first odd number in range (if l is even, start at l+1)\n    start = l if l % 2 == 1 else l + 1\n    # Iterate through odd numbers only by stepping by 2 each iteration\n    for num in range(start, r + 1, 2):\n        # Add each odd number directly to our running total\n        total += num\n    # Return the accumulated sum of all odd numbers in the range\n    return total\n\ndef sum_odd(n):\n    # Use arithmetic series approach: count odd numbers from 1 to n\n    count = (n + 1) // 2\n    # Sum of first k odd numbers equals k squared (1+3+5+...+(2k-1) = k^2)\n    return count * count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_in_range(l, r):\n    # Use list comprehension with filter to collect all odd numbers in range\n    odd_numbers = [x for x in range(l, r + 1) if x % 2 != 0]\n    # Apply built-in sum function to the filtered list of odd values\n    return sum(odd_numbers)\n\ndef sum_odd(n):\n    # Generate all odd numbers from 1 to n using range with step of 2\n    odds_up_to_n = range(1, n + 1, 2)\n    # Compute sum using Python's efficient built-in summation\n    return sum(odds_up_to_n)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_in_range(l, r):\n    # Use filter function with lambda to extract odd numbers from range\n    odd_iterator = filter(lambda x: x & 1, range(l, r + 1))\n    # Convert filter object to list and reduce using sum\n    return sum(odd_iterator)\n\ndef sum_odd(n):\n    # Recursive base case: no odd numbers exist below 1\n    if n < 1:\n        return 0\n    # Check if current number n is odd using bitwise AND (faster than modulo)\n    if n & 1:\n        # If odd, include n in sum and recurse on remaining numbers\n        return n + sum_odd(n - 2)\n    else:\n        # If even, skip to the odd number just below n\n        return sum_odd(n - 1)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_in_range(l, r):\n    # Apply generator expression with sum to lazily evaluate odd numbers\n    return sum(num for num in range(l, r + 1) if num % 2 == 1)\n\ndef sum_odd(n):\n    # Use reduce from functools to accumulate sum via functional programming style\n    from functools import reduce\n    # Create range of odd numbers from 1 to n with step 2\n    odd_range = range(1, n + 1, 2)\n    # Fold the sequence with addition operator, starting from 0 as identity\n    return reduce(lambda acc, x: acc + x, odd_range, 0)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_in_range(l, r):\n    # Compute first odd number: if l is odd use it, otherwise take next integer\n    first_odd = l if l % 2 == 1 else l + 1\n    # Compute last odd number: if r is odd use it, otherwise take previous integer\n    last_odd = r if r % 2 == 1 else r - 1\n    # Handle edge case where no odd numbers exist in the range\n    if first_odd > last_odd:\n        return 0\n    # Calculate how many odd numbers exist between first_odd and last_odd inclusive\n    count = (last_odd - first_odd) // 2 + 1\n    # Apply arithmetic sequence sum formula: n * (first + last) / 2\n    return count * (first_odd + last_odd) // 2\n\ndef sum_odd(n):\n    # Handle negative or zero input where no positive odd numbers exist\n    if n < 1:\n        return 0\n    # Find largest odd number not exceeding n by checking parity\n    largest_odd = n if n % 2 == 1 else n - 1\n    # The smallest positive odd is always 1\n    smallest_odd = 1\n    # Count of odd numbers from 1 to largest_odd follows pattern (largest+1)/2\n    num_terms = (largest_odd + 1) // 2\n    # Arithmetic series formula specialized for consecutive odd numbers starting at 1\n    return num_terms * (smallest_odd + largest_odd) // 2",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

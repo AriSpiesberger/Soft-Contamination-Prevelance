@@ -1,0 +1,37 @@
+{
+  "task_id": 598,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is armstrong or not.",
+  "python_code": "def armstrong_number(number):\n sum = 0\n times = 0\n temp = number\n while temp > 0:\n           times = times + 1\n           temp = temp // 10\n temp = number\n while temp > 0:\n           reminder = temp % 10\n           sum = sum + (reminder ** times)\n           temp //= 10\n if number == sum:\n           return True\n else:\n           return False",
+  "test_list": [
+    "assert armstrong_number(153)==True",
+    "assert armstrong_number(259)==False",
+    "assert armstrong_number(4458)==False"
+  ],
+  "code_rust": "pub fn armstrong_number(number: i32) -> bool {\n    let mut sum: i32 = 0;\n    let mut times: u32 = 0;\n    let mut temp = number;\n    \n    while temp > 0 {\n        times += 1;\n        temp /= 10;\n    }\n    \n    temp = number;\n    while temp > 0 {\n        let reminder = temp % 10;\n        sum += reminder.pow(times);\n        temp /= 10;\n    }\n    \n    number == sum\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert armstrong_number(153)==True",
+      "generated_test": "let result = armstrong_number(153);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert armstrong_number(259)==False",
+      "generated_test": "let result = armstrong_number(259);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert armstrong_number(4458)==False",
+      "generated_test": "let result = armstrong_number(4458);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

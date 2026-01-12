@@ -1,0 +1,37 @@
+{
+  "task_id": 739,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the index of smallest triangular number with n digits. https://www.geeksforgeeks.org/index-of-smallest-triangular-number-with-n-digits/",
+  "python_code": "import math \ndef find_Index(n): \n    x = math.sqrt(2 * math.pow(10,(n - 1)))\n    return round(x)",
+  "test_list": [
+    "assert find_Index(2) == 4",
+    "assert find_Index(3) == 14",
+    "assert find_Index(4) == 45"
+  ],
+  "code_rust": "pub fn find_Index(n: i32) -> i64 {\n    let x = (2.0 * 10_f64.powi(n - 1)).sqrt();\n    x.round() as i64\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_Index(2) == 4",
+      "generated_test": "let result = find_Index(2);\nlet expected: i64 = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Index(3) == 14",
+      "generated_test": "let result = find_Index(3);\nlet expected: i64 = 14;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Index(4) == 45",
+      "generated_test": "let result = find_Index(4);\nlet expected: i64 = 45;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

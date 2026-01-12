@@ -1,0 +1,17 @@
+{
+  "task_id": 743,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to rotate a given list by specified number of items to the right direction. https://www.geeksforgeeks.org/python-program-right-rotate-list-n/",
+  "python_code": "def rotate_right(list, m):\n  result =  list[-m:] + list[:-m]\n  return result",
+  "test_list": [
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]"
+  ],
+  "code_typescript": "function rotate_right<T>(list: T[], m: number): T[] {\n  const result = [...list.slice(-m), ...list.slice(0, -m)];\n  return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

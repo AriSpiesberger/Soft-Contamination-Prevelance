@@ -1,0 +1,20 @@
+{
+  "task_id": 6,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the two numbers differ at one bit position only or not.",
+  "python_code": "def is_Power_Of_Two (x): \n    return x and (not(x & (x - 1))) \ndef differ_At_One_Bit_Pos(a,b): \n    return is_Power_Of_Two(a ^ b)",
+  "test_list": [
+    "assert differ_At_One_Bit_Pos(13,9) == True",
+    "assert differ_At_One_Bit_Pos(15,8) == False",
+    "assert differ_At_One_Bit_Pos(2,4) == False",
+    "assert differ_At_One_Bit_Pos(2, 3) == True",
+    "assert differ_At_One_Bit_Pos(5, 1) == True",
+    "assert differ_At_One_Bit_Pos(1, 5) == True"
+  ],
+  "code_typescript": "function is_Power_Of_Two(x: number): boolean {\n    return x !== 0 && (x & (x - 1)) === 0;\n}\n\nfunction differ_At_One_Bit_Pos(a: number, b: number): boolean {\n    return is_Power_Of_Two(a ^ b);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 6,
+  "code_typescript_tests_failed": 0
+}

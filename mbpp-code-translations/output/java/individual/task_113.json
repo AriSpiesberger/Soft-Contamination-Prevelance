@@ -1,0 +1,37 @@
+{
+  "task_id": 113,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string represents an integer or not.",
+  "python_code": "def check_integer(text):\n text = text.strip()\n if len(text) < 1:\n    return None\n else:\n     if all(text[i] in \"0123456789\" for i in range(len(text))):\n          return True\n     elif (text[0] in \"+-\") and \\\n         all(text[i] in \"0123456789\" for i in range(1,len(text))):\n         return True\n     else:\n        return False",
+  "test_list": [
+    "assert check_integer(\"python\")==False",
+    "assert check_integer(\"1\")==True",
+    "assert check_integer(\"12345\")==True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Boolean check_integer(String text) {\n        text = text.trim();\n        if (text.length() < 1) {\n            return null;\n        } else {\n            String digits = \"0123456789\";\n            boolean allDigits = true;\n            for (int i = 0; i < text.length(); i++) {\n                if (digits.indexOf(text.charAt(i)) == -1) {\n                    allDigits = false;\n                    break;\n                }\n            }\n            if (allDigits) {\n                return true;\n            } else if ((text.charAt(0) == '+' || text.charAt(0) == '-') && text.length() > 1) {\n                boolean restAllDigits = true;\n                for (int i = 1; i < text.length(); i++) {\n                    if (digits.indexOf(text.charAt(i)) == -1) {\n                        restAllDigits = false;\n                        break;\n                    }\n                }\n                if (restAllDigits) {\n                    return true;\n                } else {\n                    return false;\n                }\n            } else {\n                return false;\n            }\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_integer(\"python\")==False",
+      "generated_test": "Boolean result = check_integer(\"python\");\nBoolean expected = false;\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"1\")==True",
+      "generated_test": "Boolean result = check_integer(\"1\");\nBoolean expected = true;\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"12345\")==True",
+      "generated_test": "Boolean result = check_integer(\"12345\");\nBoolean expected = true;\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

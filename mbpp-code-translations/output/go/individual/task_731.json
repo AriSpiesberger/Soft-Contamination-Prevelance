@@ -1,0 +1,37 @@
+{
+  "task_id": 731,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cone given radius r and the height h.",
+  "python_code": "import math\ndef lateralsurface_cone(r,h):\n  l = math.sqrt(r * r + h * h)\n  LSA = math.pi * r  * l\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cone(5,12)==204.20352248333654",
+    "assert lateralsurface_cone(10,15)==566.3586699569488",
+    "assert lateralsurface_cone(19,17)==1521.8090132193388"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc lateralsurface_cone(r, h float64) float64 {\n\tl := math.Sqrt(r*r + h*h)\n\tLSA := math.Pi * r * l\n\treturn LSA\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert lateralsurface_cone(5,12)==204.20352248333654",
+      "generated_test": "result := lateralsurface_cone(5, 12)\nexpected := 204.20352248333654\nif math.Abs(result-expected) < 1e-9 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cone(10,15)==566.3586699569488",
+      "generated_test": "result := lateralsurface_cone(10, 15)\nexpected := 566.3586699569488\nif math.Abs(result-expected) < 1e-9 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cone(19,17)==1521.8090132193388",
+      "generated_test": "result := lateralsurface_cone(19, 17)\nexpected := 1521.8090132193388\nif math.Abs(result-expected) < 1e-9 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

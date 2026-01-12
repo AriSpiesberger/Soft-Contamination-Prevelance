@@ -1,0 +1,37 @@
+{
+  "task_id": 563,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks from a string.",
+  "python_code": "import re\ndef extract_values(text):\n return (re.findall(r'\"(.*?)\"', text))",
+  "test_list": [
+    "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+    "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+    "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']"
+  ],
+  "code_rust": "pub fn extract_values(text: &str) -> Vec<String> {\n    let mut results = Vec::new();\n    let mut chars = text.chars().peekable();\n    \n    while let Some(c) = chars.next() {\n        if c == '\"' {\n            let mut value = String::new();\n            for inner in chars.by_ref() {\n                if inner == '\"' {\n                    break;\n                }\n                value.push(inner);\n            }\n            results.push(value);\n        }\n    }\n    \n    results\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 3,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+      "generated_test": "let result = extract_values(\"\\\"Python\\\", \\\"PHP\\\", \\\"Java\\\"\");\nlet expected: Vec<String> = vec![\"Python\".to_string(), \"PHP\".to_string(), \"Java\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+      "generated_test": "let result = extract_values(\"\\\"python\\\",\\\"program\\\",\\\"language\\\"\");\nlet expected = vec![\"python\", \"program\", \"language\"];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']",
+      "generated_test": "let result = extract_values(\"\\\"red\\\",\\\"blue\\\",\\\"green\\\",\\\"yellow\\\"\");\nlet expected: Vec<String> = vec![\"red\".to_string(), \"blue\".to_string(), \"green\".to_string(), \"yellow\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

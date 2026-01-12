@@ -1,0 +1,37 @@
+{
+  "task_id": 408,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find k number of smallest pairs which consist of one element from the first array and one element from the second array.",
+  "python_code": "import heapq\ndef k_smallest_pairs(nums1, nums2, k):\n   queue = []\n   def push(i, j):\n       if i < len(nums1) and j < len(nums2):\n           heapq.heappush(queue, [nums1[i] + nums2[j], i, j])\n   push(0, 0)\n   pairs = []\n   while queue and len(pairs) < k:\n       _, i, j = heapq.heappop(queue)\n       pairs.append([nums1[i], nums2[j]])\n       push(i, j + 1)\n       if j == 0:\n           push(i + 1, 0)\n   return pairs",
+  "test_list": [
+    "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]"
+  ],
+  "code_java": "import java.util.*;\n\nclass Solution {\n    public static List<List<Integer>> k_smallest_pairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> pairs = new ArrayList<>();\n        \n        if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0 || k <= 0) {\n            return pairs;\n        }\n        \n        // PriorityQueue with [sum, i, j]\n        PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> a[0] - b[0]);\n        \n        // Push initial element\n        queue.offer(new int[]{nums1[0] + nums2[0], 0, 0});\n        \n        Set<String> visited = new HashSet<>();\n        visited.add(\"0,0\");\n        \n        while (!queue.isEmpty() && pairs.size() < k) {\n            int[] current = queue.poll();\n            int i = current[1];\n            int j = current[2];\n            \n            List<Integer> pair = new ArrayList<>();\n            pair.add(nums1[i]);\n            pair.add(nums2[j]);\n            pairs.add(pair);\n            \n            // Push (i, j+1)\n            if (j + 1 < nums2.length) {\n                String key = i + \",\" + (j + 1);\n                if (!visited.contains(key)) {\n                    queue.offer(new int[]{nums1[i] + nums2[j + 1], i, j + 1});\n                    visited.add(key);\n                }\n            }\n            \n            // Push (i+1, 0) only when j == 0\n            if (j == 0 && i + 1 < nums1.length) {\n                String key = (i + 1) + \",0\";\n                if (!visited.contains(key)) {\n                    queue.offer(new int[]{nums1[i + 1] + nums2[0], i + 1, 0});\n                    visited.add(key);\n                }\n            }\n        }\n        \n        return pairs;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+      "generated_test": "int[] nums1 = new int[]{1, 3, 7};\nint[] nums2 = new int[]{2, 4, 6};\nint k = 2;\nList<List<Integer>> result = k_smallest_pairs(nums1, nums2, k);\n\nList<List<Integer>> expected = new ArrayList<>();\nList<Integer> pair1 = new ArrayList<>();\npair1.add(1);\npair1.add(2);\nexpected.add(pair1);\nList<Integer> pair2 = new ArrayList<>();\npair2.add(1);\npair2.add(4);\nexpected.add(pair2);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+      "generated_test": "int[] nums1 = new int[]{1, 3, 7};\nint[] nums2 = new int[]{2, 4, 6};\nint k = 1;\n\nList<List<Integer>> result = k_smallest_pairs(nums1, nums2, k);\n\nList<List<Integer>> expected = new ArrayList<>();\nList<Integer> pair1 = new ArrayList<>();\npair1.add(1);\npair1.add(2);\nexpected.add(pair1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]",
+      "generated_test": "int[] nums1 = new int[]{1, 3, 7};\nint[] nums2 = new int[]{2, 4, 6};\nint k = 7;\n\nList<List<Integer>> result = k_smallest_pairs(nums1, nums2, k);\n\nList<List<Integer>> expected = new ArrayList<>();\nexpected.add(Arrays.asList(1, 2));\nexpected.add(Arrays.asList(1, 4));\nexpected.add(Arrays.asList(3, 2));\nexpected.add(Arrays.asList(1, 6));\nexpected.add(Arrays.asList(3, 4));\nexpected.add(Arrays.asList(3, 6));\nexpected.add(Arrays.asList(7, 2));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": false,
+      "llm_validated": true
+    }
+  ]
+}

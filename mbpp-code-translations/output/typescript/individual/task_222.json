@@ -1,0 +1,17 @@
+{
+  "task_id": 222,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if all the elements in tuple have same data type or not.",
+  "python_code": "def check_type(test_tuple):\n  res = True\n  for ele in test_tuple:\n    if not isinstance(ele, type(test_tuple[0])):\n      res = False\n      break\n  return (res) ",
+  "test_list": [
+    "assert check_type((5, 6, 7, 3, 5, 6) ) == True",
+    "assert check_type((1, 2, \"4\") ) == False",
+    "assert check_type((3, 2, 1, 4, 5) ) == True"
+  ],
+  "code_typescript": "function check_type(test_tuple: unknown[]): boolean {\n  if (test_tuple.length === 0) {\n    return true;\n  }\n  \n  const firstType = typeof test_tuple[0];\n  const firstIsArray = Array.isArray(test_tuple[0]);\n  const firstIsNull = test_tuple[0] === null;\n  \n  for (const ele of test_tuple) {\n    const eleType = typeof ele;\n    const eleIsArray = Array.isArray(ele);\n    const eleIsNull = ele === null;\n    \n    // Handle null separately since typeof null === 'object'\n    if (firstIsNull !== eleIsNull) {\n      return false;\n    }\n    \n    // Handle arrays separately since typeof [] === 'object'\n    if (firstIsArray !== eleIsArray) {\n      return false;\n    }\n    \n    // Compare basic types\n    if (eleType !== firstType) {\n      return false;\n    }\n  }\n  \n  return true;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

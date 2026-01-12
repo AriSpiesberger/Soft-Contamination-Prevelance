@@ -1,0 +1,37 @@
+{
+  "task_id": 801,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of equal numbers from three given integers.",
+  "python_code": "def test_three_equal(x,y,z):\n  result = set([x,y,z])\n  if len(result)==3:\n    return 0\n  else:\n    return 4-len(result)",
+  "test_list": [
+    "assert test_three_equal(1,1,1) == 3",
+    "assert test_three_equal(-1,-2,-3) == 0",
+    "assert test_three_equal(1,2,2) == 2"
+  ],
+  "code_java": "import java.util.HashSet;\n\npublic class Solution {\n    public static int test_three_equal(int x, int y, int z) {\n        HashSet<Integer> result = new HashSet<>();\n        result.add(x);\n        result.add(y);\n        result.add(z);\n        if (result.size() == 3) {\n            return 0;\n        } else {\n            return 4 - result.size();\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert test_three_equal(1,1,1) == 3",
+      "generated_test": "int result = test_three_equal(1, 1, 1);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_three_equal(-1,-2,-3) == 0",
+      "generated_test": "int result = test_three_equal(-1, -2, -3);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_three_equal(1,2,2) == 2",
+      "generated_test": "int result = test_three_equal(1, 2, 2);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

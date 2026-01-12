@@ -1,0 +1,17 @@
+{
+  "task_id": 790,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether every even index contains even numbers of a given list.",
+  "python_code": "def even_position(nums):\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))",
+  "test_list": [
+    "assert even_position([3,2,1]) == False",
+    "assert even_position([1,2,3]) == False",
+    "assert even_position([2,1,4]) == True"
+  ],
+  "code_typescript": "function even_position(nums: number[]): boolean {\n    return nums.every((num, i) => num % 2 === i % 2);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

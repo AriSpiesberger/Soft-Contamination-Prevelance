@@ -1,0 +1,37 @@
+{
+  "task_id": 567,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a specified list is sorted or not.",
+  "python_code": "def issort_list(list1):\n    result = all(list1[i] <= list1[i+1] for i in range(len(list1)-1))\n    return result",
+  "test_list": [
+    "assert issort_list([1,2,4,6,8,10,12,14,16,17])==True",
+    "assert issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17])==False",
+    "assert issort_list([1, 2, 4, 6, 8, 10,15,14,20])==False"
+  ],
+  "code_javascript": "function issort_list(list1) {\n    return list1.every((val, i) => i === list1.length - 1 || val <= list1[i + 1]);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert issort_list([1,2,4,6,8,10,12,14,16,17])==True",
+      "generated_test": "const result = issort_list([1,2,4,6,8,10,12,14,16,17]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17])==False",
+      "generated_test": "const result = issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert issort_list([1, 2, 4, 6, 8, 10,15,14,20])==False",
+      "generated_test": "const result = issort_list([1, 2, 4, 6, 8, 10, 15, 14, 20]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

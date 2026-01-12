@@ -1,0 +1,37 @@
+{
+  "task_id": 598,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is armstrong or not.",
+  "python_code": "def armstrong_number(number):\n sum = 0\n times = 0\n temp = number\n while temp > 0:\n           times = times + 1\n           temp = temp // 10\n temp = number\n while temp > 0:\n           reminder = temp % 10\n           sum = sum + (reminder ** times)\n           temp //= 10\n if number == sum:\n           return True\n else:\n           return False",
+  "test_list": [
+    "assert armstrong_number(153)==True",
+    "assert armstrong_number(259)==False",
+    "assert armstrong_number(4458)==False"
+  ],
+  "code_ruby": "def armstrong_number(number)\n  sum = 0\n  times = 0\n  temp = number\n  \n  while temp > 0\n    times += 1\n    temp /= 10\n  end\n  \n  temp = number\n  \n  while temp > 0\n    reminder = temp % 10\n    sum += reminder ** times\n    temp /= 10\n  end\n  \n  number == sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert armstrong_number(153)==True",
+      "generated_test": "result = armstrong_number(153)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert armstrong_number(259)==False",
+      "generated_test": "result = armstrong_number(259)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert armstrong_number(4458)==False",
+      "generated_test": "result = armstrong_number(4458)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

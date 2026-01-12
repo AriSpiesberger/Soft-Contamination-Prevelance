@@ -1,0 +1,37 @@
+{
+  "task_id": 87,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to merge three dictionaries into a single dictionary.",
+  "python_code": "import collections as ct\ndef merge_dictionaries_three(dict1,dict2, dict3):\n    merged_dict = dict(ct.ChainMap({},dict1,dict2,dict3))\n    return merged_dict",
+  "test_list": [
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{ \"O\": \"Orange\", \"W\": \"White\", \"B\": \"Black\" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}",
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{\"L\":\"lavender\",\"B\":\"Blue\"})=={'W': 'White', 'P': 'Pink', 'B': 'Black', 'R': 'Red', 'G': 'Green', 'L': 'lavender'}",
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" },{\"L\":\"lavender\",\"B\":\"Blue\"},{ \"G\": \"Green\", \"W\": \"White\" })=={'B': 'Black', 'P': 'Pink', 'R': 'Red', 'G': 'Green', 'L': 'lavender', 'W': 'White'}"
+  ],
+  "code_java": "import java.util.HashMap;\n\npublic class Solution {\n    public static HashMap<String, String> merge_dictionaries_three(HashMap<String, String> dict1, HashMap<String, String> dict2, HashMap<String, String> dict3) {\n        HashMap<String, String> merged_dict = new HashMap<>();\n        \n        // ChainMap in Python gives priority to earlier dictionaries\n        // So we need to add in reverse order (dict3 first, then dict2, then dict1)\n        // This way, dict1's values will overwrite dict2's, and dict2's will overwrite dict3's\n        merged_dict.putAll(dict3);\n        merged_dict.putAll(dict2);\n        merged_dict.putAll(dict1);\n        \n        return merged_dict;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{ \"O\": \"Orange\", \"W\": \"White\", \"B\": \"Black\" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}",
+      "generated_test": "HashMap<String, String> dict1 = new HashMap<>();\ndict1.put(\"R\", \"Red\");\ndict1.put(\"B\", \"Black\");\ndict1.put(\"P\", \"Pink\");\n\nHashMap<String, String> dict2 = new HashMap<>();\ndict2.put(\"G\", \"Green\");\ndict2.put(\"W\", \"White\");\n\nHashMap<String, String> dict3 = new HashMap<>();\ndict3.put(\"O\", \"Orange\");\ndict3.put(\"W\", \"White\");\ndict3.put(\"B\", \"Black\");\n\nHashMap<String, String> expected = new HashMap<>();\nexpected.put(\"B\", \"Black\");\nexpected.put(\"R\", \"Red\");\nexpected.put(\"P\", \"Pink\");\nexpected.put(\"G\", \"Green\");\nexpected.put(\"W\", \"White\");\nexpected.put(\"O\", \"Orange\");\n\nHashMap<String, String> result = merge_dictionaries_three(dict1, dict2, dict3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{\"L\":\"lavender\",\"B\":\"Blue\"})=={'W': 'White', 'P': 'Pink', 'B': 'Black', 'R': 'Red', 'G': 'Green', 'L': 'lavender'}",
+      "generated_test": "HashMap<String, String> dict1 = new HashMap<>();\ndict1.put(\"R\", \"Red\");\ndict1.put(\"B\", \"Black\");\ndict1.put(\"P\", \"Pink\");\n\nHashMap<String, String> dict2 = new HashMap<>();\ndict2.put(\"G\", \"Green\");\ndict2.put(\"W\", \"White\");\n\nHashMap<String, String> dict3 = new HashMap<>();\ndict3.put(\"L\", \"lavender\");\ndict3.put(\"B\", \"Blue\");\n\nHashMap<String, String> expected = new HashMap<>();\nexpected.put(\"W\", \"White\");\nexpected.put(\"P\", \"Pink\");\nexpected.put(\"B\", \"Black\");\nexpected.put(\"R\", \"Red\");\nexpected.put(\"G\", \"Green\");\nexpected.put(\"L\", \"lavender\");\n\nHashMap<String, String> result = merge_dictionaries_three(dict1, dict2, dict3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" },{\"L\":\"lavender\",\"B\":\"Blue\"},{ \"G\": \"Green\", \"W\": \"White\" })=={'B': 'Black', 'P': 'Pink', 'R': 'Red', 'G': 'Green', 'L': 'lavender', 'W': 'White'}",
+      "generated_test": "HashMap<String, String> dict1 = new HashMap<>();\ndict1.put(\"R\", \"Red\");\ndict1.put(\"B\", \"Black\");\ndict1.put(\"P\", \"Pink\");\n\nHashMap<String, String> dict2 = new HashMap<>();\ndict2.put(\"L\", \"lavender\");\ndict2.put(\"B\", \"Blue\");\n\nHashMap<String, String> dict3 = new HashMap<>();\ndict3.put(\"G\", \"Green\");\ndict3.put(\"W\", \"White\");\n\nHashMap<String, String> expected = new HashMap<>();\nexpected.put(\"B\", \"Black\");\nexpected.put(\"P\", \"Pink\");\nexpected.put(\"R\", \"Red\");\nexpected.put(\"G\", \"Green\");\nexpected.put(\"L\", \"lavender\");\nexpected.put(\"W\", \"White\");\n\nHashMap<String, String> result = merge_dictionaries_three(dict1, dict2, dict3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

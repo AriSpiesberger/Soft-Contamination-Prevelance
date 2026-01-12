@@ -1,0 +1,17 @@
+{
+  "task_id": 279,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth decagonal number.",
+  "python_code": "def is_num_decagonal(n): \n\treturn 4 * n * n - 3 * n ",
+  "test_list": [
+    "assert is_num_decagonal(3) == 27",
+    "assert is_num_decagonal(7) == 175",
+    "assert is_num_decagonal(10) == 370"
+  ],
+  "code_typescript": "function is_num_decagonal(n: number): number {\n    return 4 * n * n - 3 * n;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

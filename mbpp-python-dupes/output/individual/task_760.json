@@ -1,0 +1,27 @@
+{
+  "task_id": 760,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether a list of numbers contains only one distinct element or not.",
+  "code_python": "def unique_Element(arr):\n    s = set(arr)\n    return len(s) == 1",
+  "test_list": [
+    "assert unique_Element([1,1,1]) == True",
+    "assert unique_Element([1,2,1,2]) == False",
+    "assert unique_Element([1,2,3,4,5]) == False"
+  ],
+  "python_1": "def unique_Element(arr):\n    # Handle edge case of empty list - return False since no distinct element exists\n    if not arr:\n        return False\n    # Store the first element as the reference value to compare against\n    first = arr[0]\n    # Use all() with generator to check if every element matches the first one\n    return all(x == first for x in arr)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def unique_Element(arr):\n    # Guard against empty list which has no distinct elements\n    if not arr:\n        return False\n    # Count occurrences of the first element in the entire list\n    first_element_count = arr.count(arr[0])\n    # If count equals list length, all elements must be identical to the first\n    return first_element_count == len(arr)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def unique_Element(arr):\n    # Early exit for empty arrays - cannot have exactly one distinct element\n    if not arr:\n        return False\n    # Leverage list slicing to get all elements except the first\n    rest_of_list = arr[1:]\n    # Use a manual loop approach with index tracking\n    index = 0\n    # Iterate through remaining elements checking against first element\n    while index < len(rest_of_list):\n        # Compare current element with the first element of original array\n        if rest_of_list[index] != arr[0]:\n            # Found a different element, so return False immediately\n            return False\n        # Move to next position in the remaining elements\n        index += 1\n    # All elements matched the first, confirming single distinct value\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def unique_Element(arr):\n    # Reject empty lists since they lack any distinct element\n    if not arr:\n        return False\n    # Extract the reference element to compare all others against\n    reference = arr[0]\n    # Filter the array to find elements that differ from reference\n    different_elements = list(filter(lambda x: x != reference, arr))\n    # If no different elements exist, the list is uniform\n    return len(different_elements) == 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def unique_Element(arr):\n    # Return False for empty input since no element can be distinct\n    if not arr:\n        return False\n    # Use min and max comparison - if all elements identical, min equals max\n    minimum = arr[0]\n    # Track the maximum value found during traversal\n    maximum = arr[0]\n    # Scan through each element to find extremes\n    for element in arr:\n        # Update minimum if current element is smaller\n        if element < minimum:\n            minimum = element\n        # Update maximum if current element is larger\n        if element > maximum:\n            maximum = element\n    # Single distinct element means min and max converge to same value\n    return minimum == maximum",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

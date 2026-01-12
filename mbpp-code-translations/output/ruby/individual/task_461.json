@@ -1,0 +1,37 @@
+{
+  "task_id": 461,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the upper case characters in a given string.",
+  "python_code": "def upper_ctr(str):\n    upper_ctr = 0\n    for i in range(len(str)):\n          if str[i] >= 'A' and str[i] <= 'Z': upper_ctr += 1\n          return upper_ctr",
+  "test_list": [
+    "assert upper_ctr('PYthon') == 1",
+    "assert upper_ctr('BigData') == 1",
+    "assert upper_ctr('program') == 0"
+  ],
+  "code_ruby": "def upper_ctr(str)\n  upper_ctr = 0\n  str.each_char do |c|\n    if c >= 'A' && c <= 'Z'\n      upper_ctr += 1\n    end\n    return upper_ctr\n  end\n  upper_ctr\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 2,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert upper_ctr('PYthon') == 1",
+      "generated_test": "result = upper_ctr('PYthon')\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert upper_ctr('BigData') == 1",
+      "generated_test": "result = upper_ctr('BigData')\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert upper_ctr('program') == 0",
+      "generated_test": "result = upper_ctr('program')\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

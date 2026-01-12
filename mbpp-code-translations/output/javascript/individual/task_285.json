@@ -1,0 +1,37 @@
+{
+  "task_id": 285,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that checks whether a string contains the 'a' character followed by two or three 'b' characters.",
+  "python_code": "import re\ndef text_match_two_three(text):\n        patterns = 'ab{2,3}'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_two_three(\"ac\")==(False)",
+    "assert text_match_two_three(\"dc\")==(False)",
+    "assert text_match_two_three(\"abbbba\")==(True)"
+  ],
+  "code_javascript": "function text_match_two_three(text) {\n    const pattern = /ab{2,3}/;\n    if (pattern.test(text)) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert text_match_two_three(\"ac\")==(False)",
+      "generated_test": "const result = text_match_two_three(\"ac\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_two_three(\"dc\")==(False)",
+      "generated_test": "const result = text_match_two_three(\"dc\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_two_three(\"abbbba\")==(True)",
+      "generated_test": "const result = text_match_two_three(\"abbbba\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

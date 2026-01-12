@@ -1,0 +1,37 @@
+{
+  "task_id": 404,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum of two numbers.",
+  "python_code": "def minimum(a,b):   \n    if a <= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert minimum(1,2) == 1",
+    "assert minimum(-5,-4) == -5",
+    "assert minimum(0,0) == 0"
+  ],
+  "code_javascript": "function minimum(a, b) {\n    if (a <= b) {\n        return a;\n    } else {\n        return b;\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert minimum(1,2) == 1",
+      "generated_test": "const result = minimum(1, 2);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(-5,-4) == -5",
+      "generated_test": "const result = minimum(-5, -4);\nconst expected = -5;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(0,0) == 0",
+      "generated_test": "const result = minimum(0, 0);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

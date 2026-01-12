@@ -1,0 +1,27 @@
+{
+  "task_id": 395,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first non-repeated character in a given string.",
+  "code_python": "def first_non_repeating_character(str1):\n  char_order = []\n  ctr = {}\n  for c in str1:\n    if c in ctr:\n      ctr[c] += 1\n    else:\n      ctr[c] = 1 \n      char_order.append(c)\n  for c in char_order:\n    if ctr[c] == 1:\n      return c\n  return None",
+  "test_list": [
+    "assert first_non_repeating_character(\"abcabc\") == None",
+    "assert first_non_repeating_character(\"abc\") == \"a\"",
+    "assert first_non_repeating_character(\"ababc\") == \"c\""
+  ],
+  "python_1": "def first_non_repeating_character(str1):\n  # Use Counter from collections for cleaner frequency counting\n  from collections import Counter\n  # Build frequency map in one line using Counter\n  frequency = Counter(str1)\n  # Iterate through original string to preserve order of appearance\n  for char in str1:\n    # Check if current character appears exactly once\n    if frequency[char] == 1:\n      # Return immediately upon finding first unique character\n      return char\n  # No unique character exists in the string\n  return None",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def first_non_repeating_character(str1):\n  # Use list comprehension with count method to find all unique characters\n  unique_chars = [char for char in str1 if str1.count(char) == 1]\n  # Return first unique character if list is non-empty, else None\n  return unique_chars[0] if unique_chars else None",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def first_non_repeating_character(str1):\n  # Import OrderedDict to maintain insertion order while tracking counts\n  from collections import OrderedDict\n  # Create ordered dictionary to store character counts in order of first appearance\n  char_counts = OrderedDict()\n  # Process each character in the input string\n  for c in str1:\n    # Use get with default 0 to increment count, avoiding key existence check\n    char_counts[c] = char_counts.get(c, 0) + 1\n  # Iterate through ordered dictionary items preserving insertion order\n  for char, count in char_counts.items():\n    # First character with count of 1 is our answer\n    if count == 1:\n      # Return immediately when first non-repeated character is found\n      return char\n  # Signal that all characters in string are repeated\n  return None",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def first_non_repeating_character(str1):\n  # Use index-based approach: find first and last occurrence positions\n  # If a character's first and last index match, it appears exactly once\n  for i, char in enumerate(str1):\n    # Check if current character's first occurrence is at current position\n    first_index = str1.index(char)\n    # Check if current character's last occurrence is also at current position\n    last_index = str1.rindex(char)\n    # When both indices match, character is unique in the string\n    if first_index == last_index:\n      # Immediately return this character as first non-repeating\n      return char\n  # All characters have duplicates, return None to indicate no unique char\n  return None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def first_non_repeating_character(str1):\n  # Build a set of characters that appear more than once by checking duplicates\n  seen_once = set()\n  # Track characters we've encountered multiple times\n  seen_multiple = set()\n  # Single pass to categorize each character as unique or repeated\n  for c in str1:\n    # If character was already seen, move it to the repeated set\n    if c in seen_once:\n      # Remove from unique candidates and add to repeated tracker\n      seen_once.discard(c)\n      seen_multiple.add(c)\n    # Only add to seen_once if it hasn't been marked as repeated already\n    elif c not in seen_multiple:\n      # First time seeing this character, consider it potentially unique\n      seen_once.add(c)\n  # Second pass through original string to find first unique in order\n  for c in str1:\n    # Check if character is still in our set of non-repeated characters\n    if c in seen_once:\n      # This is the first character that only appeared once\n      return c\n  # Empty set means all characters were duplicated\n  return None",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

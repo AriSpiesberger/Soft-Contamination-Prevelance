@@ -1,0 +1,37 @@
+{
+  "task_id": 306,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum sum of increasing subsequence from prefix until ith index and also including a given kth element which is after i, i.e., k > i .",
+  "python_code": "def max_sum_increasing_subseq(a, n, index, k):\n\tdp = [[0 for i in range(n)] \n\t\t\tfor i in range(n)]\n\tfor i in range(n):\n\t\tif a[i] > a[0]:\n\t\t\tdp[0][i] = a[i] + a[0]\n\t\telse:\n\t\t\tdp[0][i] = a[i]\n\tfor i in range(1, n):\n\t\tfor j in range(n):\n\t\t\tif a[j] > a[i] and j > i:\n\t\t\t\tif dp[i - 1][i] + a[j] > dp[i - 1][j]:\n\t\t\t\t\tdp[i][j] = dp[i - 1][i] + a[j]\n\t\t\t\telse:\n\t\t\t\t\tdp[i][j] = dp[i - 1][j]\n\t\t\telse:\n\t\t\t\tdp[i][j] = dp[i - 1][j]\n\treturn dp[index][k]",
+  "test_list": [
+    "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 4, 6) == 11",
+    "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 2, 5) == 7",
+    "assert max_sum_increasing_subseq([11, 15, 19, 21, 26, 28, 31], 7, 2, 4) == 71"
+  ],
+  "code_go": "package main\n\nfunc max_sum_increasing_subseq(a []int, n int, index int, k int) int {\n\tdp := make([][]int, n)\n\tfor i := range dp {\n\t\tdp[i] = make([]int, n)\n\t}\n\n\tfor i := 0; i < n; i++ {\n\t\tif a[i] > a[0] {\n\t\t\tdp[0][i] = a[i] + a[0]\n\t\t} else {\n\t\t\tdp[0][i] = a[i]\n\t\t}\n\t}\n\n\tfor i := 1; i < n; i++ {\n\t\tfor j := 0; j < n; j++ {\n\t\t\tif a[j] > a[i] && j > i {\n\t\t\t\tif dp[i-1][i]+a[j] > dp[i-1][j] {\n\t\t\t\t\tdp[i][j] = dp[i-1][i] + a[j]\n\t\t\t\t} else {\n\t\t\t\t\tdp[i][j] = dp[i-1][j]\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tdp[i][j] = dp[i-1][j]\n\t\t\t}\n\t\t}\n\t}\n\n\treturn dp[index][k]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 4, 6) == 11",
+      "generated_test": "result := max_sum_increasing_subseq([]int{1, 101, 2, 3, 100, 4, 5}, 7, 4, 6)\nexpected := 11\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 2, 5) == 7",
+      "generated_test": "result := max_sum_increasing_subseq([]int{1, 101, 2, 3, 100, 4, 5}, 7, 2, 5)\nexpected := 7\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_increasing_subseq([11, 15, 19, 21, 26, 28, 31], 7, 2, 4) == 71",
+      "generated_test": "result := max_sum_increasing_subseq([]int{11, 15, 19, 21, 26, 28, 31}, 7, 2, 4)\nexpected := 71\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

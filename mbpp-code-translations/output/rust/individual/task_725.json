@@ -1,0 +1,44 @@
+{
+  "task_id": 725,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks \" \" of the given string.",
+  "python_code": "import re\ndef extract_quotation(text1):\n  return (re.findall(r'\"(.*?)\"', text1))",
+  "test_list": [
+    "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+    "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+    "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+    "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []"
+  ],
+  "code_rust": "pub fn extract_quotation(text1: &str) -> Vec<String> {\n    let mut results = Vec::new();\n    let mut chars = text1.chars().peekable();\n    \n    while let Some(c) = chars.next() {\n        if c == '\"' {\n            let mut quoted = String::new();\n            for inner_c in chars.by_ref() {\n                if inner_c == '\"' {\n                    break;\n                }\n                quoted.push(inner_c);\n            }\n            results.push(quoted);\n        }\n    }\n    \n    results\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+      "generated_test": "let result = extract_quotation(\"Cortex \\\"A53\\\" Based \\\"multi\\\" tasking \\\"Processor\\\"\");\nlet expected: Vec<String> = vec![\"A53\".to_string(), \"multi\".to_string(), \"Processor\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+      "generated_test": "let result = extract_quotation(\"Cast your \\\"favorite\\\" entertainment \\\"apps\\\"\");\nlet expected: Vec<String> = vec![\"favorite\".to_string(), \"apps\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+      "generated_test": "let result = extract_quotation(\"Watch content \\\"4k Ultra HD\\\" resolution with \\\"HDR 10\\\" Support\");\nlet expected: Vec<String> = vec![\"4k Ultra HD\".to_string(), \"HDR 10\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []",
+      "generated_test": "let result = extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\");\nlet expected: Vec<String> = vec![];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

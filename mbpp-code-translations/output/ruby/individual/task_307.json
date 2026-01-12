@@ -1,0 +1,37 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "python_code": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "code_ruby": "def colon_tuplex(tuplex, m, n)\n  tuplex_colon = tuplex.map do |element|\n    if element.is_a?(Array)\n      element.dup\n    else\n      element\n    end\n  end\n  tuplex_colon[m].append(n)\n  tuplex_colon\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+      "generated_test": "result = colon_tuplex([\"HELLO\", 5, [], true], 2, 50)\nexpected = [\"HELLO\", 5, [50], true]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+      "generated_test": "result = colon_tuplex([\"HELLO\", 5, [], true], 2, 100)\nexpected = [\"HELLO\", 5, [100], true]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)",
+      "generated_test": "result = colon_tuplex([\"HELLO\", 5, [], true], 2, 500)\nexpected = [\"HELLO\", 5, [500], true]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

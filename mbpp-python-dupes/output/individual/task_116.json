@@ -1,0 +1,27 @@
+{
+  "task_id": 116,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given tuple of positive integers into a single integer.",
+  "code_python": "def tuple_to_int(nums):\n    result = int(''.join(map(str,nums)))\n    return result",
+  "test_list": [
+    "assert tuple_to_int((1,2,3))==123",
+    "assert tuple_to_int((4,5,6))==456",
+    "assert tuple_to_int((5,6,7))==567"
+  ],
+  "python_1": "def tuple_to_int(nums):\n    # Start with zero as our accumulator for building the number\n    result = 0\n    # Process each digit in the tuple from left to right\n    for digit in nums:\n        # Shift existing digits left by one decimal place and add new digit\n        result = result * 10 + digit\n    # Return the fully constructed integer\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def tuple_to_int(nums):\n    # Use string concatenation with a generator expression instead of map\n    concatenated = ''.join(str(digit) for digit in nums)\n    # Convert the concatenated string representation to integer\n    return int(concatenated)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def tuple_to_int(nums):\n    # Calculate the total number of digits to determine positional weights\n    length = len(nums)\n    # Initialize accumulator for summing weighted digit values\n    result = 0\n    # Enumerate through tuple with index to compute each digit's decimal place value\n    for index, digit in enumerate(nums):\n        # Compute power of 10 based on reverse position (leftmost digit has highest power)\n        power = length - index - 1\n        # Multiply digit by its positional weight and accumulate into result\n        result += digit * (10 ** power)\n    # Return the mathematically constructed integer from weighted sum\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def tuple_to_int(nums):\n    # Use reduce from functools to fold the tuple into a single integer\n    from functools import reduce\n    # Apply a lambda that shifts accumulated value left and appends current digit\n    result = reduce(lambda acc, d: acc * 10 + d, nums, 0)\n    # Return the integer built through functional reduction\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def tuple_to_int(nums):\n    # Build a list to collect string representations of each digit\n    str_parts = []\n    # Iterate through each number in the input tuple\n    for num in nums:\n        # Append the string version of current digit to our parts list\n        str_parts.append(str(num))\n    # Concatenate all string parts into one continuous string\n    combined_str = ''.join(str_parts)\n    # Parse the combined string as a base-10 integer and return\n    return int(combined_str)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

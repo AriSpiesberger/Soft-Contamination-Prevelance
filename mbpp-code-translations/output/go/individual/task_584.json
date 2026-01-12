@@ -1,0 +1,37 @@
+{
+  "task_id": 584,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb ending with ly and its positions in a given string.",
+  "python_code": "import re\ndef find_adverbs(text):\n  for m in re.finditer(r\"\\w+ly\", text):\n    return ('%d-%d: %s' % (m.start(), m.end(), m.group(0)))",
+  "test_list": [
+    "assert find_adverbs(\"Clearly, he has no excuse for such behavior.\") == '0-7: Clearly'",
+    "assert find_adverbs(\"Please handle the situation carefuly\") == '28-36: carefuly'",
+    "assert find_adverbs(\"Complete the task quickly\") == '18-25: quickly'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"fmt\"\n\t\"regexp\"\n)\n\nfunc find_adverbs(text string) string {\n\tre := regexp.MustCompile(`\\w+ly`)\n\tmatch := re.FindStringIndex(text)\n\tif match != nil {\n\t\treturn fmt.Sprintf(\"%d-%d: %s\", match[0], match[1], text[match[0]:match[1]])\n\t}\n\treturn \"\"\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_adverbs(\"Clearly, he has no excuse for such behavior.\") == '0-7: Clearly'",
+      "generated_test": "expected := \"0-7: Clearly\"\ngot := find_adverbs(\"Clearly, he has no excuse for such behavior.\")\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %s\\n\", expected)\n\tfmt.Printf(\"  Got: %s\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverbs(\"Please handle the situation carefuly\") == '28-36: carefuly'",
+      "generated_test": "result := find_adverbs(\"Please handle the situation carefuly\")\nexpected := \"28-36: carefuly\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %s\\n\", expected)\n\tfmt.Printf(\"  Got: %s\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverbs(\"Complete the task quickly\") == '18-25: quickly'",
+      "generated_test": "result := find_adverbs(\"Complete the task quickly\")\nexpected := \"18-25: quickly\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %s\\n\", expected)\n\tfmt.Printf(\"  Got: %s\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

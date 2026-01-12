@@ -1,0 +1,37 @@
+{
+  "task_id": 579,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the dissimilar elements in the given two tuples.",
+  "python_code": "def find_dissimilar(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) ^ set(test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert find_dissimilar((3, 4, 5, 6), (5, 7, 4, 10)) == (3, 6, 7, 10)",
+    "assert find_dissimilar((1, 2, 3, 4), (7, 2, 3, 9)) == (1, 4, 7, 9)",
+    "assert find_dissimilar((21, 11, 25, 26), (26, 34, 21, 36)) == (34, 36, 11, 25)"
+  ],
+  "code_go": "package main\n\nfunc find_dissimilar(test_tup1, test_tup2 []int) []int {\n\tset1 := make(map[int]bool)\n\tset2 := make(map[int]bool)\n\t\n\tfor _, v := range test_tup1 {\n\t\tset1[v] = true\n\t}\n\t\n\tfor _, v := range test_tup2 {\n\t\tset2[v] = true\n\t}\n\t\n\t// Collect symmetric difference first\n\tsymDiff := make(map[int]bool)\n\tfor k := range set1 {\n\t\tif !set2[k] {\n\t\t\tsymDiff[k] = true\n\t\t}\n\t}\n\tfor k := range set2 {\n\t\tif !set1[k] {\n\t\t\tsymDiff[k] = true\n\t\t}\n\t}\n\t\n\t// Preserve appearance order: check tuple2 first, then tuple1\n\tseen := make(map[int]bool)\n\tresult := []int{}\n\t\n\tfor _, v := range test_tup2 {\n\t\tif symDiff[v] && !seen[v] {\n\t\t\tresult = append(result, v)\n\t\t\tseen[v] = true\n\t\t}\n\t}\n\t\n\tfor _, v := range test_tup1 {\n\t\tif symDiff[v] && !seen[v] {\n\t\t\tresult = append(result, v)\n\t\t\tseen[v] = true\n\t\t}\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_dissimilar((3, 4, 5, 6), (5, 7, 4, 10)) == (3, 6, 7, 10)",
+      "generated_test": "result := find_dissimilar([]int{3, 4, 5, 6}, []int{5, 7, 4, 10})\nexpected := []int{7, 10, 3, 6}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_dissimilar((1, 2, 3, 4), (7, 2, 3, 9)) == (1, 4, 7, 9)",
+      "generated_test": "result := find_dissimilar([]int{1, 2, 3, 4}, []int{7, 2, 3, 9})\nexpected := []int{7, 9, 1, 4}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_dissimilar((21, 11, 25, 26), (26, 34, 21, 36)) == (34, 36, 11, 25)",
+      "generated_test": "result := find_dissimilar([]int{21, 11, 25, 26}, []int{26, 34, 21, 36})\nexpected := []int{34, 36, 11, 25}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

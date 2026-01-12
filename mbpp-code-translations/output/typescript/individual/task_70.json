@@ -1,0 +1,17 @@
+{
+  "task_id": 70,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "python_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1",
+  "test_list": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "code_typescript": "function find_equal_tuple<T>(Input: T[][]): number {\n  const k = Input.length === 0 ? 0 : Input[0].length;\n  let flag = 1;\n  for (const tuple of Input) {\n    if (tuple.length !== k) {\n      flag = 0;\n      break;\n    }\n  }\n  return flag;\n}\n\nfunction get_equal<T>(Input: T[][]): boolean {\n  return find_equal_tuple(Input) === 1;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

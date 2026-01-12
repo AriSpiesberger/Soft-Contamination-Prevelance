@@ -1,0 +1,27 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "code_python": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "python_1": "def first_repeated_char(str1):\n    # Create an empty set to track characters we've already seen\n    seen_chars = set()\n    # Loop through each character in the string one by one\n    for char in str1:\n        # Check if this character was encountered before in our traversal\n        if char in seen_chars:\n            # Found our first repeat - return it immediately\n            return char\n        # Character is new, so add it to our tracking set\n        seen_chars.add(char)\n    # Exhausted all characters without finding any repeat\n    return None",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def first_repeated_char(str1):\n    # Build a dictionary to store the first occurrence index of each character\n    first_occurrence = {}\n    # Track the earliest index where a repetition is found\n    earliest_repeat_index = float('inf')\n    # Store which character caused the earliest repetition\n    result_char = None\n    # Enumerate through string to get both position and character\n    for index, char in enumerate(str1):\n        # Check if we've encountered this character in a previous position\n        if char in first_occurrence:\n            # This character is repeated; check if this is the earliest repeat found\n            if index < earliest_repeat_index:\n                # Update our tracking variables with this earlier repeat\n                earliest_repeat_index = index\n                # Record the character that repeated at this position\n                result_char = char\n                # Since we iterate left-to-right, first repeat found is the answer\n                return result_char\n        else:\n            # First time seeing this character, record its position\n            first_occurrence[char] = index\n    # No character appeared more than once in the entire string\n    return result_char",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def first_repeated_char(str1):\n    # Use list comprehension with filter to find indices where character appears more than once up to that point\n    repeated_indices = [i for i in range(len(str1)) if str1[i] in str1[:i]]\n    # Check if we found any repeated characters at all\n    if repeated_indices:\n        # Return the character at the first index where a repetition was detected\n        return str1[repeated_indices[0]]\n    # No repetitions found, return None to indicate absence\n    return None",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def first_repeated_char(str1):\n    # Use recursion with a helper that maintains seen characters as a string\n    def find_repeat(remaining, seen_so_far):\n        # Base case: empty string means no repeats found\n        if not remaining:\n            return None\n        # Extract the first character from remaining portion\n        current = remaining[0]\n        # Check if current character exists anywhere in our seen string\n        if current in seen_so_far:\n            # Found the repeat, return immediately\n            return current\n        # Recursive call: process rest of string with current added to seen\n        return find_repeat(remaining[1:], seen_so_far + current)\n    # Kick off recursion with full string and empty seen tracker\n    return find_repeat(str1, \"\")",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def first_repeated_char(str1):\n    # Use collections.Counter to tally all character frequencies in one pass\n    from collections import Counter\n    # Build frequency map of entire string upfront\n    char_counts = Counter(str1)\n    # Track characters we've visited during our linear scan\n    visited = []\n    # Walk through string maintaining order of appearance\n    for char in str1:\n        # Append current character to our visited list\n        visited.append(char)\n        # Check two conditions: char appears multiple times AND we've seen it before now\n        if char_counts[char] > 1 and visited.count(char) > 1:\n            # This character has been seen earlier in our traversal\n            return char\n    # String has no repeated characters at all\n    return None",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

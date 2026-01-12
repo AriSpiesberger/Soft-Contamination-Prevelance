@@ -1,0 +1,27 @@
+{
+  "task_id": 279,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth decagonal number.",
+  "code_python": "def is_num_decagonal(n): \n\treturn 4 * n * n - 3 * n ",
+  "test_list": [
+    "assert is_num_decagonal(3) == 27",
+    "assert is_num_decagonal(7) == 175",
+    "assert is_num_decagonal(10) == 370"
+  ],
+  "python_1": "def is_num_decagonal(n): \n    # Initialize accumulator to build up the decagonal number iteratively\n    result = 0\n    # Use a loop-based approach to sum the differences between consecutive decagonal numbers\n    for i in range(1, n + 1):\n        # Each decagonal number differs from previous by 8*i - 7 (arithmetic sequence property)\n        increment = 8 * i - 7\n        # Add the increment to accumulate the nth decagonal number\n        result += increment\n    # Return the computed nth decagonal number\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_num_decagonal(n): \n    # Define decagonal formula using reduce with a lambda that captures the mathematical identity\n    from functools import reduce\n    # Create a tuple holding the two coefficients (4 for n^2 term, -3 for n term)\n    coefficients = (4, -3)\n    # Apply each coefficient to the appropriate power of n and sum results\n    terms = [coef * (n ** (2 - idx)) for idx, coef in enumerate(coefficients)]\n    # Combine all polynomial terms to get final decagonal number\n    decagonal_value = reduce(lambda acc, term: acc + term, terms, 0)\n    # Return the computed result\n    return decagonal_value",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_num_decagonal(n): \n    # Use recursion with base case: first decagonal number is 1\n    if n == 1:\n        # The first decagonal number is simply 1\n        return 1\n    # Recursively get the previous decagonal number\n    previous_decagonal = is_num_decagonal(n - 1)\n    # Calculate difference between consecutive decagonal numbers: 8n - 7\n    difference_to_add = 8 * n - 7\n    # Add the arithmetic difference to the previous term to get current term\n    current_decagonal = previous_decagonal + difference_to_add\n    # Return the computed nth decagonal number\n    return current_decagonal",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_num_decagonal(n): \n    # Factor out n from the formula n(4n-3) to use multiplicative decomposition\n    first_factor = n\n    # Compute the linear component (4n-3) which represents the multiplier\n    linear_component = 4 * n - 3\n    # Multiply the two factors together to obtain the decagonal number\n    decagonal_result = first_factor * linear_component\n    # Return the product which equals the nth decagonal number\n    return decagonal_result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_num_decagonal(n): \n    # Use eval to dynamically construct and evaluate the polynomial expression\n    expression = f\"4 * {n} ** 2 - 3 * {n}\"\n    # Execute the string expression to compute the decagonal number\n    result = eval(expression)\n    # Return the evaluated result as the nth decagonal number\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

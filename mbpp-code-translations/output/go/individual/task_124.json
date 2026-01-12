@@ -1,0 +1,37 @@
+{
+  "task_id": 124,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the angle of a complex number.",
+  "python_code": "import cmath\ndef angle_complex(a,b):\n  cn=complex(a,b)\n  angle=cmath.phase(a+b)\n  return angle",
+  "test_list": [
+    "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n\t\"math/cmplx\"\n)\n\nfunc angle_complex(a, b complex128) float64 {\n\treturn cmplx.Phase(a + b)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "result := angle_complex(0, 1i)\nexpected := 1.5707963267948966\nrelTol := 0.001\n\ndiff := math.Abs(result - expected)\ntolerance := relTol * math.Abs(expected)\n\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+      "generated_test": "result := angle_complex(complex(2, 0), complex(0, 1))\nexpected := 0.4636476090008061\nrelTol := 0.001\n\ndiff := math.Abs(result - expected)\ntolerance := relTol * math.Abs(expected)\n\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "result := angle_complex(0, 2i)\nexpected := 1.5707963267948966\nrelTol := 0.001\n\ndiff := math.Abs(result - expected)\ntolerance := relTol * math.Abs(expected)\n\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

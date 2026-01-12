@@ -1,0 +1,17 @@
+{
+  "task_id": 600,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given number is even or not.",
+  "python_code": "def is_Even(n) : \n    if (n^1 == n+1) :\n        return True; \n    else :\n        return False; ",
+  "test_list": [
+    "assert is_Even(1) == False",
+    "assert is_Even(2) == True",
+    "assert is_Even(3) == False"
+  ],
+  "code_typescript": "function is_Even(n: number): boolean {\n    if ((n ^ 1) === n + 1) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

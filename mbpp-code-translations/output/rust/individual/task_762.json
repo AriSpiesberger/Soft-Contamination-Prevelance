@@ -1,0 +1,37 @@
+{
+  "task_id": 762,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given month number contains 30 days or not. Months are given as number from 1 to 12.",
+  "python_code": "def check_monthnumber_number(monthnum3):\n  return monthnum3==4 or monthnum3==6 or monthnum3==9 or monthnum3==11",
+  "test_list": [
+    "assert check_monthnumber_number(6)==True",
+    "assert check_monthnumber_number(2)==False",
+    "assert check_monthnumber_number(12)==False"
+  ],
+  "code_rust": "pub fn check_monthnumber_number(monthnum3: i32) -> bool {\n    monthnum3 == 4 || monthnum3 == 6 || monthnum3 == 9 || monthnum3 == 11\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_monthnumber_number(6)==True",
+      "generated_test": "let result = check_monthnumber_number(6);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_monthnumber_number(2)==False",
+      "generated_test": "let result = check_monthnumber_number(2);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_monthnumber_number(12)==False",
+      "generated_test": "let result = check_monthnumber_number(12);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

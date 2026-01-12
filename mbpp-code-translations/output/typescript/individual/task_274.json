@@ -1,0 +1,17 @@
+{
+  "task_id": 274,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a positive integer n and finds the sum of even index binomial coefficients.",
+  "python_code": "import math  \ndef even_binomial_Coeff_Sum( n): \n    return (1 << (n - 1)) ",
+  "test_list": [
+    "assert even_binomial_Coeff_Sum(4) == 8",
+    "assert even_binomial_Coeff_Sum(6) == 32",
+    "assert even_binomial_Coeff_Sum(2) == 2"
+  ],
+  "code_typescript": "function even_binomial_Coeff_Sum(n: number): number {\n    return 1 << (n - 1);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

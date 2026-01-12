@@ -1,0 +1,37 @@
+{
+  "task_id": 585,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n most expensive items in a given dataset.",
+  "python_code": "import heapq\ndef expensive_items(items,n):\n  expensive_items = heapq.nlargest(n, items, key=lambda s: s['price'])\n  return expensive_items",
+  "test_list": [
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]"
+  ],
+  "code_rust": "use std::collections::BinaryHeap;\nuse std::cmp::Ordering;\n\n#[derive(Debug, Clone, PartialEq)]\npub struct Item {\n    pub name: String,\n    pub price: f64,\n}\n\nstruct ItemWrapper<'a>(&'a Item);\n\nimpl<'a> PartialEq for ItemWrapper<'a> {\n    fn eq(&self, other: &Self) -> bool {\n        self.0.price == other.0.price\n    }\n}\n\nimpl<'a> Eq for ItemWrapper<'a> {}\n\nimpl<'a> PartialOrd for ItemWrapper<'a> {\n    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {\n        Some(self.cmp(other))\n    }\n}\n\nimpl<'a> Ord for ItemWrapper<'a> {\n    fn cmp(&self, other: &Self) -> Ordering {\n        self.0.price.partial_cmp(&other.0.price).unwrap_or(Ordering::Equal)\n    }\n}\n\npub fn expensive_items(items: &[Item], n: usize) -> Vec<Item> {\n    if n == 0 || items.is_empty() {\n        return Vec::new();\n    }\n\n    let mut sorted_items: Vec<&Item> = items.iter().collect();\n    sorted_items.sort_by(|a, b| b.price.partial_cmp(&a.price).unwrap_or(Ordering::Equal));\n    \n    sorted_items.into_iter()\n        .take(n)\n        .cloned()\n        .collect()\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn test_expensive_items_1() {\n        let items = vec![\n            Item { name: \"Item-1\".to_string(), price: 101.1 },\n            Item { name: \"Item-2\".to_string(), price: 555.22 },\n        ];\n        let result = expensive_items(&items, 1);\n        assert_eq!(result, vec![Item { name: \"Item-2\".to_string(), price: 555.22 }]);\n    }\n\n    #[test]\n    fn test_expensive_items_2() {\n        let items = vec![\n            Item { name: \"Item-1\".to_string(), price: 101.1 },\n            Item { name: \"Item-2\".to_string(), price: 555.22 },\n            Item { name: \"Item-3\".to_string(), price: 45.09 },\n        ];\n        let result = expensive_items(&items, 2);\n        assert_eq!(result, vec![\n            Item { name: \"Item-2\".to_string(), price: 555.22 },\n            Item { name: \"Item-1\".to_string(), price: 101.1 },\n        ]);\n    }\n\n    #[test]\n    fn test_expensive_items_3() {\n        let items = vec![\n            Item { name: \"Item-1\".to_string(), price: 101.1 },\n            Item { name: \"Item-2\".to_string(), price: 555.22 },\n            Item { name: \"Item-3\".to_string(), price: 45.09 },\n            Item { name: \"Item-4\".to_string(), price: 22.75 },\n        ];\n        let result = expensive_items(&items, 1);\n        assert_eq!(result, vec![Item { name: \"Item-2\".to_string(), price: 555.22 }]);\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "let items = vec![\n    Item { name: \"Item-1\".to_string(), price: 101.1 },\n    Item { name: \"Item-2\".to_string(), price: 555.22 },\n];\nlet result = expensive_items(&items, 1);\nlet expected = vec![Item { name: \"Item-2\".to_string(), price: 555.22 }];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+      "generated_test": "let items = vec![\n    Item { name: \"Item-1\".to_string(), price: 101.1 },\n    Item { name: \"Item-2\".to_string(), price: 555.22 },\n    Item { name: \"Item-3\".to_string(), price: 45.09 },\n];\nlet result = expensive_items(&items, 2);\nlet expected = vec![\n    Item { name: \"Item-2\".to_string(), price: 555.22 },\n    Item { name: \"Item-1\".to_string(), price: 101.1 },\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "let items = vec![\n    Item { name: \"Item-1\".to_string(), price: 101.1 },\n    Item { name: \"Item-2\".to_string(), price: 555.22 },\n    Item { name: \"Item-3\".to_string(), price: 45.09 },\n    Item { name: \"Item-4\".to_string(), price: 22.75 },\n];\nlet result = expensive_items(&items, 1);\nlet expected = vec![Item { name: \"Item-2\".to_string(), price: 555.22 }];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

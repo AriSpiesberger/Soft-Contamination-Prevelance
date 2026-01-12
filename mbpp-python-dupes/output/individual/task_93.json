@@ -1,0 +1,27 @@
+{
+  "task_id": 93,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the value of 'a' to the power 'b'.",
+  "code_python": "def power(a,b):\n\tif b==0:\n\t\treturn 1\n\telif a==0:\n\t\treturn 0\n\telif b==1:\n\t\treturn a\n\telse:\n\t\treturn a*power(a,b-1)",
+  "test_list": [
+    "assert power(3,4) == 81",
+    "assert power(2,3) == 8",
+    "assert power(5,5) == 3125"
+  ],
+  "python_1": "def power(a,b):\n    # Handle edge case where exponent is zero - any number to power 0 equals 1\n    if b == 0:\n        return 1\n    # Handle edge case where base is zero - zero to any positive power is 0\n    if a == 0:\n        return 0\n    # Initialize accumulator to hold the computed result starting at 1\n    result = 1\n    # Use iterative approach - multiply 'a' by itself 'b' times\n    for _ in range(b):\n        # Accumulate the product by multiplying current result by base\n        result = result * a\n    # Return the final computed power value\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def power(a,b):\n    # Return 1 immediately for zero exponent case per mathematical definition\n    if b == 0:\n        return 1\n    # Zero raised to any positive power yields zero\n    if a == 0:\n        return 0\n    # Apply exponentiation by squaring for efficiency - check if exponent is even\n    if b % 2 == 0:\n        # Compute half power first, then square it to avoid redundant calculations\n        half_power = power(a, b // 2)\n        # Squaring the half result gives us a^b when b is even\n        return half_power * half_power\n    else:\n        # For odd exponents, factor out one 'a' and recurse on even exponent\n        half_power = power(a, (b - 1) // 2)\n        # Multiply base 'a' with squared half-power to handle odd case\n        return a * half_power * half_power",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def power(a,b):\n    # Handle the mathematical identity that anything raised to zero equals one\n    if b == 0:\n        return 1\n    # Base of zero with positive exponent always yields zero\n    if a == 0:\n        return 0\n    # Create a list containing 'b' copies of the base value 'a'\n    factors = [a] * b\n    # Use reduce-style approach with while loop to multiply all factors together\n    while len(factors) > 1:\n        # Pop the last two elements from our list of factors\n        x = factors.pop()\n        y = factors.pop()\n        # Multiply them together and push the product back onto the list\n        factors.append(x * y)\n    # The single remaining element is the final result of a^b\n    return factors[0]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def power(a,b):\n    # Early return for zero exponent - mathematically defined as 1\n    if b == 0:\n        return 1\n    # Zero base with any positive power evaluates to zero\n    if a == 0:\n        return 0\n    # Use logarithmic approach via bit manipulation of the exponent\n    result = 1\n    # Track the current base value which gets squared each iteration\n    current_base = a\n    # Process each bit of the exponent from least significant to most\n    while b > 0:\n        # Check if current bit position is set (odd means LSB is 1)\n        if b & 1:\n            # Multiply result by current base when bit is active\n            result = result * current_base\n        # Square the base for the next bit position\n        current_base = current_base * current_base\n        # Right shift exponent to process next bit\n        b = b >> 1\n    # Final accumulated product represents a^b\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def power(a,b):\n    # Immediately return 1 when exponent is zero per mathematical convention\n    if b == 0:\n        return 1\n    # Handle special case where zero base always produces zero result\n    if a == 0:\n        return 0\n    # Import reduce to apply cumulative multiplication across an iterable\n    from functools import reduce\n    # Import mul operator to use as the binary function for reduce\n    from operator import mul\n    # Generate an iterator that yields the base 'a' exactly 'b' times\n    base_generator = (a for _ in range(b))\n    # Apply reduce with multiplication starting from implicit first element\n    computed_power = reduce(mul, base_generator)\n    # Return the product of all 'b' copies of 'a' multiplied together\n    return computed_power",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

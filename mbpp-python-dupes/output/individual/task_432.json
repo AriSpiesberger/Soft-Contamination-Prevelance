@@ -1,0 +1,27 @@
+{
+  "task_id": 432,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median length of a trapezium.",
+  "code_python": "def median_trapezium(base1,base2,height):\n median = 0.5 * (base1+ base2)\n return median",
+  "test_list": [
+    "assert median_trapezium(15,25,35)==20",
+    "assert median_trapezium(10,20,30)==15",
+    "assert median_trapezium(6,9,4)==7.5"
+  ],
+  "python_1": "def median_trapezium(base1,base2,height):\n    # Sum the two parallel bases together to get total base length\n    sum_of_bases = base1 + base2\n    # Divide by 2 using division operator instead of multiplication by 0.5\n    median = sum_of_bases / 2\n    # Return the calculated median (midsegment) of the trapezium\n    return median",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def median_trapezium(base1,base2,height):\n    # Create a list containing both parallel base measurements\n    bases = [base1, base2]\n    # Use built-in sum function to add bases, then apply right bit shift equivalent division\n    total = sum(bases)\n    # Multiply by 1 and divide by 2 using truediv to get floating point median\n    median = total * 1.0 / 2\n    # Return the midsegment length (median line connecting midpoints of legs)\n    return median",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def median_trapezium(base1,base2,height):\n    # Import the statistics module to leverage its averaging capabilities\n    from statistics import mean\n    # Pack the two parallel sides into a tuple for statistical processing\n    parallel_sides = (base1, base2)\n    # The median of a trapezium equals the arithmetic mean of its parallel bases\n    median = mean(parallel_sides)\n    # Return the computed midsegment length (height parameter unused in formula)\n    return median",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def median_trapezium(base1,base2,height):\n    # Use reduce from functools to combine the parallel bases through addition\n    from functools import reduce\n    # Create a lambda that adds two values together for reduction operation\n    add_func = lambda x, y: x + y\n    # Store bases in a list structure for functional programming approach\n    bases_list = [base1, base2]\n    # Apply reduce to accumulate the sum of both parallel sides\n    total_base_length = reduce(add_func, bases_list)\n    # Compute median by finding midpoint using exponentiation (2^-1 = 0.5)\n    median = total_base_length * (2 ** -1)\n    # Return the trapezium's midsegment which connects leg midpoints\n    return median",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def median_trapezium(base1,base2,height):\n    # Use numpy-style approach by treating bases as array-like for averaging\n    import operator\n    # Leverage operator module's add function for cleaner functional composition\n    adder = operator.add\n    # Apply the addition operator to combine both parallel base measurements\n    combined_bases = adder(base1, base2)\n    # Use truediv operator to perform division, separating operation from data\n    divider = operator.truediv\n    # Execute division operation: combined bases divided by 2 yields median\n    median = divider(combined_bases, 2)\n    # Return midsegment length (parallel to bases, equidistant from both)\n    return median",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

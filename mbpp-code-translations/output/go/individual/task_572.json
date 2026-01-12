@@ -1,0 +1,37 @@
+{
+  "task_id": 572,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove duplicate numbers from a given number of lists.",
+  "python_code": "def two_unique_nums(nums):\n  return [i for i in nums if nums.count(i)==1]",
+  "test_list": [
+    "assert two_unique_nums([1,2,3,2,3,4,5]) == [1, 4, 5]",
+    "assert two_unique_nums([1,2,3,2,4,5]) == [1, 3, 4, 5]",
+    "assert two_unique_nums([1,2,3,4,5]) == [1, 2, 3, 4, 5]"
+  ],
+  "code_go": "package main\n\nfunc two_unique_nums(nums []int) []int {\n\tresult := []int{}\n\tfor _, num := range nums {\n\t\tcount := 0\n\t\tfor _, n := range nums {\n\t\t\tif n == num {\n\t\t\t\tcount++\n\t\t\t}\n\t\t}\n\t\tif count == 1 {\n\t\t\tresult = append(result, num)\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert two_unique_nums([1,2,3,2,3,4,5]) == [1, 4, 5]",
+      "generated_test": "result := two_unique_nums([]int{1, 2, 3, 2, 3, 4, 5})\nexpected := []int{1, 4, 5}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert two_unique_nums([1,2,3,2,4,5]) == [1, 3, 4, 5]",
+      "generated_test": "result := two_unique_nums([]int{1, 2, 3, 2, 4, 5})\nexpected := []int{1, 3, 4, 5}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert two_unique_nums([1,2,3,4,5]) == [1, 2, 3, 4, 5]",
+      "generated_test": "result := two_unique_nums([]int{1, 2, 3, 4, 5})\nexpected := []int{1, 2, 3, 4, 5}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

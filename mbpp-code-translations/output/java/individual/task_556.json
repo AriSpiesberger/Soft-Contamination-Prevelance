@@ -1,0 +1,37 @@
+{
+  "task_id": 556,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose xor value is odd.",
+  "python_code": "def find_Odd_Pair(A,N) : \n    oddPair = 0\n    for i in range(0,N) :  \n        for j in range(i+1,N) :  \n            if ((A[i] ^ A[j]) % 2 != 0):  \n                oddPair+=1  \n    return oddPair  ",
+  "test_list": [
+    "assert find_Odd_Pair([5,4,7,2,1],5) == 6",
+    "assert find_Odd_Pair([7,2,8,1,0,5,11],7) == 12",
+    "assert find_Odd_Pair([1,2,3],3) == 2"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int find_Odd_Pair(int[] A, int N) {\n        int oddPair = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i + 1; j < N; j++) {\n                if ((A[i] ^ A[j]) % 2 != 0) {\n                    oddPair++;\n                }\n            }\n        }\n        return oddPair;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_Odd_Pair([5,4,7,2,1],5) == 6",
+      "generated_test": "int[] arr = new int[]{5, 4, 7, 2, 1};\nint result = find_Odd_Pair(arr, 5);\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Odd_Pair([7,2,8,1,0,5,11],7) == 12",
+      "generated_test": "int[] arr = new int[]{7, 2, 8, 1, 0, 5, 11};\nint result = find_Odd_Pair(arr, 7);\nint expected = 12;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Odd_Pair([1,2,3],3) == 2",
+      "generated_test": "int[] arr = new int[]{1, 2, 3};\nint result = find_Odd_Pair(arr, 3);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

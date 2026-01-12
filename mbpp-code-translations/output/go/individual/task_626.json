@@ -1,0 +1,37 @@
+{
+  "task_id": 626,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the area of the largest triangle that can be inscribed in a semicircle with a given radius.",
+  "python_code": "def triangle_area(r) :  \n    if r < 0 : \n        return None\n    return r * r ",
+  "test_list": [
+    "assert triangle_area(-1) == None",
+    "assert triangle_area(0) == 0",
+    "assert triangle_area(2) == 4"
+  ],
+  "code_go": "package main\n\nfunc triangle_area(r float64) *float64 {\n\tif r < 0 {\n\t\treturn nil\n\t}\n\tresult := r * r\n\treturn &result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert triangle_area(-1) == None",
+      "generated_test": "result := triangle_area(-1)\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected: nil\")\n\tfmt.Printf(\"  Got: %v\\n\", *result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert triangle_area(0) == 0",
+      "generated_test": "expected := 0.0\nresult := triangle_area(0)\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert triangle_area(2) == 4",
+      "generated_test": "expected := 4.0\nresult := triangle_area(2)\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

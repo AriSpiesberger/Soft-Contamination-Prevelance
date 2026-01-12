@@ -1,0 +1,27 @@
+{
+  "task_id": 399,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to perform the mathematical bitwise xor operation across the given tuples.",
+  "code_python": "def bitwise_xor(test_tup1, test_tup2):\n  res = tuple(ele1 ^ ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+    "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+    "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)"
+  ],
+  "python_1": "def bitwise_xor(test_tup1, test_tup2):\n    # Create an empty list to accumulate XOR results iteratively\n    result_list = []\n    # Determine the number of elements to process based on tuple length\n    length = len(test_tup1)\n    # Use index-based iteration instead of zip for element access\n    index = 0\n    # Loop through each position using a while construct\n    while index < length:\n        # Extract element from first tuple at current position\n        first_element = test_tup1[index]\n        # Extract corresponding element from second tuple\n        second_element = test_tup2[index]\n        # Compute XOR of the two elements using bitwise operator\n        xor_result = first_element ^ second_element\n        # Append the computed XOR value to our result collection\n        result_list.append(xor_result)\n        # Move to next index position for subsequent iteration\n        index += 1\n    # Convert the accumulated list into a tuple for output\n    final_tuple = tuple(result_list)\n    # Return the tuple containing all XOR results\n    return final_tuple",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def bitwise_xor(test_tup1, test_tup2):\n    # Use map function to apply XOR operation across paired elements\n    from operator import xor\n    # Apply the xor operator function to corresponding elements from both tuples\n    mapped_result = map(xor, test_tup1, test_tup2)\n    # Convert the map iterator object into an immutable tuple\n    return tuple(mapped_result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def bitwise_xor(test_tup1, test_tup2):\n    # Use recursion with helper function to process tuples element by element\n    def xor_recursive(idx, tup1, tup2, accumulated):\n        # Base case: when index reaches tuple length, return accumulated results as tuple\n        if idx >= len(tup1):\n            return tuple(accumulated)\n        # Perform XOR on current index elements and append to accumulator list\n        accumulated.append(tup1[idx] ^ tup2[idx])\n        # Recursively process next index with updated accumulator\n        return xor_recursive(idx + 1, tup1, tup2, accumulated)\n    # Initiate recursive processing starting from index 0 with empty accumulator\n    return xor_recursive(0, test_tup1, test_tup2, [])",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def bitwise_xor(test_tup1, test_tup2):\n    # Use list comprehension with range-based indexing for explicit position control\n    xor_values = [test_tup1[i] ^ test_tup2[i] for i in range(len(test_tup1))]\n    # Unpack the list directly into tuple constructor using star operator\n    return (*xor_values,)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def bitwise_xor(test_tup1, test_tup2):\n    # Import reduce to enable functional-style aggregation over sequences\n    from functools import reduce\n    # Combine both tuples with indices using enumerate to track positions\n    paired_with_index = list(enumerate(zip(test_tup1, test_tup2)))\n    # Define a reducer that builds result dict by computing XOR at each position\n    def xor_reducer(acc_dict, indexed_pair):\n        # Extract the position index from the enumerated pair\n        position = indexed_pair[0]\n        # Unpack the tuple pair containing elements from both input tuples\n        element_pair = indexed_pair[1]\n        # Compute XOR of the two elements and store in dictionary by position\n        acc_dict[position] = element_pair[0] ^ element_pair[1]\n        # Return the modified accumulator dictionary for next iteration\n        return acc_dict\n    # Apply reduce to build dictionary mapping indices to XOR results\n    result_dict = reduce(xor_reducer, paired_with_index, {})\n    # Sort dictionary keys to ensure correct ordering of final tuple elements\n    sorted_keys = sorted(result_dict.keys())\n    # Extract values in sorted key order to construct properly ordered tuple\n    ordered_values = [result_dict[k] for k in sorted_keys]\n    # Convert the ordered list of XOR results into final tuple form\n    return tuple(ordered_values)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 800,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from a string.",
+  "python_code": "import re\ndef remove_all_spaces(text):\n return (re.sub(r'\\s+', '',text))",
+  "test_list": [
+    "assert remove_all_spaces('python  program')==('pythonprogram')",
+    "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+    "assert remove_all_spaces('python                     program')==('pythonprogram')",
+    "assert remove_all_spaces('   python                     program')=='pythonprogram'"
+  ],
+  "code_ruby": "def remove_all_spaces(text)\n  text.gsub(/\\s+/, '')\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 4,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert remove_all_spaces('python  program')==('pythonprogram')",
+      "generated_test": "result = remove_all_spaces('python  program')\nexpected = 'pythonprogram'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+      "generated_test": "result = remove_all_spaces('python   programming    language')\nexpected = 'pythonprogramminglanguage'\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python                     program')==('pythonprogram')",
+      "generated_test": "result = remove_all_spaces('python                     program')\nexpected = 'pythonprogram'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('   python                     program')=='pythonprogram'",
+      "generated_test": "result = remove_all_spaces('   python                     program')\nexpected = 'pythonprogram'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

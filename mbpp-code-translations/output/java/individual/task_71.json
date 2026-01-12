@@ -1,0 +1,37 @@
+{
+  "task_id": 71,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of elements.",
+  "python_code": "def comb_sort(nums):\n    shrink_fact = 1.3\n    gaps = len(nums)\n    swapped = True\n    i = 0\n    while gaps > 1 or swapped:\n        gaps = int(float(gaps) / shrink_fact)\n        swapped = False\n        i = 0\n        while gaps + i < len(nums):\n            if nums[i] > nums[i+gaps]:\n                nums[i], nums[i+gaps] = nums[i+gaps], nums[i]\n                swapped = True\n            i += 1\n    return nums",
+  "test_list": [
+    "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+    "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+    "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> comb_sort(ArrayList<Integer> nums) {\n        double shrink_fact = 1.3;\n        int gaps = nums.size();\n        boolean swapped = true;\n        int i = 0;\n        \n        while (gaps > 1 || swapped) {\n            gaps = (int) ((double) gaps / shrink_fact);\n            swapped = false;\n            i = 0;\n            while (gaps + i < nums.size()) {\n                if (nums.get(i) > nums.get(i + gaps)) {\n                    int temp = nums.get(i);\n                    nums.set(i, nums.get(i + gaps));\n                    nums.set(i + gaps, temp);\n                    swapped = true;\n                }\n                i += 1;\n            }\n        }\n        return nums;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(5);\ninput.add(15);\ninput.add(37);\ninput.add(25);\ninput.add(79);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(5);\nexpected.add(15);\nexpected.add(25);\nexpected.add(37);\nexpected.add(79);\n\nArrayList<Integer> result = comb_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(41);\ninput.add(32);\ninput.add(15);\ninput.add(19);\ninput.add(22);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(15);\nexpected.add(19);\nexpected.add(22);\nexpected.add(32);\nexpected.add(41);\n\nArrayList<Integer> result = comb_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(99);\ninput.add(15);\ninput.add(13);\ninput.add(47);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(13);\nexpected.add(15);\nexpected.add(47);\nexpected.add(99);\n\nArrayList<Integer> result = comb_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

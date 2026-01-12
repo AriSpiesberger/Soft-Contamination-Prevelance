@@ -1,0 +1,37 @@
+{
+  "task_id": 392,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum sum possible by using the given equation f(n) = max( (f(n/2) + f(n/3) + f(n/4) + f(n/5)), n).",
+  "python_code": "def get_max_sum (n):\n\tres = list()\n\tres.append(0)\n\tres.append(1)\n\ti = 2\n\twhile i<n + 1:\n\t\tres.append(max(i, (res[int(i / 2)] \n\t\t\t\t\t\t+ res[int(i / 3)] +\n\t\t\t\t\t\t\tres[int(i / 4)]\n\t\t\t\t\t\t+ res[int(i / 5)])))\n\t\ti = i + 1\n\treturn res[n]",
+  "test_list": [
+    "assert get_max_sum(60) == 106",
+    "assert get_max_sum(10) == 12",
+    "assert get_max_sum(2) == 2"
+  ],
+  "code_rust": "pub fn get_max_sum(n: i32) -> i32 {\n    if n < 0 {\n        return 0;\n    }\n    \n    let n = n as usize;\n    let mut res: Vec<i32> = Vec::with_capacity(n + 2);\n    res.push(0);\n    if n >= 1 {\n        res.push(1);\n    }\n    \n    let mut i: usize = 2;\n    while i < n + 1 {\n        let sum = res[i / 2] + res[i / 3] + res[i / 4] + res[i / 5];\n        res.push(std::cmp::max(i as i32, sum));\n        i += 1;\n    }\n    \n    res[n]\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert get_max_sum(60) == 106",
+      "generated_test": "let result = get_max_sum(60);\nlet expected = 106;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_max_sum(10) == 12",
+      "generated_test": "let result = get_max_sum(10);\nlet expected = 12;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_max_sum(2) == 2",
+      "generated_test": "let result = get_max_sum(2);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

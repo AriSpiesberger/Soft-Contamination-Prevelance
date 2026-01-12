@@ -1,0 +1,37 @@
+{
+  "task_id": 414,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether any value in a sequence exists in a sequence or not.",
+  "python_code": "def overlapping(list1,list2):  \n    for i in range(len(list1)): \n        for j in range(len(list2)): \n            if(list1[i]==list2[j]): \n                return True\n    return False",
+  "test_list": [
+    "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+    "assert overlapping([1,2,3],[4,5,6]) == False",
+    "assert overlapping([1,4,5],[1,4,5]) == True"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static boolean overlapping(ArrayList<Integer> list1, ArrayList<Integer> list2) {\n        for (int i = 0; i < list1.size(); i++) {\n            for (int j = 0; j < list2.size(); j++) {\n                if (list1.get(i).equals(list2.get(j))) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<Integer>();\nlist1.add(1);\nlist1.add(2);\nlist1.add(3);\nlist1.add(4);\nlist1.add(5);\nArrayList<Integer> list2 = new ArrayList<Integer>();\nlist2.add(6);\nlist2.add(7);\nlist2.add(8);\nlist2.add(9);\nboolean result = overlapping(list1, list2);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert overlapping([1,2,3],[4,5,6]) == False",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<Integer>();\nlist1.add(1);\nlist1.add(2);\nlist1.add(3);\nArrayList<Integer> list2 = new ArrayList<Integer>();\nlist2.add(4);\nlist2.add(5);\nlist2.add(6);\nboolean result = overlapping(list1, list2);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert overlapping([1,4,5],[1,4,5]) == True",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(4);\nlist1.add(5);\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(1);\nlist2.add(4);\nlist2.add(5);\nboolean result = overlapping(list1, list2);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

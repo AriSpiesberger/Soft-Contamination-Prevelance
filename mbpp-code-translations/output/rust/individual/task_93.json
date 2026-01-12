@@ -1,0 +1,37 @@
+{
+  "task_id": 93,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the value of 'a' to the power 'b'.",
+  "python_code": "def power(a,b):\n\tif b==0:\n\t\treturn 1\n\telif a==0:\n\t\treturn 0\n\telif b==1:\n\t\treturn a\n\telse:\n\t\treturn a*power(a,b-1)",
+  "test_list": [
+    "assert power(3,4) == 81",
+    "assert power(2,3) == 8",
+    "assert power(5,5) == 3125"
+  ],
+  "code_rust": "pub fn power(a: i64, b: i64) -> i64 {\n    if b == 0 {\n        1\n    } else if a == 0 {\n        0\n    } else if b == 1 {\n        a\n    } else {\n        a * power(a, b - 1)\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert power(3,4) == 81",
+      "generated_test": "let result = power(3, 4);\nlet expected = 81;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power(2,3) == 8",
+      "generated_test": "let result = power(2, 3);\nlet expected = 8;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power(5,5) == 3125",
+      "generated_test": "let result = power(5, 5);\nlet expected = 3125;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

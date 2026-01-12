@@ -1,0 +1,37 @@
+{
+  "task_id": 627,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the smallest missing number from a sorted list of natural numbers.",
+  "python_code": "def find_First_Missing(array,start=0,end=None):\n    if end is None:\n      end = len(array) - 1   \n    if (start > end): \n        return end + 1\n    if (start != array[start]): \n        return start; \n    mid = int((start + end) / 2) \n    if (array[mid] == mid): \n        return find_First_Missing(array,mid+1,end) \n    return find_First_Missing(array,start,mid) ",
+  "test_list": [
+    "assert find_First_Missing([0,1,2,3]) == 4",
+    "assert find_First_Missing([0,1,2,6,9]) == 3",
+    "assert find_First_Missing([2,3,5,8,9]) == 0"
+  ],
+  "code_javascript": "function find_First_Missing(array, start = 0, end = null) {\n    if (end === null) {\n        end = array.length - 1;\n    }\n    if (start > end) {\n        return end + 1;\n    }\n    if (start !== array[start]) {\n        return start;\n    }\n    let mid = Math.floor((start + end) / 2);\n    if (array[mid] === mid) {\n        return find_First_Missing(array, mid + 1, end);\n    }\n    return find_First_Missing(array, start, mid);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_First_Missing([0,1,2,3]) == 4",
+      "generated_test": "const result = find_First_Missing([0,1,2,3]);\nconst expected = 4;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_First_Missing([0,1,2,6,9]) == 3",
+      "generated_test": "const result = find_First_Missing([0,1,2,6,9]);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_First_Missing([2,3,5,8,9]) == 0",
+      "generated_test": "const result = find_First_Missing([2,3,5,8,9]);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

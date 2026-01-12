@@ -1,0 +1,37 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "python_code": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "code_ruby": "def first_repeated_char(str1)\n  str1.each_char.with_index do |c, index|\n    if str1[0..index].count(c) > 1\n      return c\n    end\n  end\n  nil\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert first_repeated_char(\"abcabc\") == \"a\"",
+      "generated_test": "result = first_repeated_char(\"abcabc\")\nexpected = \"a\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"abc\") == None",
+      "generated_test": "result = first_repeated_char(\"abc\")\nexpected = nil\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"123123\") == \"1\"",
+      "generated_test": "result = first_repeated_char(\"123123\")\nexpected = \"1\"\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

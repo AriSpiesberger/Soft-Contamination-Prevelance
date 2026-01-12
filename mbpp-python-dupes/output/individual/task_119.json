@@ -1,0 +1,27 @@
+{
+  "task_id": 119,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the element that appears only once in a sorted array.",
+  "code_python": "def search(arr):\n    n = len(arr)\n    XOR = 0\n    for i in range(n) :\n        XOR = XOR ^ arr[i]\n    return (XOR)",
+  "test_list": [
+    "assert search([1,1,2,2,3]) == 3",
+    "assert search([1,1,3,3,4,4,5,5,7,7,8]) == 8",
+    "assert search([1,2,2,3,3,4,4]) == 1"
+  ],
+  "python_1": "def search(arr):\n    # Handle edge case where array has only one element\n    if len(arr) == 1:\n        return arr[0]\n    # Set left boundary of binary search to start of array\n    left = 0\n    # Set right boundary to end of array\n    right = len(arr) - 1\n    # Continue binary search until boundaries converge\n    while left < right:\n        # Calculate midpoint to divide search space\n        mid = left + (right - left) // 2\n        # Ensure mid is even so we compare pairs starting at even indices\n        if mid % 2 == 1:\n            mid -= 1\n        # If mid element equals its pair, single element is to the right\n        if arr[mid] == arr[mid + 1]:\n            # Move left boundary past the current pair\n            left = mid + 2\n        else:\n            # Single element is at mid or to the left\n            right = mid\n    # When boundaries meet, we've found the single element\n    return arr[left]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def search(arr):\n    # Use Python's reduce function to apply XOR across all elements\n    from functools import reduce\n    # Lambda applies XOR operator between accumulator and each element\n    result = reduce(lambda acc, x: acc ^ x, arr)\n    # Return the final XOR result which isolates the unique element\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def search(arr):\n    # Use collections.Counter to count occurrences of each element\n    from collections import Counter\n    # Build a frequency dictionary mapping each value to its count\n    freq = Counter(arr)\n    # Iterate through the frequency dictionary items\n    for element, count in freq.items():\n        # Check if this element appears exactly once\n        if count == 1:\n            # Return the unique element immediately when found\n            return element\n    # Fallback return if no single element found (should not reach here for valid input)\n    return None",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def search(arr):\n    # Iterate through array in steps of 2 to examine pairs\n    i = 0\n    # Continue while there's at least one more pair to check\n    while i < len(arr) - 1:\n        # If current element doesn't match its expected pair partner\n        if arr[i] != arr[i + 1]:\n            # This element is the singleton since pairs are broken\n            return arr[i]\n        # Skip over the complete pair to check next potential pair\n        i += 2\n    # If we exit loop, singleton must be the last element\n    return arr[-1]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def search(arr):\n    # Build a regular dictionary to track how many times each number appears\n    count_dict = {}\n    # Process each element in the sorted array\n    for num in arr:\n        # Use get with default 0 to safely increment count for each number\n        count_dict[num] = count_dict.get(num, 0) + 1\n    # Filter dictionary to find keys where value equals 1 (appears once)\n    singles = [key for key, val in count_dict.items() if val == 1]\n    # Return the first (and only) element that appears exactly once\n    return singles[0]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

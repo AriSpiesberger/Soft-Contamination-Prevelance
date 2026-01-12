@@ -1,0 +1,27 @@
+{
+  "task_id": 165,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive).",
+  "code_python": "def count_char_position(str1): \n    count_chars = 0\n    for i in range(len(str1)):\n        if ((i == ord(str1[i]) - ord('A')) or \n            (i == ord(str1[i]) - ord('a'))): \n            count_chars += 1\n    return count_chars ",
+  "test_list": [
+    "assert count_char_position(\"xbcefg\") == 2",
+    "assert count_char_position(\"ABcED\") == 3",
+    "assert count_char_position(\"AbgdeF\") == 5"
+  ],
+  "python_1": "def count_char_position(str1): \n    # Convert input string to lowercase for uniform comparison\n    lower_str = str1.lower()\n    # Use enumerate to get both index and character simultaneously\n    matches = enumerate(lower_str)\n    # Create a generator expression that yields 1 for each positional match\n    position_matches = (1 for idx, char in matches if ord(char) - ord('a') == idx)\n    # Sum all the 1s to get total count of matching positions\n    return sum(position_matches)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_char_position(str1): \n    # Build a reference string of all lowercase letters a-z\n    alphabet = 'abcdefghijklmnopqrstuvwxyz'\n    # Use list comprehension to create list of booleans for each position match\n    matches = [str1[i].lower() == alphabet[i] for i in range(len(str1)) if i < 26]\n    # Count True values which represent successful position matches\n    return sum(matches)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_char_position(str1): \n    # Apply filter function to keep only indices where character position matches alphabet position\n    matching_indices = filter(\n        # Lambda checks if lowercase character's alphabet position equals its string index\n        lambda i: str1[i].lower() == chr(ord('a') + i),\n        # Generate all valid indices for the input string\n        range(len(str1))\n    )\n    # Convert filtered iterator to list and measure its length for final count\n    return len(list(matching_indices))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_char_position(str1): \n    # Use recursive helper function to process string character by character\n    def check_position(index):\n        # Base case: return 0 when we've processed all characters\n        if index >= len(str1):\n            return 0\n        # Extract current character and convert to lowercase for case-insensitive comparison\n        current_char = str1[index].lower()\n        # Calculate expected character at this index position in alphabet\n        expected_char = chr(ord('a') + index)\n        # Determine if current position has a matching character (1 if match, 0 otherwise)\n        match_value = 1 if current_char == expected_char else 0\n        # Recursively process remaining characters and accumulate the match count\n        return match_value + check_position(index + 1)\n    # Initiate recursive counting starting from index 0\n    return check_position(0)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_char_position(str1): \n    # Import reduce function for functional programming approach with accumulator\n    from functools import reduce\n    # Create list of tuples pairing each index with its corresponding character\n    indexed_chars = list(zip(range(len(str1)), str1))\n    # Define reducer function that accumulates count based on position matching logic\n    def position_matcher(accumulator, index_char_pair):\n        # Unpack the tuple to get index and character separately\n        idx, char = index_char_pair\n        # Compute the character's position in alphabet using lowercase normalization\n        char_position = ord(char.lower()) - 97\n        # Add 1 to accumulator if character's alphabet position equals its string index\n        return accumulator + (1 if char_position == idx else 0)\n    # Apply reduce to fold through all index-character pairs with initial count of 0\n    result = reduce(position_matcher, indexed_chars, 0)\n    # Return the accumulated count of positionally matched characters\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

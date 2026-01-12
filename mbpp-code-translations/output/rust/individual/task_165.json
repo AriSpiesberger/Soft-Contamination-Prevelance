@@ -1,0 +1,37 @@
+{
+  "task_id": 165,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive).",
+  "python_code": "def count_char_position(str1): \n    count_chars = 0\n    for i in range(len(str1)):\n        if ((i == ord(str1[i]) - ord('A')) or \n            (i == ord(str1[i]) - ord('a'))): \n            count_chars += 1\n    return count_chars ",
+  "test_list": [
+    "assert count_char_position(\"xbcefg\") == 2",
+    "assert count_char_position(\"ABcED\") == 3",
+    "assert count_char_position(\"AbgdeF\") == 5"
+  ],
+  "code_rust": "pub fn count_char_position(str1: &str) -> i32 {\n    let mut count_chars = 0;\n    for (i, c) in str1.chars().enumerate() {\n        let upper_pos = (c as i32) - ('A' as i32);\n        let lower_pos = (c as i32) - ('a' as i32);\n        if i as i32 == upper_pos || i as i32 == lower_pos {\n            count_chars += 1;\n        }\n    }\n    count_chars\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_char_position(\"xbcefg\") == 2",
+      "generated_test": "let result = count_char_position(\"xbcefg\");\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_char_position(\"ABcED\") == 3",
+      "generated_test": "let result = count_char_position(\"ABcED\");\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_char_position(\"AbgdeF\") == 5",
+      "generated_test": "let result = count_char_position(\"AbgdeF\");\nlet expected = 5;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

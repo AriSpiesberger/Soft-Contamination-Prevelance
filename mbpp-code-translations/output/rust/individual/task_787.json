@@ -1,0 +1,44 @@
+{
+  "task_id": 787,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by three 'b'.",
+  "python_code": "import re\ndef text_match_three(text):\n        patterns = 'ab{3}?'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert not text_match_three(\"ac\")",
+    "assert not text_match_three(\"dc\")",
+    "assert text_match_three(\"abbbba\")",
+    "assert text_match_three(\"caacabbbba\")"
+  ],
+  "code_rust": "use regex::Regex;\n\npub fn text_match_three(text: &str) -> Option<regex::Match<'_>> {\n    let pattern = Regex::new(r\"ab{3}?\").unwrap();\n    pattern.find(text)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert not text_match_three(\"ac\")",
+      "generated_test": "let result = text_match_three(\"ac\");\nlet expected: Option<regex::Match<'_>> = None;\n\nif result.is_none() == expected.is_none() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: None\");\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_match_three(\"dc\")",
+      "generated_test": "let result = text_match_three(\"dc\");\nlet expected: Option<regex::Match<'_>> = None;\n\nif result.is_none() == expected.is_none() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: None\");\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"abbbba\")",
+      "generated_test": "let result = text_match_three(\"abbbba\");\nif result.is_some() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: Some(Match)\");\n    println!(\"  Got: None\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"caacabbbba\")",
+      "generated_test": "let result = text_match_three(\"caacabbbba\");\nlet expected = true; // Python assert checks if result is truthy (Some)\n\nif result.is_some() == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: Some(match)\");\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

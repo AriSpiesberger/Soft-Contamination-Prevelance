@@ -1,0 +1,37 @@
+{
+  "task_id": 266,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cube given its side length.",
+  "python_code": "def lateralsurface_cube(l):\n  LSA = 4 * (l * l)\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cube(5)==100",
+    "assert lateralsurface_cube(9)==324",
+    "assert lateralsurface_cube(10)==400"
+  ],
+  "code_ruby": "def lateralsurface_cube(l)\n  4 * (l * l)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert lateralsurface_cube(5)==100",
+      "generated_test": "result = lateralsurface_cube(5)\nexpected = 100\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cube(9)==324",
+      "generated_test": "result = lateralsurface_cube(9)\nexpected = 324\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cube(10)==400",
+      "generated_test": "result = lateralsurface_cube(10)\nexpected = 400\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

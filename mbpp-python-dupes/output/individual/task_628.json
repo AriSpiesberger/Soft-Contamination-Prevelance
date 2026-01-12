@@ -1,0 +1,27 @@
+{
+  "task_id": 628,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all spaces in the given string with '%20'.",
+  "code_python": "def replace_spaces(string):\n  return string.replace(\" \", \"%20\")",
+  "test_list": [
+    "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+    "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+    "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'"
+  ],
+  "python_1": "def replace_spaces(string):\n    # Split the string into a list of words using space as delimiter\n    words = string.split(\" \")\n    # Join the words back together using %20 as the separator between elements\n    result = \"%20\".join(words)\n    # Return the reconstructed string with spaces replaced\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def replace_spaces(string):\n    # Initialize an empty list to accumulate characters/replacements\n    result_chars = []\n    # Iterate through each character in the input string one by one\n    for char in string:\n        # Check if the current character is a space that needs replacement\n        if char == \" \":\n            # Append the URL-encoded space representation to our list\n            result_chars.append(\"%20\")\n        # Handle non-space characters that should be preserved\n        else:\n            # Keep the original character unchanged in our result\n            result_chars.append(char)\n    # Concatenate all list elements into a single string for output\n    return \"\".join(result_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def replace_spaces(string):\n    # Use list comprehension to transform each character based on whether it's a space\n    transformed = [\"%20\" if c == \" \" else c for c in string]\n    # Combine all transformed elements into the final result string\n    return \"\".join(transformed)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def replace_spaces(string):\n    # Use recursion: base case when string is empty\n    if len(string) == 0:\n        # Return empty string when no more characters to process\n        return \"\"\n    # Extract the first character to examine\n    first_char = string[0]\n    # Get the remaining portion of the string for recursive processing\n    rest_of_string = string[1:]\n    # Determine replacement: use %20 for space, otherwise keep original character\n    replacement = \"%20\" if first_char == \" \" else first_char\n    # Recursively process the rest and concatenate with current replacement\n    return replacement + replace_spaces(rest_of_string)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def replace_spaces(string):\n    # Convert string to list of characters for in-place style modification\n    char_list = list(string)\n    # Track the current position while scanning through the character list\n    index = 0\n    # Continue processing until we've examined every character position\n    while index < len(char_list):\n        # Detect if current position contains a space character\n        if char_list[index] == \" \":\n            # Replace the space with the URL-encoded representation directly in the list\n            char_list[index] = \"%20\"\n        # Advance to the next character position in our list\n        index += 1\n    # Merge all list elements back into a cohesive string using empty string joiner\n    return \"\".join(char_list)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

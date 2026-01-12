@@ -1,0 +1,37 @@
+{
+  "task_id": 12,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a given matrix in ascending order according to the sum of its rows.",
+  "python_code": "def sort_matrix(M):\n    result = sorted(M, key=sum)\n    return result",
+  "test_list": [
+    "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+    "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+    "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]"
+  ],
+  "code_ruby": "def sort_matrix(m)\n  m.sort_by { |row| row.sum }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+      "generated_test": "result = sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])\nexpected = [[1, 1, 1], [1, 2, 3], [2, 4, 5]]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+      "generated_test": "result = sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])\nexpected = [[-2, 4, -5], [1, -1, 1], [1, 2, 3]]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]",
+      "generated_test": "result = sort_matrix([[5,8,9],[6,4,3],[2,1,4]])\nexpected = [[2, 1, 4], [6, 4, 3], [5, 8, 9]]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

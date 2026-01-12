@@ -1,0 +1,37 @@
+{
+  "task_id": 583,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function which returns nth catalan number.",
+  "python_code": "def catalan_number(num):\n    if num <=1:\n         return 1   \n    res_num = 0\n    for i in range(num):\n        res_num += catalan_number(i) * catalan_number(num-i-1)\n    return res_num",
+  "test_list": [
+    "assert catalan_number(10)==16796",
+    "assert catalan_number(9)==4862",
+    "assert catalan_number(7)==429"
+  ],
+  "code_javascript": "function catalan_number(num) {\n    if (num <= 1) {\n        return 1;\n    }\n    let res_num = 0;\n    for (let i = 0; i < num; i++) {\n        res_num += catalan_number(i) * catalan_number(num - i - 1);\n    }\n    return res_num;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert catalan_number(10)==16796",
+      "generated_test": "const result = catalan_number(10);\nconst expected = 16796;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert catalan_number(9)==4862",
+      "generated_test": "const result = catalan_number(9);\nconst expected = 4862;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert catalan_number(7)==429",
+      "generated_test": "const result = catalan_number(7);\nconst expected = 429;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

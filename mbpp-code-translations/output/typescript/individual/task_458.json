@@ -1,0 +1,17 @@
+{
+  "task_id": 458,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the area of a rectangle.",
+  "python_code": "def rectangle_area(l,b):\n  area=l*b\n  return area",
+  "test_list": [
+    "assert rectangle_area(10,20)==200",
+    "assert rectangle_area(10,5)==50",
+    "assert rectangle_area(4,2)==8"
+  ],
+  "code_typescript": "function rectangle_area(l: number, b: number): number {\n  const area = l * b;\n  return area;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

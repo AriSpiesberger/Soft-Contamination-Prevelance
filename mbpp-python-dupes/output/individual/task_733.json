@@ -1,0 +1,27 @@
+{
+  "task_id": 733,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the index of the first occurrence of a given number in a sorted array.",
+  "code_python": "def find_first_occurrence(A, x):\n    (left, right) = (0, len(A) - 1)\n    result = -1\n    while left <= right:\n        mid = (left + right) // 2\n        if x == A[mid]:\n            result = mid\n            right = mid - 1\n        elif x < A[mid]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return result",
+  "test_list": [
+    "assert find_first_occurrence([2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 1",
+    "assert find_first_occurrence([2, 3, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 2",
+    "assert find_first_occurrence([2, 4, 1, 5, 6, 6, 8, 9, 9, 9], 6) == 4"
+  ],
+  "python_1": "def find_first_occurrence(A, x):\n    # Handle edge case of empty array immediately\n    if not A:\n        return -1\n    # Use bisect_left approach: find leftmost position where x could be inserted\n    left = 0\n    # Right boundary is length (not length-1) for bisect-style search\n    right = len(A)\n    # Continue narrowing until left and right converge to insertion point\n    while left < right:\n        # Calculate midpoint using floor division\n        mid = (left + right) // 2\n        # If mid element is less than target, search right half\n        if A[mid] < x:\n            # Move left boundary past mid since mid is too small\n            left = mid + 1\n        else:\n            # Mid element >= target, so potential answer is at mid or left of it\n            right = mid\n    # After loop, left points to first element >= x (or len(A) if none exist)\n    # Verify that left is within bounds and actually equals target value\n    if left < len(A) and A[left] == x:\n        # Return the index of first occurrence\n        return left\n    # Target not found in array\n    return -1",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_first_occurrence(A, x):\n    # Recursive helper function that searches within given bounds\n    def binary_search_recursive(low, high):\n        # Base case: search space exhausted, element not found\n        if low > high:\n            return -1\n        # Compute middle index avoiding potential integer overflow\n        mid = low + (high - low) // 2\n        # Check if we found the target at current position\n        if A[mid] == x:\n            # Recursively check if there's an earlier occurrence in left half\n            earlier = binary_search_recursive(low, mid - 1)\n            # If earlier occurrence exists, return it; otherwise current mid is first\n            return earlier if earlier != -1 else mid\n        # Target is smaller than mid element, search left partition\n        elif A[mid] > x:\n            return binary_search_recursive(low, mid - 1)\n        # Target is larger than mid element, search right partition\n        else:\n            return binary_search_recursive(mid + 1, high)\n    \n    # Guard against empty array input\n    if not A:\n        return -1\n    # Initiate recursive search spanning entire array\n    return binary_search_recursive(0, len(A) - 1)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_first_occurrence(A, x):\n    # Early return for empty input array\n    if not A:\n        return -1\n    # Use Python's built-in index method with try-except for linear scan approach\n    try:\n        # index() naturally returns first occurrence in O(n) time\n        return A.index(x)\n    except ValueError:\n        # Element not present in array, return sentinel value\n        return -1",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_first_occurrence(A, x):\n    # Guard clause: return sentinel if array is empty\n    if not A:\n        return -1\n    # Leverage enumerate to pair each element with its position\n    # Filter to keep only indices where element matches target\n    matching_indices = [i for i, val in enumerate(A) if val == x]\n    # If no matches found, return -1 as per specification\n    if not matching_indices:\n        return -1\n    # The min of all matching indices gives us the first occurrence\n    return min(matching_indices)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_first_occurrence(A, x):\n    # Import bisect module for efficient binary search operations\n    import bisect\n    # Use bisect_left to find insertion point maintaining sorted order\n    insertion_point = bisect.bisect_left(A, x)\n    # Check if insertion point is within array bounds\n    if insertion_point < len(A):\n        # Verify the element at insertion point actually equals our target\n        if A[insertion_point] == x:\n            # Return the position since bisect_left gives leftmost occurrence\n            return insertion_point\n    # Target value does not exist in the array\n    return -1",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

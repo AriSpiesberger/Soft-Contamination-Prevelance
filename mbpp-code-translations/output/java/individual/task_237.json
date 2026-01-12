@@ -1,0 +1,37 @@
+{
+  "task_id": 237,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list of tuples and returns a dictionary mapping each unique tuple to the number of times it occurs in the list.",
+  "python_code": "from collections import Counter \ndef check_occurences(test_list):\n  res = dict(Counter(tuple(ele) for ele in map(sorted, test_list)))\n  return  (res) ",
+  "test_list": [
+    "assert check_occurences([(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)] ) == {(1, 3): 2, (2, 5): 2, (3, 6): 1}",
+    "assert check_occurences([(4, 2), (2, 4), (3, 6), (6, 3), (7, 4)] ) == {(2, 4): 2, (3, 6): 2, (4, 7): 1}",
+    "assert check_occurences([(13, 2), (11, 23), (12, 25), (25, 12), (16, 23)] ) == {(2, 13): 1, (11, 23): 1, (12, 25): 2, (16, 23): 1}"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Map<List<Integer>, Integer> check_occurences(List<List<Integer>> test_list) {\n        Map<List<Integer>, Integer> res = new HashMap<>();\n        \n        for (List<Integer> ele : test_list) {\n            List<Integer> sorted = new ArrayList<>(ele);\n            Collections.sort(sorted);\n            \n            // Find if this sorted key already exists\n            List<Integer> existingKey = null;\n            for (List<Integer> key : res.keySet()) {\n                if (key.equals(sorted)) {\n                    existingKey = key;\n                    break;\n                }\n            }\n            \n            if (existingKey != null) {\n                res.put(existingKey, res.get(existingKey) + 1);\n            } else {\n                res.put(sorted, 1);\n            }\n        }\n        \n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 4,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_occurences([(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)] ) == {(1, 3): 2, (2, 5): 2, (3, 6): 1}",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(3, 1));\ninput.add(Arrays.asList(1, 3));\ninput.add(Arrays.asList(2, 5));\ninput.add(Arrays.asList(5, 2));\ninput.add(Arrays.asList(6, 3));\n\nMap<List<Integer>, Integer> result = check_occurences(input);\n\nMap<List<Integer>, Integer> expected = new HashMap<>();\nexpected.put(Arrays.asList(1, 3), 2);\nexpected.put(Arrays.asList(2, 5), 2);\nexpected.put(Arrays.asList(3, 6), 1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_occurences([(4, 2), (2, 4), (3, 6), (6, 3), (7, 4)] ) == {(2, 4): 2, (3, 6): 2, (4, 7): 1}",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(4, 2));\ninput.add(Arrays.asList(2, 4));\ninput.add(Arrays.asList(3, 6));\ninput.add(Arrays.asList(6, 3));\ninput.add(Arrays.asList(7, 4));\n\nMap<List<Integer>, Integer> result = check_occurences(input);\n\nMap<List<Integer>, Integer> expected = new HashMap<>();\nexpected.put(Arrays.asList(2, 4), 2);\nexpected.put(Arrays.asList(3, 6), 2);\nexpected.put(Arrays.asList(4, 7), 1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_occurences([(13, 2), (11, 23), (12, 25), (25, 12), (16, 23)] ) == {(2, 13): 1, (11, 23): 1, (12, 25): 2, (16, 23): 1}",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(13, 2));\ninput.add(Arrays.asList(11, 23));\ninput.add(Arrays.asList(12, 25));\ninput.add(Arrays.asList(25, 12));\ninput.add(Arrays.asList(16, 23));\n\nMap<List<Integer>, Integer> result = check_occurences(input);\n\nMap<List<Integer>, Integer> expected = new HashMap<>();\nexpected.put(Arrays.asList(2, 13), 1);\nexpected.put(Arrays.asList(11, 23), 1);\nexpected.put(Arrays.asList(12, 25), 2);\nexpected.put(Arrays.asList(16, 23), 1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

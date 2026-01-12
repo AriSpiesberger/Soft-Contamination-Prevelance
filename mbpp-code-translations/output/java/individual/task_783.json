@@ -1,0 +1,37 @@
+{
+  "task_id": 783,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert rgb color to hsv color. https://www.geeksforgeeks.org/program-change-rgb-color-model-hsv-color-model/",
+  "python_code": "def rgb_to_hsv(r, g, b):\n    r, g, b = r/255.0, g/255.0, b/255.0\n    mx = max(r, g, b)\n    mn = min(r, g, b)\n    df = mx-mn\n    if mx == mn:\n        h = 0\n    elif mx == r:\n        h = (60 * ((g-b)/df) + 360) % 360\n    elif mx == g:\n        h = (60 * ((b-r)/df) + 120) % 360\n    elif mx == b:\n        h = (60 * ((r-g)/df) + 240) % 360\n    if mx == 0:\n        s = 0\n    else:\n        s = (df/mx)*100\n    v = mx*100\n    return h, s, v",
+  "test_list": [
+    "assert rgb_to_hsv(255, 255, 255)==(0, 0.0, 100.0)",
+    "assert rgb_to_hsv(0, 215, 0)==(120.0, 100.0, 84.31372549019608)",
+    "assert rgb_to_hsv(10, 215, 110)==(149.26829268292684, 95.34883720930233, 84.31372549019608)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double[] rgb_to_hsv(int r, int g, int b) {\n        double rd = r / 255.0;\n        double gd = g / 255.0;\n        double bd = b / 255.0;\n        \n        double mx = Math.max(rd, Math.max(gd, bd));\n        double mn = Math.min(rd, Math.min(gd, bd));\n        double df = mx - mn;\n        \n        double h;\n        if (mx == mn) {\n            h = 0;\n        } else if (mx == rd) {\n            h = (60 * ((gd - bd) / df) + 360) % 360;\n        } else if (mx == gd) {\n            h = (60 * ((bd - rd) / df) + 120) % 360;\n        } else {\n            h = (60 * ((rd - gd) / df) + 240) % 360;\n        }\n        \n        double s;\n        if (mx == 0) {\n            s = 0;\n        } else {\n            s = (df / mx) * 100;\n        }\n        \n        double v = mx * 100;\n        \n        return new double[] {h, s, v};\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert rgb_to_hsv(255, 255, 255)==(0, 0.0, 100.0)",
+      "generated_test": "double[] result = rgb_to_hsv(255, 255, 255);\ndouble[] expected = new double[]{0, 0.0, 100.0};\nif (result[0] == expected[0] && result[1] == expected[1] && result[2] == expected[2]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \", \" + expected[2] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \", \" + result[2] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rgb_to_hsv(0, 215, 0)==(120.0, 100.0, 84.31372549019608)",
+      "generated_test": "double[] result = rgb_to_hsv(0, 215, 0);\ndouble[] expected = new double[]{120.0, 100.0, 84.31372549019608};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (Math.abs(result[i] - expected[i]) > 1e-9) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \", \" + expected[2] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \", \" + result[2] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rgb_to_hsv(10, 215, 110)==(149.26829268292684, 95.34883720930233, 84.31372549019608)",
+      "generated_test": "double[] result = rgb_to_hsv(10, 215, 110);\ndouble[] expected = new double[]{149.26829268292684, 95.34883720930233, 84.31372549019608};\ndouble tolerance = 1e-9;\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (Math.abs(result[i] - expected[i]) > tolerance) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \", \" + expected[2] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \", \" + result[2] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

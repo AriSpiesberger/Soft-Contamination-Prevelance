@@ -1,0 +1,37 @@
+{
+  "task_id": 794,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.",
+  "python_code": "import re\ndef text_starta_endb(text):\n        patterns = 'a.*?b$'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert text_starta_endb(\"aabbbb\")",
+    "assert not text_starta_endb(\"aabAbbbc\")",
+    "assert not text_starta_endb(\"accddbbjjj\")"
+  ],
+  "code_javascript": "function text_starta_endb(text) {\n    const pattern = /a.*?b$/;\n    return pattern.test(text) ? text.match(pattern) : null;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert text_starta_endb(\"aabbbb\")",
+      "generated_test": "const result = text_starta_endb(\"aabbbb\");\nconst expected = true;\nconst passed = result !== null;\nif (passed) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: truthy value\");\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"aabAbbbc\")",
+      "generated_test": "const result = text_starta_endb(\"aabAbbbc\");\nconst expected = null;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_starta_endb(\"accddbbjjj\")",
+      "generated_test": "const result = text_starta_endb(\"accddbbjjj\");\nconst expected = null;\n\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

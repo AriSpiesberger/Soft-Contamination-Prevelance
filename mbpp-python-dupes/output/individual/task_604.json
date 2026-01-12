@@ -1,0 +1,27 @@
+{
+  "task_id": 604,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse words seperated by spaces in a given string.",
+  "code_python": "def reverse_words(s):\n        return ' '.join(reversed(s.split()))",
+  "test_list": [
+    "assert reverse_words(\"python program\")==(\"program python\")",
+    "assert reverse_words(\"java language\")==(\"language java\")",
+    "assert reverse_words(\"indian man\")==(\"man indian\")"
+  ],
+  "python_1": "def reverse_words(s):\n    # Split the input string into a list of individual words\n    words = s.split()\n    # Initialize two pointers at opposite ends of the list\n    left = 0\n    right = len(words) - 1\n    # Use two-pointer technique to swap words in place\n    while left < right:\n        # Swap the words at left and right positions\n        words[left], words[right] = words[right], words[left]\n        # Move left pointer toward the center\n        left += 1\n        # Move right pointer toward the center\n        right -= 1\n    # Join the now-reversed list back into a single string\n    return ' '.join(words)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def reverse_words(s):\n    # Split string into list of words using whitespace delimiter\n    words = s.split()\n    # Create empty list to accumulate words in reverse order\n    result = []\n    # Start index at the last word position\n    i = len(words) - 1\n    # Traverse backwards through the words list using while loop\n    while i >= 0:\n        # Append current word from end of original list to result\n        result.append(words[i])\n        # Decrement index to move to previous word\n        i -= 1\n    # Concatenate all words with single space separator\n    return ' '.join(result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def reverse_words(s):\n    # Use recursion base case: if no spaces exist, return the single word\n    if ' ' not in s:\n        return s\n    # Find the position of the first space character\n    space_index = s.index(' ')\n    # Extract the first word from the beginning up to the space\n    first_word = s[:space_index]\n    # Recursively reverse the remaining words after the first space\n    remaining_reversed = reverse_words(s[space_index + 1:])\n    # Concatenate reversed remainder with first word appended at the end\n    return remaining_reversed + ' ' + first_word",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def reverse_words(s):\n    # Split the string into individual word tokens\n    words = s.split()\n    # Calculate total number of words for slice-based reversal\n    n = len(words)\n    # Use Python's slice notation with step -1 to create reversed copy\n    reversed_words = words[::-1]\n    # Combine the reversed word list back into space-separated string\n    return ' '.join(reversed_words)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def reverse_words(s):\n    # Use reduce from functools to build reversed string through accumulation\n    from functools import reduce\n    # Split input into word components for processing\n    words = s.split()\n    # Define lambda that prepends each new word to accumulated result\n    # This naturally reverses order since we process left-to-right but prepend\n    reversed_string = reduce(lambda acc, word: word + ' ' + acc if acc else word, words, '')\n    # Return the accumulated reversed word string\n    return reversed_string",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

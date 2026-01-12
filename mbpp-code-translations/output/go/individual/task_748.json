@@ -1,0 +1,37 @@
+{
+  "task_id": 748,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to put spaces between words starting with capital letters in a given string.",
+  "python_code": "import re\ndef capital_words_spaces(str1):\n  return re.sub(r\"(\\w)([A-Z])\", r\"\\1 \\2\", str1)",
+  "test_list": [
+    "assert capital_words_spaces(\"Python\") == 'Python'",
+    "assert capital_words_spaces(\"PythonProgrammingExamples\") == 'Python Programming Examples'",
+    "assert capital_words_spaces(\"GetReadyToBeCodingFreak\") == 'Get Ready To Be Coding Freak'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc capital_words_spaces(str1 string) string {\n\tre := regexp.MustCompile(`(\\w)([A-Z])`)\n\treturn re.ReplaceAllString(str1, \"$1 $2\")\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert capital_words_spaces(\"Python\") == 'Python'",
+      "generated_test": "result := capital_words_spaces(\"Python\")\nexpected := \"Python\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert capital_words_spaces(\"PythonProgrammingExamples\") == 'Python Programming Examples'",
+      "generated_test": "result := capital_words_spaces(\"PythonProgrammingExamples\")\nexpected := \"Python Programming Examples\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert capital_words_spaces(\"GetReadyToBeCodingFreak\") == 'Get Ready To Be Coding Freak'",
+      "generated_test": "result := capital_words_spaces(\"GetReadyToBeCodingFreak\")\nexpected := \"Get Ready To Be Coding Freak\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

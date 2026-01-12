@@ -1,0 +1,37 @@
+{
+  "task_id": 301,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the depth of a dictionary.",
+  "python_code": "def dict_depth(d):\n    if isinstance(d, dict):\n        return 1 + (max(map(dict_depth, d.values())) if d else 0)\n    return 0",
+  "test_list": [
+    "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+    "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+    "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int dict_depth(Object d) {\n        if (d instanceof Map) {\n            Map<?, ?> map = (Map<?, ?>) d;\n            if (map.isEmpty()) {\n                return 1;\n            }\n            int maxDepth = 0;\n            for (Object value : map.values()) {\n                int depth = dict_depth(value);\n                if (depth > maxDepth) {\n                    maxDepth = depth;\n                }\n            }\n            return 1 + maxDepth;\n        }\n        return 0;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 3,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+      "generated_test": "Map<String, Object> innermost = new HashMap<>();\nMap<String, Object> level3 = new HashMap<>();\nlevel3.put(\"d\", innermost);\nMap<String, Object> level2 = new HashMap<>();\nlevel2.put(\"c\", level3);\nMap<String, Object> testMap = new HashMap<>();\ntestMap.put(\"a\", 1);\ntestMap.put(\"b\", level2);\n\nint result = dict_depth(testMap);\nint expected = 4;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+      "generated_test": "Map<String, Object> innerMap = new HashMap<>();\ninnerMap.put(\"c\", \"python\");\n\nMap<String, Object> testMap = new HashMap<>();\ntestMap.put(\"a\", 1);\ntestMap.put(\"b\", innerMap);\n\nint result = dict_depth(testMap);\nint expected = 2;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3",
+      "generated_test": "Map<Object, Object> innerMost = new HashMap<>();\ninnerMost.put(4, \"Mon\");\n\nMap<Object, Object> middle = new HashMap<>();\nmiddle.put(3, innerMost);\n\nMap<Object, Object> outer = new HashMap<>();\nouter.put(1, \"Sun\");\nouter.put(2, middle);\n\nint result = dict_depth(outer);\nint expected = 3;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 299,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the maximum aggregate from the list of tuples.",
+  "python_code": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])",
+  "test_list": [
+    "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+    "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+    "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)"
+  ],
+  "code_ruby": "def max_aggregate(stdata)\n  temp = Hash.new(0)\n  stdata.each do |name, marks|\n    temp[name] += marks\n  end\n  temp.max_by { |_, v| v }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+      "generated_test": "result = max_aggregate([['Juan Whelan', 90], ['Sabah Colley', 88], ['Peter Nichols', 7], ['Juan Whelan', 122], ['Sabah Colley', 84]])\nexpected = ['Juan Whelan', 212]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+      "generated_test": "result = max_aggregate([['Juan Whelan', 50], ['Sabah Colley', 48], ['Peter Nichols', 37], ['Juan Whelan', 22], ['Sabah Colley', 14]])\nexpected = ['Juan Whelan', 72]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)",
+      "generated_test": "result = max_aggregate([['Juan Whelan', 10], ['Sabah Colley', 20], ['Peter Nichols', 30], ['Juan Whelan', 40], ['Sabah Colley', 50]])\nexpected = ['Sabah Colley', 70]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 618,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to divide two lists element wise.",
+  "python_code": "def div_list(nums1,nums2):\n  result = map(lambda x, y: x / y, nums1, nums2)\n  return list(result)",
+  "test_list": [
+    "assert div_list([4,5,6],[1, 2, 3])==[4.0,2.5,2.0]",
+    "assert div_list([3,2],[1,4])==[3.0, 0.5]",
+    "assert div_list([90,120],[50,70])==[1.8, 1.7142857142857142]"
+  ],
+  "code_go": "package main\n\nfunc div_list(nums1, nums2 []float64) []float64 {\n\tminLen := len(nums1)\n\tif len(nums2) < minLen {\n\t\tminLen = len(nums2)\n\t}\n\t\n\tresult := make([]float64, minLen)\n\tfor i := 0; i < minLen; i++ {\n\t\tresult[i] = nums1[i] / nums2[i]\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert div_list([4,5,6],[1, 2, 3])==[4.0,2.5,2.0]",
+      "generated_test": "nums1 := []float64{4, 5, 6}\nnums2 := []float64{1, 2, 3}\nexpected := []float64{4.0, 2.5, 2.0}\nresult := div_list(nums1, nums2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert div_list([3,2],[1,4])==[3.0, 0.5]",
+      "generated_test": "result := div_list([]float64{3, 2}, []float64{1, 4})\nexpected := []float64{3.0, 0.5}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert div_list([90,120],[50,70])==[1.8, 1.7142857142857142]",
+      "generated_test": "nums1 := []float64{90, 120}\nnums2 := []float64{50, 70}\nexpected := []float64{1.8, 1.7142857142857142}\nresult := div_list(nums1, nums2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

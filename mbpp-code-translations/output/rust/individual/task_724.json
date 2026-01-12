@@ -1,0 +1,44 @@
+{
+  "task_id": 724,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes base and power as arguments and calculate the sum of all digits of the base to the specified power.",
+  "python_code": "def power_base_sum(base, power):\n    return sum([int(i) for i in str(pow(base, power))])",
+  "test_list": [
+    "assert power_base_sum(2,100)==115",
+    "assert power_base_sum(8,10)==37",
+    "assert power_base_sum(8,15)==62",
+    "assert power_base_sum(3,3)==9"
+  ],
+  "code_rust": "pub fn power_base_sum(base: u64, power: u32) -> u64 {\n    let mut result = vec![1u8];\n    \n    for _ in 0..power {\n        let mut carry = 0u64;\n        for digit in &mut result {\n            let prod = *digit as u64 * base + carry;\n            *digit = (prod % 10) as u8;\n            carry = prod / 10;\n        }\n        while carry > 0 {\n            result.push((carry % 10) as u8);\n            carry /= 10;\n        }\n    }\n    \n    result.iter().map(|&d| d as u64).sum()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 5,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert power_base_sum(2,100)==115",
+      "generated_test": "let result = power_base_sum(2, 100);\nlet expected = 115;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(8,10)==37",
+      "generated_test": "let result = power_base_sum(8, 10);\nlet expected = 37;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(8,15)==62",
+      "generated_test": "let result = power_base_sum(8, 15);\nlet expected = 62;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(3,3)==9",
+      "generated_test": "let result = power_base_sum(3, 3);\nlet expected = 9;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

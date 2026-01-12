@@ -1,0 +1,37 @@
+{
+  "task_id": 297,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a given nested list structure.",
+  "python_code": "def flatten_list(list1):\n    result_list = []\n    if not list1: return result_list\n    stack = [list(list1)]\n    while stack:\n        c_num = stack.pop()\n        next = c_num.pop()\n        if c_num: stack.append(c_num)\n        if isinstance(next, list):\n            if next: stack.append(list(next))\n        else: result_list.append(next)\n    result_list.reverse()\n    return result_list ",
+  "test_list": [
+    "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+    "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+    "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<Object> flatten_list(List<Object> list1) {\n        List<Object> result_list = new ArrayList<>();\n        if (list1 == null || list1.isEmpty()) return result_list;\n        \n        Deque<List<Object>> stack = new ArrayDeque<>();\n        List<Object> initialCopy = new ArrayList<>(list1);\n        stack.push(initialCopy);\n        \n        while (!stack.isEmpty()) {\n            List<Object> c_num = stack.pop();\n            Object next = c_num.remove(c_num.size() - 1);\n            \n            if (!c_num.isEmpty()) {\n                stack.push(c_num);\n            }\n            \n            if (next instanceof List<?>) {\n                @SuppressWarnings(\"unchecked\")\n                List<Object> nextList = (List<Object>) next;\n                if (!nextList.isEmpty()) {\n                    List<Object> nextCopy = new ArrayList<>(nextList);\n                    stack.push(nextCopy);\n                }\n            } else {\n                result_list.add(next);\n            }\n        }\n        \n        Collections.reverse(result_list);\n        return result_list;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 3,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+      "generated_test": "List<Object> input = new ArrayList<>();\ninput.add(0);\ninput.add(10);\nList<Object> nested1 = new ArrayList<>();\nnested1.add(20);\nnested1.add(30);\ninput.add(nested1);\ninput.add(40);\ninput.add(50);\nList<Object> nested2 = new ArrayList<>();\nnested2.add(60);\nnested2.add(70);\nnested2.add(80);\ninput.add(nested2);\nList<Object> nested3 = new ArrayList<>();\nnested3.add(90);\nnested3.add(100);\nnested3.add(110);\nnested3.add(120);\ninput.add(nested3);\n\nList<Object> expected = new ArrayList<>();\nexpected.add(0);\nexpected.add(10);\nexpected.add(20);\nexpected.add(30);\nexpected.add(40);\nexpected.add(50);\nexpected.add(60);\nexpected.add(70);\nexpected.add(80);\nexpected.add(90);\nexpected.add(100);\nexpected.add(110);\nexpected.add(120);\n\nList<Object> result = flatten_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+      "generated_test": "List<Object> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(10, 20)));\ninput.add(new ArrayList<>(Arrays.asList(40)));\ninput.add(new ArrayList<>(Arrays.asList(30, 56, 25)));\ninput.add(new ArrayList<>(Arrays.asList(10, 20)));\ninput.add(new ArrayList<>(Arrays.asList(33)));\ninput.add(new ArrayList<>(Arrays.asList(40)));\n\nList<Object> expected = Arrays.asList(10, 20, 40, 30, 56, 25, 10, 20, 33, 40);\nList<Object> result = flatten_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]",
+      "generated_test": "List<Object> input = new ArrayList<>();\nList<Object> sublist1 = new ArrayList<>();\nsublist1.add(1);\nsublist1.add(2);\nsublist1.add(3);\nList<Object> sublist2 = new ArrayList<>();\nsublist2.add(4);\nsublist2.add(5);\nsublist2.add(6);\nList<Object> sublist3 = new ArrayList<>();\nsublist3.add(10);\nsublist3.add(11);\nsublist3.add(12);\nList<Object> sublist4 = new ArrayList<>();\nsublist4.add(7);\nsublist4.add(8);\nsublist4.add(9);\ninput.add(sublist1);\ninput.add(sublist2);\ninput.add(sublist3);\ninput.add(sublist4);\n\nList<Object> expected = new ArrayList<>();\nexpected.add(1);\nexpected.add(2);\nexpected.add(3);\nexpected.add(4);\nexpected.add(5);\nexpected.add(6);\nexpected.add(10);\nexpected.add(11);\nexpected.add(12);\nexpected.add(7);\nexpected.add(8);\nexpected.add(9);\n\nList<Object> result = flatten_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

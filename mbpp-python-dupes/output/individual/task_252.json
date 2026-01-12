@@ -1,0 +1,27 @@
+{
+  "task_id": 252,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert complex numbers to polar coordinates.",
+  "code_python": "import cmath  \ndef convert(numbers):    \n  num = cmath.polar(numbers)  \n  return (num) ",
+  "test_list": [
+    "assert convert(1) == (1.0, 0.0)",
+    "assert convert(4) == (4.0,0.0)",
+    "assert convert(5) == (5.0,0.0)"
+  ],
+  "python_1": "import math\n\ndef convert(numbers):\n    # Calculate the magnitude (r) using the absolute value of the complex number\n    magnitude = abs(numbers)\n    # Extract the phase angle (theta) using atan2 on imaginary and real parts\n    phase = math.atan2(numbers.imag if isinstance(numbers, complex) else 0, numbers.real if isinstance(numbers, complex) else numbers)\n    # Return the polar coordinates as a tuple of (magnitude, phase)\n    return (magnitude, phase)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef convert(numbers):\n    # Convert input to complex type to ensure uniform handling of real and complex inputs\n    z = complex(numbers)\n    # Compute magnitude using Pythagorean theorem on real and imaginary components\n    r = math.sqrt(z.real ** 2 + z.imag ** 2)\n    # Compute phase angle using arctangent of imaginary over real, handling all quadrants\n    theta = math.atan2(z.imag, z.real)\n    # Construct and return the polar representation as a tuple\n    result = (r, theta)\n    # Return the tuple containing magnitude and phase\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import cmath\n\ndef convert(numbers):\n    # Transform input into complex number object for consistent processing\n    complex_num = complex(numbers)\n    # Use cmath.phase to independently compute the angle/argument\n    angle = cmath.phase(complex_num)\n    # Calculate modulus using built-in abs which handles complex magnitudes\n    modulus = abs(complex_num)\n    # Package magnitude and angle into tuple format matching polar representation\n    polar_tuple = (modulus, angle)\n    # Deliver the polar coordinate pair back to caller\n    return polar_tuple",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef convert(numbers):\n    # Leverage Python's complex constructor to normalize any numeric input\n    z = complex(numbers)\n    # Extract real component using attribute access for magnitude calculation\n    real_part = z.real\n    # Extract imaginary component which will be zero for real number inputs\n    imag_part = z.imag\n    # Compute squared distance from origin avoiding sqrt until necessary\n    squared_magnitude = real_part * real_part + imag_part * imag_part\n    # Apply square root via exponentiation operator as alternative to math.sqrt\n    magnitude = squared_magnitude ** 0.5\n    # Delegate angle computation to math module's two-argument arctangent\n    phase_angle = math.atan2(imag_part, real_part)\n    # Assemble polar coordinates using tuple literal syntax\n    polar_coords = magnitude, phase_angle\n    # Yield the paired magnitude and phase to the caller\n    return polar_coords",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef convert(numbers):\n    # Use hypot function which is numerically stable for computing distance from origin\n    # First ensure we have a complex number to work with uniformly\n    z = complex(numbers)\n    # Employ math.hypot as specialized Euclidean distance calculator avoiding overflow issues\n    r = math.hypot(z.real, z.imag)\n    # Compute argument using copysign to handle the special case of zero imaginary part\n    # For pure real positive numbers, phase is 0.0; for negative, it's pi\n    if z.imag == 0:\n        # Handle real numbers: positive gives 0, negative gives pi, using copysign trick\n        theta = 0.0 if z.real >= 0 else math.pi\n    else:\n        # For complex numbers with non-zero imaginary part, use standard atan2 computation\n        theta = math.atan2(z.imag, z.real)\n    # Build output tuple using constructor rather than literal to emphasize tuple creation\n    return tuple([r, theta])",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

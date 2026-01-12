@@ -1,0 +1,37 @@
+{
+  "task_id": 113,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string represents an integer or not.",
+  "python_code": "def check_integer(text):\n text = text.strip()\n if len(text) < 1:\n    return None\n else:\n     if all(text[i] in \"0123456789\" for i in range(len(text))):\n          return True\n     elif (text[0] in \"+-\") and \\\n         all(text[i] in \"0123456789\" for i in range(1,len(text))):\n         return True\n     else:\n        return False",
+  "test_list": [
+    "assert check_integer(\"python\")==False",
+    "assert check_integer(\"1\")==True",
+    "assert check_integer(\"12345\")==True"
+  ],
+  "code_go": "package main\n\nfunc check_integer(text string) *bool {\n\t// Trim whitespace\n\ttrimmed := \"\"\n\tstart := 0\n\tend := len(text)\n\t\n\t// Trim leading whitespace\n\tfor start < end && (text[start] == ' ' || text[start] == '\\t' || text[start] == '\\n' || text[start] == '\\r') {\n\t\tstart++\n\t}\n\t\n\t// Trim trailing whitespace\n\tfor end > start && (text[end-1] == ' ' || text[end-1] == '\\t' || text[end-1] == '\\n' || text[end-1] == '\\r') {\n\t\tend--\n\t}\n\t\n\ttrimmed = text[start:end]\n\t\n\tif len(trimmed) < 1 {\n\t\treturn nil\n\t}\n\t\n\tisDigit := func(c byte) bool {\n\t\treturn c >= '0' && c <= '9'\n\t}\n\t\n\tallDigits := func(s string, from int) bool {\n\t\tif from >= len(s) {\n\t\t\treturn false\n\t\t}\n\t\tfor i := from; i < len(s); i++ {\n\t\t\tif !isDigit(s[i]) {\n\t\t\t\treturn false\n\t\t\t}\n\t\t}\n\t\treturn true\n\t}\n\t\n\t// Check if all characters are digits\n\tif allDigits(trimmed, 0) {\n\t\tresult := true\n\t\treturn &result\n\t}\n\t\n\t// Check if first character is +/- and rest are digits\n\tif len(trimmed) > 1 && (trimmed[0] == '+' || trimmed[0] == '-') && allDigits(trimmed, 1) {\n\t\tresult := true\n\t\treturn &result\n\t}\n\t\n\tresult := false\n\treturn &result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_integer(\"python\")==False",
+      "generated_test": "result := check_integer(\"python\")\nexpected := false\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"1\")==True",
+      "generated_test": "result := check_integer(\"1\")\nexpected := true\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_integer(\"12345\")==True",
+      "generated_test": "result := check_integer(\"12345\")\nexpected := true\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

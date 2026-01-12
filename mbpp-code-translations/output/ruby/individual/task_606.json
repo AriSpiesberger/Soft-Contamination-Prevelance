@@ -1,0 +1,37 @@
+{
+  "task_id": 606,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert degrees to radians.",
+  "python_code": "import math\ndef radian_degree(degree):\n radian = degree*(math.pi/180)\n return radian",
+  "test_list": [
+    "assert radian_degree(90)==1.5707963267948966",
+    "assert radian_degree(60)==1.0471975511965976",
+    "assert radian_degree(120)==2.0943951023931953"
+  ],
+  "code_ruby": "def radian_degree(degree)\n  degree * (Math::PI / 180)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert radian_degree(90)==1.5707963267948966",
+      "generated_test": "result = radian_degree(90)\nexpected = 1.5707963267948966\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert radian_degree(60)==1.0471975511965976",
+      "generated_test": "result = radian_degree(60)\nexpected = 1.0471975511965976\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert radian_degree(120)==2.0943951023931953",
+      "generated_test": "result = radian_degree(120)\nexpected = 2.0943951023931953\nif (result - expected).abs < 1e-10\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

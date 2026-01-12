@@ -1,0 +1,37 @@
+{
+  "task_id": 137,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ratio of zeroes to non-zeroes in an array of integers.",
+  "python_code": "from array import array\ndef zero_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x == 0:\n            n1 += 1\n        else:\n          None\n    return n1/(n-n1)",
+  "test_list": [
+    "assert math.isclose(zero_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]), 0.181818, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]), 0.00, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 4, -6, -9, 11, -12, 14, -5, 17]), 0.00, rel_tol=0.001)"
+  ],
+  "code_rust": "pub fn zero_count(nums: &[i32]) -> f64 {\n    let n = nums.len();\n    let mut n1 = 0;\n    for &x in nums {\n        if x == 0 {\n            n1 += 1;\n        }\n    }\n    n1 as f64 / (n - n1) as f64\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert math.isclose(zero_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]), 0.181818, rel_tol=0.001)",
+      "generated_test": "let result = zero_count(&[0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]);\nlet expected = 0.181818;\nlet rel_tol = 0.001;\nif (result - expected).abs() <= rel_tol * expected.abs() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(zero_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]), 0.00, rel_tol=0.001)",
+      "generated_test": "let result = zero_count(&[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]);\nlet expected = 0.00;\nlet rel_tol = 0.001;\nlet passed = if expected == 0.0 {\n    result.abs() < rel_tol\n} else {\n    (result - expected).abs() / expected.abs() < rel_tol\n};\nif passed {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(zero_count([2, 4, -6, -9, 11, -12, 14, -5, 17]), 0.00, rel_tol=0.001)",
+      "generated_test": "let result = zero_count(&[2, 4, -6, -9, 11, -12, 14, -5, 17]);\nlet expected = 0.00;\nlet rel_tol = 0.001;\nlet passes = if expected == 0.0 {\n    result.abs() <= rel_tol\n} else {\n    (result - expected).abs() <= rel_tol * expected.abs()\n};\nif passes {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

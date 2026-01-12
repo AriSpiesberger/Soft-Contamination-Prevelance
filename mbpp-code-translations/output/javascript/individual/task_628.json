@@ -1,0 +1,37 @@
+{
+  "task_id": 628,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all spaces in the given string with '%20'.",
+  "python_code": "def replace_spaces(string):\n  return string.replace(\" \", \"%20\")",
+  "test_list": [
+    "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+    "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+    "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'"
+  ],
+  "code_javascript": "function replace_spaces(string) {\n  return string.replace(/ /g, \"%20\");\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+      "generated_test": "const result = replace_spaces(\"My Name is Dawood\");\nconst expected = \"My%20Name%20is%20Dawood\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+      "generated_test": "const result = replace_spaces(\"I am a Programmer\");\nconst expected = \"I%20am%20a%20Programmer\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'",
+      "generated_test": "const result = replace_spaces(\"I love Coding\");\nconst expected = \"I%20love%20Coding\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

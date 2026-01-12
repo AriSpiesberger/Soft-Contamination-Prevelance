@@ -1,0 +1,17 @@
+{
+  "task_id": 135,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth hexagonal number.",
+  "python_code": "def hexagonal_num(n): \n\treturn n*(2*n - 1) ",
+  "test_list": [
+    "assert hexagonal_num(10) == 190",
+    "assert hexagonal_num(5) == 45",
+    "assert hexagonal_num(7) == 91"
+  ],
+  "code_typescript": "function hexagonal_num(n: number): number {\n    return n * (2 * n - 1);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

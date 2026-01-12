@@ -1,0 +1,27 @@
+{
+  "task_id": 269,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ascii value of a character.",
+  "code_python": "def ascii_value(k):\n  ch=k\n  return ord(ch)",
+  "test_list": [
+    "assert ascii_value('A')==65",
+    "assert ascii_value('R')==82",
+    "assert ascii_value('S')==83"
+  ],
+  "python_1": "# Define function that accepts a single character parameter\ndef ascii_value(k):\n    # Convert character to bytes using ASCII encoding scheme\n    byte_representation = k.encode('ascii')\n    # Extract the first byte value which equals the ASCII code\n    ascii_code = byte_representation[0]\n    # Return the numeric ASCII value\n    return ascii_code",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Define the function to compute ASCII value of a character\ndef ascii_value(k):\n    # Create a format string that outputs decimal ASCII representation\n    format_specifier = '%d'\n    # Use string formatting with character to get its numeric ordinal value\n    ascii_as_string = format_specifier % ord(k)\n    # Convert the string representation back to integer\n    result = int(ascii_as_string)\n    # Return the integer ASCII value\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Define function to determine ASCII value using array/list lookup approach\ndef ascii_value(k):\n    # Build a complete ASCII lookup table mapping indices to characters\n    ascii_table = [chr(i) for i in range(128)]\n    # Search through the table to find matching character position\n    for position, character in enumerate(ascii_table):\n        # Check if current character matches the input character\n        if character == k:\n            # Return the index which corresponds to ASCII value\n            return position\n    # Fallback return for characters outside standard ASCII range\n    return -1",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Define function that finds ASCII value using binary representation\ndef ascii_value(k):\n    # Use bytearray to convert single character into mutable byte sequence\n    byte_array = bytearray(k, 'ascii')\n    # Sum all bytes in array - for single char this equals its ASCII value\n    ascii_sum = sum(byte_array)\n    # Return the computed ASCII value\n    return ascii_sum",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Define function that uses struct module to unpack character as integer\ndef ascii_value(k):\n    # Import struct module for binary data packing/unpacking operations\n    import struct\n    # Pack the character as a single byte using 'c' format specifier\n    packed_bytes = struct.pack('c', k.encode('ascii'))\n    # Unpack the packed byte as an unsigned char 'B' to get integer value\n    unpacked_tuple = struct.unpack('B', packed_bytes)\n    # Extract the first element from the unpacked tuple result\n    ascii_code = unpacked_tuple[0]\n    # Return the numeric ASCII representation of the character\n    return ascii_code",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

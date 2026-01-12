@@ -1,0 +1,27 @@
+{
+  "task_id": 454,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a word containing 'z'.",
+  "code_python": "import re\ndef text_match_wordz(text):\n        patterns = '\\w*z.\\w*'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_wordz(\"pythonz.\")==True",
+    "assert text_match_wordz(\"xyz.\")==True",
+    "assert text_match_wordz(\"  lang  .\")==False"
+  ],
+  "python_1": "import re\ndef text_match_wordz(text):\n        # Define pattern to match 'z' followed by any character within a word context\n        patterns = '\\w*z.\\w*'\n        # Use match object directly as boolean - None is falsy, match object is truthy\n        match_result = re.search(patterns, text)\n        # Leverage Python's truthiness to return boolean directly without if-else\n        return bool(match_result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef text_match_wordz(text):\n        # Compile the pattern for potential reuse and clearer separation of concerns\n        pattern = re.compile(r'\\w*z.\\w*')\n        # Use findall to get all matches as a list instead of search\n        matches = pattern.findall(text)\n        # Check if the list is non-empty using truthiness of list length\n        return len(matches) > 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef text_match_wordz(text):\n        # Use re.match with a pattern that allows any prefix before the z pattern\n        pattern = r'.*\\w*z.\\w*'\n        # Attempt to match from the beginning of the string with looser pattern\n        result = re.match(pattern, text)\n        # Return True if pattern matched, False otherwise using ternary expression\n        return True if result else False",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\ndef text_match_wordz(text):\n        # Split text into individual words/tokens using regex word boundaries\n        words = re.findall(r'\\S+', text)\n        # Iterate through each word token to check for 'z' followed by another character\n        for word in words:\n                # Search for 'z' with at least one character after it in word context\n                if re.search(r'z.', word):\n                        # Found a match, return True immediately without checking remaining words\n                        return True\n        # Exhausted all words without finding pattern, return False\n        return False",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\ndef text_match_wordz(text):\n        # Use filter with lambda to apply regex test across character positions\n        pattern = r'\\w*z.\\w*'\n        # Create a generator that yields True for each match found in text\n        match_generator = (True for _ in re.finditer(pattern, text))\n        # Use next() with default False to get first match or False if none exist\n        return next(match_generator, False)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

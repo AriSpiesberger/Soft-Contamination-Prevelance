@@ -1,0 +1,37 @@
+{
+  "task_id": 103,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the Eulerian number a(n, m).",
+  "python_code": "def eulerian_num(n, m): \n\tif (m >= n or n == 0): \n\t\treturn 0 \n\tif (m == 0): \n\t\treturn 1 \n\treturn ((n - m) * eulerian_num(n - 1, m - 1) +(m + 1) * eulerian_num(n - 1, m))",
+  "test_list": [
+    "assert eulerian_num(3, 1) == 4",
+    "assert eulerian_num(4, 1) == 11",
+    "assert eulerian_num(5, 3) == 26"
+  ],
+  "code_go": "package main\n\nfunc eulerian_num(n, m int) int {\n\tif m >= n || n == 0 {\n\t\treturn 0\n\t}\n\tif m == 0 {\n\t\treturn 1\n\t}\n\treturn (n-m)*eulerian_num(n-1, m-1) + (m+1)*eulerian_num(n-1, m)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert eulerian_num(3, 1) == 4",
+      "generated_test": "result := eulerian_num(3, 1)\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert eulerian_num(4, 1) == 11",
+      "generated_test": "result := eulerian_num(4, 1)\nexpected := 11\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert eulerian_num(5, 3) == 26",
+      "generated_test": "result := eulerian_num(5, 3)\nexpected := 26\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

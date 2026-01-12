@@ -1,0 +1,37 @@
+{
+  "task_id": 619,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to move all the numbers to the end of the given string.",
+  "python_code": "def move_num(test_str):\n  res = ''\n  dig = ''\n  for ele in test_str:\n    if ele.isdigit():\n      dig += ele\n    else:\n      res += ele\n  res += dig\n  return (res) ",
+  "test_list": [
+    "assert move_num('I1love143you55three3000thousand') == 'Iloveyouthreethousand1143553000'",
+    "assert move_num('Avengers124Assemble') == 'AvengersAssemble124'",
+    "assert move_num('Its11our12path13to14see15things16do17things') == 'Itsourpathtoseethingsdothings11121314151617'"
+  ],
+  "code_javascript": "function move_num(test_str) {\n  let res = '';\n  let dig = '';\n  for (let ele of test_str) {\n    if (ele >= '0' && ele <= '9') {\n      dig += ele;\n    } else {\n      res += ele;\n    }\n  }\n  res += dig;\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert move_num('I1love143you55three3000thousand') == 'Iloveyouthreethousand1143553000'",
+      "generated_test": "const result = move_num('I1love143you55three3000thousand');\nconst expected = 'Iloveyouthreethousand1143553000';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_num('Avengers124Assemble') == 'AvengersAssemble124'",
+      "generated_test": "const result = move_num('Avengers124Assemble');\nconst expected = 'AvengersAssemble124';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_num('Its11our12path13to14see15things16do17things') == 'Itsourpathtoseethingsdothings11121314151617'",
+      "generated_test": "const result = move_num('Its11our12path13to14see15things16do17things');\nconst expected = 'Itsourpathtoseethingsdothings11121314151617';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

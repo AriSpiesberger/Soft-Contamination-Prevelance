@@ -1,0 +1,37 @@
+{
+  "task_id": 244,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the next perfect square greater than a given number.",
+  "python_code": "import math  \ndef next_Perfect_Square(N): \n    nextN = math.floor(math.sqrt(N)) + 1\n    return nextN * nextN ",
+  "test_list": [
+    "assert next_Perfect_Square(35) == 36",
+    "assert next_Perfect_Square(6) == 9",
+    "assert next_Perfect_Square(9) == 16"
+  ],
+  "code_ruby": "def next_Perfect_Square(n)\n  next_n = Math.sqrt(n).floor + 1\n  next_n * next_n\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert next_Perfect_Square(35) == 36",
+      "generated_test": "result = next_Perfect_Square(35)\nexpected = 36\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_Perfect_Square(6) == 9",
+      "generated_test": "result = next_Perfect_Square(6)\nexpected = 9\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_Perfect_Square(9) == 16",
+      "generated_test": "result = next_Perfect_Square(9)\nexpected = 16\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 309,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum of two numbers.",
+  "code_python": "def maximum(a,b):   \n    if a >= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert maximum(5,10) == 10",
+    "assert maximum(-1,-2) == -1",
+    "assert maximum(9,7) == 9"
+  ],
+  "python_1": "# Use Python's built-in max function to find the larger value\ndef maximum(a,b):   \n    # Return the maximum of the two arguments using the standard library function\n    return max(a, b)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def maximum(a,b):   \n    # Use a ternary conditional expression for concise inline comparison\n    # Returns a if a is greater than or equal to b, otherwise returns b\n    return a if a >= b else b",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def maximum(a,b):   \n    # Calculate the difference between the two numbers\n    diff = a - b\n    # Determine the sign bit: 1 if diff is negative (b is larger), 0 if non-negative (a is larger or equal)\n    sign = (diff >> 63) & 1\n    # Use the sign as a selector: multiplying by sign gives b when negative, a when non-negative\n    # When sign is 0: returns a + 0*(b-a) = a\n    # When sign is 1: returns a + 1*(b-a) = b\n    return a + sign * (b - a)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def maximum(a,b):   \n    # Store both numbers in a list to enable index-based selection\n    values = [a, b]\n    # Compare a and b, converting boolean result to integer index (0 if a>=b, 1 if a<b)\n    index = int(a < b)\n    # Use the computed index to retrieve the larger value from the list\n    return values[index]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def maximum(a,b):   \n    # Create a dictionary mapping boolean comparison results to corresponding values\n    # False (0) maps to a, True (1) maps to b - selecting based on which is larger\n    selector = {False: a, True: b}\n    # Perform the comparison to determine if b is strictly greater than a\n    # This becomes the key to look up the correct maximum value\n    is_b_larger = b > a\n    # Use dictionary lookup to retrieve the maximum value based on comparison result\n    # If b > a is True, returns b; otherwise returns a (handles a >= b case)\n    return selector[is_b_larger]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

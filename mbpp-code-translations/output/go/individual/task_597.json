@@ -1,0 +1,37 @@
+{
+  "task_id": 597,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find kth element from the given two sorted arrays.",
+  "python_code": "def find_kth(arr1, arr2, k):\n\tm = len(arr1)\n\tn = len(arr2)\n\tsorted1 = [0] * (m + n)\n\ti = 0\n\tj = 0\n\td = 0\n\twhile (i < m and j < n):\n\t\tif (arr1[i] < arr2[j]):\n\t\t\tsorted1[d] = arr1[i]\n\t\t\ti += 1\n\t\telse:\n\t\t\tsorted1[d] = arr2[j]\n\t\t\tj += 1\n\t\td += 1\n\twhile (i < m):\n\t\tsorted1[d] = arr1[i]\n\t\td += 1\n\t\ti += 1\n\twhile (j < n):\n\t\tsorted1[d] = arr2[j]\n\t\td += 1\n\t\tj += 1\n\treturn sorted1[k - 1]",
+  "test_list": [
+    "assert find_kth([2, 3, 6, 7, 9], [1, 4, 8, 10], 5) == 6",
+    "assert find_kth([100, 112, 256, 349, 770], [72, 86, 113, 119, 265, 445, 892], 7) == 256",
+    "assert find_kth([3, 4, 7, 8, 10], [2, 5, 9, 11], 6) == 8"
+  ],
+  "code_go": "package main\n\nfunc find_kth(arr1 []int, arr2 []int, k int) int {\n\tm := len(arr1)\n\tn := len(arr2)\n\tsorted1 := make([]int, m+n)\n\ti := 0\n\tj := 0\n\td := 0\n\tfor i < m && j < n {\n\t\tif arr1[i] < arr2[j] {\n\t\t\tsorted1[d] = arr1[i]\n\t\t\ti++\n\t\t} else {\n\t\t\tsorted1[d] = arr2[j]\n\t\t\tj++\n\t\t}\n\t\td++\n\t}\n\tfor i < m {\n\t\tsorted1[d] = arr1[i]\n\t\td++\n\t\ti++\n\t}\n\tfor j < n {\n\t\tsorted1[d] = arr2[j]\n\t\td++\n\t\tj++\n\t}\n\treturn sorted1[k-1]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_kth([2, 3, 6, 7, 9], [1, 4, 8, 10], 5) == 6",
+      "generated_test": "result := find_kth([]int{2, 3, 6, 7, 9}, []int{1, 4, 8, 10}, 5)\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_kth([100, 112, 256, 349, 770], [72, 86, 113, 119, 265, 445, 892], 7) == 256",
+      "generated_test": "result := find_kth([]int{100, 112, 256, 349, 770}, []int{72, 86, 113, 119, 265, 445, 892}, 7)\nexpected := 256\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_kth([3, 4, 7, 8, 10], [2, 5, 9, 11], 6) == 8",
+      "generated_test": "result := find_kth([]int{3, 4, 7, 8, 10}, []int{2, 5, 9, 11}, 6)\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

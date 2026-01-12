@@ -1,0 +1,37 @@
+{
+  "task_id": 8,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find squares of individual elements in a list.",
+  "python_code": "def square_nums(nums):\n square_nums = list(map(lambda x: x ** 2, nums))\n return square_nums",
+  "test_list": [
+    "assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert square_nums([10,20,30])==([100,400,900])",
+    "assert square_nums([12,15])==([144,225])"
+  ],
+  "code_rust": "pub fn square_nums(nums: Vec<i32>) -> Vec<i32> {\n    nums.iter().map(|x| x * x).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+      "generated_test": "let result = square_nums(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);\nlet expected = vec![1, 4, 9, 16, 25, 36, 49, 64, 81, 100];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert square_nums([10,20,30])==([100,400,900])",
+      "generated_test": "let result = square_nums(vec![10, 20, 30]);\nlet expected = vec![100, 400, 900];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert square_nums([12,15])==([144,225])",
+      "generated_test": "let result = square_nums(vec![12, 15]);\nlet expected = vec![144, 225];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 396,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string starts and ends with the same character or not.",
+  "code_python": "import re  \nregex = r'^[a-z]$|^([a-z]).*\\1$'\ndef check_char(string): \n\tif(re.search(regex, string)): \n\t\treturn \"Valid\" \n\telse: \n\t\treturn \"Invalid\" ",
+  "test_list": [
+    "assert check_char(\"abba\") == \"Valid\"",
+    "assert check_char(\"a\") == \"Valid\"",
+    "assert check_char(\"abcd\") == \"Invalid\""
+  ],
+  "python_1": "# Define function to check if string starts and ends with same character\ndef check_char(string):\n    # Handle edge case of empty string by returning Invalid\n    if len(string) == 0:\n        return \"Invalid\"\n    # Extract the first character of the string\n    first_char = string[0]\n    # Extract the last character of the string\n    last_char = string[-1]\n    # Compare first and last characters for equality\n    if first_char == last_char:\n        # Return Valid when characters match\n        return \"Valid\"\n    else:\n        # Return Invalid when characters don't match\n        return \"Invalid\"",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Use a dictionary mapping to convert boolean result to string\ndef check_char(string):\n    # Create mapping from boolean comparison result to output strings\n    result_map = {True: \"Valid\", False: \"Invalid\"}\n    # Guard against empty string edge case using short-circuit evaluation\n    is_valid = len(string) > 0 and string[0] == string[-1]\n    # Lookup the appropriate response string based on comparison outcome\n    return result_map[is_valid]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Use a lambda expression wrapped in a function for a functional programming approach\ndef check_char(string):\n    # Define a validator lambda that captures the start/end comparison logic\n    validator = lambda s: len(s) >= 1 and s[0] == s[-1]\n    # Apply the validator and use conditional expression for result transformation\n    return \"Valid\" if validator(string) else \"Invalid\"",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Use a class-based approach with encapsulated validation logic\nclass StringValidator:\n    # Constructor stores the string to be validated\n    def __init__(self, s):\n        # Cache the input string as an instance attribute\n        self.string = s\n    \n    # Method to perform the actual boundary character comparison\n    def has_matching_boundaries(self):\n        # Early exit for empty strings which cannot have matching ends\n        if not self.string:\n            return False\n        # Slice first character and compare against negative index for last\n        return self.string[0] == self.string[len(self.string) - 1]\n    \n    # Convert boolean validation result into required string format\n    def get_result(self):\n        # Ternary returns \"Valid\" for True, \"Invalid\" for False\n        return \"Valid\" if self.has_matching_boundaries() else \"Invalid\"\n\n# Main function that instantiates validator and delegates work\ndef check_char(string):\n    # Create a new validator object with the input string\n    validator = StringValidator(string)\n    # Invoke the result method to get the formatted response\n    return validator.get_result()",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Use recursive approach to validate string boundaries\ndef check_char(string):\n    # Define inner recursive helper function to check boundary equality\n    def recursive_check(s, depth=0):\n        # Base case: empty string fails validation immediately\n        if len(s) == 0:\n            # Signal failure via False return value\n            return False\n        # Base case: single character always matches itself at boundaries\n        if len(s) == 1:\n            # Signal success since start equals end trivially\n            return True\n        # Recursive case: strip inner characters and compare outer boundaries\n        if depth == 0:\n            # Compare first position against final position directly\n            return s[0] == s[-1]\n        # Fallback return for any unexpected recursion depth\n        return recursive_check(s, depth - 1)\n    \n    # Execute the recursive validation and capture boolean outcome\n    is_matching = recursive_check(string)\n    # Transform boolean into human-readable validation status string\n    output = \"\".join([\"Valid\" if is_matching else \"Invalid\"])\n    # Return the constructed result string to caller\n    return output",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

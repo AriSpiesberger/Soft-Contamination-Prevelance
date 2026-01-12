@@ -1,0 +1,27 @@
+{
+  "task_id": 229,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in an array and an integer n, and re-arranges the first n elements of the given array so that all negative elements appear before positive ones, and where the relative order among negative and positive elements is preserved.",
+  "code_python": "def re_arrange_array(arr, n):\n  j=0\n  for i in range(0, n):\n    if (arr[i] < 0):\n      temp = arr[i]\n      arr[i] = arr[j]\n      arr[j] = temp\n      j = j + 1\n  return arr",
+  "test_list": [
+    "assert re_arrange_array([-1, 2, -3, 4, 5, 6, -7, 8, 9], 9) == [-1, -3, -7, 4, 5, 6, 2, 8, 9]",
+    "assert re_arrange_array([12, -14, -26, 13, 15], 5) == [-14, -26, 12, 13, 15]",
+    "assert re_arrange_array([10, 24, 36, -42, -39, -78, 85], 7) == [-42, -39, -78, 10, 24, 36, 85]"
+  ],
+  "python_1": "def re_arrange_array(arr, n):\n    # Extract all negative elements from the first n elements while preserving order\n    negatives = [arr[i] for i in range(n) if arr[i] < 0]\n    # Extract all non-negative elements from the first n elements while preserving order\n    non_negatives = [arr[i] for i in range(n) if arr[i] >= 0]\n    # Combine negatives first, then non-negatives to create the rearranged portion\n    rearranged = negatives + non_negatives\n    # Overwrite the first n positions of the original array with rearranged values\n    for i in range(n):\n        # Assign each element from our combined list back to the array\n        arr[i] = rearranged[i]\n    # Return the modified array with elements beyond n unchanged\n    return arr",
+  "python_1_status": "failed",
+  "python_1_attempts": 3,
+  "python_2": "def re_arrange_array(arr, n):\n    # Extract all negative numbers from the first n elements while preserving order\n    negatives = [arr[i] for i in range(n) if arr[i] < 0]\n    # Extract all non-negative numbers from the first n elements while preserving order\n    non_negatives = [arr[i] for i in range(n) if arr[i] >= 0]\n    # Concatenate negatives first, then non-negatives to form rearranged portion\n    rearranged = negatives + non_negatives\n    # Replace the first n elements with the rearranged elements\n    for i in range(n):\n        # Update each position in the original array with rearranged value\n        arr[i] = rearranged[i]\n    # Return the modified array to match expected interface\n    return arr",
+  "python_2_status": "failed",
+  "python_2_attempts": 3,
+  "python_3": "def re_arrange_array(arr, n):\n    # Extract negative numbers from first n elements while preserving order\n    negatives = [arr[i] for i in range(n) if arr[i] < 0]\n    # Extract non-negative numbers from first n elements while preserving order\n    non_negatives = [arr[i] for i in range(n) if arr[i] >= 0]\n    # Concatenate negatives first, then non-negatives to form rearranged portion\n    rearranged = negatives + non_negatives\n    # Replace first n elements with the rearranged elements\n    for i in range(n):\n        # Update each position with element from rearranged list\n        arr[i] = rearranged[i]\n    # Return the modified array with negatives before positives in first n elements\n    return arr",
+  "python_3_status": "failed",
+  "python_3_attempts": 3,
+  "python_4": "def re_arrange_array(arr, n):\n    # Extract all negative numbers from first n elements while preserving order\n    negatives = [arr[i] for i in range(n) if arr[i] < 0]\n    # Extract all non-negative numbers from first n elements while preserving order\n    non_negatives = [arr[i] for i in range(n) if arr[i] >= 0]\n    # Combine negatives first, then non-negatives to form rearranged portion\n    rearranged = negatives + non_negatives\n    # Overwrite the first n positions with the rearranged elements\n    for i in range(n):\n        # Place each element from rearranged list back into original array\n        arr[i] = rearranged[i]\n    # Return the modified array with negatives before positives in first n elements\n    return arr",
+  "python_4_status": "failed",
+  "python_4_attempts": 3,
+  "python_5": "def re_arrange_array(arr, n):\n    # Extract negative numbers from first n elements while preserving order\n    negatives = [arr[i] for i in range(n) if arr[i] < 0]\n    # Extract non-negative numbers from first n elements while preserving order\n    non_negatives = [arr[i] for i in range(n) if arr[i] >= 0]\n    # Concatenate negatives first, then non-negatives to form rearranged portion\n    rearranged = negatives + non_negatives\n    # Replace first n elements with the rearranged elements\n    for i in range(n):\n        # Update each position with corresponding element from rearranged list\n        arr[i] = rearranged[i]\n    # Return the modified array with elements beyond n unchanged\n    return arr",
+  "python_5_status": "failed",
+  "python_5_attempts": 3
+}

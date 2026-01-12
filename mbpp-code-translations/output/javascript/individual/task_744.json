@@ -1,0 +1,37 @@
+{
+  "task_id": 744,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuple has any none value or not.",
+  "python_code": "def check_none(test_tup):\n  res = any(map(lambda ele: ele is None, test_tup))\n  return res ",
+  "test_list": [
+    "assert check_none((10, 4, 5, 6, None)) == True",
+    "assert check_none((7, 8, 9, 11, 14)) == False",
+    "assert check_none((1, 2, 3, 4, None)) == True"
+  ],
+  "code_javascript": "function check_none(test_tup) {\n  return test_tup.some(ele => ele === null || ele === undefined);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert check_none((10, 4, 5, 6, None)) == True",
+      "generated_test": "const result = check_none([10, 4, 5, 6, null]);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_none((7, 8, 9, 11, 14)) == False",
+      "generated_test": "const result = check_none([7, 8, 9, 11, 14]);\nconst expected = false;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_none((1, 2, 3, 4, None)) == True",
+      "generated_test": "const result = check_none([1, 2, 3, 4, null]);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 283,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function takes in an integer and check whether the frequency of each digit in the integer is less than or equal to the digit itself.",
+  "code_python": "def validate(n): \n    for i in range(10): \n        temp = n;  \n        count = 0; \n        while (temp): \n            if (temp % 10 == i): \n                count+=1;  \n            if (count > i): \n                return False\n            temp //= 10; \n    return True",
+  "test_list": [
+    "assert validate(1234) == True",
+    "assert validate(51241) == False",
+    "assert validate(321) == True"
+  ],
+  "python_1": "def validate(n): \n    # Convert the integer to a string to easily iterate through digits\n    digit_string = str(n)\n    # Use a dictionary to count occurrences of each digit\n    frequency = {}\n    # Loop through each character in the string representation\n    for char in digit_string:\n        # Convert character back to integer for digit value\n        digit = int(char)\n        # Increment the count for this digit, defaulting to 0 if not seen\n        frequency[digit] = frequency.get(digit, 0) + 1\n    # Check each digit that appears in the number\n    for digit, count in frequency.items():\n        # If any digit appears more times than its own value, validation fails\n        if count > digit:\n            return False\n    # All digits pass the frequency check\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def validate(n): \n    # Convert number to string to leverage Python's count method\n    s = str(n)\n    # Use set to get unique digits, avoiding redundant checks\n    unique_digits = set(s)\n    # Iterate only through digits that actually appear in the number\n    for char in unique_digits:\n        # Convert character to its numeric value for comparison\n        digit = int(char)\n        # Count occurrences using built-in string method for efficiency\n        occurrences = s.count(char)\n        # Fail immediately if digit appears more times than its face value\n        if occurrences > digit:\n            return False\n    # All present digits satisfy the frequency constraint\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def validate(n): \n    # Import Counter to efficiently tally digit frequencies in one pass\n    from collections import Counter\n    # Transform integer to string for character-level processing\n    digits_as_chars = str(n)\n    # Build frequency map using Counter - more Pythonic than manual counting\n    digit_counts = Counter(digits_as_chars)\n    # Use all() with generator expression for elegant single-expression validation\n    # Check that every digit's count doesn't exceed its numeric value\n    return all(count <= int(digit) for digit, count in digit_counts.items())",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def validate(n): \n    # Create a fixed-size list of 10 zeros to store counts for digits 0-9\n    counts = [0] * 10\n    # Store original number since we'll modify it during extraction\n    num = n\n    # Extract digits one by one from the number using modular arithmetic\n    while num > 0:\n        # Get the rightmost digit using modulo 10\n        digit = num % 10\n        # Increment the counter for this specific digit\n        counts[digit] += 1\n        # Remove the rightmost digit by integer division\n        num //= 10\n    # Enumerate through counts to pair each digit value with its frequency\n    for digit, freq in enumerate(counts):\n        # Skip digits that don't appear at all - no violation possible\n        if freq == 0:\n            continue\n        # Compare frequency against digit value - freq must not exceed digit\n        if freq > digit:\n            # Early termination: found a digit violating the constraint\n            return False\n    # No violations detected across all digit frequencies\n    return True",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def validate(n): \n    # Transform the integer into a list of individual digit characters\n    digit_chars = list(str(n))\n    # Apply int conversion to transform each character to its numeric form\n    digits = list(map(int, digit_chars))\n    # Use filter with lambda to identify digits that violate the frequency rule\n    violating_digits = list(filter(lambda d: digits.count(d) > d, digits))\n    # Return True only if no violations exist (empty list is falsy, so negate)\n    return len(violating_digits) == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

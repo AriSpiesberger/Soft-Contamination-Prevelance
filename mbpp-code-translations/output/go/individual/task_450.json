@@ -1,0 +1,37 @@
+{
+  "task_id": 450,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract specified size of strings from a given list of string values.",
+  "python_code": "def extract_string(str, l):\n    result = [e for e in str if len(e) == l] \n    return result",
+  "test_list": [
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,8)==['practice', 'solution']",
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,6)==['Python']",
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,9)==['exercises']"
+  ],
+  "code_go": "package main\n\nfunc extract_string(str []string, l int) []string {\n\tresult := []string{}\n\tfor _, e := range str {\n\t\tif len(e) == l {\n\t\t\tresult = append(result, e)\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,8)==['practice', 'solution']",
+      "generated_test": "result := extract_string([]string{\"Python\", \"list\", \"exercises\", \"practice\", \"solution\"}, 8)\nexpected := []string{\"practice\", \"solution\"}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,6)==['Python']",
+      "generated_test": "result := extract_string([]string{\"Python\", \"list\", \"exercises\", \"practice\", \"solution\"}, 6)\nexpected := []string{\"Python\"}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,9)==['exercises']",
+      "generated_test": "result := extract_string([]string{\"Python\", \"list\", \"exercises\", \"practice\", \"solution\"}, 9)\nexpected := []string{\"exercises\"}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

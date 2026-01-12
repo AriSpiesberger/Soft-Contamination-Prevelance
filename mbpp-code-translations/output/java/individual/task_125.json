@@ -1,0 +1,37 @@
+{
+  "task_id": 125,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.",
+  "python_code": "def find_length(string): \n\tn = len(string)\n\tcurrent_sum = 0\n\tmax_sum = 0\n\tfor i in range(n): \n\t\tcurrent_sum += (1 if string[i] == '0' else -1) \n\t\tif current_sum < 0: \n\t\t\tcurrent_sum = 0\n\t\tmax_sum = max(current_sum, max_sum) \n\treturn max_sum if max_sum else 0",
+  "test_list": [
+    "assert find_length(\"11000010001\") == 6",
+    "assert find_length(\"10111\") == 1",
+    "assert find_length(\"11011101100101\") == 2"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int find_length(String string) {\n        int n = string.length();\n        int current_sum = 0;\n        int max_sum = 0;\n        for (int i = 0; i < n; i++) {\n            current_sum += (string.charAt(i) == '0' ? 1 : -1);\n            if (current_sum < 0) {\n                current_sum = 0;\n            }\n            max_sum = Math.max(current_sum, max_sum);\n        }\n        return max_sum != 0 ? max_sum : 0;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_length(\"11000010001\") == 6",
+      "generated_test": "int result = find_length(\"11000010001\");\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_length(\"10111\") == 1",
+      "generated_test": "int result = find_length(\"10111\");\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_length(\"11011101100101\") == 2",
+      "generated_test": "int result = find_length(\"11011101100101\");\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

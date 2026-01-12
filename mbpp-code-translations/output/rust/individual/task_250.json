@@ -1,0 +1,37 @@
+{
+  "task_id": 250,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a tuple and an element and counts the occcurences of the element in the tuple.",
+  "python_code": "def count_X(tup, x): \n    count = 0\n    for ele in tup: \n        if (ele == x): \n            count = count + 1\n    return count ",
+  "test_list": [
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0",
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3",
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4"
+  ],
+  "code_rust": "pub fn count_X(tup: &[i32], x: i32) -> i32 {\n    let mut count = 0;\n    for ele in tup {\n        if *ele == x {\n            count += 1;\n        }\n    }\n    count\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0",
+      "generated_test": "let result = count_X(&[10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2], 4);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3",
+      "generated_test": "let result = count_X(&[10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2], 10);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4",
+      "generated_test": "let result = count_X(&[10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2], 8);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

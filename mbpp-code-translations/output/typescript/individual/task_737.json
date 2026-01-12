@@ -1,0 +1,17 @@
+{
+  "task_id": 737,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string is starting with a vowel or not using regex.",
+  "python_code": "import re \nregex = '^[aeiouAEIOU][A-Za-z0-9_]*'\ndef check_str(string): \n\treturn re.search(regex, string)",
+  "test_list": [
+    "assert check_str(\"annie\")",
+    "assert not check_str(\"dawood\")",
+    "assert check_str(\"Else\")"
+  ],
+  "code_typescript": "function check_str(string: string): RegExpMatchArray | null {\n    const regex = /^[aeiou][A-Za-z0-9_]*/;\n    return string.match(regex);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 2,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

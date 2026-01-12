@@ -1,0 +1,37 @@
+{
+  "task_id": 299,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the maximum aggregate from the list of tuples.",
+  "python_code": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])",
+  "test_list": [
+    "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+    "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+    "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)"
+  ],
+  "code_javascript": "function max_aggregate(stdata) {\n    const temp = {};\n    for (const [name, marks] of stdata) {\n        temp[name] = (temp[name] || 0) + marks;\n    }\n    const entries = Object.entries(temp);\n    return entries.reduce((max, current) => current[1] > max[1] ? current : max);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+      "generated_test": "const result = max_aggregate([['Juan Whelan', 90], ['Sabah Colley', 88], ['Peter Nichols', 7], ['Juan Whelan', 122], ['Sabah Colley', 84]]);\nconst expected = ['Juan Whelan', 212];\n\nif (result[0] === expected[0] && result[1] === expected[1]) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+      "generated_test": "const result = max_aggregate([['Juan Whelan',50],['Sabah Colley',48],['Peter Nichols',37],['Juan Whelan',22],['Sabah Colley',14]]);\nconst expected = ['Juan Whelan', 72];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)",
+      "generated_test": "const result = max_aggregate([['Juan Whelan',10],['Sabah Colley',20],['Peter Nichols',30],['Juan Whelan',40],['Sabah Colley',50]]);\nconst expected = ['Sabah Colley', 70];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 8,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find squares of individual elements in a list.",
+  "python_code": "def square_nums(nums):\n square_nums = list(map(lambda x: x ** 2, nums))\n return square_nums",
+  "test_list": [
+    "assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert square_nums([10,20,30])==([100,400,900])",
+    "assert square_nums([12,15])==([144,225])"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Integer> square_nums(List<Integer> nums) {\n        List<Integer> square_nums = new ArrayList<>();\n        for (Integer x : nums) {\n            square_nums.add(x * x);\n        }\n        return square_nums;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\nfor (int i = 1; i <= 10; i++) {\n    input.add(i);\n}\n\nList<Integer> expected = new ArrayList<>();\nint[] expectedValues = new int[]{1, 4, 9, 16, 25, 36, 49, 64, 81, 100};\nfor (int val : expectedValues) {\n    expected.add(val);\n}\n\nList<Integer> result = square_nums(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert square_nums([10,20,30])==([100,400,900])",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(10);\ninput.add(20);\ninput.add(30);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(100);\nexpected.add(400);\nexpected.add(900);\n\nList<Integer> result = square_nums(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert square_nums([12,15])==([144,225])",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(12);\ninput.add(15);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(144);\nexpected.add(225);\n\nList<Integer> result = square_nums(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

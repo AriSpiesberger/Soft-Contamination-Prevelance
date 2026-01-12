@@ -1,0 +1,18 @@
+{
+  "task_id": 730,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove consecutive duplicates of a given list.",
+  "python_code": "from itertools import groupby\ndef consecutive_duplicates(nums):\n    return [key for key, group in groupby(nums)] ",
+  "test_list": [
+    "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+    "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']"
+  ],
+  "code_typescript": "function consecutive_duplicates<T>(nums: T[]): T[] {\n    if (nums.length === 0) {\n        return [];\n    }\n    \n    const result: T[] = [];\n    let previous: T | undefined = undefined;\n    let isFirst = true;\n    \n    for (const item of nums) {\n        if (isFirst || item !== previous) {\n            result.push(item);\n            previous = item;\n            isFirst = false;\n        }\n    }\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 4,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 626,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the area of the largest triangle that can be inscribed in a semicircle with a given radius.",
+  "python_code": "def triangle_area(r) :  \n    if r < 0 : \n        return None\n    return r * r ",
+  "test_list": [
+    "assert triangle_area(-1) == None",
+    "assert triangle_area(0) == 0",
+    "assert triangle_area(2) == 4"
+  ],
+  "code_typescript": "function triangle_area(r: number): number | null {\n    if (r < 0) {\n        return null;\n    }\n    return r * r;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

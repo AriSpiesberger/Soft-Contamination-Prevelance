@@ -1,0 +1,17 @@
+{
+  "task_id": 234,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cube given its side length.",
+  "python_code": "def volume_cube(l):\n  volume = l * l * l\n  return volume",
+  "test_list": [
+    "assert volume_cube(3)==27",
+    "assert volume_cube(2)==8",
+    "assert volume_cube(5)==125"
+  ],
+  "code_typescript": "function volume_cube(l: number): number {\n  const volume = l * l * l;\n  return volume;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

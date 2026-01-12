@@ -1,0 +1,37 @@
+{
+  "task_id": 89,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the closest smaller number than n.",
+  "python_code": "def closest_num(N):\n  return (N - 1)",
+  "test_list": [
+    "assert closest_num(11) == 10",
+    "assert closest_num(7) == 6",
+    "assert closest_num(12) == 11"
+  ],
+  "code_ruby": "def closest_num(n)\n  n - 1\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert closest_num(11) == 10",
+      "generated_test": "result = closest_num(11)\nexpected = 10\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert closest_num(7) == 6",
+      "generated_test": "result = closest_num(7)\nexpected = 6\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert closest_num(12) == 11",
+      "generated_test": "result = closest_num(12)\nexpected = 11\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

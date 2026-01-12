@@ -1,0 +1,37 @@
+{
+  "task_id": 123,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum all amicable numbers from 1 to a specified number.",
+  "python_code": "def amicable_numbers_sum(limit):\n    if not isinstance(limit, int):\n        return \"Input is not an integer!\"\n    if limit < 1:\n        return \"Input must be bigger than 0!\"\n    amicables = set()\n    for num in range(2, limit+1):\n        if num in amicables:\n            continue\n        sum_fact = sum([fact for fact in range(1, num) if num % fact == 0])\n        sum_fact2 = sum([fact for fact in range(1, sum_fact) if sum_fact % fact == 0])\n        if num == sum_fact2 and num != sum_fact:\n            amicables.add(num)\n            amicables.add(sum_fact2)\n    return sum(amicables)",
+  "test_list": [
+    "assert amicable_numbers_sum(999)==504",
+    "assert amicable_numbers_sum(9999)==31626",
+    "assert amicable_numbers_sum(99)==0"
+  ],
+  "code_go": "package main\n\nfunc amicable_numbers_sum(limit int) int {\n\tif limit < 1 {\n\t\treturn -1\n\t}\n\t\n\tamicables := make(map[int]bool)\n\t\n\tfor num := 2; num <= limit; num++ {\n\t\tif amicables[num] {\n\t\t\tcontinue\n\t\t}\n\t\t\n\t\tsum_fact := 0\n\t\tfor fact := 1; fact < num; fact++ {\n\t\t\tif num%fact == 0 {\n\t\t\t\tsum_fact += fact\n\t\t\t}\n\t\t}\n\t\t\n\t\tsum_fact2 := 0\n\t\tfor fact := 1; fact < sum_fact; fact++ {\n\t\t\tif sum_fact%fact == 0 {\n\t\t\t\tsum_fact2 += fact\n\t\t\t}\n\t\t}\n\t\t\n\t\tif num == sum_fact2 && num != sum_fact {\n\t\t\tamicables[num] = true\n\t\t\tamicables[sum_fact] = true\n\t\t}\n\t}\n\t\n\ttotal := 0\n\tfor num := range amicables {\n\t\ttotal += num\n\t}\n\t\n\treturn total\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert amicable_numbers_sum(999)==504",
+      "generated_test": "result := amicable_numbers_sum(999)\nexpected := 504\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(9999)==31626",
+      "generated_test": "result := amicable_numbers_sum(9999)\nexpected := 31626\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(99)==0",
+      "generated_test": "result := amicable_numbers_sum(99)\nexpected := 0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

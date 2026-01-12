@@ -1,0 +1,37 @@
+{
+  "task_id": 69,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a list contains the given sublist or not.",
+  "python_code": "def is_sublist(l, s):\n\tsub_set = False\n\tif s == []:\n\t\tsub_set = True\n\telif s == l:\n\t\tsub_set = True\n\telif len(s) > len(l):\n\t\tsub_set = False\n\telse:\n\t\tfor i in range(len(l)):\n\t\t\tif l[i] == s[0]:\n\t\t\t\tn = 1\n\t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n\t\t\t\t\tn += 1\t\t\t\t\n\t\t\t\tif n == len(s):\n\t\t\t\t\tsub_set = True\n\treturn sub_set",
+  "test_list": [
+    "assert is_sublist([2,4,3,5,7],[3,7])==False",
+    "assert is_sublist([2,4,3,5,7],[4,3])==True",
+    "assert is_sublist([2,4,3,5,7],[1,6])==False"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static boolean is_sublist(ArrayList<Integer> l, ArrayList<Integer> s) {\n        boolean sub_set = false;\n        if (s.isEmpty()) {\n            sub_set = true;\n        } else if (s.equals(l)) {\n            sub_set = true;\n        } else if (s.size() > l.size()) {\n            sub_set = false;\n        } else {\n            for (int i = 0; i < l.size(); i++) {\n                if (l.get(i).equals(s.get(0))) {\n                    int n = 1;\n                    while ((n < s.size()) && (i + n < l.size()) && (l.get(i + n).equals(s.get(n)))) {\n                        n += 1;\n                    }\n                    if (n == s.size()) {\n                        sub_set = true;\n                    }\n                }\n            }\n        }\n        return sub_set;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[3,7])==False",
+      "generated_test": "ArrayList<Integer> l = new ArrayList<>();\nl.add(2);\nl.add(4);\nl.add(3);\nl.add(5);\nl.add(7);\n\nArrayList<Integer> s = new ArrayList<>();\ns.add(3);\ns.add(7);\n\nboolean expected = false;\nboolean result = is_sublist(l, s);\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[4,3])==True",
+      "generated_test": "ArrayList<Integer> l = new ArrayList<>();\nl.add(2);\nl.add(4);\nl.add(3);\nl.add(5);\nl.add(7);\n\nArrayList<Integer> s = new ArrayList<>();\ns.add(4);\ns.add(3);\n\nboolean result = is_sublist(l, s);\nboolean expected = true;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[1,6])==False",
+      "generated_test": "ArrayList<Integer> l = new ArrayList<>();\nl.add(2);\nl.add(4);\nl.add(3);\nl.add(5);\nl.add(7);\n\nArrayList<Integer> s = new ArrayList<>();\ns.add(1);\ns.add(6);\n\nboolean result = is_sublist(l, s);\nboolean expected = false;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

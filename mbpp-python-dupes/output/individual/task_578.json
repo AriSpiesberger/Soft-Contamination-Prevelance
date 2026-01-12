@@ -1,0 +1,27 @@
+{
+  "task_id": 578,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to interleave 3 lists of the same length into a single flat list.",
+  "code_python": "def interleave_lists(list1,list2,list3):\n    result = [el for pair in zip(list1, list2, list3) for el in pair]\n    return result",
+  "test_list": [
+    "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+    "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+    "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]"
+  ],
+  "python_1": "def interleave_lists(list1,list2,list3):\n    # Initialize empty result list to accumulate interleaved elements\n    result = []\n    # Iterate through each index position in the lists\n    for i in range(len(list1)):\n        # Append element from first list at current index\n        result.append(list1[i])\n        # Append element from second list at current index\n        result.append(list2[i])\n        # Append element from third list at current index\n        result.append(list3[i])\n    # Return the fully interleaved flat list\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def interleave_lists(list1,list2,list3):\n    # Use itertools chain to flatten an iterator of tuples from zip\n    from itertools import chain\n    # Chain unpacks each tuple from zip and concatenates all elements sequentially\n    result = list(chain.from_iterable(zip(list1, list2, list3)))\n    # Return the flattened interleaved list\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def interleave_lists(list1,list2,list3):\n    # Determine the length of input lists (all assumed equal length)\n    n = len(list1)\n    # Pre-allocate result list with exact size needed (3 elements per index)\n    result = [None] * (n * 3)\n    # Iterate through each position in the original lists\n    for i in range(n):\n        # Calculate base position in result for this group of 3 elements\n        base = i * 3\n        # Place first list element at the starting position of this group\n        result[base] = list1[i]\n        # Place second list element immediately after first\n        result[base + 1] = list2[i]\n        # Place third list element to complete this group of 3\n        result[base + 2] = list3[i]\n    # Return the fully populated interleaved list\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def interleave_lists(list1,list2,list3):\n    # Combine all three lists into a list of lists for unified access\n    all_lists = [list1, list2, list3]\n    # Use nested generator with multiplication to compute flat indices\n    # Outer loop goes through positions, inner loops through the 3 lists\n    result = [all_lists[j][i] for i in range(len(list1)) for j in range(3)]\n    # Return the interleaved result constructed via index arithmetic\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def interleave_lists(list1,list2,list3):\n    # Use reduce to accumulate interleaved elements through functional approach\n    from functools import reduce\n    # Create list of tuples where each tuple contains elements at same index from all lists\n    paired_elements = zip(list1, list2, list3)\n    # Use reduce to concatenate each tuple (converted to list) onto accumulator\n    result = reduce(lambda acc, triple: acc + list(triple), paired_elements, [])\n    # Return the fully reduced and flattened interleaved list\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

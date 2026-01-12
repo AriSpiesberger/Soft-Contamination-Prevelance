@@ -1,0 +1,37 @@
+{
+  "task_id": 100,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the next smallest palindrome of a specified integer, returned as an integer.",
+  "python_code": "import sys\ndef next_smallest_palindrome(num):\n    numstr = str(num)\n    for i in range(num+1,sys.maxsize):\n        if str(i) == str(i)[::-1]:\n            return i",
+  "test_list": [
+    "assert next_smallest_palindrome(99)==101",
+    "assert next_smallest_palindrome(1221)==1331",
+    "assert next_smallest_palindrome(120)==121"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static long next_smallest_palindrome(long num) {\n        for (long i = num + 1; i < Long.MAX_VALUE; i++) {\n            String s = String.valueOf(i);\n            String reversed = new StringBuilder(s).reverse().toString();\n            if (s.equals(reversed)) {\n                return i;\n            }\n        }\n        return -1;\n    }\n    \n    public static int next_smallest_palindrome(int num) {\n        for (int i = num + 1; i < Integer.MAX_VALUE; i++) {\n            String s = String.valueOf(i);\n            String reversed = new StringBuilder(s).reverse().toString();\n            if (s.equals(reversed)) {\n                return i;\n            }\n        }\n        return -1;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert next_smallest_palindrome(99)==101",
+      "generated_test": "int result = next_smallest_palindrome(99);\nint expected = 101;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(1221)==1331",
+      "generated_test": "int result = next_smallest_palindrome(1221);\nint expected = 1331;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(120)==121",
+      "generated_test": "int result = next_smallest_palindrome(120);\nint expected = 121;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

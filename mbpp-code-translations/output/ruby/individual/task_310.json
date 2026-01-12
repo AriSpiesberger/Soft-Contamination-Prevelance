@@ -1,0 +1,37 @@
+{
+  "task_id": 310,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given string to a tuple of characters.",
+  "python_code": "def string_to_tuple(str1):\n    result = tuple(x for x in str1 if not x.isspace()) \n    return result",
+  "test_list": [
+    "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+    "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+    "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')"
+  ],
+  "code_ruby": "def string_to_tuple(str1)\n  str1.chars.reject { |x| x =~ /\\s/ }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+      "generated_test": "result = string_to_tuple(\"python 3.0\")\nexpected = ['p', 'y', 't', 'h', 'o', 'n', '3', '.', '0']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+      "generated_test": "result = string_to_tuple(\"item1\")\nexpected = ['i', 't', 'e', 'm', '1']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')",
+      "generated_test": "result = string_to_tuple(\"15.10\")\nexpected = ['1', '5', '.', '1', '0']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

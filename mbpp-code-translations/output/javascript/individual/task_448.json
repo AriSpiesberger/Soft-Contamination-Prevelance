@@ -1,0 +1,37 @@
+{
+  "task_id": 448,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum of perrin numbers.",
+  "python_code": "def cal_sum(n): \n\ta = 3\n\tb = 0\n\tc = 2\n\tif (n == 0): \n\t\treturn 3\n\tif (n == 1): \n\t\treturn 3\n\tif (n == 2): \n\t\treturn 5\n\tsum = 5\n\twhile (n > 2): \n\t\td = a + b \n\t\tsum = sum + d \n\t\ta = b \n\t\tb = c \n\t\tc = d \n\t\tn = n-1\n\treturn sum",
+  "test_list": [
+    "assert cal_sum(9) == 49",
+    "assert cal_sum(10) == 66",
+    "assert cal_sum(11) == 88"
+  ],
+  "code_javascript": "function cal_sum(n) {\n\tlet a = 3;\n\tlet b = 0;\n\tlet c = 2;\n\tif (n === 0) {\n\t\treturn 3;\n\t}\n\tif (n === 1) {\n\t\treturn 3;\n\t}\n\tif (n === 2) {\n\t\treturn 5;\n\t}\n\tlet sum = 5;\n\twhile (n > 2) {\n\t\tlet d = a + b;\n\t\tsum = sum + d;\n\t\ta = b;\n\t\tb = c;\n\t\tc = d;\n\t\tn = n - 1;\n\t}\n\treturn sum;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert cal_sum(9) == 49",
+      "generated_test": "const result = cal_sum(9);\nconst expected = 49;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cal_sum(10) == 66",
+      "generated_test": "const result = cal_sum(10);\nconst expected = 66;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cal_sum(11) == 88",
+      "generated_test": "const result = cal_sum(11);\nconst expected = 88;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

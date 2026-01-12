@@ -1,0 +1,37 @@
+{
+  "task_id": 62,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find smallest number in a list.",
+  "python_code": "def smallest_num(xs):\n  return min(xs)\n",
+  "test_list": [
+    "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+    "assert smallest_num([1, 2, 3]) == 1",
+    "assert smallest_num([45, 46, 50, 60]) == 45"
+  ],
+  "code_ruby": "def smallest_num(xs)\n  xs.min\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+      "generated_test": "result = smallest_num([10, 20, 1, 45, 99])\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert smallest_num([1, 2, 3]) == 1",
+      "generated_test": "result = smallest_num([1, 2, 3])\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert smallest_num([45, 46, 50, 60]) == 45",
+      "generated_test": "result = smallest_num([45, 46, 50, 60])\nexpected = 45\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

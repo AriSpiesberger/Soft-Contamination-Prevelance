@@ -1,0 +1,37 @@
+{
+  "task_id": 268,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n'th star number.",
+  "python_code": "def find_star_num(n): \n\treturn (6 * n * (n - 1) + 1) ",
+  "test_list": [
+    "assert find_star_num(3) == 37",
+    "assert find_star_num(4) == 73",
+    "assert find_star_num(5) == 121"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int find_star_num(int n) {\n        return (6 * n * (n - 1) + 1);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_star_num(3) == 37",
+      "generated_test": "int result = find_star_num(3);\nint expected = 37;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_star_num(4) == 73",
+      "generated_test": "int result = find_star_num(4);\nint expected = 73;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_star_num(5) == 121",
+      "generated_test": "int result = find_star_num(5);\nint expected = 121;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 778,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to pack consecutive duplicates of a given list elements into sublists.",
+  "python_code": "from itertools import groupby\ndef pack_consecutive_duplicates(list1):\n    return [list(group) for key, group in groupby(list1)]",
+  "test_list": [
+    "assert pack_consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4])==[[0, 0], [1], [2], [3], [4, 4], [5], [6, 6, 6], [7], [8], [9], [4, 4]]",
+    "assert pack_consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[[10, 10], [15], [19], [18, 18], [17], [26, 26], [17], [18], [10]]",
+    "assert pack_consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==[['a', 'a'], ['b'], ['c'], ['d', 'd']]"
+  ],
+  "code_typescript": "function pack_consecutive_duplicates<T>(list1: T[]): T[][] {\n    if (list1.length === 0) {\n        return [];\n    }\n    \n    const result: T[][] = [];\n    let currentGroup: T[] = [list1[0]];\n    \n    for (let i = 1; i < list1.length; i++) {\n        if (list1[i] === list1[i - 1]) {\n            currentGroup.push(list1[i]);\n        } else {\n            result.push(currentGroup);\n            currentGroup = [list1[i]];\n        }\n    }\n    \n    result.push(currentGroup);\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

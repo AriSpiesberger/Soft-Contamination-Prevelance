@@ -1,0 +1,37 @@
+{
+  "task_id": 68,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given array is monotonic or not.",
+  "python_code": "def is_Monotonic(A): \n    return (all(A[i] <= A[i + 1] for i in range(len(A) - 1)) or\n            all(A[i] >= A[i + 1] for i in range(len(A) - 1))) ",
+  "test_list": [
+    "assert is_Monotonic([6, 5, 4, 4]) == True",
+    "assert is_Monotonic([1, 2, 2, 3]) == True",
+    "assert is_Monotonic([1, 3, 2]) == False"
+  ],
+  "code_ruby": "def is_Monotonic(a)\n  return true if a.length <= 1\n  \n  increasing = a.each_cons(2).all? { |x, y| x <= y }\n  decreasing = a.each_cons(2).all? { |x, y| x >= y }\n  \n  increasing || decreasing\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert is_Monotonic([6, 5, 4, 4]) == True",
+      "generated_test": "result = is_Monotonic([6, 5, 4, 4])\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 2, 2, 3]) == True",
+      "generated_test": "result = is_Monotonic([1, 2, 2, 3])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 3, 2]) == False",
+      "generated_test": "result = is_Monotonic([1, 3, 2])\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

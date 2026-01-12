@@ -1,0 +1,51 @@
+{
+  "task_id": 735,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to toggle bits of the number except the first and the last bit. https://www.geeksforgeeks.org/toggle-bits-number-expect-first-last-bits/",
+  "python_code": "def set_middle_bits(n):  \n    n |= n >> 1; \n    n |= n >> 2; \n    n |= n >> 4; \n    n |= n >> 8; \n    n |= n >> 16;  \n    return (n >> 1) ^ 1\ndef toggle_middle_bits(n): \n    if (n == 1): \n        return 1\n    return n ^ set_middle_bits(n) ",
+  "test_list": [
+    "assert toggle_middle_bits(9) == 15",
+    "assert toggle_middle_bits(10) == 12",
+    "assert toggle_middle_bits(11) == 13",
+    "assert toggle_middle_bits(0b1000001) == 0b1111111",
+    "assert toggle_middle_bits(0b1001101) == 0b1110011"
+  ],
+  "code_ruby": "def set_middle_bits(n)\n  n |= n >> 1\n  n |= n >> 2\n  n |= n >> 4\n  n |= n >> 8\n  n |= n >> 16\n  (n >> 1) ^ 1\nend\n\ndef toggle_middle_bits(n)\n  return 1 if n == 1\n  n ^ set_middle_bits(n)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 5,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert toggle_middle_bits(9) == 15",
+      "generated_test": "result = toggle_middle_bits(9)\nexpected = 15\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(10) == 12",
+      "generated_test": "result = toggle_middle_bits(10)\nexpected = 12\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(11) == 13",
+      "generated_test": "result = toggle_middle_bits(11)\nexpected = 13\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(0b1000001) == 0b1111111",
+      "generated_test": "result = toggle_middle_bits(0b1000001)\nexpected = 0b1111111\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(0b1001101) == 0b1110011",
+      "generated_test": "result = toggle_middle_bits(0b1001101)\nexpected = 0b1110011\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

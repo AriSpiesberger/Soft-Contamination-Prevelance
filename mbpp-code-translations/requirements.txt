@@ -1,0 +1,14 @@
+# MBPP Multi-Language Translation Pipeline - Python Dependencies
+
+# Anthropic API client for Claude
+anthropic>=0.18.0
+
+# HuggingFace datasets for loading MBPP
+datasets>=2.14.0
+
+# Environment variable loading
+python-dotenv>=1.0.0
+
+# Optional: for faster JSON handling
+# orjson>=3.9.0
+

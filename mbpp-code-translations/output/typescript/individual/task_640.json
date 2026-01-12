@@ -1,0 +1,17 @@
+{
+  "task_id": 640,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove the parenthesis and what is inbetween them from a string.",
+  "python_code": "import re\ndef remove_parenthesis(items):\n for item in items:\n    return (re.sub(r\" ?\\([^)]+\\)\", \"\", item))",
+  "test_list": [
+    "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+    "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+    "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")"
+  ],
+  "code_typescript": "function remove_parenthesis(items: string[]): string {\n    for (const item of items) {\n        return item.replace(/ ?\\([^)]+\\)/g, \"\");\n    }\n    return \"\";\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

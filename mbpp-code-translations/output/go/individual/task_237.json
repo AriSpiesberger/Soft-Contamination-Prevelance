@@ -1,0 +1,37 @@
+{
+  "task_id": 237,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list of tuples and returns a dictionary mapping each unique tuple to the number of times it occurs in the list.",
+  "python_code": "from collections import Counter \ndef check_occurences(test_list):\n  res = dict(Counter(tuple(ele) for ele in map(sorted, test_list)))\n  return  (res) ",
+  "test_list": [
+    "assert check_occurences([(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)] ) == {(1, 3): 2, (2, 5): 2, (3, 6): 1}",
+    "assert check_occurences([(4, 2), (2, 4), (3, 6), (6, 3), (7, 4)] ) == {(2, 4): 2, (3, 6): 2, (4, 7): 1}",
+    "assert check_occurences([(13, 2), (11, 23), (12, 25), (25, 12), (16, 23)] ) == {(2, 13): 1, (11, 23): 1, (12, 25): 2, (16, 23): 1}"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\nfunc check_occurences(test_list [][]int) map[string]int {\n\tres := make(map[string]int)\n\t\n\tfor _, ele := range test_list {\n\t\t// Create a sorted copy\n\t\tsorted_ele := make([]int, len(ele))\n\t\tcopy(sorted_ele, ele)\n\t\tsort.Ints(sorted_ele)\n\t\t\n\t\t// Convert to Python tuple string format\n\t\tkey := \"(\"\n\t\tfor i, v := range sorted_ele {\n\t\t\tif i > 0 {\n\t\t\t\tkey += \", \"\n\t\t\t}\n\t\t\tkey += fmt.Sprintf(\"%d\", v)\n\t\t}\n\t\tkey += \")\"\n\t\t\n\t\tres[key]++\n\t}\n\t\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_occurences([(3, 1), (1, 3), (2, 5), (5, 2), (6, 3)] ) == {(1, 3): 2, (2, 5): 2, (3, 6): 1}",
+      "generated_test": "input := [][]int{{3, 1}, {1, 3}, {2, 5}, {5, 2}, {6, 3}}\nresult := check_occurences(input)\nexpected := map[string]int{\"(1, 3)\": 2, \"(2, 5)\": 2, \"(3, 6)\": 1}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_occurences([(4, 2), (2, 4), (3, 6), (6, 3), (7, 4)] ) == {(2, 4): 2, (3, 6): 2, (4, 7): 1}",
+      "generated_test": "input := [][]int{{4, 2}, {2, 4}, {3, 6}, {6, 3}, {7, 4}}\nresult := check_occurences(input)\n\nexpected := map[string]int{\n\t\"(2, 4)\": 2,\n\t\"(3, 6)\": 2,\n\t\"(4, 7)\": 1,\n}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_occurences([(13, 2), (11, 23), (12, 25), (25, 12), (16, 23)] ) == {(2, 13): 1, (11, 23): 1, (12, 25): 2, (16, 23): 1}",
+      "generated_test": "input := [][]int{{13, 2}, {11, 23}, {12, 25}, {25, 12}, {16, 23}}\nresult := check_occurences(input)\n\nexpected := map[string]int{\n\t\"(2, 13)\":  1,\n\t\"(11, 23)\": 1,\n\t\"(12, 25)\": 2,\n\t\"(16, 23)\": 1,\n}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif result[k] != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

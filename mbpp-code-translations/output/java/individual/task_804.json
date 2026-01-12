@@ -1,0 +1,37 @@
+{
+  "task_id": 804,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the product of numbers in a list is even or not.",
+  "python_code": "def is_product_even(arr): \n    for i in range(len(arr)): \n        if (arr[i] & 1) == 0: \n            return True\n    return False",
+  "test_list": [
+    "assert is_product_even([1,2,3])",
+    "assert is_product_even([1,2,1,4])",
+    "assert not is_product_even([1,1])"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static boolean is_product_even(ArrayList<Integer> arr) {\n        for (int i = 0; i < arr.size(); i++) {\n            if ((arr.get(i) & 1) == 0) {\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert is_product_even([1,2,3])",
+      "generated_test": "ArrayList<Integer> testArr = new ArrayList<Integer>();\ntestArr.add(1);\ntestArr.add(2);\ntestArr.add(3);\nboolean result = is_product_even(testArr);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_product_even([1,2,1,4])",
+      "generated_test": "ArrayList<Integer> testArr = new ArrayList<Integer>();\ntestArr.add(1);\ntestArr.add(2);\ntestArr.add(1);\ntestArr.add(4);\nboolean result = is_product_even(testArr);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not is_product_even([1,1])",
+      "generated_test": "ArrayList<Integer> testList = new ArrayList<Integer>();\ntestList.add(1);\ntestList.add(1);\nboolean result = is_product_even(testList);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

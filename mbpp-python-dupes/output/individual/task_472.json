@@ -1,0 +1,27 @@
+{
+  "task_id": 472,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given list contains consecutive numbers or not.",
+  "code_python": "def check_Consecutive(l): \n    return sorted(l) == list(range(min(l),max(l)+1)) ",
+  "test_list": [
+    "assert check_Consecutive([1,2,3,4,5]) == True",
+    "assert check_Consecutive([1,2,3,5,6]) == False",
+    "assert check_Consecutive([1,2,1]) == False"
+  ],
+  "python_1": "def check_Consecutive(l): \n    # Early return false if list has duplicates by comparing length to unique elements\n    if len(l) != len(set(l)):\n        return False\n    # For consecutive numbers, the difference between max and min should be exactly len-1\n    expected_range = max(l) - min(l)\n    # Calculate actual span needed for consecutive sequence of this length\n    actual_span = len(l) - 1\n    # If range matches span and no duplicates exist, numbers must be consecutive\n    return expected_range == actual_span",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_Consecutive(l): \n    # Convert list to set for O(1) lookups and automatic duplicate removal\n    num_set = set(l)\n    # Check if duplicates existed by comparing set size to original list length\n    if len(num_set) != len(l):\n        return False\n    # Find the smallest element as the starting point of expected sequence\n    start = min(l)\n    # Iterate through each expected consecutive number in the sequence\n    for i in range(len(l)):\n        # Calculate what the current consecutive number should be\n        expected_num = start + i\n        # Verify this expected number exists in our set\n        if expected_num not in num_set:\n            return False\n    # All consecutive numbers from start were found in the set\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_Consecutive(l): \n    # Handle edge case of empty list to avoid errors with min/max\n    if not l:\n        return True\n    # Compute the expected sum using arithmetic series formula for consecutive integers\n    min_val = min(l)\n    # Calculate what max would be if numbers were consecutive starting from min_val\n    expected_max = min_val + len(l) - 1\n    # Use Gauss formula: sum of consecutive integers from min to expected_max\n    expected_sum = (min_val + expected_max) * len(l) // 2\n    # Compute actual sum of elements in the input list\n    actual_sum = sum(l)\n    # Sum alone isn't sufficient - duplicates could produce same sum with different numbers\n    if actual_sum != expected_sum:\n        return False\n    # Verify the actual maximum matches what we'd expect for consecutive sequence\n    if max(l) != expected_max:\n        return False\n    # Final check: ensure no duplicates exist which could fake the sum\n    if len(l) != len(set(l)):\n        return False\n    # All mathematical conditions satisfied - list contains consecutive numbers\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_Consecutive(l): \n    # Exit early with True for empty or single-element lists which are trivially consecutive\n    if len(l) <= 1:\n        return True\n    # Create a sorted copy to process elements in ascending order\n    sorted_list = sorted(l)\n    # Store the first element as our baseline for consecutive checking\n    first = sorted_list[0]\n    # Enumerate through sorted list to verify each element matches its expected position\n    for index, value in enumerate(sorted_list):\n        # Each element should equal first element plus its index for consecutive sequence\n        if value != first + index:\n            # Gap or duplicate detected - sequence is not consecutive\n            return False\n    # All elements matched their expected consecutive positions\n    return True",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_Consecutive(l): \n    # Guard against empty lists which we consider trivially consecutive\n    if len(l) == 0:\n        return True\n    # Use set difference to detect if duplicates exist in original list\n    unique_elements = set(l)\n    # Duplicates mean list cannot represent a proper consecutive sequence\n    if len(unique_elements) != len(l):\n        return False\n    # Determine the boundaries of the number range present\n    min_val = min(l)\n    max_val = max(l)\n    # Generate the ideal consecutive set from min to max inclusive\n    ideal_consecutive_set = set(range(min_val, max_val + 1))\n    # Direct set equality confirms both contain exactly the same consecutive integers\n    return unique_elements == ideal_consecutive_set",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

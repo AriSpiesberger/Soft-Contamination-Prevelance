@@ -1,0 +1,37 @@
+{
+  "task_id": 69,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a list contains the given sublist or not.",
+  "python_code": "def is_sublist(l, s):\n\tsub_set = False\n\tif s == []:\n\t\tsub_set = True\n\telif s == l:\n\t\tsub_set = True\n\telif len(s) > len(l):\n\t\tsub_set = False\n\telse:\n\t\tfor i in range(len(l)):\n\t\t\tif l[i] == s[0]:\n\t\t\t\tn = 1\n\t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n\t\t\t\t\tn += 1\t\t\t\t\n\t\t\t\tif n == len(s):\n\t\t\t\t\tsub_set = True\n\treturn sub_set",
+  "test_list": [
+    "assert is_sublist([2,4,3,5,7],[3,7])==False",
+    "assert is_sublist([2,4,3,5,7],[4,3])==True",
+    "assert is_sublist([2,4,3,5,7],[1,6])==False"
+  ],
+  "code_rust": "pub fn is_sublist<T: PartialEq>(l: &[T], s: &[T]) -> bool {\n    if s.is_empty() {\n        return true;\n    }\n    if s == l {\n        return true;\n    }\n    if s.len() > l.len() {\n        return false;\n    }\n    \n    for i in 0..l.len() {\n        if l[i] == s[0] {\n            let mut n = 1;\n            while n < s.len() && i + n < l.len() && l[i + n] == s[n] {\n                n += 1;\n            }\n            if n == s.len() {\n                return true;\n            }\n        }\n    }\n    \n    false\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[3,7])==False",
+      "generated_test": "let result = is_sublist(&[2, 4, 3, 5, 7], &[3, 7]);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[4,3])==True",
+      "generated_test": "let result = is_sublist(&[2, 4, 3, 5, 7], &[4, 3]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[1,6])==False",
+      "generated_test": "let result = is_sublist(&[2, 4, 3, 5, 7], &[1, 6]);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

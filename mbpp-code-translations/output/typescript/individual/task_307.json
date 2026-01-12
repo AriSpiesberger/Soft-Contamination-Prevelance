@@ -1,0 +1,17 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "python_code": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "code_typescript": "function colon_tuplex<T>(tuplex: T[], m: number, n: unknown): T[] {\n  const tuplex_colon = tuplex.map(item => {\n    if (Array.isArray(item)) {\n      return [...item] as T;\n    }\n    return item;\n  });\n  \n  const target = tuplex_colon[m];\n  if (Array.isArray(target)) {\n    target.push(n);\n  }\n  \n  return tuplex_colon;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

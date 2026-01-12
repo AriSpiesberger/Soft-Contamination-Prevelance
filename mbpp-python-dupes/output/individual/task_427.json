@@ -1,0 +1,27 @@
+{
+  "task_id": 427,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a date of yyyy-mm-dd format to dd-mm-yyyy format.",
+  "code_python": "import re\ndef change_date_format(dt):\n        return re.sub(r'(\\d{4})-(\\d{1,2})-(\\d{1,2})', '\\\\3-\\\\2-\\\\1', dt)",
+  "test_list": [
+    "assert change_date_format(\"2026-01-02\") == '02-01-2026'",
+    "assert change_date_format(\"2020-11-13\") == '13-11-2020'",
+    "assert change_date_format(\"2021-04-26\") == '26-04-2021'"
+  ],
+  "python_1": "def change_date_format(dt):\n    # Split the input date string by hyphen delimiter into component parts\n    parts = dt.split('-')\n    # Extract the year component (first element of the split result)\n    year = parts[0]\n    # Extract the month component (second element of the split result)\n    month = parts[1]\n    # Extract the day component (third element of the split result)\n    day = parts[2]\n    # Concatenate components in reverse order with hyphen separators for dd-mm-yyyy format\n    return day + '-' + month + '-' + year",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def change_date_format(dt):\n    # Use string slicing to extract the 4-digit year from positions 0-3\n    year = dt[0:4]\n    # Use string slicing to extract the 2-digit month from positions 5-6\n    month = dt[5:7]\n    # Use string slicing to extract the 2-digit day from positions 8-9\n    day = dt[8:10]\n    # Use f-string formatting to construct the rearranged date string\n    return f\"{day}-{month}-{year}\"",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def change_date_format(dt):\n    # Use the datetime module for proper date parsing and formatting\n    from datetime import datetime\n    # Parse the input string into a datetime object using yyyy-mm-dd pattern\n    date_obj = datetime.strptime(dt, '%Y-%m-%d')\n    # Format the datetime object back to string in dd-mm-yyyy pattern\n    return datetime.strftime(date_obj, '%d-%m-%Y')",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def change_date_format(dt):\n    # Use split with maxsplit to create a list, then reverse it using slice notation\n    components = dt.split('-')\n    # Leverage Python's ability to reverse a list in-place and join with separator\n    reversed_components = components[::-1]\n    # Join the reversed list elements with hyphen delimiter to form final date string\n    return '-'.join(reversed_components)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def change_date_format(dt):\n    # Use tuple unpacking with split to directly assign year, month, day in one statement\n    year, month, day = dt.split('-')\n    # Utilize the str.format method with positional arguments to build output string\n    return '{}-{}-{}'.format(day, month, year)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

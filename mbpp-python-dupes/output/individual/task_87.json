@@ -1,0 +1,27 @@
+{
+  "task_id": 87,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to merge three dictionaries into a single dictionary.",
+  "code_python": "import collections as ct\ndef merge_dictionaries_three(dict1,dict2, dict3):\n    merged_dict = dict(ct.ChainMap({},dict1,dict2,dict3))\n    return merged_dict",
+  "test_list": [
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{ \"O\": \"Orange\", \"W\": \"White\", \"B\": \"Black\" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}",
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" }, { \"G\": \"Green\", \"W\": \"White\" },{\"L\":\"lavender\",\"B\":\"Blue\"})=={'W': 'White', 'P': 'Pink', 'B': 'Black', 'R': 'Red', 'G': 'Green', 'L': 'lavender'}",
+    "assert merge_dictionaries_three({ \"R\": \"Red\", \"B\": \"Black\", \"P\": \"Pink\" },{\"L\":\"lavender\",\"B\":\"Blue\"},{ \"G\": \"Green\", \"W\": \"White\" })=={'B': 'Black', 'P': 'Pink', 'R': 'Red', 'G': 'Green', 'L': 'lavender', 'W': 'White'}"
+  ],
+  "python_1": "def merge_dictionaries_three(dict1, dict2, dict3):\n    # Start with an empty dictionary to accumulate all key-value pairs\n    merged_dict = {}\n    # Process dict3 first so its values can be overwritten by earlier dicts\n    merged_dict.update(dict3)\n    # Process dict2 second, overwriting any duplicate keys from dict3\n    merged_dict.update(dict2)\n    # Process dict1 last so it has highest priority for duplicate keys\n    merged_dict.update(dict1)\n    # Return the fully merged dictionary with dict1 taking precedence\n    return merged_dict",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def merge_dictionaries_three(dict1, dict2, dict3):\n    # Use dictionary unpacking with Python 3.5+ syntax to merge all three dicts\n    # Later dictionaries override earlier ones, so we reverse the priority order\n    temp_merged = {**dict3, **dict2, **dict1}\n    # Create a new dict to ensure we return a fresh dictionary object\n    result = {}\n    # Iterate through all key-value pairs from the merged result\n    for key, value in temp_merged.items():\n        # Assign each key-value pair to the result dictionary\n        result[key] = value\n    # Return the final merged dictionary with dict1 having highest priority\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def merge_dictionaries_three(dict1, dict2, dict3):\n    # Build a list of dictionaries in reverse priority order (lowest priority first)\n    dict_list = [dict3, dict2, dict1]\n    # Initialize empty dictionary to hold the final merged result\n    merged_dict = {}\n    # Iterate through each dictionary in our priority-ordered list\n    for d in dict_list:\n        # Extract all keys from the current dictionary being processed\n        keys = d.keys()\n        # Process each key individually to handle priority correctly\n        for k in keys:\n            # Assign value to merged dict, later dicts overwrite earlier ones\n            merged_dict[k] = d[k]\n    # Return the fully constructed merged dictionary\n    return merged_dict",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def merge_dictionaries_three(dict1, dict2, dict3):\n    # Collect all unique keys from all three dictionaries using set union\n    all_keys = set(dict1.keys()) | set(dict2.keys()) | set(dict3.keys())\n    # Initialize the result dictionary that will hold merged key-value pairs\n    merged_dict = {}\n    # Iterate over each unique key found across all dictionaries\n    for key in all_keys:\n        # Check if dict1 contains this key (highest priority source)\n        if key in dict1:\n            # Use dict1's value since it has the highest precedence\n            merged_dict[key] = dict1[key]\n        # Check if dict2 contains this key (second priority source)\n        elif key in dict2:\n            # Fall back to dict2's value when dict1 doesn't have the key\n            merged_dict[key] = dict2[key]\n        # Key must be in dict3 if not in dict1 or dict2 (lowest priority)\n        else:\n            # Use dict3's value as the last resort option\n            merged_dict[key] = dict3[key]\n    # Return the dictionary with properly prioritized merged values\n    return merged_dict",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def merge_dictionaries_three(dict1, dict2, dict3):\n    # Use functools.reduce to apply a binary merge operation across all dictionaries\n    from functools import reduce\n    # Define a lambda that merges two dicts with the second taking precedence\n    merge_two = lambda base, override: {**base, **override}\n    # Create list with dicts ordered so dict1 ends up with highest priority after reduction\n    dicts_reverse_priority = [dict3, dict2, dict1]\n    # Apply reduce to fold all dictionaries into one, left to right accumulation\n    merged_dict = reduce(merge_two, dicts_reverse_priority, {})\n    # Return the reduced result where dict1 values override dict2 which overrides dict3\n    return merged_dict",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

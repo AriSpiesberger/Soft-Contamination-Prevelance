@@ -1,0 +1,37 @@
+{
+  "task_id": 608,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find nth bell number.",
+  "python_code": "def bell_Number(n): \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1):\n        bell[i][0] = bell[i-1][i-1]\n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1] \n    return bell[n][0] ",
+  "test_list": [
+    "assert bell_Number(2) == 2",
+    "assert bell_Number(3) == 5",
+    "assert bell_Number(4) == 15"
+  ],
+  "code_go": "package main\n\nfunc bell_Number(n int) int {\n\tbell := make([][]int, n+1)\n\tfor i := range bell {\n\t\tbell[i] = make([]int, n+1)\n\t}\n\tbell[0][0] = 1\n\tfor i := 1; i <= n; i++ {\n\t\tbell[i][0] = bell[i-1][i-1]\n\t\tfor j := 1; j <= i; j++ {\n\t\t\tbell[i][j] = bell[i-1][j-1] + bell[i][j-1]\n\t\t}\n\t}\n\treturn bell[n][0]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert bell_Number(2) == 2",
+      "generated_test": "result := bell_Number(2)\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bell_Number(3) == 5",
+      "generated_test": "result := bell_Number(3)\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bell_Number(4) == 15",
+      "generated_test": "result := bell_Number(4)\nexpected := 15\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

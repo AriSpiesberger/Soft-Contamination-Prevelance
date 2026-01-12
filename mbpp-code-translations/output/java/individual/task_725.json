@@ -1,0 +1,44 @@
+{
+  "task_id": 725,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks \" \" of the given string.",
+  "python_code": "import re\ndef extract_quotation(text1):\n  return (re.findall(r'\"(.*?)\"', text1))",
+  "test_list": [
+    "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+    "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+    "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+    "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\nimport java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\npublic class Solution {\n    public static List<String> extract_quotation(String text1) {\n        List<String> result = new ArrayList<>();\n        Pattern pattern = Pattern.compile(\"\\\"(.*?)\\\"\");\n        Matcher matcher = pattern.matcher(text1);\n        while (matcher.find()) {\n            result.add(matcher.group(1));\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+      "generated_test": "List<String> result = extract_quotation(\"Cortex \\\"A53\\\" Based \\\"multi\\\" tasking \\\"Processor\\\"\");\nList<String> expected = new ArrayList<>();\nexpected.add(\"A53\");\nexpected.add(\"multi\");\nexpected.add(\"Processor\");\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+      "generated_test": "List<String> result = extract_quotation(\"Cast your \\\"favorite\\\" entertainment \\\"apps\\\"\");\nList<String> expected = new ArrayList<>();\nexpected.add(\"favorite\");\nexpected.add(\"apps\");\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+      "generated_test": "List<String> result = extract_quotation(\"Watch content \\\"4k Ultra HD\\\" resolution with \\\"HDR 10\\\" Support\");\nList<String> expected = new ArrayList<>();\nexpected.add(\"4k Ultra HD\");\nexpected.add(\"HDR 10\");\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []",
+      "generated_test": "List<String> result = extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\");\nList<String> expected = new ArrayList<>();\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

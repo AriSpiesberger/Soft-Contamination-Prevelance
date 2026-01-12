@@ -1,0 +1,17 @@
+{
+  "task_id": 389,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n'th lucas number.",
+  "python_code": "def find_lucas(n): \n\tif (n == 0): \n\t\treturn 2\n\tif (n == 1): \n\t\treturn 1\n\treturn find_lucas(n - 1) + find_lucas(n - 2) ",
+  "test_list": [
+    "assert find_lucas(9) == 76",
+    "assert find_lucas(4) == 7",
+    "assert find_lucas(3) == 4"
+  ],
+  "code_typescript": "function find_lucas(n: number): number {\n    if (n === 0) {\n        return 2;\n    }\n    if (n === 1) {\n        return 1;\n    }\n    return find_lucas(n - 1) + find_lucas(n - 2);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

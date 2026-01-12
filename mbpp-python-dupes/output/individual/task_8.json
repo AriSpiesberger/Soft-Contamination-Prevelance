@@ -1,0 +1,27 @@
+{
+  "task_id": 8,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find squares of individual elements in a list.",
+  "code_python": "def square_nums(nums):\n square_nums = list(map(lambda x: x ** 2, nums))\n return square_nums",
+  "test_list": [
+    "assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert square_nums([10,20,30])==([100,400,900])",
+    "assert square_nums([12,15])==([144,225])"
+  ],
+  "python_1": "def square_nums(nums):\n    # Use list comprehension to transform each element by multiplying it with itself\n    squared_list = [x * x for x in nums]\n    # Return the newly created list containing all squared values\n    return squared_list",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def square_nums(nums):\n    # Create an empty list to accumulate squared values one by one\n    result = []\n    # Process each number in the input list using index-based iteration\n    for i in range(len(nums)):\n        # Calculate square by raising current element to power of 2\n        squared_value = nums[i] ** 2\n        # Append the computed square to our result accumulator\n        result.append(squared_value)\n    # Return the fully populated list of squared numbers\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def square_nums(nums):\n    # Use recursive helper to process list elements without explicit loops\n    def square_recursive(lst, index=0):\n        # Base case: when index reaches list length, return empty list to start building result\n        if index >= len(lst):\n            return []\n        # Compute square of current element using multiplication operator\n        current_square = lst[index] * lst[index]\n        # Recursively process remaining elements and prepend current square to result\n        return [current_square] + square_recursive(lst, index + 1)\n    # Invoke recursive helper starting from first index\n    return square_recursive(nums)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def square_nums(nums):\n    # Use a generator expression with tuple unpacking via enumerate to square each value\n    def square_generator(input_list):\n        # Yield squared values lazily using enumerate to iterate through list positions\n        for idx, val in enumerate(input_list):\n            # Compute square using exponentiation and yield it to the caller\n            yield val ** 2\n    # Materialize the generator into a concrete list by passing to list constructor\n    squared_result = list(square_generator(nums))\n    # Return the list containing all squared elements\n    return squared_result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def square_nums(nums):\n    # Import reduce to perform cumulative operations on the list\n    from functools import reduce\n    # Define a reducer that accumulates squared values into a growing list\n    def accumulate_squares(acc, num):\n        # Append the square of current number to accumulator list and return it\n        acc.append(num ** 2)\n        # Return modified accumulator for next iteration\n        return acc\n    # Apply reduce with empty list as initial value, building result incrementally\n    squared_list = reduce(accumulate_squares, nums, [])\n    # Return the fully constructed list of squared numbers\n    return squared_list",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

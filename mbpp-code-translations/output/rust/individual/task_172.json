@@ -1,0 +1,51 @@
+{
+  "task_id": 172,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurence of the string 'std' in a given string.",
+  "python_code": "def count_occurance(s):\n  count = 0\n  for i in range(len(s) - 2):\n    if (s[i] == 's' and s[i+1] == 't' and s[i+2] == 'd'):\n      count = count + 1\n  return count",
+  "test_list": [
+    "assert count_occurance(\"letstdlenstdporstd\") == 3",
+    "assert count_occurance(\"truststdsolensporsd\") == 1",
+    "assert count_occurance(\"makestdsostdworthit\") == 2",
+    "assert count_occurance(\"stds\") == 1",
+    "assert count_occurance(\"\") == 0"
+  ],
+  "code_rust": "pub fn count_occurance(s: &str) -> i32 {\n    let mut count = 0;\n    let bytes = s.as_bytes();\n    if bytes.len() < 3 {\n        return 0;\n    }\n    for i in 0..bytes.len() - 2 {\n        if bytes[i] == b's' && bytes[i + 1] == b't' && bytes[i + 2] == b'd' {\n            count += 1;\n        }\n    }\n    count\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 5,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_occurance(\"letstdlenstdporstd\") == 3",
+      "generated_test": "let result = count_occurance(\"letstdlenstdporstd\");\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_occurance(\"truststdsolensporsd\") == 1",
+      "generated_test": "let result = count_occurance(\"truststdsolensporsd\");\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_occurance(\"makestdsostdworthit\") == 2",
+      "generated_test": "let result = count_occurance(\"makestdsostdworthit\");\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_occurance(\"stds\") == 1",
+      "generated_test": "let result = count_occurance(\"stds\");\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_occurance(\"\") == 0",
+      "generated_test": "let result = count_occurance(\"\");\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

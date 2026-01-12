@@ -1,0 +1,37 @@
+{
+  "task_id": 479,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first digit of a given number.",
+  "python_code": "def first_Digit(n) :  \n    while n >= 10:  \n        n = n / 10 \n    return int(n) ",
+  "test_list": [
+    "assert first_Digit(123) == 1",
+    "assert first_Digit(456) == 4",
+    "assert first_Digit(12) == 1"
+  ],
+  "code_rust": "pub fn first_Digit(n: i32) -> i32 {\n    let mut n = n.abs();\n    while n >= 10 {\n        n = n / 10;\n    }\n    n\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert first_Digit(123) == 1",
+      "generated_test": "let result = first_Digit(123);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_Digit(456) == 4",
+      "generated_test": "let result = first_Digit(456);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_Digit(12) == 1",
+      "generated_test": "let result = first_Digit(12);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

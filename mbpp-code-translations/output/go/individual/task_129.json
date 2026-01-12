@@ -1,0 +1,37 @@
+{
+  "task_id": 129,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate whether the matrix is a magic square.",
+  "python_code": "def magic_square_test(my_matrix):\n    iSize = len(my_matrix[0])\n    sum_list = []\n    sum_list.extend([sum (lines) for lines in my_matrix])   \n    for col in range(iSize):\n        sum_list.append(sum(row[col] for row in my_matrix))\n    result1 = 0\n    for i in range(0,iSize):\n        result1 +=my_matrix[i][i]\n    sum_list.append(result1)      \n    result2 = 0\n    for i in range(iSize-1,-1,-1):\n        result2 +=my_matrix[i][i]\n    sum_list.append(result2)\n    if len(set(sum_list))>1:\n        return False\n    return True",
+  "test_list": [
+    "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False"
+  ],
+  "code_go": "package main\n\nfunc magic_square_test(my_matrix [][]int) bool {\n\tif len(my_matrix) == 0 || len(my_matrix[0]) == 0 {\n\t\treturn true\n\t}\n\t\n\tiSize := len(my_matrix[0])\n\tsum_list := []int{}\n\t\n\t// Sum of each row\n\tfor _, lines := range my_matrix {\n\t\trowSum := 0\n\t\tfor _, val := range lines {\n\t\t\trowSum += val\n\t\t}\n\t\tsum_list = append(sum_list, rowSum)\n\t}\n\t\n\t// Sum of each column\n\tfor col := 0; col < iSize; col++ {\n\t\tcolSum := 0\n\t\tfor _, row := range my_matrix {\n\t\t\tcolSum += row[col]\n\t\t}\n\t\tsum_list = append(sum_list, colSum)\n\t}\n\t\n\t// Sum of main diagonal\n\tresult1 := 0\n\tfor i := 0; i < iSize; i++ {\n\t\tresult1 += my_matrix[i][i]\n\t}\n\tsum_list = append(sum_list, result1)\n\t\n\t// Sum of anti-diagonal (note: Python code has a bug here, it calculates main diagonal again)\n\t// Following the exact Python behavior\n\tresult2 := 0\n\tfor i := iSize - 1; i >= 0; i-- {\n\t\tresult2 += my_matrix[i][i]\n\t}\n\tsum_list = append(sum_list, result2)\n\t\n\t// Check if all sums are equal (equivalent to len(set(sum_list)) > 1)\n\tif len(sum_list) == 0 {\n\t\treturn true\n\t}\n\t\n\tfirstVal := sum_list[0]\n\tfor _, val := range sum_list {\n\t\tif val != firstVal {\n\t\t\treturn false\n\t\t}\n\t}\n\t\n\treturn true\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+      "generated_test": "input := [][]int{{7, 12, 1, 14}, {2, 13, 8, 11}, {16, 3, 10, 5}, {9, 6, 15, 4}}\nexpected := true\nresult := magic_square_test(input)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+      "generated_test": "input := [][]int{{2, 7, 6}, {9, 5, 1}, {4, 3, 8}}\nexpected := true\nresult := magic_square_test(input)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False",
+      "generated_test": "expected := false\nresult := magic_square_test([][]int{{2, 7, 6}, {9, 5, 1}, {4, 3, 7}})\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

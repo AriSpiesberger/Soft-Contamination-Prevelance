@@ -1,0 +1,37 @@
+{
+  "task_id": 414,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether any value in a sequence exists in a sequence or not.",
+  "python_code": "def overlapping(list1,list2):  \n    for i in range(len(list1)): \n        for j in range(len(list2)): \n            if(list1[i]==list2[j]): \n                return True\n    return False",
+  "test_list": [
+    "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+    "assert overlapping([1,2,3],[4,5,6]) == False",
+    "assert overlapping([1,4,5],[1,4,5]) == True"
+  ],
+  "code_javascript": "function overlapping(list1, list2) {\n    for (let i = 0; i < list1.length; i++) {\n        for (let j = 0; j < list2.length; j++) {\n            if (list1[i] === list2[j]) {\n                return true;\n            }\n        }\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+      "generated_test": "const result = overlapping([1,2,3,4,5],[6,7,8,9]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert overlapping([1,2,3],[4,5,6]) == False",
+      "generated_test": "const result = overlapping([1,2,3], [4,5,6]);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert overlapping([1,4,5],[1,4,5]) == True",
+      "generated_test": "const result = overlapping([1,4,5], [1,4,5]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

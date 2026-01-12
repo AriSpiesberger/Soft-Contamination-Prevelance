@@ -1,0 +1,37 @@
+{
+  "task_id": 555,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the difference between the sum of cubes of the first n natural numbers and the sum of the first n natural numbers.",
+  "python_code": "def difference(n) :  \n    S = (n*(n + 1))//2;  \n    res = S*(S-1);  \n    return res;  ",
+  "test_list": [
+    "assert difference(3) == 30",
+    "assert difference(5) == 210",
+    "assert difference(2) == 6"
+  ],
+  "code_javascript": "function difference(n) {\n    const S = Math.floor((n * (n + 1)) / 2);\n    const res = S * (S - 1);\n    return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert difference(3) == 30",
+      "generated_test": "const result = difference(3);\nconst expected = 30;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert difference(5) == 210",
+      "generated_test": "const result = difference(5);\nconst expected = 210;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert difference(2) == 6",
+      "generated_test": "const result = difference(2);\nconst expected = 6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

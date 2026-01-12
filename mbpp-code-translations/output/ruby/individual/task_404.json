@@ -1,0 +1,37 @@
+{
+  "task_id": 404,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum of two numbers.",
+  "python_code": "def minimum(a,b):   \n    if a <= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert minimum(1,2) == 1",
+    "assert minimum(-5,-4) == -5",
+    "assert minimum(0,0) == 0"
+  ],
+  "code_ruby": "def minimum(a, b)\n  if a <= b\n    a\n  else\n    b\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert minimum(1,2) == 1",
+      "generated_test": "result = minimum(1, 2)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(-5,-4) == -5",
+      "generated_test": "result = minimum(-5, -4)\nexpected = -5\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(0,0) == 0",
+      "generated_test": "result = minimum(0, 0)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

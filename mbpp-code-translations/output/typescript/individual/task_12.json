@@ -1,0 +1,17 @@
+{
+  "task_id": 12,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a given matrix in ascending order according to the sum of its rows.",
+  "python_code": "def sort_matrix(M):\n    result = sorted(M, key=sum)\n    return result",
+  "test_list": [
+    "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+    "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+    "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]"
+  ],
+  "code_typescript": "function sort_matrix(M: number[][]): number[][] {\n    const sum = (arr: number[]): number => arr.reduce((acc, val) => acc + val, 0);\n    const result = [...M].sort((a, b) => sum(a) - sum(b));\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

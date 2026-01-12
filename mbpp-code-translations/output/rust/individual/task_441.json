@@ -1,0 +1,37 @@
+{
+  "task_id": 441,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cube of a given size.",
+  "python_code": "def surfacearea_cube(l):\n  surfacearea= 6*l*l\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cube(5)==150",
+    "assert surfacearea_cube(3)==54",
+    "assert surfacearea_cube(10)==600"
+  ],
+  "code_rust": "pub fn surfacearea_cube(l: i32) -> i32 {\n    6 * l * l\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert surfacearea_cube(5)==150",
+      "generated_test": "let result = surfacearea_cube(5);\nlet expected = 150;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cube(3)==54",
+      "generated_test": "let result = surfacearea_cube(3);\nlet expected = 54;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cube(10)==600",
+      "generated_test": "let result = surfacearea_cube(10);\nlet expected = 600;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

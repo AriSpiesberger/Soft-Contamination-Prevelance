@@ -1,0 +1,44 @@
+{
+  "task_id": 764,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count number of digits in a given string.",
+  "python_code": "def number_ctr(str):\n      number_ctr= 0\n      for i in range(len(str)):\n          if str[i] >= '0' and str[i] <= '9': number_ctr += 1     \n      return  number_ctr",
+  "test_list": [
+    "assert number_ctr('program2bedone') == 1",
+    "assert number_ctr('3wonders') == 1",
+    "assert number_ctr('123') == 3",
+    "assert number_ctr('3wond-1ers2') == 3"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int number_ctr(String str) {\n        int number_ctr = 0;\n        for (int i = 0; i < str.length(); i++) {\n            if (str.charAt(i) >= '0' && str.charAt(i) <= '9') {\n                number_ctr += 1;\n            }\n        }\n        return number_ctr;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert number_ctr('program2bedone') == 1",
+      "generated_test": "int result = number_ctr(\"program2bedone\");\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_ctr('3wonders') == 1",
+      "generated_test": "int result = number_ctr(\"3wonders\");\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_ctr('123') == 3",
+      "generated_test": "int result = number_ctr(\"123\");\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_ctr('3wond-1ers2') == 3",
+      "generated_test": "int result = number_ctr(\"3wond-1ers2\");\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

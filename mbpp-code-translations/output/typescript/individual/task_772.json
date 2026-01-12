@@ -1,0 +1,17 @@
+{
+  "task_id": 772,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all the words with k length in the given string.",
+  "python_code": "def remove_length(test_str, K):\n  temp = test_str.split()\n  res = [ele for ele in temp if len(ele) != K]\n  res = ' '.join(res)\n  return (res) ",
+  "test_list": [
+    "assert remove_length('The person is most value tet', 3) == 'person is most value'",
+    "assert remove_length('If you told me about this ok', 4) == 'If you me about ok'",
+    "assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'"
+  ],
+  "code_typescript": "function remove_length(test_str: string, K: number): string {\n  const temp: string[] = test_str.split(' ');\n  const res: string[] = temp.filter(ele => ele.length !== K);\n  return res.join(' ');\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

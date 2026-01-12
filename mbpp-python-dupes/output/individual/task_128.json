@@ -1,0 +1,27 @@
+{
+  "task_id": 128,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find words that are longer than n characters from a given list of words.",
+  "code_python": "def long_words(n, str):\n    word_len = []\n    txt = str.split(\" \")\n    for x in txt:\n        if len(x) > n:\n            word_len.append(x)\n    return word_len\t",
+  "test_list": [
+    "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+    "assert long_words(2,\"writing a program\")==['writing','program']",
+    "assert long_words(5,\"sorting list\")==['sorting']"
+  ],
+  "python_1": "def long_words(n, str):\n    # Use list comprehension for a more Pythonic filtering approach\n    return [word for word in str.split(\" \") if len(word) > n]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def long_words(n, str):\n    # Use filter() with lambda to create an iterator of words meeting length criteria\n    filtered_iterator = filter(lambda word: len(word) > n, str.split(\" \"))\n    # Convert the filter iterator to a list for the final result\n    return list(filtered_iterator)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def long_words(n, str):\n    # Use reduce pattern to accumulate words meeting length threshold\n    from functools import reduce\n    # Split input string into individual words for processing\n    words = str.split(\" \")\n    # Define reducer function that appends word to accumulator if it exceeds length n\n    def accumulate_long_words(acc, word):\n        # Check if current word length surpasses the threshold\n        if len(word) > n:\n            # Extend accumulator list with the qualifying word\n            acc.append(word)\n        # Return the accumulator for the next iteration\n        return acc\n    # Apply reduce to fold over all words, starting with empty list accumulator\n    result = reduce(accumulate_long_words, words, [])\n    # Return the accumulated list of long words\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def long_words(n, str):\n    # Split the input string and obtain an indexed enumeration of words\n    words = str.split(\" \")\n    # Initialize an empty result list to collect qualifying words\n    result = []\n    # Use a while loop with index counter for manual iteration control\n    index = 0\n    # Continue processing until we've examined every word in the list\n    while index < len(words):\n        # Extract the current word at this index position\n        current_word = words[index]\n        # Calculate the length once to avoid repeated computation\n        word_length = len(current_word)\n        # Compare word length against threshold using greater-than check\n        is_long_enough = word_length > n\n        # Conditionally add the word to results if it meets criteria\n        if is_long_enough:\n            # Append qualifying word to our accumulating result list\n            result.append(current_word)\n        # Manually increment index to advance to next word\n        index += 1\n    # Return the collected list of words exceeding length n\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def long_words(n, str):\n    # Use recursive helper function to process words one by one\n    def process_words(word_list, threshold):\n        # Base case: empty list means no more words to check\n        if not word_list:\n            # Return empty list to terminate recursion\n            return []\n        # Extract the first word from the list for current processing\n        first_word = word_list[0]\n        # Recursively process remaining words in the list\n        rest_result = process_words(word_list[1:], threshold)\n        # Determine if first word exceeds the length threshold\n        if len(first_word) > threshold:\n            # Prepend qualifying word to the recursive result\n            return [first_word] + rest_result\n        # Skip current word and just return the recursive result\n        return rest_result\n    # Split input string by spaces to obtain word tokens\n    all_words = str.split(\" \")\n    # Invoke recursive processor with full word list and threshold\n    return process_words(all_words, n)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

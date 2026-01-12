@@ -1,0 +1,27 @@
+{
+  "task_id": 788,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create a new tuple from the given string and list.",
+  "code_python": "def new_tuple(test_list, test_str):\n  return tuple(test_list + [test_str])",
+  "test_list": [
+    "assert new_tuple([\"WEB\", \"is\"], \"best\") == ('WEB', 'is', 'best')",
+    "assert new_tuple([\"We\", \"are\"], \"Developers\") == ('We', 'are', 'Developers')",
+    "assert new_tuple([\"Part\", \"is\"], \"Wrong\") == ('Part', 'is', 'Wrong')"
+  ],
+  "python_1": "def new_tuple(test_list, test_str):\n  # Unpack all elements from the list using starred expression and combine with string\n  result = (*test_list, test_str)\n  # Return the tuple directly created from unpacking\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "def new_tuple(test_list, test_str):\n  # Convert the input list to a tuple first\n  list_as_tuple = tuple(test_list)\n  # Create a single-element tuple containing just the string\n  str_as_tuple = (test_str,)\n  # Concatenate the two tuples using the + operator for tuples\n  combined_tuple = list_as_tuple + str_as_tuple\n  # Return the merged tuple containing all elements\n  return combined_tuple",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def new_tuple(test_list, test_str):\n  # Use itertools.chain to lazily concatenate the list with a single-element iterable\n  import itertools\n  # Chain together the list elements and the string wrapped in a list\n  chained_iterator = itertools.chain(test_list, [test_str])\n  # Convert the chained iterator directly into a tuple\n  final_tuple = tuple(chained_iterator)\n  # Return the constructed tuple containing all elements in order\n  return final_tuple",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def new_tuple(test_list, test_str):\n  # Create a generator expression that yields each element from the list\n  list_elements = (elem for elem in test_list)\n  # Build a new list by consuming the generator and appending items one by one\n  result_list = []\n  # Iterate through each element yielded by the generator\n  for item in list_elements:\n    # Append each list element to our accumulator list\n    result_list.append(item)\n  # Append the string as the final element after all list items\n  result_list.append(test_str)\n  # Transform the accumulated list into an immutable tuple for return\n  return tuple(result_list)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def new_tuple(test_list, test_str):\n  # Determine the total number of elements needed in the final tuple\n  total_length = len(test_list) + 1\n  # Create an empty list pre-sized to hold all elements efficiently\n  temp_storage = [None] * total_length\n  # Use enumerate to assign each list element to its corresponding index position\n  for index, value in enumerate(test_list):\n    # Place each original list element at its sequential index\n    temp_storage[index] = value\n  # Assign the string to the final position after all list elements\n  temp_storage[-1] = test_str\n  # Convert the fully populated list into an immutable tuple structure\n  return tuple(temp_storage)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

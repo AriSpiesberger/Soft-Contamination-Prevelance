@@ -1,0 +1,27 @@
+{
+  "task_id": 632,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to move all zeroes to the end of the given list.",
+  "code_python": "def move_zero(num_list):\n    a = [0 for i in range(num_list.count(0))]\n    x = [i for i in num_list if i != 0]\n    return x + a",
+  "test_list": [
+    "assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]",
+    "assert move_zero([2,3,2,0,0,4,0,5,0]) == [2,3,2,4,5,0,0,0,0]",
+    "assert move_zero([0,1,0,1,1]) == [1,1,1,0,0]"
+  ],
+  "python_1": "def move_zero(num_list):\n    # Create a mutable copy to perform in-place style operations\n    result = num_list.copy()\n    # Track the position where next non-zero element should be placed\n    insert_pos = 0\n    # Iterate through each element using index for position tracking\n    for i in range(len(result)):\n        # Check if current element is non-zero and needs repositioning\n        if result[i] != 0:\n            # Place non-zero element at the next available front position\n            result[insert_pos] = result[i]\n            # Advance the insertion pointer for next non-zero element\n            insert_pos += 1\n    # Fill remaining positions with zeros after all non-zeros are placed\n    while insert_pos < len(result):\n        # Overwrite trailing positions with zero values\n        result[insert_pos] = 0\n        # Move to next position that needs to be zeroed\n        insert_pos += 1\n    # Return the rearranged list with zeros at the end\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def move_zero(num_list):\n    # Use filter with lambda to extract all non-zero elements into a list\n    non_zeros = list(filter(lambda x: x != 0, num_list))\n    # Calculate how many zeros we need by subtracting non-zero count from total\n    zero_count = len(num_list) - len(non_zeros)\n    # Multiply single-element zero list by count to generate required zeros\n    zeros = [0] * zero_count\n    # Concatenate non-zeros with zeros to form final rearranged list\n    return non_zeros + zeros",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def move_zero(num_list):\n    # Initialize empty list to accumulate our final result\n    result = []\n    # Track the number of zeros encountered during iteration\n    zero_counter = 0\n    # Process each element in the original list sequentially\n    for element in num_list:\n        # Branch based on whether current element is zero or not\n        if element == 0:\n            # Increment counter instead of appending zero immediately\n            zero_counter += 1\n        else:\n            # Append non-zero elements directly to result as we find them\n            result.append(element)\n    # Extend result list by appending all counted zeros at once using extend\n    result.extend([0] * zero_counter)\n    # Return the reconstructed list with zeros relocated to end\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def move_zero(num_list):\n    # Use custom sort key that maps zeros to 1 and non-zeros to 0 for stable sorting\n    # This leverages Python's stable sort to push zeros to end while preserving order\n    sorted_list = sorted(num_list, key=lambda x: 1 if x == 0 else 0)\n    # Return the sorted result where all non-zeros maintain relative order followed by zeros\n    return sorted_list",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def move_zero(num_list):\n    # Use reduce-style approach with two-tuple accumulator to partition in single pass\n    from functools import reduce\n    # Define reducer that separates elements into (non_zeros, zeros) tuple accumulator\n    def partition_reducer(acc, elem):\n        # Destructure the accumulator tuple into its two component lists\n        non_zeros, zeros = acc\n        # Conditionally append to appropriate list based on zero check\n        if elem == 0:\n            # Zero found: extend the zeros list with this element\n            return (non_zeros, zeros + [elem])\n        else:\n            # Non-zero found: extend the non-zeros list with this element\n            return (non_zeros + [elem], zeros)\n    # Apply reduce with partition function starting from two empty lists\n    partitioned = reduce(partition_reducer, num_list, ([], []))\n    # Unpack the final accumulated tuple containing both partitions\n    non_zero_part, zero_part = partitioned\n    # Combine partitions: non-zeros first followed by all zeros\n    return non_zero_part + zero_part",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

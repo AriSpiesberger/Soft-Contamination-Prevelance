@@ -1,0 +1,44 @@
+{
+  "task_id": 764,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count number of digits in a given string.",
+  "python_code": "def number_ctr(str):\n      number_ctr= 0\n      for i in range(len(str)):\n          if str[i] >= '0' and str[i] <= '9': number_ctr += 1     \n      return  number_ctr",
+  "test_list": [
+    "assert number_ctr('program2bedone') == 1",
+    "assert number_ctr('3wonders') == 1",
+    "assert number_ctr('123') == 3",
+    "assert number_ctr('3wond-1ers2') == 3"
+  ],
+  "code_go": "package main\n\nfunc number_ctr(str string) int {\n\tnumberCtr := 0\n\tfor i := 0; i < len(str); i++ {\n\t\tif str[i] >= '0' && str[i] <= '9' {\n\t\t\tnumberCtr++\n\t\t}\n\t}\n\treturn numberCtr\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert number_ctr('program2bedone') == 1",
+      "generated_test": "result := number_ctr(\"program2bedone\")\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_ctr('3wonders') == 1",
+      "generated_test": "result := number_ctr(\"3wonders\")\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_ctr('123') == 3",
+      "generated_test": "result := number_ctr(\"123\")\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_ctr('3wond-1ers2') == 3",
+      "generated_test": "result := number_ctr(\"3wond-1ers2\")\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

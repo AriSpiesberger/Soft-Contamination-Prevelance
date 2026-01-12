@@ -1,0 +1,37 @@
+{
+  "task_id": 294,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum value in a given heterogeneous list.",
+  "python_code": "def max_val(listval):\n     max_val = max(i for i in listval if isinstance(i, int)) \n     return(max_val)",
+  "test_list": [
+    "assert max_val(['Python', 3, 2, 4, 5, 'version'])==5",
+    "assert max_val(['Python', 15, 20, 25])==25",
+    "assert max_val(['Python', 30, 20, 40, 50, 'version'])==50"
+  ],
+  "code_rust": "use std::any::Any;\n\npub fn max_val(listval: &[Box<dyn Any>]) -> Option<i32> {\n    listval\n        .iter()\n        .filter_map(|item| item.downcast_ref::<i32>().copied())\n        .max()\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    fn create_list(items: Vec<Box<dyn Any>>) -> Vec<Box<dyn Any>> {\n        items\n    }\n\n    #[test]\n    fn test_max_val_1() {\n        let list: Vec<Box<dyn Any>> = vec![\n            Box::new(\"Python\".to_string()),\n            Box::new(3i32),\n            Box::new(2i32),\n            Box::new(4i32),\n            Box::new(5i32),\n            Box::new(\"version\".to_string()),\n        ];\n        assert_eq!(max_val(&list), Some(5));\n    }\n\n    #[test]\n    fn test_max_val_2() {\n        let list: Vec<Box<dyn Any>> = vec![\n            Box::new(\"Python\".to_string()),\n            Box::new(15i32),\n            Box::new(20i32),\n            Box::new(25i32),\n        ];\n        assert_eq!(max_val(&list), Some(25));\n    }\n\n    #[test]\n    fn test_max_val_3() {\n        let list: Vec<Box<dyn Any>> = vec![\n            Box::new(\"Python\".to_string()),\n            Box::new(30i32),\n            Box::new(20i32),\n            Box::new(40i32),\n            Box::new(50i32),\n            Box::new(\"version\".to_string()),\n        ];\n        assert_eq!(max_val(&list), Some(50));\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_val(['Python', 3, 2, 4, 5, 'version'])==5",
+      "generated_test": "let list: Vec<Box<dyn Any>> = vec![\n    Box::new(\"Python\".to_string()),\n    Box::new(3i32),\n    Box::new(2i32),\n    Box::new(4i32),\n    Box::new(5i32),\n    Box::new(\"version\".to_string()),\n];\nlet result = max_val(&list);\nlet expected = Some(5);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_val(['Python', 15, 20, 25])==25",
+      "generated_test": "let list: Vec<Box<dyn Any>> = vec![\n    Box::new(\"Python\".to_string()),\n    Box::new(15i32),\n    Box::new(20i32),\n    Box::new(25i32),\n];\nlet result = max_val(&list);\nlet expected = Some(25);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_val(['Python', 30, 20, 40, 50, 'version'])==50",
+      "generated_test": "let list: Vec<Box<dyn Any>> = vec![\n    Box::new(\"Python\".to_string()),\n    Box::new(30i32),\n    Box::new(20i32),\n    Box::new(40i32),\n    Box::new(50i32),\n    Box::new(\"version\".to_string()),\n];\nlet result = max_val(&list);\nlet expected = Some(50);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

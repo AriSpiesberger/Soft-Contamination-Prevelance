@@ -1,0 +1,17 @@
+{
+  "task_id": 603,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get all lucid numbers smaller than or equal to a given integer.",
+  "python_code": "def get_ludic(n):\n\tludics = []\n\tfor i in range(1, n + 1):\n\t\tludics.append(i)\n\tindex = 1\n\twhile(index != len(ludics)):\n\t\tfirst_ludic = ludics[index]\n\t\tremove_index = index + first_ludic\n\t\twhile(remove_index < len(ludics)):\n\t\t\tludics.remove(ludics[remove_index])\n\t\t\tremove_index = remove_index + first_ludic - 1\n\t\tindex += 1\n\treturn ludics",
+  "test_list": [
+    "assert get_ludic(10) == [1, 2, 3, 5, 7]",
+    "assert get_ludic(25) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25]",
+    "assert get_ludic(45) == [1, 2, 3, 5, 7, 11, 13, 17, 23, 25, 29, 37, 41, 43]"
+  ],
+  "code_typescript": "function get_ludic(n: number): number[] {\n    const ludics: number[] = [];\n    for (let i = 1; i <= n; i++) {\n        ludics.push(i);\n    }\n    let index = 1;\n    while (index !== ludics.length) {\n        const first_ludic = ludics[index];\n        let remove_index = index + first_ludic;\n        while (remove_index < ludics.length) {\n            ludics.splice(remove_index, 1);\n            remove_index = remove_index + first_ludic - 1;\n        }\n        index += 1;\n    }\n    return ludics;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

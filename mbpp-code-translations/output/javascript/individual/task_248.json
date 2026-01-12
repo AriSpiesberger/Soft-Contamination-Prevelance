@@ -1,0 +1,37 @@
+{
+  "task_id": 248,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in an integer n and calculates the harmonic sum of n-1.",
+  "python_code": "def harmonic_sum(n):\n  if n < 2:\n    return 1\n  else:\n    return 1 / n + (harmonic_sum(n - 1)) ",
+  "test_list": [
+    "assert math.isclose(harmonic_sum(7), 2.5928571428571425, rel_tol=0.001)",
+    "assert math.isclose(harmonic_sum(4), 2.083333333333333, rel_tol=0.001)",
+    "assert math.isclose(harmonic_sum(19), 3.547739657143682, rel_tol=0.001)"
+  ],
+  "code_javascript": "function harmonic_sum(n) {\n  if (n < 2) {\n    return 1;\n  } else {\n    return 1 / n + harmonic_sum(n - 1);\n  }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert math.isclose(harmonic_sum(7), 2.5928571428571425, rel_tol=0.001)",
+      "generated_test": "const result = harmonic_sum(7);\nconst expected = 2.5928571428571425;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(harmonic_sum(4), 2.083333333333333, rel_tol=0.001)",
+      "generated_test": "const result = harmonic_sum(4);\nconst expected = 2.083333333333333;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(harmonic_sum(19), 3.547739657143682, rel_tol=0.001)",
+      "generated_test": "const result = harmonic_sum(19);\nconst expected = 3.547739657143682;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

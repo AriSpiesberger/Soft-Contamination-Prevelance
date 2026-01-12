@@ -1,0 +1,37 @@
+{
+  "task_id": 793,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last position of an element in a sorted array.",
+  "python_code": "def last(arr,x):\n    n = len(arr)\n    low = 0\n    high = n - 1\n    res = -1  \n    while (low <= high):\n        mid = (low + high) // 2 \n        if arr[mid] > x:\n            high = mid - 1\n        elif arr[mid] < x:\n            low = mid + 1\n        else:\n            res = mid\n            low = mid + 1\n    return res",
+  "test_list": [
+    "assert last([1,2,3],1) == 0",
+    "assert last([1,1,1,2,3,4],1) == 2",
+    "assert last([2,3,2,3,6,8,9],3) == 3"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int last(ArrayList<Integer> arr, int x) {\n        int n = arr.size();\n        int low = 0;\n        int high = n - 1;\n        int res = -1;\n        while (low <= high) {\n            int mid = (low + high) / 2;\n            if (arr.get(mid) > x) {\n                high = mid - 1;\n            } else if (arr.get(mid) < x) {\n                low = mid + 1;\n            } else {\n                res = mid;\n                low = mid + 1;\n            }\n        }\n        return res;\n    }\n    \n    public static int last(int[] arr, int x) {\n        int n = arr.length;\n        int low = 0;\n        int high = n - 1;\n        int res = -1;\n        while (low <= high) {\n            int mid = (low + high) / 2;\n            if (arr[mid] > x) {\n                high = mid - 1;\n            } else if (arr[mid] < x) {\n                low = mid + 1;\n            } else {\n                res = mid;\n                low = mid + 1;\n            }\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert last([1,2,3],1) == 0",
+      "generated_test": "int result = last(new int[]{1, 2, 3}, 1);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last([1,1,1,2,3,4],1) == 2",
+      "generated_test": "int result = last(new int[]{1,1,1,2,3,4}, 1);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last([2,3,2,3,6,8,9],3) == 3",
+      "generated_test": "int[] arr = new int[]{2,3,2,3,6,8,9};\nint result = last(arr, 3);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

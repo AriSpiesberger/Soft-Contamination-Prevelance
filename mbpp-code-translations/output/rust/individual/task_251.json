@@ -1,0 +1,37 @@
+{
+  "task_id": 251,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an element and inserts the element before each element in the list, and returns the resulting list.",
+  "python_code": "def insert_element(list,element):\n list = [v for elt in list for v in (element, elt)]\n return list",
+  "test_list": [
+    "assert insert_element(['Red', 'Green', 'Black'] ,'c')==['c', 'Red', 'c', 'Green', 'c', 'Black']",
+    "assert insert_element(['python', 'java'] ,'program')==['program', 'python', 'program', 'java']",
+    "assert insert_element(['happy', 'sad'] ,'laugh')==['laugh', 'happy', 'laugh', 'sad']"
+  ],
+  "code_rust": "pub fn insert_element<T: Clone>(list: Vec<T>, element: T) -> Vec<T> {\n    let mut result = Vec::with_capacity(list.len() * 2);\n    for elt in list {\n        result.push(element.clone());\n        result.push(elt);\n    }\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert insert_element(['Red', 'Green', 'Black'] ,'c')==['c', 'Red', 'c', 'Green', 'c', 'Black']",
+      "generated_test": "let result = insert_element(vec![\"Red\", \"Green\", \"Black\"], \"c\");\nlet expected = vec![\"c\", \"Red\", \"c\", \"Green\", \"c\", \"Black\"];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert insert_element(['python', 'java'] ,'program')==['program', 'python', 'program', 'java']",
+      "generated_test": "let result = insert_element(vec![\"python\", \"java\"], \"program\");\nlet expected = vec![\"program\", \"python\", \"program\", \"java\"];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert insert_element(['happy', 'sad'] ,'laugh')==['laugh', 'happy', 'laugh', 'sad']",
+      "generated_test": "let result = insert_element(vec![\"happy\", \"sad\"], \"laugh\");\nlet expected = vec![\"laugh\", \"happy\", \"laugh\", \"sad\"];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

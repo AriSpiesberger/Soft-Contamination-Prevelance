@@ -1,0 +1,44 @@
+{
+  "task_id": 726,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes as input a tuple of numbers (t_1,...,t_{N+1}) and returns a tuple of length N where the i-th element of the tuple is equal to t_i * t_{i+1}.",
+  "python_code": "def multiply_elements(test_tup):\n  res = tuple(i * j for i, j in zip(test_tup, test_tup[1:]))\n  return (res) ",
+  "test_list": [
+    "assert multiply_elements((1, 5, 7, 8, 10)) == (5, 35, 56, 80)",
+    "assert multiply_elements((2, 4, 5, 6, 7)) == (8, 20, 30, 42)",
+    "assert multiply_elements((12, 13, 14, 9, 15)) == (156, 182, 126, 135)",
+    "assert multiply_elements((12,)) == ()"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> multiply_elements(ArrayList<Integer> test_tup) {\n        ArrayList<Integer> res = new ArrayList<>();\n        for (int i = 0; i < test_tup.size() - 1; i++) {\n            res.add(test_tup.get(i) * test_tup.get(i + 1));\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert multiply_elements((1, 5, 7, 8, 10)) == (5, 35, 56, 80)",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(5);\ninput.add(7);\ninput.add(8);\ninput.add(10);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(5);\nexpected.add(35);\nexpected.add(56);\nexpected.add(80);\n\nArrayList<Integer> result = multiply_elements(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiply_elements((2, 4, 5, 6, 7)) == (8, 20, 30, 42)",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(2);\ninput.add(4);\ninput.add(5);\ninput.add(6);\ninput.add(7);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(8);\nexpected.add(20);\nexpected.add(30);\nexpected.add(42);\n\nArrayList<Integer> result = multiply_elements(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiply_elements((12, 13, 14, 9, 15)) == (156, 182, 126, 135)",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(12);\ninput.add(13);\ninput.add(14);\ninput.add(9);\ninput.add(15);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(156);\nexpected.add(182);\nexpected.add(126);\nexpected.add(135);\n\nArrayList<Integer> result = multiply_elements(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert multiply_elements((12,)) == ()",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(12);\nArrayList<Integer> result = multiply_elements(input);\nArrayList<Integer> expected = new ArrayList<>();\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

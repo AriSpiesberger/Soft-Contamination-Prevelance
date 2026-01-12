@@ -1,0 +1,18 @@
+{
+  "task_id": 755,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the second smallest number in a list.",
+  "python_code": "def second_smallest(numbers):\n  unique_numbers = list(set(numbers))\n  unique_numbers.sort()\n  if len(unique_numbers) < 2:\n    return None\n  else:\n    return unique_numbers[1]",
+  "test_list": [
+    "assert second_smallest([1, 2, -8, -2, 0, -2])==-2",
+    "assert second_smallest([1, 1, -0.5, 0, 2, -2, -2])==-0.5",
+    "assert second_smallest([2,2])==None",
+    "assert second_smallest([2,2,2])==None"
+  ],
+  "code_typescript": "function second_smallest(numbers: number[]): number | null {\n  const unique_numbers = [...new Set(numbers)];\n  unique_numbers.sort((a, b) => a - b);\n  if (unique_numbers.length < 2) {\n    return null;\n  } else {\n    return unique_numbers[1];\n  }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 4,
+  "code_typescript_tests_failed": 0
+}

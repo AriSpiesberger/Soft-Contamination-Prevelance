@@ -1,0 +1,37 @@
+{
+  "task_id": 141,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of elements.",
+  "python_code": "def pancake_sort(nums):\n    arr_len = len(nums)\n    while arr_len > 1:\n        mi = nums.index(max(nums[0:arr_len]))\n        nums = nums[mi::-1] + nums[mi+1:len(nums)]\n        nums = nums[arr_len-1::-1] + nums[arr_len:len(nums)]\n        arr_len -= 1\n    return nums",
+  "test_list": [
+    "assert pancake_sort([15, 79, 25, 38, 69]) == [15, 25, 38, 69, 79]",
+    "assert pancake_sort([98, 12, 54, 36, 85]) == [12, 36, 54, 85, 98]",
+    "assert pancake_sort([41, 42, 32, 12, 23]) == [12, 23, 32, 41, 42]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.Collections;\n\npublic class Solution {\n    public static ArrayList<Integer> pancake_sort(ArrayList<Integer> nums) {\n        ArrayList<Integer> arr = new ArrayList<>(nums);\n        int arr_len = arr.size();\n        \n        while (arr_len > 1) {\n            // Find index of maximum element in arr[0:arr_len]\n            int maxVal = arr.get(0);\n            int mi = 0;\n            for (int i = 1; i < arr_len; i++) {\n                if (arr.get(i) > maxVal) {\n                    maxVal = arr.get(i);\n                    mi = i;\n                }\n            }\n            \n            // First flip: reverse from 0 to mi (inclusive)\n            // nums = nums[mi::-1] + nums[mi+1:len(nums)]\n            ArrayList<Integer> newArr = new ArrayList<>();\n            for (int i = mi; i >= 0; i--) {\n                newArr.add(arr.get(i));\n            }\n            for (int i = mi + 1; i < arr.size(); i++) {\n                newArr.add(arr.get(i));\n            }\n            arr = newArr;\n            \n            // Second flip: reverse from 0 to arr_len-1 (inclusive)\n            // nums = nums[arr_len-1::-1] + nums[arr_len:len(nums)]\n            newArr = new ArrayList<>();\n            for (int i = arr_len - 1; i >= 0; i--) {\n                newArr.add(arr.get(i));\n            }\n            for (int i = arr_len; i < arr.size(); i++) {\n                newArr.add(arr.get(i));\n            }\n            arr = newArr;\n            \n            arr_len -= 1;\n        }\n        \n        return arr;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert pancake_sort([15, 79, 25, 38, 69]) == [15, 25, 38, 69, 79]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(15);\ninput.add(79);\ninput.add(25);\ninput.add(38);\ninput.add(69);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(15);\nexpected.add(25);\nexpected.add(38);\nexpected.add(69);\nexpected.add(79);\n\nArrayList<Integer> result = pancake_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pancake_sort([98, 12, 54, 36, 85]) == [12, 36, 54, 85, 98]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(98);\ninput.add(12);\ninput.add(54);\ninput.add(36);\ninput.add(85);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(12);\nexpected.add(36);\nexpected.add(54);\nexpected.add(85);\nexpected.add(98);\n\nArrayList<Integer> result = pancake_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pancake_sort([41, 42, 32, 12, 23]) == [12, 23, 32, 41, 42]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(41);\ninput.add(42);\ninput.add(32);\ninput.add(12);\ninput.add(23);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(12);\nexpected.add(23);\nexpected.add(32);\nexpected.add(41);\nexpected.add(42);\n\nArrayList<Integer> result = pancake_sort(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 586,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a list at the nth eelment and add the first part to the end.",
+  "code_python": "def split_Arr(l, n):\n  return l[n:] + l[:n]",
+  "test_list": [
+    "assert split_Arr([12,10,5,6,52,36],2) == [5,6,52,36,12,10]",
+    "assert split_Arr([1,2,3,4],1) == [2,3,4,1]",
+    "assert split_Arr([0,1,2,3,4,5,6,7],3) == [3,4,5,6,7,0,1,2]"
+  ],
+  "python_1": "def split_Arr(l, n):\n    # Create an empty result list to build our answer\n    result = []\n    # Iterate through indices starting from n to end of list\n    for i in range(n, len(l)):\n        # Append each element from the second part (index n onwards)\n        result.append(l[i])\n    # Iterate through indices from start up to n\n    for i in range(n):\n        # Append each element from the first part to the end\n        result.append(l[i])\n    # Return the reconstructed list with parts swapped\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def split_Arr(l, n):\n    # Use collections.deque for efficient rotation operations\n    from collections import deque\n    # Convert input list to a deque data structure\n    d = deque(l)\n    # Rotate the deque left by n positions (negative rotates left)\n    d.rotate(-n)\n    # Convert the rotated deque back to a list and return\n    return list(d)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def split_Arr(l, n):\n    # Calculate the total length of the input list once\n    length = len(l)\n    # Use list comprehension with modular arithmetic to remap indices\n    # Each new index i maps to (i + n) % length in the original list\n    return [l[(i + n) % length] for i in range(length)]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def split_Arr(l, n):\n    # Make a copy of the input list to avoid mutating the original\n    result = l.copy()\n    # Extract the first n elements that need to move to the end\n    first_part = []\n    # Pop elements from the front n times and store them\n    for _ in range(n):\n        # Remove the first element and add it to our temporary storage\n        first_part.append(result.pop(0))\n    # Extend the result by appending the extracted first part to the end\n    result.extend(first_part)\n    # Return the modified list with rotation complete\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def split_Arr(l, n):\n    # Handle edge case of empty list to avoid errors\n    if not l:\n        return []\n    # Create a new list by manually concatenating using extend method\n    result = []\n    # Slice out the portion from index n to the end and extend result\n    result.extend(l[n:])\n    # Slice out the first n elements and append them after the second portion\n    result.extend(l[:n])\n    # Return the newly constructed rotated list\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

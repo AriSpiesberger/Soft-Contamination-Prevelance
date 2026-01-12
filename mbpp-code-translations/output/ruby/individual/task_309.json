@@ -1,0 +1,37 @@
+{
+  "task_id": 309,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum of two numbers.",
+  "python_code": "def maximum(a,b):   \n    if a >= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert maximum(5,10) == 10",
+    "assert maximum(-1,-2) == -1",
+    "assert maximum(9,7) == 9"
+  ],
+  "code_ruby": "def maximum(a, b)\n  if a >= b\n    a\n  else\n    b\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert maximum(5,10) == 10",
+      "generated_test": "result = maximum(5, 10)\nexpected = 10\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert maximum(-1,-2) == -1",
+      "generated_test": "result = maximum(-1, -2)\nexpected = -1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert maximum(9,7) == 9",
+      "generated_test": "result = maximum(9, 7)\nexpected = 9\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

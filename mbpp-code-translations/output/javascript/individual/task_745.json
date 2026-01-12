@@ -1,0 +1,37 @@
+{
+  "task_id": 745,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find numbers within a given range from startnum ti endnum where every number is divisible by every digit it contains. https://www.w3resource.com/python-exercises/lambda/python-lambda-exercise-24.php",
+  "python_code": "def divisible_by_digits(startnum, endnum):\n    return [n for n in range(startnum, endnum+1) \\\n                if not any(map(lambda x: int(x) == 0 or n%int(x) != 0, str(n)))]",
+  "test_list": [
+    "assert divisible_by_digits(1,22)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22]",
+    "assert divisible_by_digits(1,15)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15]",
+    "assert divisible_by_digits(20,25)==[22, 24]"
+  ],
+  "code_javascript": "function divisible_by_digits(startnum, endnum) {\n    const result = [];\n    for (let n = startnum; n <= endnum; n++) {\n        const digits = String(n).split('');\n        const isDivisibleByAll = !digits.some(x => {\n            const digit = parseInt(x);\n            return digit === 0 || n % digit !== 0;\n        });\n        if (isDivisibleByAll) {\n            result.push(n);\n        }\n    }\n    return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert divisible_by_digits(1,22)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22]",
+      "generated_test": "const result = divisible_by_digits(1, 22);\nconst expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert divisible_by_digits(1,15)==[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15]",
+      "generated_test": "const result = divisible_by_digits(1, 15);\nconst expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert divisible_by_digits(20,25)==[22, 24]",
+      "generated_test": "const result = divisible_by_digits(20, 25);\nconst expected = [22, 24];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

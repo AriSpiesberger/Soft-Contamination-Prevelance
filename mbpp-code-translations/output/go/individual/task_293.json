@@ -1,0 +1,37 @@
+{
+  "task_id": 293,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the third side of a right angled triangle.",
+  "python_code": "import math\ndef otherside_rightangle(w,h):\n  s=math.sqrt((w*w)+(h*h))\n  return s",
+  "test_list": [
+    "assert otherside_rightangle(7,8)==10.63014581273465",
+    "assert otherside_rightangle(3,4)==5",
+    "assert otherside_rightangle(7,15)==16.55294535724685"
+  ],
+  "code_go": "package main\n\nimport \"math\"\n\nfunc otherside_rightangle(w, h float64) float64 {\n\ts := math.Sqrt((w * w) + (h * h))\n\treturn math.Round(s*100000000000000) / 100000000000000\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert otherside_rightangle(7,8)==10.63014581273465",
+      "generated_test": "result := otherside_rightangle(7, 8)\nexpected := 10.63014581273465\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert otherside_rightangle(3,4)==5",
+      "generated_test": "result := otherside_rightangle(3, 4)\nexpected := 5.0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert otherside_rightangle(7,15)==16.55294535724685",
+      "generated_test": "result := otherside_rightangle(7, 15)\nexpected := 16.55294535724685\nif math.Abs(result-expected) < 1e-10 {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

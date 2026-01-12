@@ -1,0 +1,17 @@
+{
+  "task_id": 629,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find even numbers from a list of numbers.",
+  "python_code": "def Split(list): \n    return [num for num in list if num % 2 == 0]",
+  "test_list": [
+    "assert Split([1,2,3,4,5]) == [2,4]",
+    "assert Split([4,5,6,7,8,0,1]) == [4,6,8,0]",
+    "assert Split ([8,12,15,19]) == [8,12]"
+  ],
+  "code_typescript": "function Split(list: number[]): number[] {\n    return list.filter(num => num % 2 === 0);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

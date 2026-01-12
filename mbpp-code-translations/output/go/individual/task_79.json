@@ -1,0 +1,37 @@
+{
+  "task_id": 79,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the length of the word is odd or not.",
+  "python_code": "def word_len(s): \n    s = s.split(' ')   \n    for word in s:    \n        if len(word)%2!=0: \n            return True  \n        else:\n          return False",
+  "test_list": [
+    "assert word_len(\"Hadoop\") == False",
+    "assert word_len(\"great\") == True",
+    "assert word_len(\"structure\") == True"
+  ],
+  "code_go": "package main\n\nfunc word_len(s string) bool {\n\twords := []string{}\n\tcurrentWord := \"\"\n\tfor _, c := range s {\n\t\tif c == ' ' {\n\t\t\tif currentWord != \"\" {\n\t\t\t\twords = append(words, currentWord)\n\t\t\t\tcurrentWord = \"\"\n\t\t\t}\n\t\t} else {\n\t\t\tcurrentWord += string(c)\n\t\t}\n\t}\n\tif currentWord != \"\" {\n\t\twords = append(words, currentWord)\n\t}\n\n\tfor _, word := range words {\n\t\tif len(word)%2 != 0 {\n\t\t\treturn true\n\t\t} else {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert word_len(\"Hadoop\") == False",
+      "generated_test": "result := word_len(\"Hadoop\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert word_len(\"great\") == True",
+      "generated_test": "result := word_len(\"great\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert word_len(\"structure\") == True",
+      "generated_test": "result := word_len(\"structure\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

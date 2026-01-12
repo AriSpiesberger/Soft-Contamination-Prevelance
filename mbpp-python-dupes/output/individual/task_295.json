@@ -1,0 +1,27 @@
+{
+  "task_id": 295,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return the sum of all divisors of a number.",
+  "code_python": "def sum_div(number):\n    divisors = [1]\n    for i in range(2, number):\n        if (number % i)==0:\n            divisors.append(i)\n    return sum(divisors)",
+  "test_list": [
+    "assert sum_div(8)==7",
+    "assert sum_div(12)==16",
+    "assert sum_div(7)==1"
+  ],
+  "python_1": "def sum_div(number):\n    # Start with sum of 1 since 1 is always a proper divisor\n    total = 1\n    # Only need to check up to square root for efficiency\n    i = 2\n    # Continue while i squared is less than the number\n    while i * i < number:\n        # Check if i evenly divides the number\n        if number % i == 0:\n            # Add both the divisor and its complement (number/i)\n            total += i + number // i\n        # Move to next potential divisor\n        i += 1\n    # Handle perfect square case separately to avoid double counting\n    if i * i == number:\n        # Add the square root only once\n        total += i\n    # Return accumulated sum of all proper divisors\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_div(number):\n    # Use list comprehension with filter to find all proper divisors in one expression\n    proper_divisors = [d for d in range(1, number) if number % d == 0]\n    # Leverage built-in sum on the comprehension result for the total\n    return sum(proper_divisors)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_div(number):\n    # Use reduce from functools to accumulate sum without explicit loop variable\n    from functools import reduce\n    # Generate a range object representing all potential divisors from 1 to number-1\n    potential_divisors = range(1, number)\n    # Filter the range to keep only values that evenly divide the number\n    actual_divisors = filter(lambda x: number % x == 0, potential_divisors)\n    # Apply reduce with addition operator to compute running sum of all divisors\n    result = reduce(lambda acc, div: acc + div, actual_divisors, 0)\n    # Return the accumulated sum of proper divisors\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_div(number):\n    # Initialize result using set to automatically handle uniqueness of divisors\n    divisor_set = set()\n    # Add 1 immediately since it divides every positive integer\n    divisor_set.add(1)\n    # Iterate through potential divisors starting from 2 up to square root\n    i = 2\n    # Use multiplication comparison to avoid floating point sqrt issues\n    while i * i <= number:\n        # Check divisibility using modulo operator\n        if number % i == 0:\n            # Insert the smaller divisor into the set\n            divisor_set.add(i)\n            # Compute the paired divisor by integer division\n            paired = number // i\n            # Only add paired divisor if it's a proper divisor (not the number itself)\n            if paired != number:\n                divisor_set.add(paired)\n        # Advance to next candidate divisor\n        i += 1\n    # Convert set to list and compute sum using built-in sum function\n    return sum(divisor_set)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_div(number):\n    # Use recursion helper to accumulate divisor sum via tail-recursive style\n    def helper(current, accumulated):\n        # Base case: when current reaches the number, return accumulated sum\n        if current >= number:\n            return accumulated\n        # Check if current value is a divisor of the input number\n        is_divisor = number % current == 0\n        # Add current to sum if it divides evenly, otherwise add zero\n        new_sum = accumulated + (current if is_divisor else 0)\n        # Recurse to next potential divisor with updated accumulator\n        return helper(current + 1, new_sum)\n    # Start recursion from 1 with initial sum of 0\n    return helper(1, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

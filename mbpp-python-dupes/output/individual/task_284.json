@@ -1,0 +1,27 @@
+{
+  "task_id": 284,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and element and checks whether all items in the list are equal to the given element.",
+  "code_python": "def check_element(list,element):\n  check_element=all(v== element for v in list)\n  return check_element",
+  "test_list": [
+    "assert check_element([\"green\", \"orange\", \"black\", \"white\"],'blue')==False",
+    "assert check_element([1,2,3,4],7)==False",
+    "assert check_element([\"green\", \"green\", \"green\", \"green\"],'green')==True"
+  ],
+  "python_1": "def check_element(list, element):\n    # Handle empty list edge case - empty lists trivially satisfy the condition\n    if len(list) == 0:\n        return True\n    # Count occurrences of the target element in the list\n    matching_count = list.count(element)\n    # Compare count to list length - if equal, all elements match\n    return matching_count == len(list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_element(list, element):\n    # Use a for loop with early exit strategy for efficiency\n    for item in list:\n        # If any item differs from target element, immediately return False\n        if item != element:\n            return False\n    # All items matched (or list was empty), so return True\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_element(list, element):\n    # Convert the input list to a set to get unique elements only\n    unique_elements = set(list)\n    # Check if the set is empty, which means original list was empty\n    if len(unique_elements) == 0:\n        # Empty list vacuously satisfies the condition that all elements match\n        return True\n    # Verify set contains exactly one element and that element is our target\n    return unique_elements == {element}",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_element(list, element):\n    # Use filter to find elements that DON'T match the target element\n    non_matching = filter(lambda x: x != element, list)\n    # Convert filtered result to a list to check if any non-matching elements exist\n    non_matching_list = list.__class__(non_matching) if hasattr(list, '__class__') else [*non_matching]\n    # If no non-matching elements found (empty result), all elements must match\n    return len([*filter(lambda x: x != element, list)]) == 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_element(list, element):\n    # Use list comprehension to build a list of boolean comparison results\n    comparison_results = [item == element for item in list]\n    # Check if the resulting list is empty (handles empty input list case)\n    if not comparison_results:\n        # An empty list trivially satisfies the \"all equal\" condition\n        return True\n    # Use reduce-like approach with set to check if all booleans are True\n    unique_results = set(comparison_results)\n    # If set contains only True (or is {True}), all elements matched the target\n    return unique_results == {True}",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

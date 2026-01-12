@@ -1,0 +1,37 @@
+{
+  "task_id": 253,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that returns the number of integer elements in a given list.",
+  "python_code": "def count_integer(list1):\n    ctr = 0\n    for i in list1:\n        if isinstance(i, int):\n            ctr = ctr + 1\n    return ctr",
+  "test_list": [
+    "assert count_integer([1,2,'abc',1.2]) == 2",
+    "assert count_integer([1,2,3]) == 3",
+    "assert count_integer([1,1.2,4,5.1]) == 2"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int count_integer(ArrayList<Object> list1) {\n        int ctr = 0;\n        for (Object i : list1) {\n            if (i instanceof Integer) {\n                ctr = ctr + 1;\n            }\n        }\n        return ctr;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_integer([1,2,'abc',1.2]) == 2",
+      "generated_test": "ArrayList<Object> testList = new ArrayList<Object>();\ntestList.add(1);\ntestList.add(2);\ntestList.add(\"abc\");\ntestList.add(1.2);\n\nint result = count_integer(testList);\nint expected = 2;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_integer([1,2,3]) == 3",
+      "generated_test": "ArrayList<Object> testList = new ArrayList<>();\ntestList.add(1);\ntestList.add(2);\ntestList.add(3);\nint result = count_integer(testList);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_integer([1,1.2,4,5.1]) == 2",
+      "generated_test": "ArrayList<Object> testList = new ArrayList<>();\ntestList.add(1);\ntestList.add(1.2);\ntestList.add(4);\ntestList.add(5.1);\nint result = count_integer(testList);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 395,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first non-repeated character in a given string.",
+  "python_code": "def first_non_repeating_character(str1):\n  char_order = []\n  ctr = {}\n  for c in str1:\n    if c in ctr:\n      ctr[c] += 1\n    else:\n      ctr[c] = 1 \n      char_order.append(c)\n  for c in char_order:\n    if ctr[c] == 1:\n      return c\n  return None",
+  "test_list": [
+    "assert first_non_repeating_character(\"abcabc\") == None",
+    "assert first_non_repeating_character(\"abc\") == \"a\"",
+    "assert first_non_repeating_character(\"ababc\") == \"c\""
+  ],
+  "code_go": "package main\n\nfunc first_non_repeating_character(str1 string) *string {\n\tchar_order := []rune{}\n\tctr := make(map[rune]int)\n\t\n\tfor _, c := range str1 {\n\t\tif _, exists := ctr[c]; exists {\n\t\t\tctr[c]++\n\t\t} else {\n\t\t\tctr[c] = 1\n\t\t\tchar_order = append(char_order, c)\n\t\t}\n\t}\n\t\n\tfor _, c := range char_order {\n\t\tif ctr[c] == 1 {\n\t\t\tresult := string(c)\n\t\t\treturn &result\n\t\t}\n\t}\n\t\n\treturn nil\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert first_non_repeating_character(\"abcabc\") == None",
+      "generated_test": "result := first_non_repeating_character(\"abcabc\")\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected: nil\")\n\tfmt.Printf(\"  Got: %v\\n\", *result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_non_repeating_character(\"abc\") == \"a\"",
+      "generated_test": "expected := \"a\"\nresult := first_non_repeating_character(\"abc\")\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %s\\n\", expected)\n\tif result == nil {\n\t\tfmt.Println(\"  Got: nil\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %s\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_non_repeating_character(\"ababc\") == \"c\"",
+      "generated_test": "expected := \"c\"\nresult := first_non_repeating_character(\"ababc\")\n\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %s\\n\", expected)\n\tif result != nil {\n\t\tfmt.Printf(\"  Got: %s\\n\", *result)\n\t} else {\n\t\tfmt.Println(\"  Got: nil\")\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

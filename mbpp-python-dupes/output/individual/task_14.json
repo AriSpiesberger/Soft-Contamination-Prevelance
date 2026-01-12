@@ -1,0 +1,27 @@
+{
+  "task_id": 14,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the volume of a triangular prism.",
+  "code_python": "def find_Volume(l,b,h) : \n    return ((l * b * h) / 2) ",
+  "test_list": [
+    "assert find_Volume(10,8,6) == 240",
+    "assert find_Volume(3,2,2) == 6",
+    "assert find_Volume(1,2,1) == 1"
+  ],
+  "python_1": "def find_Volume(l,b,h) : \n    # Calculate the area of the triangular base using base times height divided by 2\n    triangular_base_area = (b * h) / 2\n    # Multiply the base area by the length (prism depth) to get total volume\n    volume = triangular_base_area * l\n    # Return the computed volume of the triangular prism\n    return volume",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_Volume(l,b,h) : \n    # Use integer division and modulo to handle the division by 2 separately\n    product = l * b * h\n    # Perform floor division to get the quotient\n    quotient = product // 2\n    # Calculate the remainder when divided by 2\n    remainder = product % 2\n    # Convert remainder to decimal fraction for precision\n    fractional_part = remainder / 2\n    # Combine quotient and fractional part for final volume\n    volume = quotient + fractional_part\n    # Return the triangular prism volume calculated via decomposed division\n    return volume",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_Volume(l,b,h) : \n    # Import the reduce function to perform cumulative multiplication\n    from functools import reduce\n    # Store the three dimensions in a list for functional processing\n    dimensions = [l, b, h]\n    # Use reduce to multiply all dimensions together in a functional style\n    total_product = reduce(lambda x, y: x * y, dimensions)\n    # Divide by 2 using multiplication by reciprocal for the triangular base factor\n    volume = total_product * 0.5\n    # Return the final volume as a float result\n    return volume",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_Volume(l,b,h) : \n    # Create a generator expression that yields the three dimensions one by one\n    dimensions_gen = (dim for dim in [l, b, h])\n    # Extract the first dimension from the generator\n    first = next(dimensions_gen)\n    # Extract the second dimension from the generator\n    second = next(dimensions_gen)\n    # Extract the third dimension from the generator\n    third = next(dimensions_gen)\n    # Compute the volume using exponentiation to represent division: 2**(-1) equals 0.5\n    divisor = 2 ** (-1)\n    # Multiply all three dimensions together with the reciprocal of 2\n    volume = first * second * third * divisor\n    # Return the triangular prism volume computed via generator unpacking and power-based division\n    return volume",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_Volume(l,b,h) : \n    # Define a recursive helper function to multiply a list of numbers\n    def multiply_recursive(nums, index=0):\n        # Base case: when index reaches the end, return 1 (multiplicative identity)\n        if index == len(nums):\n            return 1\n        # Recursive case: multiply current element by the product of remaining elements\n        return nums[index] * multiply_recursive(nums, index + 1)\n    # Store all dimension values in a tuple for immutable data handling\n    dimensions_tuple = (l, b, h)\n    # Convert tuple to list since our recursive function expects a list\n    dimensions_list = list(dimensions_tuple)\n    # Call recursive multiplication to compute the product of all dimensions\n    full_product = multiply_recursive(dimensions_list)\n    # Use bit shifting right by 1 for integer part of division by 2\n    integer_portion = full_product >> 1\n    # Check if the product is odd using bitwise AND with 1\n    is_odd = full_product & 1\n    # If odd, we need to add 0.5 to account for the remainder\n    adjustment = is_odd * 0.5\n    # Combine the integer portion with any fractional adjustment needed\n    volume = integer_portion + adjustment\n    # Return the computed volume of the triangular prism\n    return volume",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

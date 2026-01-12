@@ -1,0 +1,37 @@
+{
+  "task_id": 564,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function which takes a list of integers and counts the number of possible unordered pairs where both elements are unequal.",
+  "python_code": "def count_Pairs(arr,n): \n    cnt = 0; \n    for i in range(n): \n        for j in range(i + 1,n): \n            if (arr[i] != arr[j]): \n                cnt += 1; \n    return cnt; ",
+  "test_list": [
+    "assert count_Pairs([1,2,1],3) == 2",
+    "assert count_Pairs([1,1,1,1],4) == 0",
+    "assert count_Pairs([1,2,3,4,5],5) == 10"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int count_Pairs(ArrayList<Integer> arr, int n) {\n        int cnt = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (!arr.get(i).equals(arr.get(j))) {\n                    cnt += 1;\n                }\n            }\n        }\n        return cnt;\n    }\n    \n    public static int count_Pairs(int[] arr, int n) {\n        int cnt = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (arr[i] != arr[j]) {\n                    cnt += 1;\n                }\n            }\n        }\n        return cnt;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_Pairs([1,2,1],3) == 2",
+      "generated_test": "int[] arr = new int[]{1, 2, 1};\nint result = count_Pairs(arr, 3);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Pairs([1,1,1,1],4) == 0",
+      "generated_test": "int[] arr = new int[]{1,1,1,1};\nint result = count_Pairs(arr, 4);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Pairs([1,2,3,4,5],5) == 10",
+      "generated_test": "int result = count_Pairs(new int[]{1,2,3,4,5}, 5);\nint expected = 10;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

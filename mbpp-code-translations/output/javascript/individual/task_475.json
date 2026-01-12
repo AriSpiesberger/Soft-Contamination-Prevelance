@@ -1,0 +1,37 @@
+{
+  "task_id": 475,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a dictionary by value.",
+  "python_code": "from collections import Counter\ndef sort_counter(dict1):\n x = Counter(dict1)\n sort_counter=x.most_common()\n return sort_counter",
+  "test_list": [
+    "assert sort_counter({'Math':81, 'Physics':83, 'Chemistry':87})==[('Chemistry', 87), ('Physics', 83), ('Math', 81)]",
+    "assert sort_counter({'Math':400, 'Physics':300, 'Chemistry':250})==[('Math', 400), ('Physics', 300), ('Chemistry', 250)]",
+    "assert sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250})==[('Chemistry', 1250), ('Physics', 1000), ('Math', 900)]"
+  ],
+  "code_javascript": "function sort_counter(dict1) {\n    const entries = Object.entries(dict1);\n    entries.sort((a, b) => b[1] - a[1]);\n    return entries;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sort_counter({'Math':81, 'Physics':83, 'Chemistry':87})==[('Chemistry', 87), ('Physics', 83), ('Math', 81)]",
+      "generated_test": "const result = sort_counter({'Math': 81, 'Physics': 83, 'Chemistry': 87});\nconst expected = [['Chemistry', 87], ['Physics', 83], ['Math', 81]];\n\nlet pass = true;\nif (result.length !== expected.length) {\n    pass = false;\n} else {\n    for (let i = 0; i < expected.length; i++) {\n        if (result[i][0] !== expected[i][0] || result[i][1] !== expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_counter({'Math':400, 'Physics':300, 'Chemistry':250})==[('Math', 400), ('Physics', 300), ('Chemistry', 250)]",
+      "generated_test": "const result = sort_counter({'Math':400, 'Physics':300, 'Chemistry':250});\nconst expected = [['Math', 400], ['Physics', 300], ['Chemistry', 250]];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250})==[('Chemistry', 1250), ('Physics', 1000), ('Math', 900)]",
+      "generated_test": "const result = sort_counter({'Math':900, 'Physics':1000, 'Chemistry':1250});\nconst expected = [['Chemistry', 1250], ['Physics', 1000], ['Math', 900]];\n\nlet pass = true;\nif (result.length !== expected.length) {\n    pass = false;\n} else {\n    for (let i = 0; i < expected.length; i++) {\n        if (result[i][0] !== expected[i][0] || result[i][1] !== expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": 3,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to identify non-prime numbers.",
+  "code_python": "import math\ndef is_not_prime(n):\n    result = False\n    for i in range(2,int(math.sqrt(n)) + 1):\n        if n % i == 0:\n            result = True\n    return result",
+  "test_list": [
+    "assert is_not_prime(2) == False",
+    "assert is_not_prime(10) == True",
+    "assert is_not_prime(35) == True",
+    "assert is_not_prime(37) == False"
+  ],
+  "python_1": "def is_not_prime(n):\n    # Handle edge case where n is less than 2 (not prime by definition)\n    if n < 2:\n        return True\n    # Special case: 2 is the only even prime number\n    if n == 2:\n        return False\n    # All even numbers greater than 2 are composite (not prime)\n    if n % 2 == 0:\n        return True\n    # Start checking from 3 and only test odd divisors\n    divisor = 3\n    # Continue while divisor squared is less than or equal to n\n    while divisor * divisor <= n:\n        # If n is divisible by current divisor, it's composite\n        if n % divisor == 0:\n            return True\n        # Skip even numbers by incrementing by 2\n        divisor += 2\n    # No divisors found, so n is prime (return False for \"is not prime\")\n    return False",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_not_prime(n):\n    # A prime number must be at least 2, so anything less is not prime\n    if n < 2:\n        return True\n    # Use the all() function with a generator expression for a functional approach\n    # Check if n is NOT divisible by any number from 2 to sqrt(n)\n    # If all() returns True, n is prime (no divisors found), so we return False\n    # We compute the upper bound as n**0.5 to avoid importing math module\n    upper_limit = int(n ** 0.5) + 1\n    # Generate a sequence of potential divisors starting from 2\n    potential_divisors = range(2, upper_limit)\n    # Use all() to check that n is not divisible by any divisor in the range\n    # The expression n % d != 0 returns True when d is NOT a divisor\n    is_prime = all(n % d != 0 for d in potential_divisors)\n    # Invert the result since we want is_not_prime (True when composite)\n    return not is_prime",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_not_prime(n):\n    # Handle numbers less than 2 which are not prime by mathematical definition\n    if n < 2:\n        return True\n    # Use any() to find if at least one divisor exists - short-circuits on first True\n    # This is the opposite logic of using all() - we look for existence of a factor\n    # Generate divisors from 2 up to and including the integer square root of n\n    # The ** 0.5 computes square root without needing math module import\n    return any(n % divisor == 0 for divisor in range(2, int(n ** 0.5) + 1))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_not_prime(n):\n    # Recursive helper function that checks divisibility starting from a given divisor\n    def has_divisor(num, current_divisor):\n        # Base case: if divisor squared exceeds num, no factors exist in remaining range\n        if current_divisor * current_divisor > num:\n            return False\n        # Found a divisor - num is composite (not prime)\n        if num % current_divisor == 0:\n            return True\n        # Recursively check the next potential divisor\n        return has_divisor(num, current_divisor + 1)\n    \n    # Numbers less than 2 don't meet the prime definition (positive integers > 1)\n    if n < 2:\n        return True\n    # 2 is the smallest and only even prime number\n    if n == 2:\n        return False\n    # Initiate recursive divisibility check starting from smallest possible factor\n    return has_divisor(n, 2)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_not_prime(n):\n    # Build a list of all integers from 2 up to the square root bound for trial division\n    divisor_candidates = list(range(2, int(n ** 0.5) + 1))\n    # Use filter to extract only those candidates that actually divide n evenly\n    actual_divisors = list(filter(lambda d: n % d == 0, divisor_candidates))\n    # A number less than 2 cannot be prime by mathematical convention\n    if n < 2:\n        return True\n    # The length of actual_divisors tells us if any factors were found\n    # A non-empty list (length > 0) indicates n has factors, making it composite\n    return len(actual_divisors) > 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

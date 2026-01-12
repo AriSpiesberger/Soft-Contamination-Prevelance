@@ -1,0 +1,17 @@
+{
+  "task_id": 442,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ration of positive numbers in an array of integers.",
+  "python_code": "from array import array\ndef positive_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x > 0:\n            n1 += 1\n        else:\n          None\n    return round(n1/n,2)",
+  "test_list": [
+    "assert positive_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8])==0.54",
+    "assert positive_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==0.69",
+    "assert positive_count([2, 4, -6, -9, 11, -12, 14, -5, 17])==0.56"
+  ],
+  "code_typescript": "function positive_count(nums: number[]): number {\n    const n = nums.length;\n    let n1 = 0;\n    for (const x of nums) {\n        if (x > 0) {\n            n1 += 1;\n        }\n    }\n    return Math.round((n1 / n) * 100) / 100;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

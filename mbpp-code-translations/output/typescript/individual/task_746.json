@@ -1,0 +1,17 @@
+{
+  "task_id": 746,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find area of a sector. The function takes the radius and angle as inputs. Function should return None if the angle is larger than 360 degrees.",
+  "python_code": "import math\ndef sector_area(r,a):\n    if a > 360:\n        return None\n    return (math.pi*r**2) * (a/360)",
+  "test_list": [
+    "assert sector_area(4,45)==6.283185307179586",
+    "assert sector_area(9,45)==31.808625617596654",
+    "assert sector_area(9,361)==None"
+  ],
+  "code_typescript": "function sector_area(r: number, a: number): number | null {\n    if (a > 360) {\n        return null;\n    }\n    return (Math.PI * r ** 2) * (a / 360);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

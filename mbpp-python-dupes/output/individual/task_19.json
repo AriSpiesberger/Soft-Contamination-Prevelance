@@ -1,0 +1,27 @@
+{
+  "task_id": 19,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether a given array of integers contains any duplicate element.",
+  "code_python": "def test_duplicate(arraynums):\n    nums_set = set(arraynums)    \n    return len(arraynums) != len(nums_set)     ",
+  "test_list": [
+    "assert test_duplicate(([1,2,3,4,5]))==False",
+    "assert test_duplicate(([1,2,3,4, 4]))==True",
+    "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True"
+  ],
+  "python_1": "def test_duplicate(arraynums):\n    # Create an empty set to track numbers we've encountered\n    seen = set()\n    # Loop through each number in the input array\n    for num in arraynums:\n        # Check if current number was already encountered\n        if num in seen:\n            # Duplicate found, return True immediately\n            return True\n        # Add current number to our tracking set\n        seen.add(num)\n    # No duplicates found after checking all elements\n    return False",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def test_duplicate(arraynums):\n    # Sort the array to bring duplicates next to each other\n    sorted_nums = sorted(arraynums)\n    # Iterate through indices from 0 to second-to-last element\n    for i in range(len(sorted_nums) - 1):\n        # Compare current element with its immediate neighbor\n        if sorted_nums[i] == sorted_nums[i + 1]:\n            # Adjacent equal elements means duplicate exists\n            return True\n    # Completed scan without finding adjacent duplicates\n    return False",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def test_duplicate(arraynums):\n    # Use dictionary to count occurrences of each element\n    count_dict = {}\n    # Process each number in the input array\n    for num in arraynums:\n        # Retrieve current count for this number, defaulting to 0 if not seen\n        current_count = count_dict.get(num, 0)\n        # Increment the count for this number\n        count_dict[num] = current_count + 1\n    # Extract all frequency values from our counting dictionary\n    frequencies = count_dict.values()\n    # Check if any element appears more than once using max frequency\n    max_frequency = max(frequencies) if frequencies else 0\n    # Return True if highest frequency exceeds 1, indicating duplicates\n    return max_frequency > 1",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def test_duplicate(arraynums):\n    # Convert input to list to ensure we can work with it\n    nums_list = list(arraynums)\n    # Use Counter from collections to tally occurrences efficiently\n    from collections import Counter\n    # Build a frequency map of all elements in single pass\n    frequency_map = Counter(nums_list)\n    # Check if any value appears more than once using generator expression\n    has_duplicate = any(count > 1 for count in frequency_map.values())\n    # Return the boolean result indicating presence of duplicates\n    return has_duplicate",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def test_duplicate(arraynums):\n    # Determine total number of elements in the input array\n    total_elements = len(arraynums)\n    # Handle edge case where empty or single-element arrays can't have duplicates\n    if total_elements <= 1:\n        # Arrays with 0 or 1 elements inherently have no duplicates\n        return False\n    # Use nested loop approach to compare each pair of elements exactly once\n    outer_index = 0\n    # Outer loop iterates through each element as potential first of a duplicate pair\n    while outer_index < total_elements - 1:\n        # Inner loop starts from next element to avoid redundant comparisons\n        inner_index = outer_index + 1\n        # Compare current outer element against all subsequent elements\n        while inner_index < total_elements:\n            # Direct equality check between two distinct positions in array\n            if arraynums[outer_index] == arraynums[inner_index]:\n                # Found two elements at different indices with same value\n                return True\n            # Move to next element for comparison with outer element\n            inner_index += 1\n        # Advance outer pointer to check next element against its successors\n        outer_index += 1\n    # Exhausted all possible pairs without finding matching values\n    return False",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

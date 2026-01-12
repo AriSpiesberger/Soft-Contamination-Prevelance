@@ -1,0 +1,37 @@
+{
+  "task_id": 428,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort the given array by using shell sort.",
+  "python_code": "def shell_sort(my_list):\n    gap = len(my_list) // 2\n    while gap > 0:\n        for i in range(gap, len(my_list)):\n            current_item = my_list[i]\n            j = i\n            while j >= gap and my_list[j - gap] > current_item:\n                my_list[j] = my_list[j - gap]\n                j -= gap\n            my_list[j] = current_item\n        gap //= 2\n\n    return my_list",
+  "test_list": [
+    "assert shell_sort([12, 23, 4, 5, 3, 2, 12, 81, 56, 95]) == [2, 3, 4, 5, 12, 12, 23, 56, 81, 95]",
+    "assert shell_sort([24, 22, 39, 34, 87, 73, 68]) == [22, 24, 34, 39, 68, 73, 87]",
+    "assert shell_sort([32, 30, 16, 96, 82, 83, 74]) == [16, 30, 32, 74, 82, 83, 96]"
+  ],
+  "code_ruby": "def shell_sort(my_list)\n  gap = my_list.length / 2\n  while gap > 0\n    (gap...my_list.length).each do |i|\n      current_item = my_list[i]\n      j = i\n      while j >= gap && my_list[j - gap] > current_item\n        my_list[j] = my_list[j - gap]\n        j -= gap\n      end\n      my_list[j] = current_item\n    end\n    gap /= 2\n  end\n  my_list\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert shell_sort([12, 23, 4, 5, 3, 2, 12, 81, 56, 95]) == [2, 3, 4, 5, 12, 12, 23, 56, 81, 95]",
+      "generated_test": "result = shell_sort([12, 23, 4, 5, 3, 2, 12, 81, 56, 95])\nexpected = [2, 3, 4, 5, 12, 12, 23, 56, 81, 95]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert shell_sort([24, 22, 39, 34, 87, 73, 68]) == [22, 24, 34, 39, 68, 73, 87]",
+      "generated_test": "result = shell_sort([24, 22, 39, 34, 87, 73, 68])\nexpected = [22, 24, 34, 39, 68, 73, 87]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert shell_sort([32, 30, 16, 96, 82, 83, 74]) == [16, 30, 32, 74, 82, 83, 96]",
+      "generated_test": "result = shell_sort([32, 30, 16, 96, 82, 83, 74])\nexpected = [16, 30, 32, 74, 82, 83, 96]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 590,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert polar coordinates to rectangular coordinates.",
+  "python_code": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)",
+  "test_list": [
+    "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))"
+  ],
+  "code_javascript": "function polar_rect(x, y) {\n    // Convert to polar coordinates\n    const real = x;\n    const imag = y;\n    \n    // Calculate magnitude (r) and phase (theta) for polar conversion\n    const r = Math.sqrt(real * real + imag * imag);\n    const theta = Math.atan2(imag, real);\n    \n    // cn is the polar representation of the complex number (x, y)\n    const cn = [r, theta];\n    \n    // cn1 is rect(2, pi) which converts polar (r=2, theta=pi) back to rectangular\n    // rect(r, phi) = r * cos(phi) + r * sin(phi) * j\n    const cn1_real = 2 * Math.cos(Math.PI);\n    const cn1_imag = 2 * Math.sin(Math.PI);\n    \n    // Return as complex number object representation\n    const cn1 = { real: cn1_real, imag: cn1_imag };\n    \n    return [cn, cn1];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+      "generated_test": "const result = polar_rect(3, 4);\n\nconst expectedCn = [5.0, 0.9272952180016122];\nconst expectedCn1Real = -2;\nconst expectedCn1Imag = 2.4492935982947064e-16;\n\nconst tolerance = 1e-10;\n\nconst cnMatch = Math.abs(result[0][0] - expectedCn[0]) < tolerance && \n                Math.abs(result[0][1] - expectedCn[1]) < tolerance;\n\nconst cn1Match = Math.abs(result[1].real - expectedCn1Real) < tolerance && \n                 Math.abs(result[1].imag - expectedCn1Imag) < tolerance;\n\nif (cnMatch && cn1Match) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: [[5.0, 0.9272952180016122], {real: -2, imag: 2.4492935982947064e-16}]\");\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+      "generated_test": "const result = polar_rect(4, 7);\n\nconst expected_cn = [8.06225774829855, 1.0516502125483738];\nconst expected_cn1 = { real: -2, imag: 2.4492935982947064e-16 };\n\nconst tolerance = 1e-10;\n\nconst cn_match = Math.abs(result[0][0] - expected_cn[0]) < tolerance && \n                 Math.abs(result[0][1] - expected_cn[1]) < tolerance;\n\nconst cn1_match = Math.abs(result[1].real - expected_cn1.real) < tolerance && \n                  Math.abs(result[1].imag - expected_cn1.imag) < tolerance;\n\nif (cn_match && cn1_match) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify([[8.06225774829855, 1.0516502125483738], { real: -2, imag: 2.4492935982947064e-16 }]));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))",
+      "generated_test": "const result = polar_rect(15, 17);\n\nconst expected_cn = [22.67156809750927, 0.8478169733934057];\nconst expected_cn1 = { real: -2, imag: 2.4492935982947064e-16 };\n\nconst EPSILON = 1e-10;\n\nfunction approxEqual(a, b) {\n    return Math.abs(a - b) < EPSILON;\n}\n\nconst cn = result[0];\nconst cn1 = result[1];\n\nconst pass = approxEqual(cn[0], expected_cn[0]) &&\n             approxEqual(cn[1], expected_cn[1]) &&\n             approxEqual(cn1.real, expected_cn1.real) &&\n             approxEqual(cn1.imag, expected_cn1.imag);\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: [[\" + expected_cn[0] + \", \" + expected_cn[1] + \"], {real: \" + expected_cn1.real + \", imag: \" + expected_cn1.imag + \"}]\");\n    console.log(\"  Got: [[\" + cn[0] + \", \" + cn[1] + \"], {real: \" + cn1.real + \", imag: \" + cn1.imag + \"}]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

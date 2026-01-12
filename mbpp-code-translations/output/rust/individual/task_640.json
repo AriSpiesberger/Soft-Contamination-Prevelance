@@ -1,0 +1,37 @@
+{
+  "task_id": 640,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove the parenthesis and what is inbetween them from a string.",
+  "python_code": "import re\ndef remove_parenthesis(items):\n for item in items:\n    return (re.sub(r\" ?\\([^)]+\\)\", \"\", item))",
+  "test_list": [
+    "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+    "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+    "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")"
+  ],
+  "code_rust": "use regex::Regex;\n\npub fn remove_parenthesis(items: Vec<&str>) -> String {\n    if let Some(item) = items.first() {\n        let re = Regex::new(r\" ?\\([^)]+\\)\").unwrap();\n        re.replace_all(item, \"\").to_string()\n    } else {\n        String::new()\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+      "generated_test": "let result = remove_parenthesis(vec![\"python (chrome)\"]);\nlet expected = \"python\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+      "generated_test": "let result = remove_parenthesis(vec![\"string(.abc)\"]);\nlet expected = \"string\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")",
+      "generated_test": "let result = remove_parenthesis(vec![\"alpha(num)\"]);\nlet expected = \"alpha\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

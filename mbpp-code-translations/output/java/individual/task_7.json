@@ -1,0 +1,37 @@
+{
+  "task_id": 7,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find all words which are at least 4 characters long in a string.",
+  "python_code": "import re\ndef find_char_long(text):\n  return (re.findall(r\"\\b\\w{4,}\\b\", text))",
+  "test_list": [
+    "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+    "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+    "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\npublic class Solution {\n    public static ArrayList<String> find_char_long(String text) {\n        ArrayList<String> result = new ArrayList<>();\n        Pattern pattern = Pattern.compile(\"\\\\b\\\\w{4,}\\\\b\");\n        Matcher matcher = pattern.matcher(text);\n        while (matcher.find()) {\n            result.add(matcher.group());\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+      "generated_test": "ArrayList<String> result = find_char_long(\"Please move back to stream\");\njava.util.Set<String> resultSet = new java.util.HashSet<>(result);\njava.util.Set<String> expectedSet = new java.util.HashSet<>();\nexpectedSet.add(\"Please\");\nexpectedSet.add(\"move\");\nexpectedSet.add(\"back\");\nexpectedSet.add(\"stream\");\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+      "generated_test": "ArrayList<String> result = find_char_long(\"Jing Eco and Tech\");\njava.util.Set<String> resultSet = new java.util.HashSet<>(result);\njava.util.Set<String> expectedSet = new java.util.HashSet<>();\nexpectedSet.add(\"Jing\");\nexpectedSet.add(\"Tech\");\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])",
+      "generated_test": "ArrayList<String> result = find_char_long(\"Jhingai wulu road Zone 3\");\nString[] expectedArray = new String[]{\"Jhingai\", \"wulu\", \"road\", \"Zone\"};\njava.util.HashSet<String> resultSet = new java.util.HashSet<>(result);\njava.util.HashSet<String> expectedSet = new java.util.HashSet<>();\nfor (String s : expectedArray) {\n    expectedSet.add(s);\n}\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

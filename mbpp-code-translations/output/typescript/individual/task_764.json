@@ -1,0 +1,18 @@
+{
+  "task_id": 764,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count number of digits in a given string.",
+  "python_code": "def number_ctr(str):\n      number_ctr= 0\n      for i in range(len(str)):\n          if str[i] >= '0' and str[i] <= '9': number_ctr += 1     \n      return  number_ctr",
+  "test_list": [
+    "assert number_ctr('program2bedone') == 1",
+    "assert number_ctr('3wonders') == 1",
+    "assert number_ctr('123') == 3",
+    "assert number_ctr('3wond-1ers2') == 3"
+  ],
+  "code_typescript": "function number_ctr(str: string): number {\n    let numberCtr: number = 0;\n    for (let i = 0; i < str.length; i++) {\n        if (str[i] >= '0' && str[i] <= '9') {\n            numberCtr += 1;\n        }\n    }\n    return numberCtr;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 4,
+  "code_typescript_tests_failed": 0
+}

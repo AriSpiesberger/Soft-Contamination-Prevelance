@@ -1,0 +1,37 @@
+{
+  "task_id": 615,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which takes a tuple of tuples and returns the average value for each tuple as a list.",
+  "python_code": "def average_tuple(nums):\n    result = [sum(x) / len(x) for x in zip(*nums)]\n    return result",
+  "test_list": [
+    "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+    "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+    "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Double> average_tuple(int[][] nums) {\n        ArrayList<Double> result = new ArrayList<>();\n        \n        if (nums == null || nums.length == 0) {\n            return result;\n        }\n        \n        // Find the length of the first tuple to determine number of columns\n        int numColumns = nums[0].length;\n        \n        // For each column position, calculate the average\n        for (int col = 0; col < numColumns; col++) {\n            double sum = 0;\n            int count = 0;\n            for (int row = 0; row < nums.length; row++) {\n                if (col < nums[row].length) {\n                    sum += nums[row][col];\n                    count++;\n                }\n            }\n            result.add(sum / count);\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+      "generated_test": "int[][] input = new int[][]{{10, 10, 10, 12}, {30, 45, 56, 45}, {81, 80, 39, 32}, {1, 2, 3, 4}};\nArrayList<Double> result = average_tuple(input);\nArrayList<Double> expected = new ArrayList<>();\nexpected.add(30.5);\nexpected.add(34.25);\nexpected.add(27.0);\nexpected.add(23.25);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+      "generated_test": "int[][] input = new int[][]{{1, 1, -5}, {30, -15, 56}, {81, -60, -39}, {-10, 2, 3}};\nArrayList<Double> result = average_tuple(input);\nArrayList<Double> expected = new ArrayList<>();\nexpected.add(25.5);\nexpected.add(-18.0);\nexpected.add(3.75);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]",
+      "generated_test": "int[][] input = new int[][]{{100, 100, 100, 120}, {300, 450, 560, 450}, {810, 800, 390, 320}, {10, 20, 30, 40}};\nArrayList<Double> expected = new ArrayList<>();\nexpected.add(305.0);\nexpected.add(342.5);\nexpected.add(270.0);\nexpected.add(232.5);\n\nArrayList<Double> result = average_tuple(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

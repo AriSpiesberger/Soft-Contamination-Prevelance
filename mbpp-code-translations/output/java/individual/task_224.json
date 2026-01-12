@@ -1,0 +1,37 @@
+{
+  "task_id": 224,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of set bits (binary digits with value 1) in a given number.",
+  "python_code": "def count_Set_Bits(n): \n    count = 0\n    while (n): \n        count += n & 1\n        n >>= 1\n    return count ",
+  "test_list": [
+    "assert count_Set_Bits(2) == 1",
+    "assert count_Set_Bits(4) == 1",
+    "assert count_Set_Bits(6) == 2"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int count_Set_Bits(int n) {\n        int count = 0;\n        while (n != 0) {\n            count += n & 1;\n            n >>= 1;\n        }\n        return count;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_Set_Bits(2) == 1",
+      "generated_test": "int result = count_Set_Bits(2);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Set_Bits(4) == 1",
+      "generated_test": "int result = count_Set_Bits(4);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Set_Bits(6) == 2",
+      "generated_test": "int result = count_Set_Bits(6);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 733,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the index of the first occurrence of a given number in a sorted array.",
+  "python_code": "def find_first_occurrence(A, x):\n    (left, right) = (0, len(A) - 1)\n    result = -1\n    while left <= right:\n        mid = (left + right) // 2\n        if x == A[mid]:\n            result = mid\n            right = mid - 1\n        elif x < A[mid]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return result",
+  "test_list": [
+    "assert find_first_occurrence([2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 1",
+    "assert find_first_occurrence([2, 3, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 2",
+    "assert find_first_occurrence([2, 4, 1, 5, 6, 6, 8, 9, 9, 9], 6) == 4"
+  ],
+  "code_rust": "pub fn find_first_occurrence(a: &[i32], x: i32) -> i32 {\n    if a.is_empty() {\n        return -1;\n    }\n    \n    let mut left: i32 = 0;\n    let mut right: i32 = a.len() as i32 - 1;\n    let mut result: i32 = -1;\n    \n    while left <= right {\n        let mid = (left + right) / 2;\n        let mid_idx = mid as usize;\n        \n        if x == a[mid_idx] {\n            result = mid;\n            right = mid - 1;\n        } else if x < a[mid_idx] {\n            right = mid - 1;\n        } else {\n            left = mid + 1;\n        }\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_first_occurrence([2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 1",
+      "generated_test": "let result = find_first_occurrence(&[2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_first_occurrence([2, 3, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 2",
+      "generated_test": "let result = find_first_occurrence(&[2, 3, 5, 5, 6, 6, 8, 9, 9, 9], 5);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_first_occurrence([2, 4, 1, 5, 6, 6, 8, 9, 9, 9], 6) == 4",
+      "generated_test": "let result = find_first_occurrence(&[2, 4, 1, 5, 6, 6, 8, 9, 9, 9], 6);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

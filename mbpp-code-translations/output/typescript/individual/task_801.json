@@ -1,0 +1,17 @@
+{
+  "task_id": 801,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of equal numbers from three given integers.",
+  "python_code": "def test_three_equal(x,y,z):\n  result = set([x,y,z])\n  if len(result)==3:\n    return 0\n  else:\n    return 4-len(result)",
+  "test_list": [
+    "assert test_three_equal(1,1,1) == 3",
+    "assert test_three_equal(-1,-2,-3) == 0",
+    "assert test_three_equal(1,2,2) == 2"
+  ],
+  "code_typescript": "function test_three_equal(x: number, y: number, z: number): number {\n  const result = new Set([x, y, z]);\n  if (result.size === 3) {\n    return 0;\n  } else {\n    return 4 - result.size;\n  }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

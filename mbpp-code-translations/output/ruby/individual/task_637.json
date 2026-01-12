@@ -1,0 +1,37 @@
+{
+  "task_id": 637,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given amount has no profit and no loss",
+  "python_code": "def noprofit_noloss(actual_cost,sale_amount): \n  if(sale_amount == actual_cost):\n    return True\n  else:\n    return False",
+  "test_list": [
+    "assert noprofit_noloss(1500,1200)==False",
+    "assert noprofit_noloss(100,100)==True",
+    "assert noprofit_noloss(2000,5000)==False"
+  ],
+  "code_ruby": "def noprofit_noloss(actual_cost, sale_amount)\n  sale_amount == actual_cost\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert noprofit_noloss(1500,1200)==False",
+      "generated_test": "result = noprofit_noloss(1500, 1200)\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert noprofit_noloss(100,100)==True",
+      "generated_test": "result = noprofit_noloss(100, 100)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert noprofit_noloss(2000,5000)==False",
+      "generated_test": "result = noprofit_noloss(2000, 5000)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

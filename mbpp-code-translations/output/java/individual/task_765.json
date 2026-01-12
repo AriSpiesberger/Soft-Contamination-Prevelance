@@ -1,0 +1,37 @@
+{
+  "task_id": 765,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find nth polite number. geeksforgeeks.org/n-th-polite-number/",
+  "python_code": "import math \ndef is_polite(n): \n\tn = n + 1\n\treturn (int)(n+(math.log((n + math.log(n, 2)), 2))) ",
+  "test_list": [
+    "assert is_polite(7) == 11",
+    "assert is_polite(4) == 7",
+    "assert is_polite(9) == 13"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int is_polite(int n) {\n        n = n + 1;\n        return (int)(n + (Math.log(n + Math.log(n) / Math.log(2)) / Math.log(2)));\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert is_polite(7) == 11",
+      "generated_test": "int result = is_polite(7);\nint expected = 11;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_polite(4) == 7",
+      "generated_test": "int result = is_polite(4);\nint expected = 7;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_polite(9) == 13",
+      "generated_test": "int result = is_polite(9);\nint expected = 13;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

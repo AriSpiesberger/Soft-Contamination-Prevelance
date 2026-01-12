@@ -1,0 +1,18 @@
+{
+  "task_id": 767,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose sum is equal to \u2018sum\u2019. The funtion gets as input a list of numbers and the sum,",
+  "python_code": "def get_pairs_count(arr, sum):\n    count = 0  \n    for i in range(len(arr)):\n        for j in range(i + 1,len(arr)):\n            if arr[i] + arr[j] == sum:\n                count += 1\n    return count",
+  "test_list": [
+    "assert get_pairs_count([1,1,1,1],2) == 6",
+    "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+    "assert get_pairs_count([1,-2,3],1) == 1",
+    "assert get_pairs_count([-1,-2,3],-3) == 1"
+  ],
+  "code_typescript": "function get_pairs_count(arr: number[], sum: number): number {\n    let count = 0;\n    for (let i = 0; i < arr.length; i++) {\n        for (let j = i + 1; j < arr.length; j++) {\n            if (arr[i] + arr[j] === sum) {\n                count += 1;\n            }\n        }\n    }\n    return count;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 4,
+  "code_typescript_tests_failed": 0
+}

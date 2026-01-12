@@ -1,0 +1,37 @@
+{
+  "task_id": 16,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.",
+  "python_code": "import re\ndef text_lowercase_underscore(text):\n        patterns = '^[a-z]+_[a-z]+$'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+    "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+    "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)"
+  ],
+  "code_java": "import java.util.regex.Pattern;\nimport java.util.regex.Matcher;\n\npublic class Solution {\n    public static boolean text_lowercase_underscore(String text) {\n        String patterns = \"^[a-z]+_[a-z]+$\";\n        Pattern pattern = Pattern.compile(patterns);\n        Matcher matcher = pattern.matcher(text);\n        if (matcher.find()) {\n            return true;\n        } else {\n            return false;\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+      "generated_test": "boolean result = text_lowercase_underscore(\"aab_cbbbc\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+      "generated_test": "boolean result = text_lowercase_underscore(\"aab_Abbbc\");\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)",
+      "generated_test": "boolean result = text_lowercase_underscore(\"Aaab_abbbc\");\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

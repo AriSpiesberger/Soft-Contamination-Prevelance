@@ -1,0 +1,37 @@
+{
+  "task_id": 640,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove the parenthesis and what is inbetween them from a string.",
+  "python_code": "import re\ndef remove_parenthesis(items):\n for item in items:\n    return (re.sub(r\" ?\\([^)]+\\)\", \"\", item))",
+  "test_list": [
+    "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+    "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+    "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")"
+  ],
+  "code_ruby": "def remove_parenthesis(items)\n  items.each do |item|\n    return item.gsub(/ ?\\([^)]+\\)/, \"\")\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert remove_parenthesis([\"python (chrome)\"])==(\"python\")",
+      "generated_test": "result = remove_parenthesis([\"python (chrome)\"])\nexpected = \"python\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_parenthesis([\"string(.abc)\"])==(\"string\")",
+      "generated_test": "result = remove_parenthesis([\"string(.abc)\"])\nexpected = \"string\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_parenthesis([\"alpha(num)\"])==(\"alpha\")",
+      "generated_test": "result = remove_parenthesis([\"alpha(num)\"])\nexpected = \"alpha\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

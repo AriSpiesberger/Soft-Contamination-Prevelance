@@ -1,0 +1,37 @@
+{
+  "task_id": 283,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function takes in an integer and check whether the frequency of each digit in the integer is less than or equal to the digit itself.",
+  "python_code": "def validate(n): \n    for i in range(10): \n        temp = n;  \n        count = 0; \n        while (temp): \n            if (temp % 10 == i): \n                count+=1;  \n            if (count > i): \n                return False\n            temp //= 10; \n    return True",
+  "test_list": [
+    "assert validate(1234) == True",
+    "assert validate(51241) == False",
+    "assert validate(321) == True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean validate(int n) {\n        for (int i = 0; i < 10; i++) {\n            int temp = n;\n            int count = 0;\n            while (temp != 0) {\n                if (temp % 10 == i) {\n                    count++;\n                }\n                if (count > i) {\n                    return false;\n                }\n                temp /= 10;\n            }\n        }\n        return true;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert validate(1234) == True",
+      "generated_test": "boolean result = validate(1234);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert validate(51241) == False",
+      "generated_test": "boolean result = validate(51241);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert validate(321) == True",
+      "generated_test": "boolean result = validate(321);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

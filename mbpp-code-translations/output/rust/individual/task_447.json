@@ -1,0 +1,37 @@
+{
+  "task_id": 447,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find cubes of individual elements in a list.",
+  "python_code": "def cube_nums(nums):\n cube_nums = list(map(lambda x: x ** 3, nums))\n return cube_nums",
+  "test_list": [
+    "assert cube_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]",
+    "assert cube_nums([10,20,30])==([1000, 8000, 27000])",
+    "assert cube_nums([12,15])==([1728, 3375])"
+  ],
+  "code_rust": "pub fn cube_nums(nums: Vec<i64>) -> Vec<i64> {\n    nums.into_iter().map(|x| x * x * x).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert cube_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]",
+      "generated_test": "let result = cube_nums(vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);\nlet expected = vec![1, 8, 27, 64, 125, 216, 343, 512, 729, 1000];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cube_nums([10,20,30])==([1000, 8000, 27000])",
+      "generated_test": "let result = cube_nums(vec![10, 20, 30]);\nlet expected = vec![1000, 8000, 27000];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cube_nums([12,15])==([1728, 3375])",
+      "generated_test": "let result = cube_nums(vec![12, 15]);\nlet expected = vec![1728, 3375];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

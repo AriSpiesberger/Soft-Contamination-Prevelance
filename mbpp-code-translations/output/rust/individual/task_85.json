@@ -1,0 +1,37 @@
+{
+  "task_id": 85,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a sphere.",
+  "python_code": "import math\ndef surfacearea_sphere(r):\n  surfacearea=4*math.pi*r*r\n  return surfacearea",
+  "test_list": [
+    "assert math.isclose(surfacearea_sphere(10), 1256.6370614359173, rel_tol=0.001)",
+    "assert math.isclose(surfacearea_sphere(15), 2827.4333882308138, rel_tol=0.001)",
+    "assert math.isclose(surfacearea_sphere(20), 5026.548245743669, rel_tol=0.001)"
+  ],
+  "code_rust": "use std::f64::consts::PI;\n\npub fn surfacearea_sphere(r: f64) -> f64 {\n    4.0 * PI * r * r\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert math.isclose(surfacearea_sphere(10), 1256.6370614359173, rel_tol=0.001)",
+      "generated_test": "let result = surfacearea_sphere(10.0);\nlet expected = 1256.6370614359173;\nlet rel_tol = 0.001;\nif (result - expected).abs() <= rel_tol * expected.abs() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(surfacearea_sphere(15), 2827.4333882308138, rel_tol=0.001)",
+      "generated_test": "let result = surfacearea_sphere(15.0);\nlet expected = 2827.4333882308138;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(surfacearea_sphere(20), 5026.548245743669, rel_tol=0.001)",
+      "generated_test": "let result = surfacearea_sphere(20.0);\nlet expected = 5026.548245743669;\nlet rel_tol = 0.001;\nif (result - expected).abs() <= rel_tol * expected.abs() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

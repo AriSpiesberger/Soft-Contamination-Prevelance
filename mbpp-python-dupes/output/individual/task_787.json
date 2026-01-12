@@ -1,0 +1,28 @@
+{
+  "task_id": 787,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by three 'b'.",
+  "code_python": "import re\ndef text_match_three(text):\n        patterns = 'ab{3}?'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert not text_match_three(\"ac\")",
+    "assert not text_match_three(\"dc\")",
+    "assert text_match_three(\"abbbba\")",
+    "assert text_match_three(\"caacabbbba\")"
+  ],
+  "python_1": "import re\ndef text_match_three(text):\n    # Use re.match with a pattern that allows any chars before 'abbb'\n    # This greedy approach captures everything up to and including the match\n    pattern = '.*abbb'\n    # Match from the beginning of string, requiring 'abbb' to appear somewhere\n    match_result = re.match(pattern, text)\n    # Return the match object if found, None otherwise\n    return match_result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef text_match_three(text):\n    # Define pattern using explicit character repetition instead of quantifier\n    pattern = 'abbb'\n    # Use re.findall to get list of all matches in the text\n    matches = re.findall(pattern, text)\n    # Return truthy value (non-empty list) if matches found, falsy (empty list) if not\n    return matches if matches else None",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef text_match_three(text):\n    # Compile the regex pattern into a reusable pattern object for efficiency\n    compiled_pattern = re.compile(r'abbb')\n    # Use the compiled pattern's search method to find first occurrence\n    result = compiled_pattern.search(text)\n    # Return the match object directly (truthy if found, None if not)\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\ndef text_match_three(text):\n    # Split the text at every occurrence of 'abbb' pattern\n    parts = re.split(r'abbb', text)\n    # If split creates more than one part, the pattern was found and used as delimiter\n    found = len(parts) > 1\n    # Return a truthy match object if found, otherwise None for consistency with original\n    return re.search('abbb', text) if found else None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\ndef text_match_three(text):\n    # Use re.fullmatch with wildcards to check if entire string contains pattern\n    # The .* at start and end allows 'abbb' to appear anywhere in the string\n    full_pattern = r'.*abbb.*'\n    # fullmatch requires the ENTIRE string to match the pattern\n    full_result = re.fullmatch(full_pattern, text, re.DOTALL)\n    # If fullmatch succeeds, we know 'abbb' exists somewhere in text\n    # Return a proper search result for consistency with expected behavior\n    if full_result is not None:\n        # Perform actual search to return match object with correct span info\n        return re.search(r'abbb', text)\n    # Return None when no match found, maintaining expected interface\n    return None",
+  "python_5_status": "success",
+  "python_5_attempts": 2
+}

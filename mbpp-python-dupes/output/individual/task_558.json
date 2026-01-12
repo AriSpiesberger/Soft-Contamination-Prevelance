@@ -1,0 +1,27 @@
+{
+  "task_id": 558,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the per-digit difference between two integers.",
+  "code_python": "def digit_distance_nums(n1, n2):\n         return sum(map(int,str(abs(n1-n2))))",
+  "test_list": [
+    "assert digit_distance_nums(1,2) == 1",
+    "assert digit_distance_nums(23,56) == 6",
+    "assert digit_distance_nums(123,256) == 7"
+  ],
+  "python_1": "def digit_distance_nums(n1, n2):\n    # Calculate the absolute difference between the two input numbers\n    difference = abs(n1 - n2)\n    # Initialize accumulator to store running sum of digits\n    total = 0\n    # Handle edge case where difference is zero\n    if difference == 0:\n        # Return zero since there are no digits contributing to sum\n        return 0\n    # Loop until all digits have been processed\n    while difference > 0:\n        # Extract the rightmost digit using modulo operation\n        digit = difference % 10\n        # Add the extracted digit to our running total\n        total += digit\n        # Remove the rightmost digit by integer division\n        difference //= 10\n    # Return the accumulated sum of all digits\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def digit_distance_nums(n1, n2):\n    # Compute absolute value of the numerical difference between inputs\n    diff = abs(n1 - n2)\n    # Convert the difference to its string representation for character iteration\n    diff_str = str(diff)\n    # Use list comprehension to transform each character digit to integer\n    digit_list = [int(char) for char in diff_str]\n    # Aggregate all individual digit values using reduce-style summation\n    result = 0\n    # Process each digit in our converted list\n    for d in digit_list:\n        # Accumulate the digit into our running result\n        result = result + d\n    # Return the final sum of all digits\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def digit_distance_nums(n1, n2):\n    # Leverage recursion by first computing the absolute difference\n    diff = abs(n1 - n2)\n    # Define inner recursive helper to sum digits without explicit loops\n    def sum_digits_recursive(num):\n        # Base case: single digit numbers return themselves\n        if num < 10:\n            return num\n        # Recursive case: add last digit to sum of remaining digits\n        return (num % 10) + sum_digits_recursive(num // 10)\n    # Invoke the recursive digit summation on our computed difference\n    return sum_digits_recursive(diff)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def digit_distance_nums(n1, n2):\n    # Obtain the non-negative difference to work with positive digits\n    diff = abs(n1 - n2)\n    # Transform number into string to enable functional digit extraction\n    diff_as_string = str(diff)\n    # Create a generator expression that yields integer values of each character\n    digit_generator = (int(c) for c in diff_as_string)\n    # Utilize functools.reduce to fold the sequence into a single sum value\n    import functools\n    # Apply binary addition operator across all generated digit values\n    total = functools.reduce(lambda acc, x: acc + x, digit_generator, 0)\n    # Deliver the computed digit sum back to caller\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def digit_distance_nums(n1, n2):\n    # Calculate difference and ensure we work with non-negative value\n    diff = abs(n1 - n2)\n    # Convert numeric difference to sequence of character digits\n    digit_chars = list(str(diff))\n    # Transform character list to integer list using map with type conversion\n    integer_digits = list(map(int, digit_chars))\n    # Use eval with join to build and execute an addition expression string\n    if len(integer_digits) == 0:\n        # Edge case handler for empty digit sequence\n        return 0\n    # Construct arithmetic expression by joining digits with plus signs\n    expression = '+'.join(str(d) for d in integer_digits)\n    # Evaluate the dynamically constructed addition expression\n    return eval(expression)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

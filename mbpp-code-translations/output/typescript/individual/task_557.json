@@ -1,0 +1,17 @@
+{
+  "task_id": 557,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to toggle the case of all characters in a string.",
+  "python_code": "def toggle_string(string):\n string1 = string.swapcase()\n return string1",
+  "test_list": [
+    "assert toggle_string(\"Python\")==(\"pYTHON\")",
+    "assert toggle_string(\"Pangram\")==(\"pANGRAM\")",
+    "assert toggle_string(\"LIttLE\")==(\"liTTle\")"
+  ],
+  "code_typescript": "function toggle_string(string: string): string {\n    let result = '';\n    for (const char of string) {\n        if (char === char.toUpperCase()) {\n            result += char.toLowerCase();\n        } else {\n            result += char.toUpperCase();\n        }\n    }\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

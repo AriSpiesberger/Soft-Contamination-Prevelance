@@ -1,0 +1,37 @@
+{
+  "task_id": 624,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert a given string to uppercase.",
+  "python_code": "def is_upper(string):\n  return (string.upper())",
+  "test_list": [
+    "assert is_upper(\"person\") ==\"PERSON\"",
+    "assert is_upper(\"final\") == \"FINAL\"",
+    "assert is_upper(\"Valid\") == \"VALID\""
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strings\"\n)\n\nfunc is_upper(s string) string {\n\treturn strings.ToUpper(s)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert is_upper(\"person\") ==\"PERSON\"",
+      "generated_test": "result := is_upper(\"person\")\nexpected := \"PERSON\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_upper(\"final\") == \"FINAL\"",
+      "generated_test": "result := is_upper(\"final\")\nexpected := \"FINAL\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_upper(\"Valid\") == \"VALID\"",
+      "generated_test": "result := is_upper(\"Valid\")\nexpected := \"VALID\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

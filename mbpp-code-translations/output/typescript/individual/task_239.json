@@ -1,0 +1,17 @@
+{
+  "task_id": 239,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in positive integers m and n and finds the number of possible sequences of length n, such that each element is a positive integer and is greater than or equal to twice the previous element but less than or equal to m.",
+  "python_code": "def get_total_number_of_sequences(m,n): \n\tT=[[0 for i in range(n+1)] for i in range(m+1)] \n\tfor i in range(m+1): \n\t\tfor j in range(n+1): \n\t\t\tif i==0 or j==0: \n\t\t\t\tT[i][j]=0\n\t\t\telif i<j: \n\t\t\t\tT[i][j]=0\n\t\t\telif j==1: \n\t\t\t\tT[i][j]=i \n\t\t\telse: \n\t\t\t\tT[i][j]=T[i-1][j]+T[i//2][j-1] \n\treturn T[m][n]",
+  "test_list": [
+    "assert get_total_number_of_sequences(10, 4) == 4",
+    "assert get_total_number_of_sequences(5, 2) == 6",
+    "assert get_total_number_of_sequences(16, 3) == 84"
+  ],
+  "code_typescript": "function get_total_number_of_sequences(m: number, n: number): number {\n    const T: number[][] = [];\n    for (let i = 0; i <= m; i++) {\n        T[i] = [];\n        for (let j = 0; j <= n; j++) {\n            T[i][j] = 0;\n        }\n    }\n    \n    for (let i = 0; i <= m; i++) {\n        for (let j = 0; j <= n; j++) {\n            if (i === 0 || j === 0) {\n                T[i][j] = 0;\n            } else if (i < j) {\n                T[i][j] = 0;\n            } else if (j === 1) {\n                T[i][j] = i;\n            } else {\n                T[i][j] = T[i - 1][j] + T[Math.floor(i / 2)][j - 1];\n            }\n        }\n    }\n    \n    return T[m][n];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

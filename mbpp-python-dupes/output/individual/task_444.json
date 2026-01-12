@@ -1,0 +1,27 @@
+{
+  "task_id": 444,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to trim each tuple by k in the given tuple list.",
+  "code_python": "def trim_tuple(test_list, K):\n  res = []\n  for ele in test_list:\n    N = len(ele)\n    res.append(tuple(list(ele)[K: N - K]))\n  return (str(res)) ",
+  "test_list": [
+    "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1),(9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 2) == '[(2,), (9,), (2,), (2,)]'",
+    "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1), (9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 1) == '[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]'",
+    "assert trim_tuple([(7, 8, 4, 9), (11, 8, 12, 4),(4, 1, 7, 8), (3, 6, 9, 7)], 1) == '[(8, 4), (8, 12), (1, 7), (6, 9)]'"
+  ],
+  "python_1": "def trim_tuple(test_list, K):\n  # Use list comprehension to process all tuples in a single expression\n  res = [ele[K:len(ele) - K] for ele in test_list]\n  # Convert the list of tuples to its string representation for output\n  return str(res)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def trim_tuple(test_list, K):\n  # Apply map function to transform each tuple using a lambda\n  trimmed = map(lambda t: t[K:-K] if K > 0 else t, test_list)\n  # Convert map iterator to list for string representation\n  res = list(trimmed)\n  # Handle edge case where -K would be 0 and cause empty slices\n  if K > 0:\n    # Use negative indexing approach which is more Pythonic\n    res = [t[K:-K] if len(t) > 2*K else () for t in test_list]\n  else:\n    # When K is 0, return original tuples unchanged\n    res = [t for t in test_list]\n  # Return string representation matching expected output format\n  return str(res)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def trim_tuple(test_list, K):\n  # Use a generator expression with tuple constructor for memory efficiency\n  def trim_single(tup, k):\n    # Calculate the ending index by subtracting k from length\n    end_idx = len(tup) - k\n    # Slice the tuple from index k to the calculated end index\n    return tup[k:end_idx]\n  # Build result list by applying helper function to each tuple\n  res = []\n  # Iterate using enumerate though we only need the tuple value\n  idx = 0\n  # Process each tuple in the input list sequentially\n  while idx < len(test_list):\n    # Get the current tuple at this index position\n    current_tuple = test_list[idx]\n    # Call helper to perform the trimming operation\n    trimmed = trim_single(current_tuple, K)\n    # Append the trimmed tuple to our accumulator list\n    res.append(trimmed)\n    # Move to the next tuple in the sequence\n    idx += 1\n  # Convert entire result list to string representation for output\n  return str(res)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def trim_tuple(test_list, K):\n  # Import reduce to fold over the list and accumulate trimmed tuples\n  from functools import reduce\n  # Define accumulator function that trims tuple and appends to result list\n  def accumulate_trimmed(acc, tup):\n    # Extract middle portion by removing K elements from both ends\n    trimmed_portion = tup[K:len(tup) - K]\n    # Concatenate new trimmed tuple to accumulated results\n    return acc + [trimmed_portion]\n  # Use reduce to process entire list with empty list as initial accumulator\n  res = reduce(accumulate_trimmed, test_list, [])\n  # Format result as string to match expected output specification\n  return str(res)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def trim_tuple(test_list, K):\n  # Use recursion to process the tuple list without explicit loops\n  def process_recursively(tuples, k, index=0, result=None):\n    # Initialize result list on first call if not provided\n    if result is None:\n      result = []\n    # Base case: when index reaches list length, return accumulated result\n    if index >= len(tuples):\n      return result\n    # Extract current tuple from the list at given index\n    current = tuples[index]\n    # Compute slice boundaries using arithmetic on tuple length\n    start_bound = k\n    # Calculate where to stop slicing by subtracting k from total length\n    end_bound = len(current) - k\n    # Create new tuple containing only the middle elements\n    middle_portion = current[start_bound:end_bound]\n    # Extend result by adding the trimmed tuple as a new element\n    result.append(middle_portion)\n    # Recursive call to handle next tuple in the sequence\n    return process_recursively(tuples, k, index + 1, result)\n  # Invoke recursive processor starting from index 0\n  trimmed_list = process_recursively(test_list, K)\n  # Transform the list into its string representation for output\n  return str(trimmed_list)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

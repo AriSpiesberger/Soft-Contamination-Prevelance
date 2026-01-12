@@ -1,0 +1,37 @@
+{
+  "task_id": 589,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find perfect squares between two given numbers.",
+  "python_code": "def perfect_squares(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists",
+  "test_list": [
+    "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+    "assert perfect_squares(50,100)==[64, 81, 100]",
+    "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]"
+  ],
+  "code_ruby": "def perfect_squares(a, b)\n  lists = []\n  (a..b).each do |i|\n    j = 1\n    while j * j <= i\n      if j * j == i\n        lists << i\n      end\n      j += 1\n    end\n  end\n  lists\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+      "generated_test": "result = perfect_squares(1, 30)\nexpected = [1, 4, 9, 16, 25]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(50,100)==[64, 81, 100]",
+      "generated_test": "result = perfect_squares(50, 100)\nexpected = [64, 81, 100]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]",
+      "generated_test": "result = perfect_squares(100, 200)\nexpected = [100, 121, 144, 169, 196]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

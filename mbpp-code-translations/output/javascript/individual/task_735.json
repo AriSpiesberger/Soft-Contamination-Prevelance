@@ -1,0 +1,51 @@
+{
+  "task_id": 735,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to toggle bits of the number except the first and the last bit. https://www.geeksforgeeks.org/toggle-bits-number-expect-first-last-bits/",
+  "python_code": "def set_middle_bits(n):  \n    n |= n >> 1; \n    n |= n >> 2; \n    n |= n >> 4; \n    n |= n >> 8; \n    n |= n >> 16;  \n    return (n >> 1) ^ 1\ndef toggle_middle_bits(n): \n    if (n == 1): \n        return 1\n    return n ^ set_middle_bits(n) ",
+  "test_list": [
+    "assert toggle_middle_bits(9) == 15",
+    "assert toggle_middle_bits(10) == 12",
+    "assert toggle_middle_bits(11) == 13",
+    "assert toggle_middle_bits(0b1000001) == 0b1111111",
+    "assert toggle_middle_bits(0b1001101) == 0b1110011"
+  ],
+  "code_javascript": "function set_middle_bits(n) {\n    n |= n >> 1;\n    n |= n >> 2;\n    n |= n >> 4;\n    n |= n >> 8;\n    n |= n >> 16;\n    return (n >> 1) ^ 1;\n}\n\nfunction toggle_middle_bits(n) {\n    if (n === 1) {\n        return 1;\n    }\n    return n ^ set_middle_bits(n);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 5,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert toggle_middle_bits(9) == 15",
+      "generated_test": "const result = toggle_middle_bits(9);\nconst expected = 15;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(10) == 12",
+      "generated_test": "const result = toggle_middle_bits(10);\nconst expected = 12;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(11) == 13",
+      "generated_test": "const result = toggle_middle_bits(11);\nconst expected = 13;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(0b1000001) == 0b1111111",
+      "generated_test": "const result = toggle_middle_bits(0b1000001);\nconst expected = 0b1111111;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_middle_bits(0b1001101) == 0b1110011",
+      "generated_test": "const result = toggle_middle_bits(0b1001101);\nconst expected = 0b1110011;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

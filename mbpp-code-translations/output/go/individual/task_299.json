@@ -1,0 +1,37 @@
+{
+  "task_id": 299,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the maximum aggregate from the list of tuples.",
+  "python_code": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])",
+  "test_list": [
+    "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+    "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+    "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)"
+  ],
+  "code_go": "package main\n\nfunc max_aggregate(stdata [][2]interface{}) [2]interface{} {\n\ttemp := make(map[string]int)\n\t\n\tfor _, item := range stdata {\n\t\tname := item[0].(string)\n\t\tmarks := item[1].(int)\n\t\ttemp[name] += marks\n\t}\n\t\n\tvar maxName string\n\tvar maxMarks int\n\tfirst := true\n\t\n\tfor name, marks := range temp {\n\t\tif first || marks > maxMarks {\n\t\t\tmaxName = name\n\t\t\tmaxMarks = marks\n\t\t\tfirst = false\n\t\t}\n\t}\n\t\n\treturn [2]interface{}{maxName, maxMarks}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+      "generated_test": "input := [][2]interface{}{\n\t{\"Juan Whelan\", 90},\n\t{\"Sabah Colley\", 88},\n\t{\"Peter Nichols\", 7},\n\t{\"Juan Whelan\", 122},\n\t{\"Sabah Colley\", 84},\n}\nexpected := [2]interface{}{\"Juan Whelan\", 212}\nresult := max_aggregate(input)\n\nif result[0] == expected[0] && result[1] == expected[1] {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+      "generated_test": "input := [][2]interface{}{\n\t{\"Juan Whelan\", 50},\n\t{\"Sabah Colley\", 48},\n\t{\"Peter Nichols\", 37},\n\t{\"Juan Whelan\", 22},\n\t{\"Sabah Colley\", 14},\n}\nexpected := [2]interface{}{\"Juan Whelan\", 72}\nresult := max_aggregate(input)\n\nif result[0] == expected[0] && result[1] == expected[1] {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)",
+      "generated_test": "input := [][2]interface{}{\n\t{\"Juan Whelan\", 10},\n\t{\"Sabah Colley\", 20},\n\t{\"Peter Nichols\", 30},\n\t{\"Juan Whelan\", 40},\n\t{\"Sabah Colley\", 50},\n}\nexpected := [2]interface{}{\"Sabah Colley\", 70}\nresult := max_aggregate(input)\n\nif result[0] == expected[0] && result[1] == expected[1] {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

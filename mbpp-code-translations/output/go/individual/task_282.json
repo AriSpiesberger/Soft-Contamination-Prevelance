@@ -1,0 +1,37 @@
+{
+  "task_id": 282,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to subtract two lists element-wise.",
+  "python_code": "def sub_list(nums1,nums2):\n  result = map(lambda x, y: x - y, nums1, nums2)\n  return list(result)",
+  "test_list": [
+    "assert sub_list([1, 2, 3],[4,5,6])==[-3,-3,-3]",
+    "assert sub_list([1,2],[3,4])==[-2,-2]",
+    "assert sub_list([90,120],[50,70])==[40,50]"
+  ],
+  "code_go": "package main\n\nfunc sub_list(nums1, nums2 []int) []int {\n\tresult := make([]int, len(nums1))\n\tfor i := 0; i < len(nums1); i++ {\n\t\tresult[i] = nums1[i] - nums2[i]\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sub_list([1, 2, 3],[4,5,6])==[-3,-3,-3]",
+      "generated_test": "expected := []int{-3, -3, -3}\ngot := sub_list([]int{1, 2, 3}, []int{4, 5, 6})\n\npass := len(got) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif got[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sub_list([1,2],[3,4])==[-2,-2]",
+      "generated_test": "result := sub_list([]int{1, 2}, []int{3, 4})\nexpected := []int{-2, -2}\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sub_list([90,120],[50,70])==[40,50]",
+      "generated_test": "result := sub_list([]int{90, 120}, []int{50, 70})\nexpected := []int{40, 50}\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

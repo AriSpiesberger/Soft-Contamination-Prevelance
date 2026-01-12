@@ -1,0 +1,44 @@
+{
+  "task_id": 755,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the second smallest number in a list.",
+  "python_code": "def second_smallest(numbers):\n  unique_numbers = list(set(numbers))\n  unique_numbers.sort()\n  if len(unique_numbers) < 2:\n    return None\n  else:\n    return unique_numbers[1]",
+  "test_list": [
+    "assert second_smallest([1, 2, -8, -2, 0, -2])==-2",
+    "assert second_smallest([1, 1, -0.5, 0, 2, -2, -2])==-0.5",
+    "assert second_smallest([2,2])==None",
+    "assert second_smallest([2,2,2])==None"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn second_smallest(numbers: Vec<f64>) -> Option<f64> {\n    let unique_numbers: HashSet<_> = numbers.into_iter().map(|x| x.to_bits()).collect();\n    let mut unique_vec: Vec<f64> = unique_numbers.into_iter().map(f64::from_bits).collect();\n    unique_vec.sort_by(|a, b| a.partial_cmp(b).unwrap());\n    \n    if unique_vec.len() < 2 {\n        None\n    } else {\n        Some(unique_vec[1])\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert second_smallest([1, 2, -8, -2, 0, -2])==-2",
+      "generated_test": "let result = second_smallest(vec![1.0, 2.0, -8.0, -2.0, 0.0, -2.0]);\nlet expected: Option<f64> = Some(-2.0);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert second_smallest([1, 1, -0.5, 0, 2, -2, -2])==-0.5",
+      "generated_test": "let result = second_smallest(vec![1.0, 1.0, -0.5, 0.0, 2.0, -2.0, -2.0]);\nlet expected = Some(-0.5);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert second_smallest([2,2])==None",
+      "generated_test": "let result = second_smallest(vec![2.0, 2.0]);\nlet expected: Option<f64> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert second_smallest([2,2,2])==None",
+      "generated_test": "let result = second_smallest(vec![2.0, 2.0, 2.0]);\nlet expected: Option<f64> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

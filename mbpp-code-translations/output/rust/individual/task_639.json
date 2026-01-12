@@ -1,0 +1,37 @@
+{
+  "task_id": 639,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.",
+  "python_code": "def sample_nam(sample_names):\n  sample_names=list(filter(lambda el:el[0].isupper() and el[1:].islower(),sample_names))\n  return len(''.join(sample_names))",
+  "test_list": [
+    "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+    "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+    "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6"
+  ],
+  "code_rust": "pub fn sample_nam(sample_names: Vec<&str>) -> usize {\n    sample_names\n        .into_iter()\n        .filter(|name| {\n            if name.is_empty() {\n                return false;\n            }\n            let mut chars = name.chars();\n            let first = chars.next().unwrap();\n            if !first.is_uppercase() {\n                return false;\n            }\n            chars.all(|c| c.is_lowercase())\n        })\n        .map(|name| name.len())\n        .sum()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+      "generated_test": "let result = sample_nam(vec![\"sally\", \"Dylan\", \"rebecca\", \"Diana\", \"Joanne\", \"keith\"]);\nlet expected = 16;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+      "generated_test": "let result = sample_nam(vec![\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"]);\nlet expected = 10;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6",
+      "generated_test": "let result = sample_nam(vec![\"abcd\", \"Python\", \"abba\", \"aba\"]);\nlet expected = 6;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

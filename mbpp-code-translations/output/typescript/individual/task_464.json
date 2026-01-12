@@ -1,0 +1,17 @@
+{
+  "task_id": 464,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if all values are same in a dictionary.",
+  "python_code": "def check_value(dict, n):\n    result = all(x == n for x in dict.values()) \n    return result",
+  "test_list": [
+    "assert check_value({'Cierra Vega': 12, 'Alden Cantrell': 12, 'Kierra Gentry': 12, 'Pierre Cox': 12},10)==False",
+    "assert check_value({'Cierra Vega': 12, 'Alden Cantrell': 12, 'Kierra Gentry': 12, 'Pierre Cox': 12},12)==True",
+    "assert check_value({'Cierra Vega': 12, 'Alden Cantrell': 12, 'Kierra Gentry': 12, 'Pierre Cox': 12},5)==False"
+  ],
+  "code_typescript": "function check_value(dict: Record<string, number>, n: number): boolean {\n    const values = Object.values(dict);\n    const result = values.every(x => x === n);\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

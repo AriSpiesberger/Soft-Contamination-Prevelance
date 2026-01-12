@@ -1,0 +1,37 @@
+{
+  "task_id": 617,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check for the number of jumps required of given length to reach a point of form (d, 0) from origin in a 2d plane.",
+  "python_code": "def min_Jumps(steps, d): \n    (a, b) = steps\n    temp = a \n    a = min(a, b) \n    b = max(temp, b) \n    if (d >= b): \n        return (d + b - 1) / b \n    if (d == 0): \n        return 0\n    if (d == a): \n        return 1\n    else:\n        return 2",
+  "test_list": [
+    "assert min_Jumps((3,4),11)==3.5",
+    "assert min_Jumps((3,4),0)==0",
+    "assert min_Jumps((11,14),11)==1"
+  ],
+  "code_go": "package main\n\nfunc min_Jumps(steps [2]int, d int) float64 {\n\ta := steps[0]\n\tb := steps[1]\n\t\n\ttemp := a\n\tif b < a {\n\t\ta = b\n\t} else {\n\t\ta = temp\n\t}\n\tif temp > b {\n\t\tb = temp\n\t}\n\t\n\tif d >= b {\n\t\treturn float64(d+b-1) / float64(b)\n\t}\n\tif d == 0 {\n\t\treturn 0\n\t}\n\tif d == a {\n\t\treturn 1\n\t}\n\treturn 2\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert min_Jumps((3,4),11)==3.5",
+      "generated_test": "result := min_Jumps([2]int{3, 4}, 11)\nexpected := 3.5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Jumps((3,4),0)==0",
+      "generated_test": "result := min_Jumps([2]int{3, 4}, 0)\nexpected := float64(0)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Jumps((11,14),11)==1",
+      "generated_test": "result := min_Jumps([2]int{11, 14}, 11)\nexpected := float64(1)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

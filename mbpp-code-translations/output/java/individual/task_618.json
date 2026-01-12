@@ -1,0 +1,37 @@
+{
+  "task_id": 618,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to divide two lists element wise.",
+  "python_code": "def div_list(nums1,nums2):\n  result = map(lambda x, y: x / y, nums1, nums2)\n  return list(result)",
+  "test_list": [
+    "assert div_list([4,5,6],[1, 2, 3])==[4.0,2.5,2.0]",
+    "assert div_list([3,2],[1,4])==[3.0, 0.5]",
+    "assert div_list([90,120],[50,70])==[1.8, 1.7142857142857142]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Double> div_list(ArrayList<Integer> nums1, ArrayList<Integer> nums2) {\n        ArrayList<Double> result = new ArrayList<>();\n        for (int i = 0; i < nums1.size(); i++) {\n            result.add((double) nums1.get(i) / nums2.get(i));\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert div_list([4,5,6],[1, 2, 3])==[4.0,2.5,2.0]",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(4);\nnums1.add(5);\nnums1.add(6);\n\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(1);\nnums2.add(2);\nnums2.add(3);\n\nArrayList<Double> expected = new ArrayList<>();\nexpected.add(4.0);\nexpected.add(2.5);\nexpected.add(2.0);\n\nArrayList<Double> result = div_list(nums1, nums2);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert div_list([3,2],[1,4])==[3.0, 0.5]",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(3);\nnums1.add(2);\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(1);\nnums2.add(4);\n\nArrayList<Double> expected = new ArrayList<>();\nexpected.add(3.0);\nexpected.add(0.5);\n\nArrayList<Double> result = div_list(nums1, nums2);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert div_list([90,120],[50,70])==[1.8, 1.7142857142857142]",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(90);\nnums1.add(120);\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(50);\nnums2.add(70);\nArrayList<Double> expected = new ArrayList<>();\nexpected.add(1.8);\nexpected.add(1.7142857142857142);\nArrayList<Double> result = div_list(nums1, nums2);\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < expected.size(); i++) {\n        if (Math.abs(result.get(i) - expected.get(i)) > 1e-9) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

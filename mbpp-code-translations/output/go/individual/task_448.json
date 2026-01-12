@@ -1,0 +1,37 @@
+{
+  "task_id": 448,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum of perrin numbers.",
+  "python_code": "def cal_sum(n): \n\ta = 3\n\tb = 0\n\tc = 2\n\tif (n == 0): \n\t\treturn 3\n\tif (n == 1): \n\t\treturn 3\n\tif (n == 2): \n\t\treturn 5\n\tsum = 5\n\twhile (n > 2): \n\t\td = a + b \n\t\tsum = sum + d \n\t\ta = b \n\t\tb = c \n\t\tc = d \n\t\tn = n-1\n\treturn sum",
+  "test_list": [
+    "assert cal_sum(9) == 49",
+    "assert cal_sum(10) == 66",
+    "assert cal_sum(11) == 88"
+  ],
+  "code_go": "package main\n\nfunc cal_sum(n int) int {\n\ta := 3\n\tb := 0\n\tc := 2\n\tif n == 0 {\n\t\treturn 3\n\t}\n\tif n == 1 {\n\t\treturn 3\n\t}\n\tif n == 2 {\n\t\treturn 5\n\t}\n\tsum := 5\n\tfor n > 2 {\n\t\td := a + b\n\t\tsum = sum + d\n\t\ta = b\n\t\tb = c\n\t\tc = d\n\t\tn = n - 1\n\t}\n\treturn sum\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert cal_sum(9) == 49",
+      "generated_test": "result := cal_sum(9)\nexpected := 49\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cal_sum(10) == 66",
+      "generated_test": "result := cal_sum(10)\nexpected := 66\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cal_sum(11) == 88",
+      "generated_test": "result := cal_sum(11)\nexpected := 88\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

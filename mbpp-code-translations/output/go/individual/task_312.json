@@ -1,0 +1,37 @@
+{
+  "task_id": 312,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cone.",
+  "python_code": "import math\ndef volume_cone(r,h):\n  volume = (1.0/3) * math.pi * r * r * h\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_cone(5,12), 314.15926535897927, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(10,15), 1570.7963267948965, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(19,17), 6426.651371693521, rel_tol=0.001)"
+  ],
+  "code_go": "package main\n\nimport \"math\"\n\nfunc volume_cone(r, h float64) float64 {\n\tvolume := (1.0 / 3) * math.Pi * r * r * h\n\treturn volume\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert math.isclose(volume_cone(5,12), 314.15926535897927, rel_tol=0.001)",
+      "generated_test": "result := volume_cone(5, 12)\nexpected := 314.15926535897927\nrelTol := 0.001\n\ndiff := math.Abs(result - expected)\ntolerance := relTol * math.Abs(expected)\n\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_cone(10,15), 1570.7963267948965, rel_tol=0.001)",
+      "generated_test": "result := volume_cone(10, 15)\nexpected := 1570.7963267948965\nrelTol := 0.001\ndiff := math.Abs(result - expected)\ntolerance := relTol * math.Abs(expected)\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_cone(19,17), 6426.651371693521, rel_tol=0.001)",
+      "generated_test": "result := volume_cone(19, 17)\nexpected := 6426.651371693521\nrelTol := 0.001\n\ndiff := math.Abs(result - expected)\ntolerance := relTol * math.Abs(expected)\n\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

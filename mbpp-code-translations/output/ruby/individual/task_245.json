@@ -1,0 +1,37 @@
+{
+  "task_id": 245,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.",
+  "python_code": "def max_sum(arr): \n\tMSIBS = arr[:] \n\tfor i in range(len(arr)): \n\t\tfor j in range(0, i): \n\t\t\tif arr[i] > arr[j] and MSIBS[i] < MSIBS[j] + arr[i]: \n\t\t\t\tMSIBS[i] = MSIBS[j] + arr[i] \n\tMSDBS = arr[:] \n\tfor i in range(1, len(arr) + 1): \n\t\tfor j in range(1, i): \n\t\t\tif arr[-i] > arr[-j] and MSDBS[-i] < MSDBS[-j] + arr[-i]: \n\t\t\t\tMSDBS[-i] = MSDBS[-j] + arr[-i] \n\tmax_sum = float(\"-Inf\") \n\tfor i, j, k in zip(MSIBS, MSDBS, arr): \n\t\tmax_sum = max(max_sum, i + j - k) \n\treturn max_sum",
+  "test_list": [
+    "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+    "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+    "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+  ],
+  "code_ruby": "def max_sum(arr)\n  msibs = arr.dup\n  arr.length.times do |i|\n    (0...i).each do |j|\n      if arr[i] > arr[j] && msibs[i] < msibs[j] + arr[i]\n        msibs[i] = msibs[j] + arr[i]\n      end\n    end\n  end\n  \n  msdbs = arr.dup\n  (1..arr.length).each do |i|\n    (1...i).each do |j|\n      if arr[-i] > arr[-j] && msdbs[-i] < msdbs[-j] + arr[-i]\n        msdbs[-i] = msdbs[-j] + arr[-i]\n      end\n    end\n  end\n  \n  max_sum = -Float::INFINITY\n  arr.length.times do |idx|\n    current = msibs[idx] + msdbs[idx] - arr[idx]\n    max_sum = [max_sum, current].max\n  end\n  \n  max_sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+      "generated_test": "result = max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9])\nexpected = 194\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+      "generated_test": "result = max_sum([80, 60, 30, 40, 20, 10])\nexpected = 210\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138",
+      "generated_test": "result = max_sum([2, 3, 14, 16, 21, 23, 29, 30])\nexpected = 138\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

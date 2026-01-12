@@ -1,0 +1,37 @@
+{
+  "task_id": 736,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the left insertion point for a specified value in sorted order. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-data-structure-exercise-24.php",
+  "python_code": "import bisect\ndef left_insertion(a, x):\n    i = bisect.bisect_left(a, x)\n    return i",
+  "test_list": [
+    "assert left_insertion([1,2,4,5],6)==4",
+    "assert left_insertion([1,2,4,5],3)==2",
+    "assert left_insertion([1,2,4,5],7)==4"
+  ],
+  "code_ruby": "def left_insertion(a, x)\n  a.bsearch_index { |elem| elem >= x } || a.length\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert left_insertion([1,2,4,5],6)==4",
+      "generated_test": "result = left_insertion([1, 2, 4, 5], 6)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_insertion([1,2,4,5],3)==2",
+      "generated_test": "result = left_insertion([1, 2, 4, 5], 3)\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_insertion([1,2,4,5],7)==4",
+      "generated_test": "result = left_insertion([1, 2, 4, 5], 7)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

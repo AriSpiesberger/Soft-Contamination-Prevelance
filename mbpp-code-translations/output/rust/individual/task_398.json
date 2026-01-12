@@ -1,0 +1,37 @@
+{
+  "task_id": 398,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the sum of digits of each number of a given list.",
+  "python_code": "def sum_of_digits(nums):\n    return sum(int(el) for n in nums for el in str(n) if el.isdigit())",
+  "test_list": [
+    "assert sum_of_digits([10,2,56])==14",
+    "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+    "assert sum_of_digits([10,20,-4,5,-70])==19"
+  ],
+  "code_rust": "pub fn sum_of_digits<T: AsRef<[V]>, V: std::fmt::Display>(nums: T) -> i64 {\n    nums.as_ref()\n        .iter()\n        .flat_map(|n| {\n            n.to_string()\n                .chars()\n                .filter_map(|c| c.to_digit(10).map(|d| d as i64))\n                .collect::<Vec<_>>()\n        })\n        .sum()\n}\n\npub fn sum_of_digits_i32(nums: &[i32]) -> i32 {\n    nums.iter()\n        .flat_map(|n| {\n            n.to_string()\n                .chars()\n                .filter_map(|c| c.to_digit(10).map(|d| d as i32))\n                .collect::<Vec<_>>()\n        })\n        .sum()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sum_of_digits([10,2,56])==14",
+      "generated_test": "let result = sum_of_digits([10, 2, 56]);\nlet expected: i64 = 14;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+      "generated_test": "let result = sum_of_digits(&[10, 20, 4, 5, 70]);\nlet expected: i64 = 19;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_of_digits([10,20,-4,5,-70])==19",
+      "generated_test": "let result = sum_of_digits([10, 20, -4, 5, -70]);\nlet expected: i64 = 19;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

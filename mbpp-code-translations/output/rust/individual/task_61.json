@@ -1,0 +1,37 @@
+{
+  "task_id": 61,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of substrings with the sum of digits equal to their length.",
+  "python_code": "from collections import defaultdict\ndef count_Substrings(s):\n    n = len(s)\n    count,sum = 0,0\n    mp = defaultdict(lambda : 0)\n    mp[0] += 1\n    for i in range(n):\n        sum += ord(s[i]) - ord('0')\n        count += mp[sum - (i + 1)]\n        mp[sum - (i + 1)] += 1\n    return count",
+  "test_list": [
+    "assert count_Substrings('112112') == 6",
+    "assert count_Substrings('111') == 6",
+    "assert count_Substrings('1101112') == 12"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn count_Substrings(s: &str) -> i64 {\n    let n = s.len() as i64;\n    let mut count: i64 = 0;\n    let mut sum: i64 = 0;\n    let mut mp: HashMap<i64, i64> = HashMap::new();\n    *mp.entry(0).or_insert(0) += 1;\n    \n    for (i, c) in s.chars().enumerate() {\n        sum += (c as i64) - ('0' as i64);\n        let key = sum - (i as i64 + 1);\n        count += *mp.get(&key).unwrap_or(&0);\n        *mp.entry(key).or_insert(0) += 1;\n    }\n    \n    count\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_Substrings('112112') == 6",
+      "generated_test": "let result = count_Substrings(\"112112\");\nlet expected: i64 = 6;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Substrings('111') == 6",
+      "generated_test": "let result = count_Substrings(\"111\");\nlet expected: i64 = 6;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Substrings('1101112') == 12",
+      "generated_test": "let result = count_Substrings(\"1101112\");\nlet expected: i64 = 12;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

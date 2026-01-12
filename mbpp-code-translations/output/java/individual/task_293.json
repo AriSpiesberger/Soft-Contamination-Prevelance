@@ -1,0 +1,37 @@
+{
+  "task_id": 293,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the third side of a right angled triangle.",
+  "python_code": "import math\ndef otherside_rightangle(w,h):\n  s=math.sqrt((w*w)+(h*h))\n  return s",
+  "test_list": [
+    "assert otherside_rightangle(7,8)==10.63014581273465",
+    "assert otherside_rightangle(3,4)==5",
+    "assert otherside_rightangle(7,15)==16.55294535724685"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double otherside_rightangle(double w, double h) {\n        double s = Math.sqrt((w * w) + (h * h));\n        return s;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert otherside_rightangle(7,8)==10.63014581273465",
+      "generated_test": "double result = otherside_rightangle(7, 8);\ndouble expected = 10.63014581273465;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert otherside_rightangle(3,4)==5",
+      "generated_test": "double result = otherside_rightangle(3, 4);\ndouble expected = 5.0;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert otherside_rightangle(7,15)==16.55294535724685",
+      "generated_test": "double result = otherside_rightangle(7, 15);\ndouble expected = 16.55294535724685;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

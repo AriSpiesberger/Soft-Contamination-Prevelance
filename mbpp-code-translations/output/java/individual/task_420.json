@@ -1,0 +1,37 @@
+{
+  "task_id": 420,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the cube sum of first n even natural numbers.",
+  "python_code": "def cube_Sum(n): \n    sum = 0\n    for i in range(1,n + 1): \n        sum += (2*i)*(2*i)*(2*i) \n    return sum",
+  "test_list": [
+    "assert cube_Sum(2) == 72",
+    "assert cube_Sum(3) == 288",
+    "assert cube_Sum(4) == 800"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int cube_Sum(int n) {\n        int sum = 0;\n        for (int i = 1; i <= n; i++) {\n            sum += (2 * i) * (2 * i) * (2 * i);\n        }\n        return sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert cube_Sum(2) == 72",
+      "generated_test": "int result = cube_Sum(2);\nint expected = 72;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cube_Sum(3) == 288",
+      "generated_test": "int result = cube_Sum(3);\nint expected = 288;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert cube_Sum(4) == 800",
+      "generated_test": "int result = cube_Sum(4);\nint expected = 800;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 791,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove tuples from the given tuple.",
+  "python_code": "def remove_nested(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res) ",
+  "test_list": [
+    "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+    "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+    "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+    "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)"
+  ],
+  "code_rust": "use std::fmt;\n\n#[derive(Debug, Clone, PartialEq)]\npub enum TupleElement {\n    Int(i32),\n    Nested(Vec<TupleElement>),\n}\n\npub fn remove_nested(test_tup: &[TupleElement]) -> Vec<i32> {\n    let mut res: Vec<i32> = Vec::new();\n    for ele in test_tup {\n        if let TupleElement::Int(val) = ele {\n            res.push(*val);\n        }\n    }\n    res\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+      "generated_test": "let input = vec![\n    TupleElement::Int(1),\n    TupleElement::Int(5),\n    TupleElement::Int(7),\n    TupleElement::Nested(vec![TupleElement::Int(4), TupleElement::Int(6)]),\n    TupleElement::Int(10),\n];\nlet expected: Vec<i32> = vec![1, 5, 7, 10];\nlet result = remove_nested(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+      "generated_test": "let input = vec![\n    TupleElement::Int(2),\n    TupleElement::Int(6),\n    TupleElement::Int(8),\n    TupleElement::Nested(vec![TupleElement::Int(5), TupleElement::Int(7)]),\n    TupleElement::Int(11),\n];\nlet expected: Vec<i32> = vec![2, 6, 8, 11];\nlet result = remove_nested(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+      "generated_test": "let input = vec![\n    TupleElement::Int(3),\n    TupleElement::Int(7),\n    TupleElement::Int(9),\n    TupleElement::Nested(vec![TupleElement::Int(6), TupleElement::Int(8)]),\n    TupleElement::Int(12),\n];\nlet expected: Vec<i32> = vec![3, 7, 9, 12];\nlet result = remove_nested(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)",
+      "generated_test": "let input = vec![\n    TupleElement::Int(3),\n    TupleElement::Int(7),\n    TupleElement::Int(9),\n    TupleElement::Nested(vec![TupleElement::Int(6), TupleElement::Int(8)]),\n    TupleElement::Nested(vec![TupleElement::Int(5), TupleElement::Int(12)]),\n    TupleElement::Int(12),\n];\nlet expected: Vec<i32> = vec![3, 7, 9, 12];\nlet result = remove_nested(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

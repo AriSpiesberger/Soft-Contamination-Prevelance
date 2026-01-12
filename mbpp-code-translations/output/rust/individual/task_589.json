@@ -1,0 +1,37 @@
+{
+  "task_id": 589,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find perfect squares between two given numbers.",
+  "python_code": "def perfect_squares(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists",
+  "test_list": [
+    "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+    "assert perfect_squares(50,100)==[64, 81, 100]",
+    "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]"
+  ],
+  "code_rust": "pub fn perfect_squares(a: i32, b: i32) -> Vec<i32> {\n    let mut lists = Vec::new();\n    for i in a..=b {\n        let mut j = 1;\n        while j * j <= i {\n            if j * j == i {\n                lists.push(i);\n            }\n            j += 1;\n        }\n    }\n    lists\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+      "generated_test": "let result = perfect_squares(1, 30);\nlet expected = vec![1, 4, 9, 16, 25];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(50,100)==[64, 81, 100]",
+      "generated_test": "let result = perfect_squares(50, 100);\nlet expected = vec![64, 81, 100];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]",
+      "generated_test": "let result = perfect_squares(100, 200);\nlet expected = vec![100, 121, 144, 169, 196];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

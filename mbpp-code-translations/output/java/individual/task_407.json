@@ -1,0 +1,37 @@
+{
+  "task_id": 407,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create the next bigger number by rearranging the digits of a given number.",
+  "python_code": "def rearrange_bigger(n):\n    nums = list(str(n))\n    for i in range(len(nums)-2,-1,-1):\n        if nums[i] < nums[i+1]:\n            z = nums[i:]\n            y = min(filter(lambda x: x > z[0], z))\n            z.remove(y)\n            z.sort()\n            nums[i:] = [y] + z\n            return int(\"\".join(nums))\n    return False",
+  "test_list": [
+    "assert rearrange_bigger(12)==21",
+    "assert rearrange_bigger(10)==False",
+    "assert rearrange_bigger(102)==120"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Object rearrange_bigger(int n) {\n        ArrayList<Character> nums = new ArrayList<>();\n        String s = String.valueOf(n);\n        for (char c : s.toCharArray()) {\n            nums.add(c);\n        }\n        \n        for (int i = nums.size() - 2; i >= 0; i--) {\n            if (nums.get(i) < nums.get(i + 1)) {\n                // z = nums[i:]\n                ArrayList<Character> z = new ArrayList<>();\n                for (int j = i; j < nums.size(); j++) {\n                    z.add(nums.get(j));\n                }\n                \n                // y = min(filter(lambda x: x > z[0], z))\n                char z0 = z.get(0);\n                char y = Character.MAX_VALUE;\n                for (char c : z) {\n                    if (c > z0 && c < y) {\n                        y = c;\n                    }\n                }\n                \n                // z.remove(y)\n                z.remove(Character.valueOf(y));\n                \n                // z.sort()\n                Collections.sort(z);\n                \n                // nums[i:] = [y] + z\n                // First, remove elements from index i onwards\n                while (nums.size() > i) {\n                    nums.remove(nums.size() - 1);\n                }\n                // Add y\n                nums.add(y);\n                // Add sorted z\n                for (char c : z) {\n                    nums.add(c);\n                }\n                \n                // return int(\"\".join(nums))\n                StringBuilder sb = new StringBuilder();\n                for (char c : nums) {\n                    sb.append(c);\n                }\n                return Integer.parseInt(sb.toString());\n            }\n        }\n        \n        return false;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert rearrange_bigger(12)==21",
+      "generated_test": "Object result = rearrange_bigger(12);\nObject expected = 21;\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(10)==False",
+      "generated_test": "Object result = rearrange_bigger(10);\nObject expected = false;\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(102)==120",
+      "generated_test": "Object result = rearrange_bigger(102);\nObject expected = 120;\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

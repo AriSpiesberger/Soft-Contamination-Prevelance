@@ -1,0 +1,37 @@
+{
+  "task_id": 115,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether all dictionaries in a list are empty or not.",
+  "python_code": "def empty_dit(list1):\n empty_dit=all(not d for d in list1)\n return empty_dit",
+  "test_list": [
+    "assert empty_dit([{},{},{}])==True",
+    "assert empty_dit([{1,2},{},{}])==False",
+    "assert empty_dit({})==True"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn empty_dit(list1: &[HashMap<i32, i32>]) -> bool {\n    list1.iter().all(|d| d.is_empty())\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert empty_dit([{},{},{}])==True",
+      "generated_test": "let input: Vec<HashMap<i32, i32>> = vec![HashMap::new(), HashMap::new(), HashMap::new()];\nlet result = empty_dit(&input);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit([{1,2},{},{}])==False",
+      "generated_test": "let test_input: Vec<HashMap<i32, i32>> = vec![\n    {\n        let mut m = HashMap::new();\n        m.insert(1, 0);\n        m.insert(2, 0);\n        m\n    },\n    HashMap::new(),\n    HashMap::new(),\n];\nlet result = empty_dit(&test_input);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit({})==True",
+      "generated_test": "let result = empty_dit(&[HashMap::new()]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

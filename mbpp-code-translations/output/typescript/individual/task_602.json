@@ -1,0 +1,17 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "python_code": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "code_typescript": "function first_repeated_char(str1: string): string | null {\n  for (let index = 0; index < str1.length; index++) {\n    const c = str1[index];\n    const substring = str1.slice(0, index + 1);\n    let count = 0;\n    for (const char of substring) {\n      if (char === c) {\n        count++;\n      }\n    }\n    if (count > 1) {\n      return c;\n    }\n  }\n  return null;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

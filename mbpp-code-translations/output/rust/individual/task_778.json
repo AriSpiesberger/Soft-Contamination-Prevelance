@@ -1,0 +1,37 @@
+{
+  "task_id": 778,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to pack consecutive duplicates of a given list elements into sublists.",
+  "python_code": "from itertools import groupby\ndef pack_consecutive_duplicates(list1):\n    return [list(group) for key, group in groupby(list1)]",
+  "test_list": [
+    "assert pack_consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4])==[[0, 0], [1], [2], [3], [4, 4], [5], [6, 6, 6], [7], [8], [9], [4, 4]]",
+    "assert pack_consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[[10, 10], [15], [19], [18, 18], [17], [26, 26], [17], [18], [10]]",
+    "assert pack_consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==[['a', 'a'], ['b'], ['c'], ['d', 'd']]"
+  ],
+  "code_rust": "pub fn pack_consecutive_duplicates<T: PartialEq + Clone>(list1: Vec<T>) -> Vec<Vec<T>> {\n    if list1.is_empty() {\n        return Vec::new();\n    }\n    \n    let mut result: Vec<Vec<T>> = Vec::new();\n    let mut current_group: Vec<T> = Vec::new();\n    \n    for item in list1 {\n        if current_group.is_empty() {\n            current_group.push(item);\n        } else if current_group.last().unwrap() == &item {\n            current_group.push(item);\n        } else {\n            result.push(current_group);\n            current_group = vec![item];\n        }\n    }\n    \n    if !current_group.is_empty() {\n        result.push(current_group);\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert pack_consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4])==[[0, 0], [1], [2], [3], [4, 4], [5], [6, 6, 6], [7], [8], [9], [4, 4]]",
+      "generated_test": "let result = pack_consecutive_duplicates(vec![0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4]);\nlet expected: Vec<Vec<i32>> = vec![vec![0, 0], vec![1], vec![2], vec![3], vec![4, 4], vec![5], vec![6, 6, 6], vec![7], vec![8], vec![9], vec![4, 4]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pack_consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[[10, 10], [15], [19], [18, 18], [17], [26, 26], [17], [18], [10]]",
+      "generated_test": "let result = pack_consecutive_duplicates(vec![10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10]);\nlet expected: Vec<Vec<i32>> = vec![vec![10, 10], vec![15], vec![19], vec![18, 18], vec![17], vec![26, 26], vec![17], vec![18], vec![10]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pack_consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==[['a', 'a'], ['b'], ['c'], ['d', 'd']]",
+      "generated_test": "let result = pack_consecutive_duplicates(vec!['a', 'a', 'b', 'c', 'd', 'd']);\nlet expected: Vec<Vec<char>> = vec![vec!['a', 'a'], vec!['b'], vec!['c'], vec!['d', 'd']];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

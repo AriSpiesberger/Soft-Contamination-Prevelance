@@ -1,0 +1,37 @@
+{
+  "task_id": 292,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find quotient of two numbers (rounded down to the nearest integer).",
+  "python_code": "def find(n,m):  \n    q = n//m \n    return (q)",
+  "test_list": [
+    "assert find(10,3) == 3",
+    "assert find(4,2) == 2",
+    "assert find(20,5) == 4"
+  ],
+  "code_go": "package main\n\nfunc find(n, m int) int {\n\tq := n / m\n\treturn q\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find(10,3) == 3",
+      "generated_test": "result := find(10, 3)\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find(4,2) == 2",
+      "generated_test": "result := find(4, 2)\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find(20,5) == 4",
+      "generated_test": "result := find(20, 5)\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

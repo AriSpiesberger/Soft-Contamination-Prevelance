@@ -1,0 +1,27 @@
+{
+  "task_id": 583,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function which returns nth catalan number.",
+  "code_python": "def catalan_number(num):\n    if num <=1:\n         return 1   \n    res_num = 0\n    for i in range(num):\n        res_num += catalan_number(i) * catalan_number(num-i-1)\n    return res_num",
+  "test_list": [
+    "assert catalan_number(10)==16796",
+    "assert catalan_number(9)==4862",
+    "assert catalan_number(7)==429"
+  ],
+  "python_1": "def catalan_number(num):\n    # Use the direct formula: C(n) = (2n)! / ((n+1)! * n!)\n    # This avoids recursion entirely by using binomial coefficient\n    \n    # Handle base case where n is 0 or 1\n    if num <= 1:\n        return 1\n    \n    # Calculate binomial coefficient C(2n, n) using multiplicative formula\n    # This is more efficient than computing full factorials\n    numerator = 1\n    denominator = 1\n    \n    # Compute C(2n, n) by multiplying n terms in numerator and denominator\n    for i in range(num):\n        # Multiply by (2n - i) for the falling factorial in numerator\n        numerator *= (2 * num - i)\n        # Multiply by (i + 1) to build n! in denominator\n        denominator *= (i + 1)\n    \n    # Binomial coefficient C(2n, n) = numerator / denominator\n    binomial = numerator // denominator\n    \n    # Catalan number is C(2n, n) divided by (n + 1)\n    # This comes from the closed-form formula for Catalan numbers\n    catalan = binomial // (num + 1)\n    \n    # Return the nth Catalan number\n    return catalan",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def catalan_number(num):\n    # Dynamic programming approach using bottom-up tabulation\n    # Allocate array to store computed Catalan numbers up to index num\n    catalan = [0] * (num + 1)\n    \n    # Base case: 0th Catalan number is defined as 1\n    catalan[0] = 1\n    \n    # Base case: 1st Catalan number is also 1\n    if num >= 1:\n        catalan[1] = 1\n    \n    # Build up solutions iteratively from smaller subproblems\n    for i in range(2, num + 1):\n        # Each Catalan number is sum of products of previous pairs\n        for j in range(i):\n            # Apply recurrence: C(i) = sum of C(j) * C(i-1-j) for j from 0 to i-1\n            catalan[i] += catalan[j] * catalan[i - 1 - j]\n    \n    # Return the nth Catalan number stored in our table\n    return catalan[num]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def catalan_number(num):\n    # Use memoization with a dictionary to cache computed values\n    memo = {}\n    \n    # Define inner recursive helper that leverages the cache\n    def helper(n):\n        # Return cached result if we've already computed this Catalan number\n        if n in memo:\n            return memo[n]\n        \n        # Base cases: C(0) and C(1) are both defined as 1\n        if n <= 1:\n            return 1\n        \n        # Accumulator for summing products of paired Catalan numbers\n        total = 0\n        \n        # Iterate through all valid index pairs that sum to n-1\n        for k in range(n):\n            # Recursively compute left and right subtree counts and multiply\n            total += helper(k) * helper(n - 1 - k)\n        \n        # Store computed result in memo dictionary before returning\n        memo[n] = total\n        \n        # Return the memoized Catalan number for index n\n        return total\n    \n    # Invoke the memoized helper function with the input\n    return helper(num)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def catalan_number(num):\n    # Use the recurrence relation C(n) = C(n-1) * 2(2n-1) / (n+1)\n    # This iterative formula avoids both recursion and nested loops\n    \n    # Start with the base case: C(0) = 1\n    result = 1\n    \n    # Iteratively compute each subsequent Catalan number up to n\n    for i in range(1, num + 1):\n        # Apply the multiplicative recurrence to get next Catalan from previous\n        # C(i) = C(i-1) * 2(2i-1) / (i+1) derived from closed form\n        result = result * 2 * (2 * i - 1) // (i + 1)\n    \n    # Return the final computed nth Catalan number\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def catalan_number(num):\n    # Import reduce for functional-style accumulation across sequences\n    from functools import reduce\n    \n    # Handle trivial cases where Catalan number is 1 by definition\n    if num <= 1:\n        return 1\n    \n    # Compute (2n)! as product of all integers from 1 to 2n using reduce\n    factorial_2n = reduce(lambda x, y: x * y, range(1, 2 * num + 1))\n    \n    # Compute n! as product of all integers from 1 to n\n    factorial_n = reduce(lambda x, y: x * y, range(1, num + 1))\n    \n    # Compute (n+1)! as product of all integers from 1 to n+1\n    factorial_n_plus_1 = reduce(lambda x, y: x * y, range(1, num + 2))\n    \n    # Apply closed-form Catalan formula: C(n) = (2n)! / ((n+1)! * n!)\n    catalan = factorial_2n // (factorial_n_plus_1 * factorial_n)\n    \n    # Return the computed nth Catalan number\n    return catalan",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

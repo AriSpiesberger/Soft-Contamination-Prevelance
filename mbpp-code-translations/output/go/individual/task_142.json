@@ -1,0 +1,37 @@
+{
+  "task_id": 142,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count number items that are identical in the same position of three given lists.",
+  "python_code": "def count_samepair(list1,list2,list3):\n    result = sum(m == n == o for m, n, o in zip(list1,list2,list3))\n    return result",
+  "test_list": [
+    "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,9],[2,1,3,1,2,6,7,9])==3",
+    "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==4",
+    "assert count_samepair([1,2,3,4,2,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==5"
+  ],
+  "code_go": "package main\n\nfunc count_samepair(list1, list2, list3 []int) int {\n\tresult := 0\n\tminLen := len(list1)\n\tif len(list2) < minLen {\n\t\tminLen = len(list2)\n\t}\n\tif len(list3) < minLen {\n\t\tminLen = len(list3)\n\t}\n\t\n\tfor i := 0; i < minLen; i++ {\n\t\tif list1[i] == list2[i] && list2[i] == list3[i] {\n\t\t\tresult++\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,9],[2,1,3,1,2,6,7,9])==3",
+      "generated_test": "result := count_samepair([]int{1, 2, 3, 4, 5, 6, 7, 8}, []int{2, 2, 3, 1, 2, 6, 7, 9}, []int{2, 1, 3, 1, 2, 6, 7, 9})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==4",
+      "generated_test": "result := count_samepair([]int{1, 2, 3, 4, 5, 6, 7, 8}, []int{2, 2, 3, 1, 2, 6, 7, 8}, []int{2, 1, 3, 1, 2, 6, 7, 8})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_samepair([1,2,3,4,2,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==5",
+      "generated_test": "result := count_samepair([]int{1, 2, 3, 4, 2, 6, 7, 8}, []int{2, 2, 3, 1, 2, 6, 7, 8}, []int{2, 1, 3, 1, 2, 6, 7, 8})\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

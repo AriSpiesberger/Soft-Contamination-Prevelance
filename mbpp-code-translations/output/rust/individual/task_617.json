@@ -1,0 +1,37 @@
+{
+  "task_id": 617,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check for the number of jumps required of given length to reach a point of form (d, 0) from origin in a 2d plane.",
+  "python_code": "def min_Jumps(steps, d): \n    (a, b) = steps\n    temp = a \n    a = min(a, b) \n    b = max(temp, b) \n    if (d >= b): \n        return (d + b - 1) / b \n    if (d == 0): \n        return 0\n    if (d == a): \n        return 1\n    else:\n        return 2",
+  "test_list": [
+    "assert min_Jumps((3,4),11)==3.5",
+    "assert min_Jumps((3,4),0)==0",
+    "assert min_Jumps((11,14),11)==1"
+  ],
+  "code_rust": "pub fn min_Jumps(steps: (i32, i32), d: i32) -> f64 {\n    let (mut a, mut b) = steps;\n    let temp = a;\n    a = a.min(b);\n    b = temp.max(b);\n    \n    if d >= b {\n        return (d + b - 1) as f64 / b as f64;\n    }\n    if d == 0 {\n        return 0.0;\n    }\n    if d == a {\n        return 1.0;\n    }\n    2.0\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert min_Jumps((3,4),11)==3.5",
+      "generated_test": "let result = min_Jumps((3, 4), 11);\nlet expected: f64 = 3.5;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Jumps((3,4),0)==0",
+      "generated_test": "let result = min_Jumps((3, 4), 0);\nlet expected: f64 = 0.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Jumps((11,14),11)==1",
+      "generated_test": "let result = min_Jumps((11, 14), 11);\nlet expected = 1.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

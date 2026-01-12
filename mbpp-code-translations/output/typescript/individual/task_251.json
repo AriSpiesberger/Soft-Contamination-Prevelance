@@ -1,0 +1,17 @@
+{
+  "task_id": 251,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an element and inserts the element before each element in the list, and returns the resulting list.",
+  "python_code": "def insert_element(list,element):\n list = [v for elt in list for v in (element, elt)]\n return list",
+  "test_list": [
+    "assert insert_element(['Red', 'Green', 'Black'] ,'c')==['c', 'Red', 'c', 'Green', 'c', 'Black']",
+    "assert insert_element(['python', 'java'] ,'program')==['program', 'python', 'program', 'java']",
+    "assert insert_element(['happy', 'sad'] ,'laugh')==['laugh', 'happy', 'laugh', 'sad']"
+  ],
+  "code_typescript": "function insert_element<T>(list: T[], element: T): T[] {\n    const result: T[] = [];\n    for (const elt of list) {\n        result.push(element, elt);\n    }\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

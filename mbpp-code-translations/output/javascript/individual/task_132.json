@@ -1,0 +1,37 @@
+{
+  "task_id": 132,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a tuple to a string.",
+  "python_code": "def tup_string(tup1):\n  str =  ''.join(tup1)\n  return str",
+  "test_list": [
+    "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+    "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+    "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")"
+  ],
+  "code_javascript": "function tup_string(tup1) {\n  return tup1.join('');\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert tup_string(('e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's'))==(\"exercises\")",
+      "generated_test": "const result = tup_string(['e', 'x', 'e', 'r', 'c', 'i', 's', 'e', 's']);\nconst expected = \"exercises\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','y','t','h','o','n'))==(\"python\")",
+      "generated_test": "const result = tup_string(['p','y','t','h','o','n']);\nconst expected = \"python\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tup_string(('p','r','o','g','r','a','m'))==(\"program\")",
+      "generated_test": "const result = tup_string(['p','r','o','g','r','a','m']);\nconst expected = \"program\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

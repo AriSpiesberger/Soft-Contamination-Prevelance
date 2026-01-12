@@ -1,0 +1,37 @@
+{
+  "task_id": 578,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to interleave 3 lists of the same length into a single flat list.",
+  "python_code": "def interleave_lists(list1,list2,list3):\n    result = [el for pair in zip(list1, list2, list3) for el in pair]\n    return result",
+  "test_list": [
+    "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+    "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+    "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]"
+  ],
+  "code_javascript": "function interleave_lists(list1, list2, list3) {\n    const result = [];\n    for (let i = 0; i < list1.length; i++) {\n        result.push(list1[i], list2[i], list3[i]);\n    }\n    return result;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+      "generated_test": "const result = interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700]);\nconst expected = [1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+      "generated_test": "const result = interleave_lists([10,20],[15,2],[5,10]);\nconst expected = [10,15,5,20,2,10];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]",
+      "generated_test": "const result = interleave_lists([11,44], [10,15], [20,5]);\nconst expected = [11,10,20,44,15,5];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

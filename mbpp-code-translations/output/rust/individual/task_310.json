@@ -1,0 +1,37 @@
+{
+  "task_id": 310,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given string to a tuple of characters.",
+  "python_code": "def string_to_tuple(str1):\n    result = tuple(x for x in str1 if not x.isspace()) \n    return result",
+  "test_list": [
+    "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+    "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+    "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')"
+  ],
+  "code_rust": "pub fn string_to_tuple(str1: &str) -> Vec<char> {\n    str1.chars()\n        .filter(|c| !c.is_whitespace())\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+      "generated_test": "let result = string_to_tuple(\"python 3.0\");\nlet expected: Vec<char> = vec!['p', 'y', 't', 'h', 'o', 'n', '3', '.', '0'];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+      "generated_test": "let result = string_to_tuple(\"item1\");\nlet expected: Vec<char> = vec!['i', 't', 'e', 'm', '1'];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')",
+      "generated_test": "let result = string_to_tuple(\"15.10\");\nlet expected: Vec<char> = vec!['1', '5', '.', '1', '0'];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

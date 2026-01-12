@@ -1,0 +1,37 @@
+{
+  "task_id": 404,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum of two numbers.",
+  "python_code": "def minimum(a,b):   \n    if a <= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert minimum(1,2) == 1",
+    "assert minimum(-5,-4) == -5",
+    "assert minimum(0,0) == 0"
+  ],
+  "code_go": "package main\n\nfunc minimum(a, b int) int {\n\tif a <= b {\n\t\treturn a\n\t} else {\n\t\treturn b\n\t}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert minimum(1,2) == 1",
+      "generated_test": "result := minimum(1, 2)\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(-5,-4) == -5",
+      "generated_test": "result := minimum(-5, -4)\nexpected := -5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert minimum(0,0) == 0",
+      "generated_test": "result := minimum(0, 0)\nexpected := 0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

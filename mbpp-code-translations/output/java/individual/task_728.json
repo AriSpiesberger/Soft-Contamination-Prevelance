@@ -1,0 +1,37 @@
+{
+  "task_id": 728,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function takes as input two lists [a_1,...,a_n], [b_1,...,b_n] and returns [a_1+b_1,...,a_n+b_n].",
+  "python_code": "def sum_list(lst1,lst2):\n  res_list = [lst1[i] + lst2[i] for i in range(len(lst1))] \n  return res_list",
+  "test_list": [
+    "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+    "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+    "assert sum_list([15,20,30],[15,45,75])==[30,65,105]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> sum_list(ArrayList<Integer> lst1, ArrayList<Integer> lst2) {\n        ArrayList<Integer> res_list = new ArrayList<>();\n        for (int i = 0; i < lst1.size(); i++) {\n            res_list.add(lst1.get(i) + lst2.get(i));\n        }\n        return res_list;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sum_list([10,20,30],[15,25,35])==[25,45,65]",
+      "generated_test": "ArrayList<Integer> lst1 = new ArrayList<>();\nlst1.add(10);\nlst1.add(20);\nlst1.add(30);\n\nArrayList<Integer> lst2 = new ArrayList<>();\nlst2.add(15);\nlst2.add(25);\nlst2.add(35);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(25);\nexpected.add(45);\nexpected.add(65);\n\nArrayList<Integer> result = sum_list(lst1, lst2);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_list([1,2,3],[5,6,7])==[6,8,10]",
+      "generated_test": "ArrayList<Integer> lst1 = new ArrayList<>();\nlst1.add(1);\nlst1.add(2);\nlst1.add(3);\nArrayList<Integer> lst2 = new ArrayList<>();\nlst2.add(5);\nlst2.add(6);\nlst2.add(7);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(6);\nexpected.add(8);\nexpected.add(10);\nArrayList<Integer> result = sum_list(lst1, lst2);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_list([15,20,30],[15,45,75])==[30,65,105]",
+      "generated_test": "ArrayList<Integer> lst1 = new ArrayList<>();\nlst1.add(15);\nlst1.add(20);\nlst1.add(30);\nArrayList<Integer> lst2 = new ArrayList<>();\nlst2.add(15);\nlst2.add(45);\nlst2.add(75);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(30);\nexpected.add(65);\nexpected.add(105);\nArrayList<Integer> result = sum_list(lst1, lst2);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

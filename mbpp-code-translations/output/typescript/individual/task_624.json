@@ -1,0 +1,17 @@
+{
+  "task_id": 624,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert a given string to uppercase.",
+  "python_code": "def is_upper(string):\n  return (string.upper())",
+  "test_list": [
+    "assert is_upper(\"person\") ==\"PERSON\"",
+    "assert is_upper(\"final\") == \"FINAL\"",
+    "assert is_upper(\"Valid\") == \"VALID\""
+  ],
+  "code_typescript": "function is_upper(string: string): string {\n  return string.toUpperCase();\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

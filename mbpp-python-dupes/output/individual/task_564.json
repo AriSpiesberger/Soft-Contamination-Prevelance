@@ -1,0 +1,27 @@
+{
+  "task_id": 564,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function which takes a list of integers and counts the number of possible unordered pairs where both elements are unequal.",
+  "code_python": "def count_Pairs(arr,n): \n    cnt = 0; \n    for i in range(n): \n        for j in range(i + 1,n): \n            if (arr[i] != arr[j]): \n                cnt += 1; \n    return cnt; ",
+  "test_list": [
+    "assert count_Pairs([1,2,1],3) == 2",
+    "assert count_Pairs([1,1,1,1],4) == 0",
+    "assert count_Pairs([1,2,3,4,5],5) == 10"
+  ],
+  "python_1": "def count_Pairs(arr,n): \n    # Calculate total possible pairs using combination formula n*(n-1)/2\n    total_pairs = n * (n - 1) // 2\n    # Import Counter to efficiently count occurrences of each element\n    from collections import Counter\n    # Build frequency map of all elements in the array\n    freq = Counter(arr)\n    # Initialize count of pairs where both elements are equal\n    same_pairs = 0\n    # Iterate through frequency counts for each unique element\n    for count in freq.values():\n        # For each element appearing k times, k*(k-1)/2 pairs have equal elements\n        same_pairs += count * (count - 1) // 2\n    # Unequal pairs = total pairs minus pairs with identical elements\n    return total_pairs - same_pairs",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_Pairs(arr,n): \n    # Use a dictionary to track how many times we've seen each value so far\n    seen_counts = {}\n    # Accumulator for counting pairs where elements differ\n    unequal_pairs = 0\n    # Process each element one at a time, building pairs incrementally\n    for i in range(n):\n        # Current element we're examining\n        current = arr[i]\n        # Every element seen before could form a pair with current element\n        total_before = i\n        # Look up how many times this exact value appeared before (default 0)\n        same_value_count = seen_counts.get(current, 0)\n        # Pairs with unequal elements = all possible pairs minus same-value pairs\n        unequal_pairs += total_before - same_value_count\n        # Update our tracking dictionary with this occurrence\n        seen_counts[current] = same_value_count + 1\n    # Return the accumulated count of unordered pairs with distinct values\n    return unequal_pairs",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_Pairs(arr,n): \n    # Transform the array into a set of unique values for iteration\n    unique_elements = set(arr)\n    # Compute total pairs formula: choosing 2 from n items\n    all_possible_pairs = n * (n - 1) // 2\n    # Variable to accumulate pairs formed by identical elements\n    identical_pairs = 0\n    # Iterate over each distinct value present in the array\n    for elem in unique_elements:\n        # Count occurrences of this specific element using list comprehension\n        occurrences = sum(1 for x in arr if x == elem)\n        # Apply combination formula to find pairs of identical elements\n        identical_pairs += (occurrences * (occurrences - 1)) // 2\n    # Subtract identical pairs from total to get unequal pairs\n    result = all_possible_pairs - identical_pairs\n    # Return the final count of pairs with differing values\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_Pairs(arr,n): \n    # Import reduce function to perform cumulative operations on sequences\n    from functools import reduce\n    # Build frequency dictionary using reduce instead of Counter or loops\n    freq_dict = reduce(lambda d, x: {**d, x: d.get(x, 0) + 1}, arr, {})\n    # Extract just the frequency values as a list for processing\n    frequencies = list(freq_dict.values())\n    # Compute identical pairs using map and sum for functional approach\n    identical = sum(map(lambda f: f * (f - 1) // 2, frequencies))\n    # Calculate total pairs using arithmetic formula for combinations\n    total = n * (n - 1) // 2\n    # Derive unequal pairs by exclusion principle\n    return total - identical",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_Pairs(arr,n): \n    # Convert input array to list to enable sorting without modifying original\n    sorted_arr = sorted(arr)\n    # Start with total number of pairs assuming all are unequal\n    total_pairs = n * (n - 1) // 2\n    # Initialize variable to track consecutive runs of identical values\n    run_length = 1\n    # Initialize accumulator for pairs that need to be subtracted\n    equal_pairs = 0\n    # Loop through sorted array starting from second element to detect runs\n    for i in range(1, n):\n        # Check if current element continues the run of identical values\n        if sorted_arr[i] == sorted_arr[i - 1]:\n            # Extend the current run by one\n            run_length += 1\n        else:\n            # Run ended, calculate pairs within the completed run\n            equal_pairs += run_length * (run_length - 1) // 2\n            # Reset run length for the new value starting here\n            run_length = 1\n    # Handle the final run that wasn't processed inside the loop\n    equal_pairs += run_length * (run_length - 1) // 2\n    # Unequal pairs equals total pairs minus pairs of equal elements\n    return total_pairs - equal_pairs",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 120,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.",
+  "python_code": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max",
+  "test_list": [
+    "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+    "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+    "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484"
+  ],
+  "code_ruby": "def max_product_tuple(list1)\n  list1.map { |x, y| (x * y).abs }.max\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+      "generated_test": "result = max_product_tuple([[2, 7], [2, 6], [1, 8], [4, 9]])\nexpected = 36\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+      "generated_test": "result = max_product_tuple([[10, 20], [15, 2], [5, 10]])\nexpected = 200\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484",
+      "generated_test": "result = max_product_tuple([[11, 44], [10, 15], [20, 5], [12, 9]])\nexpected = 484\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

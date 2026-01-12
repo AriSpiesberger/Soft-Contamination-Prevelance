@@ -1,0 +1,37 @@
+{
+  "task_id": 123,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum all amicable numbers from 1 to a specified number.",
+  "python_code": "def amicable_numbers_sum(limit):\n    if not isinstance(limit, int):\n        return \"Input is not an integer!\"\n    if limit < 1:\n        return \"Input must be bigger than 0!\"\n    amicables = set()\n    for num in range(2, limit+1):\n        if num in amicables:\n            continue\n        sum_fact = sum([fact for fact in range(1, num) if num % fact == 0])\n        sum_fact2 = sum([fact for fact in range(1, sum_fact) if sum_fact % fact == 0])\n        if num == sum_fact2 and num != sum_fact:\n            amicables.add(num)\n            amicables.add(sum_fact2)\n    return sum(amicables)",
+  "test_list": [
+    "assert amicable_numbers_sum(999)==504",
+    "assert amicable_numbers_sum(9999)==31626",
+    "assert amicable_numbers_sum(99)==0"
+  ],
+  "code_java": "import java.util.HashSet;\n\npublic class Solution {\n    public static Object amicable_numbers_sum(Object limitObj) {\n        if (!(limitObj instanceof Integer)) {\n            return \"Input is not an integer!\";\n        }\n        int limit = (Integer) limitObj;\n        if (limit < 1) {\n            return \"Input must be bigger than 0!\";\n        }\n        HashSet<Integer> amicables = new HashSet<>();\n        for (int num = 2; num <= limit; num++) {\n            if (amicables.contains(num)) {\n                continue;\n            }\n            int sum_fact = 0;\n            for (int fact = 1; fact < num; fact++) {\n                if (num % fact == 0) {\n                    sum_fact += fact;\n                }\n            }\n            int sum_fact2 = 0;\n            for (int fact = 1; fact < sum_fact; fact++) {\n                if (sum_fact % fact == 0) {\n                    sum_fact2 += fact;\n                }\n            }\n            if (num == sum_fact2 && num != sum_fact) {\n                amicables.add(num);\n                amicables.add(sum_fact2);\n            }\n        }\n        int total = 0;\n        for (int n : amicables) {\n            total += n;\n        }\n        return total;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert amicable_numbers_sum(999)==504",
+      "generated_test": "Object result = amicable_numbers_sum(999);\nObject expected = 504;\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(9999)==31626",
+      "generated_test": "Object result = amicable_numbers_sum(9999);\nObject expected = 31626;\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(99)==0",
+      "generated_test": "Object result = amicable_numbers_sum(99);\nObject expected = 0;\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

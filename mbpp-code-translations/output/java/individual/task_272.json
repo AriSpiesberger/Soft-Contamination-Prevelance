@@ -1,0 +1,37 @@
+{
+  "task_id": 272,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list of tuples and returns a list containing the rear element of each tuple.",
+  "python_code": "def rear_extract(test_list):\n  res = [lis[-1] for lis in test_list]\n  return (res) ",
+  "test_list": [
+    "assert rear_extract([(1, 'Rash', 21), (2, 'Varsha', 20), (3, 'Kil', 19)]) == [21, 20, 19]",
+    "assert rear_extract([(1, 'Sai', 36), (2, 'Ayesha', 25), (3, 'Salman', 45)]) == [36, 25, 45]",
+    "assert rear_extract([(1, 'Sudeep', 14), (2, 'Vandana', 36), (3, 'Dawood', 56)]) == [14, 36, 56]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Object> rear_extract(List<Object[]> test_list) {\n        ArrayList<Object> res = new ArrayList<>();\n        for (Object[] lis : test_list) {\n            res.add(lis[lis.length - 1]);\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert rear_extract([(1, 'Rash', 21), (2, 'Varsha', 20), (3, 'Kil', 19)]) == [21, 20, 19]",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{1, \"Rash\", 21});\ninput.add(new Object[]{2, \"Varsha\", 20});\ninput.add(new Object[]{3, \"Kil\", 19});\n\nList<Object> result = rear_extract(input);\nList<Object> expected = new ArrayList<>();\nexpected.add(21);\nexpected.add(20);\nexpected.add(19);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rear_extract([(1, 'Sai', 36), (2, 'Ayesha', 25), (3, 'Salman', 45)]) == [36, 25, 45]",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{1, \"Sai\", 36});\ninput.add(new Object[]{2, \"Ayesha\", 25});\ninput.add(new Object[]{3, \"Salman\", 45});\n\nList<Object> result = rear_extract(input);\nList<Object> expected = new ArrayList<>();\nexpected.add(36);\nexpected.add(25);\nexpected.add(45);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rear_extract([(1, 'Sudeep', 14), (2, 'Vandana', 36), (3, 'Dawood', 56)]) == [14, 36, 56]",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{1, \"Sudeep\", 14});\ninput.add(new Object[]{2, \"Vandana\", 36});\ninput.add(new Object[]{3, \"Dawood\", 56});\n\nList<Object> result = rear_extract(input);\nList<Object> expected = new ArrayList<>();\nexpected.add(14);\nexpected.add(36);\nexpected.add(56);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

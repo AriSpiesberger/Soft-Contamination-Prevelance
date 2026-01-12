@@ -1,0 +1,37 @@
+{
+  "task_id": 555,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the difference between the sum of cubes of the first n natural numbers and the sum of the first n natural numbers.",
+  "python_code": "def difference(n) :  \n    S = (n*(n + 1))//2;  \n    res = S*(S-1);  \n    return res;  ",
+  "test_list": [
+    "assert difference(3) == 30",
+    "assert difference(5) == 210",
+    "assert difference(2) == 6"
+  ],
+  "code_go": "package main\n\nfunc difference(n int) int {\n\tS := (n * (n + 1)) / 2\n\tres := S * (S - 1)\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert difference(3) == 30",
+      "generated_test": "result := difference(3)\nexpected := 30\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert difference(5) == 210",
+      "generated_test": "result := difference(5)\nexpected := 210\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert difference(2) == 6",
+      "generated_test": "expected := 6\ngot := difference(2)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 800,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from a string.",
+  "python_code": "import re\ndef remove_all_spaces(text):\n return (re.sub(r'\\s+', '',text))",
+  "test_list": [
+    "assert remove_all_spaces('python  program')==('pythonprogram')",
+    "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+    "assert remove_all_spaces('python                     program')==('pythonprogram')",
+    "assert remove_all_spaces('   python                     program')=='pythonprogram'"
+  ],
+  "code_java": "import java.util.regex.*;\n\npublic class Solution {\n    public static String remove_all_spaces(String text) {\n        return text.replaceAll(\"\\\\s+\", \"\");\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert remove_all_spaces('python  program')==('pythonprogram')",
+      "generated_test": "String result = remove_all_spaces(\"python  program\");\nString expected = \"pythonprogram\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+      "generated_test": "String result = remove_all_spaces(\"python   programming    language\");\nString expected = \"pythonprogramminglanguage\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python                     program')==('pythonprogram')",
+      "generated_test": "String result = remove_all_spaces(\"python                     program\");\nString expected = \"pythonprogram\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('   python                     program')=='pythonprogram'",
+      "generated_test": "String result = remove_all_spaces(\"   python                     program\");\nString expected = \"pythonprogram\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

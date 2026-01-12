@@ -1,0 +1,27 @@
+{
+  "task_id": 143,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find number of lists present in the given tuple.",
+  "code_python": "def find_lists(Input): \n\tif isinstance(Input, list): \n\t\treturn 1\n\telse: \n\t\treturn len(Input) ",
+  "test_list": [
+    "assert find_lists(([1, 2, 3, 4], [5, 6, 7, 8])) == 2",
+    "assert find_lists(([1, 2], [3, 4], [5, 6]))  == 3",
+    "assert find_lists(([9, 8, 7, 6, 5, 4, 3, 2, 1])) == 1"
+  ],
+  "python_1": "def find_lists(Input): \n\t# Handle edge case where Input itself is a list (single list scenario)\n\tif isinstance(Input, list): \n\t\treturn 1\n\t# Initialize a counter to track the number of lists found\n\tcount = 0\n\t# Iterate through each element in the tuple to examine its type\n\tfor element in Input:\n\t\t# Check if current element is a list type using type comparison\n\t\tif type(element) == list:\n\t\t\t# Increment counter when a list is discovered\n\t\t\tcount += 1\n\t# Return the total count of lists found in the tuple\n\treturn count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_lists(Input): \n\t# Check if the input is directly a list (edge case for single list)\n\tif isinstance(Input, list): \n\t\treturn 1\n\t# Use sum with generator expression to count lists functionally\n\t# This leverages boolean-to-int conversion where True equals 1\n\treturn sum(1 for item in Input if isinstance(item, list))",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_lists(Input): \n\t# Directly return 1 if the input parameter is itself a list type\n\tif isinstance(Input, list): \n\t\treturn 1\n\t# Use filter to create an iterator containing only list-type elements\n\tfiltered_lists = filter(lambda x: isinstance(x, list), Input)\n\t# Convert filtered iterator to a concrete list for length measurement\n\tlist_of_lists = list(filtered_lists)\n\t# Return the count by measuring the length of filtered results\n\treturn len(list_of_lists)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_lists(Input): \n\t# Return 1 immediately when the input is a standalone list object\n\tif isinstance(Input, list): \n\t\treturn 1\n\t# Apply map to transform each element into 1 if it's a list, 0 otherwise\n\tmapped_values = map(lambda x: 1 if isinstance(x, list) else 0, Input)\n\t# Convert the map object to a list to enable summation\n\tvalues_as_list = list(mapped_values)\n\t# Sum all the 1s to get total count of lists found\n\ttotal_lists = sum(values_as_list)\n\t# Return the accumulated sum representing number of lists\n\treturn total_lists",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_lists(Input): \n\t# Handle special case where input is a single list not wrapped in tuple\n\tif isinstance(Input, list): \n\t\treturn 1\n\t# Extract the types of all elements using a list comprehension\n\telement_types = [type(elem) for elem in Input]\n\t# Use the count method on the types list to tally occurrences of list type\n\tlist_count = element_types.count(list)\n\t# Return the number of list type occurrences found\n\treturn list_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

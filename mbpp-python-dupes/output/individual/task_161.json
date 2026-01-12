@@ -1,0 +1,27 @@
+{
+  "task_id": 161,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all elements from a given list present in another list.",
+  "code_python": "def remove_elements(list1, list2):\n    result = [x for x in list1 if x not in list2]\n    return result",
+  "test_list": [
+    "assert remove_elements([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [2, 4, 6, 8]) == [1, 3, 5, 7, 9, 10]",
+    "assert remove_elements([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 3, 5, 7]) == [2, 4, 6, 8, 9, 10]",
+    "assert remove_elements([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [5, 7]) == [1, 2, 3, 4, 6, 8, 9, 10]"
+  ],
+  "python_1": "def remove_elements(list1, list2):\n    # Convert list2 to a set for O(1) lookup performance\n    exclusion_set = set(list2)\n    # Initialize empty list to accumulate filtered results\n    result = []\n    # Process each element from the source list sequentially\n    for element in list1:\n        # Check if current element should be kept (not in exclusion set)\n        if element not in exclusion_set:\n            # Append qualifying element to result collection\n            result.append(element)\n    # Return the filtered list with excluded elements removed\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_elements(list1, list2):\n    # Use filter function with lambda to create lazy iterator of non-excluded items\n    filtered_iterator = filter(lambda x: x not in list2, list1)\n    # Materialize the filter iterator into a concrete list for return\n    result = list(filtered_iterator)\n    # Return the newly constructed list without excluded elements\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_elements(list1, list2):\n    # Convert exclusion list to set for efficient membership testing\n    elements_to_remove = set(list2)\n    # Create a copy of list1 to avoid mutating the original input\n    result = list1.copy()\n    # Track current position while iterating backwards to safely remove items\n    index = len(result) - 1\n    # Traverse the list from end to start to prevent index shifting issues\n    while index >= 0:\n        # Check if current element exists in the exclusion set\n        if result[index] in elements_to_remove:\n            # Remove the element at current position using del statement\n            del result[index]\n        # Move to the previous index position\n        index -= 1\n    # Return the modified list with unwanted elements removed\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_elements(list1, list2):\n    # Build a set from list2 to enable fast O(1) membership checks\n    exclude_set = set(list2)\n    # Use a generator expression to lazily evaluate which elements to keep\n    def element_generator():\n        # Iterate through source list yielding only non-excluded items\n        for item in list1:\n            # Yield item only if it's not marked for exclusion\n            if item not in exclude_set:\n                yield item\n    # Consume the generator and collect all yielded elements into a list\n    result = [elem for elem in element_generator()]\n    # Return the filtered collection as the final result\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_elements(list1, list2):\n    # Transform list2 into a frozenset for immutable, hashable exclusion lookup\n    exclusion_frozen = frozenset(list2)\n    # Use enumerate to track indices of elements we want to preserve\n    indices_to_keep = []\n    # Scan through list1 with index tracking to identify keeper positions\n    for idx, val in enumerate(list1):\n        # Record index only when value passes the exclusion filter\n        if val not in exclusion_frozen:\n            indices_to_keep.append(idx)\n    # Reconstruct result by extracting elements at preserved index positions\n    result = [list1[i] for i in indices_to_keep]\n    # Deliver the filtered list containing only non-excluded elements\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

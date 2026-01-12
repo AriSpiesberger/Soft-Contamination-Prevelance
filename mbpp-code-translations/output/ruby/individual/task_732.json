@@ -1,0 +1,37 @@
+{
+  "task_id": 732,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all occurrences of spaces, commas, or dots with a colon.",
+  "python_code": "import re\ndef replace_specialchar(text):\n return (re.sub(\"[ ,.]\", \":\", text))\n",
+  "test_list": [
+    "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+    "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+    "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')"
+  ],
+  "code_ruby": "def replace_specialchar(text)\n  text.gsub(/[ ,.]/, ':')\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+      "generated_test": "result = replace_specialchar('Python language, Programming language.')\nexpected = 'Python:language::Programming:language:'\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+      "generated_test": "result = replace_specialchar('a b c,d e f')\nexpected = 'a:b:c:d:e:f'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')",
+      "generated_test": "result = replace_specialchar('ram reshma,ram rahim')\nexpected = 'ram:reshma:ram:rahim'\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

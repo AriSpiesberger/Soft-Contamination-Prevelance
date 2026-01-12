@@ -1,0 +1,27 @@
+{
+  "task_id": 633,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of xor of all pairs of numbers in the given list.",
+  "code_python": "def pair_xor_Sum(arr,n) : \n    ans = 0 \n    for i in range(0,n) :    \n        for j in range(i + 1,n) :   \n            ans = ans + (arr[i] ^ arr[j])          \n    return ans ",
+  "test_list": [
+    "assert pair_xor_Sum([5,9,7,6],4) == 47",
+    "assert pair_xor_Sum([7,3,5],3) == 12",
+    "assert pair_xor_Sum([7,3],2) == 4"
+  ],
+  "python_1": "def pair_xor_Sum(arr,n) : \n    # Initialize total sum accumulator for all pair XOR values\n    total_sum = 0\n    # Determine the number of bits needed to represent the largest number\n    max_bits = 32\n    # Process each bit position independently to exploit XOR properties\n    for bit in range(max_bits):\n        # Count how many numbers have a 1 at the current bit position\n        count_ones = 0\n        # Scan through each element to check the current bit\n        for num in arr:\n            # Right-shift and mask to isolate the bit at current position\n            if (num >> bit) & 1:\n                # Increment counter when bit is set\n                count_ones += 1\n        # Numbers with 0 at this bit position is the complement\n        count_zeros = n - count_ones\n        # XOR produces 1 only when bits differ, so multiply counts of 0s and 1s\n        pairs_with_diff_bits = count_ones * count_zeros\n        # Each such pair contributes 2^bit to the total sum\n        total_sum += pairs_with_diff_bits * (1 << bit)\n    # Return the accumulated sum of all pairwise XOR operations\n    return total_sum",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def pair_xor_Sum(arr,n) : \n    # Use itertools to generate all unique pairs without manual nested loops\n    from itertools import combinations\n    # Start accumulator at zero for summing XOR results\n    xor_sum = 0\n    # Generate all 2-element combinations from the input array\n    all_pairs = combinations(arr, 2)\n    # Iterate through each unique pair of elements\n    for pair in all_pairs:\n        # Unpack the two elements from the current pair tuple\n        first, second = pair\n        # Compute XOR of the pair and add to running total\n        xor_sum += first ^ second\n    # Return the total sum of all pairwise XOR operations\n    return xor_sum",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def pair_xor_Sum(arr,n) : \n    # Use reduce with a lambda to fold over all pairs functionally\n    from functools import reduce\n    # Create a list to store XOR values computed via list comprehension with dual iteration\n    xor_values = [arr[i] ^ arr[j] for i in range(n) for j in range(n) if i < j]\n    # Apply reduce to sum all XOR values, starting with identity element 0\n    result = reduce(lambda acc, x: acc + x, xor_values, 0)\n    # Return the reduced sum representing total of all pair XORs\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def pair_xor_Sum(arr,n) : \n    # Import sum function as builtin for cleaner summation approach\n    from builtins import sum as builtin_sum\n    # Use generator expression with enumerate to avoid index management overhead\n    def generate_xor_pairs():\n        # Enumerate provides index alongside element for efficient pairing\n        for idx, first_num in enumerate(arr):\n            # Slice remaining elements after current index to form valid pairs\n            remaining_elements = arr[idx + 1:]\n            # Yield XOR of current element with each subsequent element\n            for second_num in remaining_elements:\n                # Compute bitwise XOR and yield to generator\n                yield first_num ^ second_num\n    # Create generator object that lazily produces XOR values\n    xor_generator = generate_xor_pairs()\n    # Sum all yielded XOR values using builtin sum on generator\n    total_xor_sum = builtin_sum(xor_generator)\n    # Return accumulated sum of all unique pair XOR operations\n    return total_xor_sum",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def pair_xor_Sum(arr,n) : \n    # Use map to compute XOR contributions per bit position in a functional style\n    def count_contribution(bit_position):\n        # Count elements with bit set using filter and bin string checking\n        ones = len(list(filter(lambda x: (x >> bit_position) & 1, arr)))\n        # Elements without bit set is simply total minus ones count\n        zeros = n - ones\n        # Return weighted contribution: pairs with differing bits times bit weight\n        return ones * zeros * (1 << bit_position)\n    # Create range of bit positions to check (32-bit integers cover typical input)\n    bit_positions = range(32)\n    # Map the contribution function across all bit positions to get individual sums\n    contributions = map(count_contribution, bit_positions)\n    # Convert map object to list for summation compatibility\n    contribution_list = list(contributions)\n    # Aggregate all bit position contributions using built-in sum\n    final_sum = sum(contribution_list)\n    # Return the computed sum of all pairwise XOR operations\n    return final_sum",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

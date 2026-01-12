@@ -1,0 +1,37 @@
+{
+  "task_id": 573,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to calculate the product of the unique numbers in a given list.",
+  "python_code": "def unique_product(list_data):\n    temp = list(set(list_data))\n    p = 1\n    for i in temp:\n        p *= i\n    return p",
+  "test_list": [
+    "assert unique_product([10, 20, 30, 40, 20, 50, 60, 40]) ==  720000000",
+    "assert unique_product([1, 2, 3, 1,]) == 6",
+    "assert unique_product([7, 8, 9, 0, 1, 1]) == 0"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn unique_product(list_data: Vec<i64>) -> i64 {\n    let temp: HashSet<i64> = list_data.into_iter().collect();\n    let mut p: i64 = 1;\n    for i in temp {\n        p *= i;\n    }\n    p\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert unique_product([10, 20, 30, 40, 20, 50, 60, 40]) ==  720000000",
+      "generated_test": "let result = unique_product(vec![10, 20, 30, 40, 20, 50, 60, 40]);\nlet expected: i64 = 720000000;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_product([1, 2, 3, 1,]) == 6",
+      "generated_test": "let result = unique_product(vec![1, 2, 3, 1]);\nlet expected: i64 = 6;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_product([7, 8, 9, 0, 1, 1]) == 0",
+      "generated_test": "let result = unique_product(vec![7, 8, 9, 0, 1, 1]);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

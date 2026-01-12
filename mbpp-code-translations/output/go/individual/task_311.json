@@ -1,0 +1,37 @@
+{
+  "task_id": 311,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to set the left most unset bit.",
+  "python_code": "def set_left_most_unset_bit(n): \n    if not (n & (n + 1)): \n        return n \n    pos, temp, count = 0, n, 0 \n    while temp: \n        if not (temp & 1): \n            pos = count      \n        count += 1; temp>>=1\n    return (n | (1 << (pos))) ",
+  "test_list": [
+    "assert set_left_most_unset_bit(10) == 14",
+    "assert set_left_most_unset_bit(12) == 14",
+    "assert set_left_most_unset_bit(15) == 15"
+  ],
+  "code_go": "package main\n\nfunc set_left_most_unset_bit(n int) int {\n\tif (n & (n + 1)) == 0 {\n\t\treturn n\n\t}\n\tpos, temp, count := 0, n, 0\n\tfor temp != 0 {\n\t\tif (temp & 1) == 0 {\n\t\t\tpos = count\n\t\t}\n\t\tcount++\n\t\ttemp >>= 1\n\t}\n\treturn n | (1 << pos)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert set_left_most_unset_bit(10) == 14",
+      "generated_test": "result := set_left_most_unset_bit(10)\nexpected := 14\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(12) == 14",
+      "generated_test": "result := set_left_most_unset_bit(12)\nexpected := 14\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(15) == 15",
+      "generated_test": "result := set_left_most_unset_bit(15)\nexpected := 15\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

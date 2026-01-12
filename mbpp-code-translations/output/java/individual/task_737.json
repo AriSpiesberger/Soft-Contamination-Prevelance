@@ -1,0 +1,37 @@
+{
+  "task_id": 737,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string is starting with a vowel or not using regex.",
+  "python_code": "import re \nregex = '^[aeiouAEIOU][A-Za-z0-9_]*'\ndef check_str(string): \n\treturn re.search(regex, string)",
+  "test_list": [
+    "assert check_str(\"annie\")",
+    "assert not check_str(\"dawood\")",
+    "assert check_str(\"Else\")"
+  ],
+  "code_java": "import java.util.regex.Pattern;\nimport java.util.regex.Matcher;\n\npublic class Solution {\n    private static final String regex = \"^[aeiouAEIOU][A-Za-z0-9_]*\";\n    \n    public static boolean check_str(String string) {\n        Pattern pattern = Pattern.compile(regex);\n        Matcher matcher = pattern.matcher(string);\n        return matcher.find();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_str(\"annie\")",
+      "generated_test": "boolean result = check_str(\"annie\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not check_str(\"dawood\")",
+      "generated_test": "boolean result = check_str(\"dawood\");\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_str(\"Else\")",
+      "generated_test": "boolean result = check_str(\"Else\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

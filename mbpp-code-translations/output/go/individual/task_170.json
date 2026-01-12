@@ -1,0 +1,37 @@
+{
+  "task_id": 170,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the sum of numbers in a list within a range specified by two indices.",
+  "python_code": "def sum_range_list(list1, m, n):                                                                                                                                                                                                \n    sum_range = 0                                                                                                                                                                                                         \n    for i in range(m, n+1, 1):                                                                                                                                                                                        \n        sum_range += list1[i]                                                                                                                                                                                                  \n    return sum_range   ",
+  "test_list": [
+    "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 8, 10) == 29",
+    "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 5, 7) == 16",
+    "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 7, 10) == 38"
+  ],
+  "code_go": "package main\n\nfunc sum_range_list(list1 []int, m int, n int) int {\n    sum_range := 0\n    for i := m; i <= n; i++ {\n        sum_range += list1[i]\n    }\n    return sum_range\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 8, 10) == 29",
+      "generated_test": "result := sum_range_list([]int{2, 1, 5, 6, 8, 3, 4, 9, 10, 11, 8, 12}, 8, 10)\nexpected := 29\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 5, 7) == 16",
+      "generated_test": "result := sum_range_list([]int{2, 1, 5, 6, 8, 3, 4, 9, 10, 11, 8, 12}, 5, 7)\nexpected := 16\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_range_list([2,1,5,6,8,3,4,9,10,11,8,12], 7, 10) == 38",
+      "generated_test": "result := sum_range_list([]int{2, 1, 5, 6, 8, 3, 4, 9, 10, 11, 8, 12}, 7, 10)\nexpected := 38\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

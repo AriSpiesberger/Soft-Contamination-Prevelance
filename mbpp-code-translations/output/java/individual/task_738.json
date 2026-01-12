@@ -1,0 +1,37 @@
+{
+  "task_id": 738,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the geometric sum of n-1. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-recursion-exercise-9.php",
+  "python_code": "def geometric_sum(n):\n  if n < 0:\n    return 0\n  else:\n    return 1 / (pow(2, n)) + geometric_sum(n - 1)",
+  "test_list": [
+    "assert geometric_sum(7) == 1.9921875",
+    "assert geometric_sum(4) == 1.9375",
+    "assert geometric_sum(8) == 1.99609375"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double geometric_sum(int n) {\n        if (n < 0) {\n            return 0;\n        } else {\n            return 1.0 / (Math.pow(2, n)) + geometric_sum(n - 1);\n        }\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert geometric_sum(7) == 1.9921875",
+      "generated_test": "double result = geometric_sum(7);\ndouble expected = 1.9921875;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert geometric_sum(4) == 1.9375",
+      "generated_test": "double result = geometric_sum(4);\ndouble expected = 1.9375;\nif (Math.abs(result - expected) < 1e-9) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert geometric_sum(8) == 1.99609375",
+      "generated_test": "double result = geometric_sum(8);\ndouble expected = 1.99609375;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 406,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find whether the parity of a given number is odd.",
+  "python_code": "def find_Parity(x): \n    y = x ^ (x >> 1); \n    y = y ^ (y >> 2); \n    y = y ^ (y >> 4); \n    y = y ^ (y >> 8); \n    y = y ^ (y >> 16); \n    if (y & 1): \n        return True\n    return False",
+  "test_list": [
+    "assert find_Parity(12) == False",
+    "assert find_Parity(7) == True",
+    "assert find_Parity(10) == False"
+  ],
+  "code_rust": "pub fn find_Parity(x: i32) -> bool {\n    let mut y = x ^ (x >> 1);\n    y = y ^ (y >> 2);\n    y = y ^ (y >> 4);\n    y = y ^ (y >> 8);\n    y = y ^ (y >> 16);\n    (y & 1) != 0\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_Parity(12) == False",
+      "generated_test": "let result = find_Parity(12);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Parity(7) == True",
+      "generated_test": "let result = find_Parity(7);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Parity(10) == False",
+      "generated_test": "let result = find_Parity(10);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 427,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a date of yyyy-mm-dd format to dd-mm-yyyy format.",
+  "python_code": "import re\ndef change_date_format(dt):\n        return re.sub(r'(\\d{4})-(\\d{1,2})-(\\d{1,2})', '\\\\3-\\\\2-\\\\1', dt)",
+  "test_list": [
+    "assert change_date_format(\"2026-01-02\") == '02-01-2026'",
+    "assert change_date_format(\"2020-11-13\") == '13-11-2020'",
+    "assert change_date_format(\"2021-04-26\") == '26-04-2021'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc change_date_format(dt string) string {\n\tre := regexp.MustCompile(`(\\d{4})-(\\d{1,2})-(\\d{1,2})`)\n\treturn re.ReplaceAllString(dt, \"$3-$2-$1\")\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert change_date_format(\"2026-01-02\") == '02-01-2026'",
+      "generated_test": "result := change_date_format(\"2026-01-02\")\nexpected := \"02-01-2026\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert change_date_format(\"2020-11-13\") == '13-11-2020'",
+      "generated_test": "result := change_date_format(\"2020-11-13\")\nexpected := \"13-11-2020\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert change_date_format(\"2021-04-26\") == '26-04-2021'",
+      "generated_test": "result := change_date_format(\"2021-04-26\")\nexpected := \"26-04-2021\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

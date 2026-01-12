@@ -1,0 +1,17 @@
+{
+  "task_id": 305,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return two words from a list of words starting with letter 'p'.",
+  "python_code": "import re\ndef start_withp(words):\n for w in words:\n        m = re.match(\"(P\\w+)\\W(P\\w+)\", w)\n        if m:\n            return m.groups()",
+  "test_list": [
+    "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+    "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+    "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')"
+  ],
+  "code_typescript": "function start_withp(words: string[]): [string, string] | undefined {\n    const regex = /^(P\\w+)\\W(P\\w+)/;\n    for (const w of words) {\n        const m = w.match(regex);\n        if (m) {\n            return [m[1], m[2]];\n        }\n    }\n    return undefined;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

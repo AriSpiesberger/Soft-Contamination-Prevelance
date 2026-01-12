@@ -1,0 +1,37 @@
+{
+  "task_id": 139,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the circumference of a circle.",
+  "python_code": "def circle_circumference(r):\n  perimeter=2*3.1415*r\n  return perimeter",
+  "test_list": [
+    "assert math.isclose(circle_circumference(10), 62.830000000000005, rel_tol=0.001)",
+    "assert math.isclose(circle_circumference(5), 31.415000000000003, rel_tol=0.001)",
+    "assert math.isclose(circle_circumference(4), 25.132, rel_tol=0.001)"
+  ],
+  "code_ruby": "def circle_circumference(r)\n  perimeter = 2 * 3.1415 * r\n  perimeter\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert math.isclose(circle_circumference(10), 62.830000000000005, rel_tol=0.001)",
+      "generated_test": "result = circle_circumference(10)\nexpected = 62.830000000000005\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(circle_circumference(5), 31.415000000000003, rel_tol=0.001)",
+      "generated_test": "result = circle_circumference(5)\nexpected = 31.415000000000003\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(circle_circumference(4), 25.132, rel_tol=0.001)",
+      "generated_test": "result = circle_circumference(4)\nexpected = 25.132\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

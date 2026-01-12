@@ -1,0 +1,37 @@
+{
+  "task_id": 557,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to toggle the case of all characters in a string.",
+  "python_code": "def toggle_string(string):\n string1 = string.swapcase()\n return string1",
+  "test_list": [
+    "assert toggle_string(\"Python\")==(\"pYTHON\")",
+    "assert toggle_string(\"Pangram\")==(\"pANGRAM\")",
+    "assert toggle_string(\"LIttLE\")==(\"liTTle\")"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static String toggle_string(String string) {\n        StringBuilder result = new StringBuilder();\n        for (int i = 0; i < string.length(); i++) {\n            char c = string.charAt(i);\n            if (Character.isUpperCase(c)) {\n                result.append(Character.toLowerCase(c));\n            } else if (Character.isLowerCase(c)) {\n                result.append(Character.toUpperCase(c));\n            } else {\n                result.append(c);\n            }\n        }\n        return result.toString();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert toggle_string(\"Python\")==(\"pYTHON\")",
+      "generated_test": "String result = toggle_string(\"Python\");\nString expected = \"pYTHON\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_string(\"Pangram\")==(\"pANGRAM\")",
+      "generated_test": "String result = toggle_string(\"Pangram\");\nString expected = \"pANGRAM\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert toggle_string(\"LIttLE\")==(\"liTTle\")",
+      "generated_test": "String result = toggle_string(\"LIttLE\");\nString expected = \"liTTle\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

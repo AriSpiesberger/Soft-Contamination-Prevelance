@@ -1,0 +1,17 @@
+{
+  "task_id": 89,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the closest smaller number than n.",
+  "python_code": "def closest_num(N):\n  return (N - 1)",
+  "test_list": [
+    "assert closest_num(11) == 10",
+    "assert closest_num(7) == 6",
+    "assert closest_num(12) == 11"
+  ],
+  "code_typescript": "function closest_num(N: number): number {\n  return N - 1;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

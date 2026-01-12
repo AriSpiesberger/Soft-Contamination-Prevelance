@@ -1,0 +1,17 @@
+{
+  "task_id": 432,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median length of a trapezium.",
+  "python_code": "def median_trapezium(base1,base2,height):\n median = 0.5 * (base1+ base2)\n return median",
+  "test_list": [
+    "assert median_trapezium(15,25,35)==20",
+    "assert median_trapezium(10,20,30)==15",
+    "assert median_trapezium(6,9,4)==7.5"
+  ],
+  "code_typescript": "function median_trapezium(base1: number, base2: number, height: number): number {\n    const median = 0.5 * (base1 + base2);\n    return median;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

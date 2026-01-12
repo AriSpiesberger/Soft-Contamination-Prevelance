@@ -1,0 +1,27 @@
+{
+  "task_id": 786,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the right insertion point for a specified value in sorted order.",
+  "code_python": "import bisect\ndef right_insertion(a, x):\n    return bisect.bisect_right(a, x)",
+  "test_list": [
+    "assert right_insertion([1,2,4,5],6)==4",
+    "assert right_insertion([1,2,4,5],3)==2",
+    "assert right_insertion([1,2,4,5],7)==4"
+  ],
+  "python_1": "def right_insertion(a, x):\n    # Set left boundary of search range to start of array\n    lo = 0\n    # Set right boundary of search range to end of array\n    hi = len(a)\n    # Continue binary search while valid range exists\n    while lo < hi:\n        # Calculate midpoint avoiding integer overflow\n        mid = (lo + hi) // 2\n        # Check if middle element is greater than target value\n        if a[mid] > x:\n            # Narrow search to left half since insertion point is before mid\n            hi = mid\n        else:\n            # Move left boundary past mid since we want rightmost position\n            lo = mid + 1\n    # Return final position where all elements to left are <= x\n    return lo",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def right_insertion(a, x):\n    # Handle empty array edge case by returning position 0\n    if not a:\n        return 0\n    # Use linear scan from the beginning to find first element greater than x\n    position = 0\n    # Traverse array comparing each element against target value x\n    for i in range(len(a)):\n        # When element exceeds x, we've found the right insertion point\n        if a[i] > x:\n            # Return current index as the insertion position\n            return i\n        # Track position after current element for case when all elements <= x\n        position = i + 1\n    # All elements are <= x, so insertion point is at the end\n    return position",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def right_insertion(a, x):\n    # Use list comprehension to create boolean mask of elements <= x\n    less_or_equal = [elem <= x for elem in a]\n    # Sum the True values to count how many elements should come before x\n    insertion_point = sum(less_or_equal)\n    # Return the count which represents the rightmost valid position\n    return insertion_point",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def right_insertion(a, x):\n    # Use enumerate to pair each element with its index for filtering\n    indices_greater = [idx for idx, elem in enumerate(a) if elem > x]\n    # Check if any elements in array are strictly greater than x\n    if indices_greater:\n        # First index where element exceeds x is the insertion point\n        return min(indices_greater)\n    # No elements greater than x means insert at the very end\n    return len(a)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def right_insertion(a, x):\n    # Start recursive search with full array bounds as initial range\n    return _binary_search_right(a, x, 0, len(a))\n\ndef _binary_search_right(a, x, lo, hi):\n    # Base case: when search range collapses, we've found insertion point\n    if lo >= hi:\n        return lo\n    # Compute middle index using floor division for proper splitting\n    mid = (lo + hi) // 2\n    # Recursively search left half if mid element exceeds target\n    if a[mid] > x:\n        return _binary_search_right(a, x, lo, mid)\n    # Otherwise recurse right, excluding mid since we want rightmost position\n    else:\n        return _binary_search_right(a, x, mid + 1, hi)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

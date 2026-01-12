@@ -1,0 +1,44 @@
+{
+  "task_id": 773,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the occurrence and position of the substrings within a string. Return None if there is no match.",
+  "python_code": "import re\ndef occurance_substring(text,pattern):\n for match in re.finditer(pattern, text):\n    s = match.start()\n    e = match.end()\n    return (text[s:e], s, e)",
+  "test_list": [
+    "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+    "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+    "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+    "assert occurance_substring('c++ programming, c++ language','python')==None"
+  ],
+  "code_javascript": "function occurance_substring(text, pattern) {\n  const regex = new RegExp(pattern);\n  const match = regex.exec(text);\n  if (match) {\n    const s = match.index;\n    const e = s + match[0].length;\n    return [text.slice(s, e), s, e];\n  }\n  return null;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+      "generated_test": "const result = occurance_substring('python programming, python language', 'python');\nconst expected = ['python', 0, 6];\n\nif (result !== null && \n    result.length === expected.length && \n    result[0] === expected[0] && \n    result[1] === expected[1] && \n    result[2] === expected[2]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+      "generated_test": "const result = occurance_substring('python programming,programming language', 'programming');\nconst expected = ['programming', 7, 18];\n\nif (result !== null && \n    result.length === expected.length && \n    result[0] === expected[0] && \n    result[1] === expected[1] && \n    result[2] === expected[2]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+      "generated_test": "const result = occurance_substring('python programming,programming language', 'language');\nconst expected = ['language', 31, 39];\n\nif (result !== null && \n    result.length === expected.length && \n    result[0] === expected[0] && \n    result[1] === expected[1] && \n    result[2] === expected[2]) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('c++ programming, c++ language','python')==None",
+      "generated_test": "const result = occurance_substring('c++ programming, c++ language', 'python');\nconst expected = null;\n\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

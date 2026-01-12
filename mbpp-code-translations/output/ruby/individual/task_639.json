@@ -1,0 +1,37 @@
+{
+  "task_id": 639,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.",
+  "python_code": "def sample_nam(sample_names):\n  sample_names=list(filter(lambda el:el[0].isupper() and el[1:].islower(),sample_names))\n  return len(''.join(sample_names))",
+  "test_list": [
+    "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+    "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+    "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6"
+  ],
+  "code_ruby": "def sample_nam(sample_names)\n  filtered_names = sample_names.select do |el|\n    el[0] =~ /[A-Z]/ && (el[1..].empty? || el[1..] =~ /\\A[a-z]*\\z/)\n  end\n  filtered_names.join.length\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+      "generated_test": "result = sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])\nexpected = 16\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+      "generated_test": "result = sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])\nexpected = 10\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6",
+      "generated_test": "result = sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])\nexpected = 6\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

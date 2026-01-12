@@ -1,0 +1,27 @@
+{
+  "task_id": 471,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the product of the array multiplication modulo n.",
+  "code_python": "def find_remainder(arr, n): \n    mul = 1\n    for i in range(len(arr)):  \n        mul = (mul * (arr[i] % n)) % n \n    return mul % n ",
+  "test_list": [
+    "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+    "assert find_remainder([1,1,1],1) == 0",
+    "assert find_remainder([1,2,1],2) == 0"
+  ],
+  "python_1": "from functools import reduce\n\ndef find_remainder(arr, n): \n    # Handle edge case where modulus is 1 (any number mod 1 is always 0)\n    if n == 1:\n        return 0\n    # Use reduce to apply a lambda function that multiplies values with modular arithmetic\n    # This functional approach replaces the explicit for loop with a single expression\n    result = reduce(lambda acc, x: (acc * (x % n)) % n, arr, 1)\n    # Return the final accumulated product modulo n\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_remainder(arr, n): \n    # Early exit when modulus is 1 since any integer mod 1 equals zero\n    if n == 1:\n        return 0\n    # Initialize product accumulator starting at multiplicative identity\n    product = 1\n    # Use iterator-based approach with direct element access instead of index-based loop\n    for element in arr:\n        # Compute remainder of current element before multiplication to keep numbers small\n        element_mod = element % n\n        # Multiply accumulated product by the reduced element value\n        product = product * element_mod\n        # Apply modulo after each multiplication to prevent integer overflow\n        product = product % n\n    # Return the final modular product (already reduced, but explicit for clarity)\n    return product",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_remainder(arr, n): \n    # Recursive base case: when array is empty, return multiplicative identity mod n\n    if len(arr) == 0:\n        return 1 % n\n    # Recursive base case: single element array, just return that element mod n\n    if len(arr) == 1:\n        return arr[0] % n\n    # Calculate midpoint to split array into two halves for divide-and-conquer\n    mid = len(arr) // 2\n    # Recursively compute modular product of left half of array\n    left_product = find_remainder(arr[:mid], n)\n    # Recursively compute modular product of right half of array\n    right_product = find_remainder(arr[mid:], n)\n    # Combine results by multiplying left and right products, then take modulo\n    combined = (left_product * right_product) % n\n    # Return the combined modular product from both halves\n    return combined",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_remainder(arr, n): \n    # Convert array to iterator to enable sequential processing without indexing\n    iterator = iter(arr)\n    # Set initial product to 1 (neutral element for multiplication)\n    result = 1\n    # Use while-True pattern with StopIteration catching for iterator consumption\n    while True:\n        # Attempt to fetch next element from iterator\n        try:\n            # Extract next value, will raise StopIteration when exhausted\n            current = next(iterator)\n        # Break loop when iterator is fully consumed\n        except StopIteration:\n            # Exit the infinite loop since no more elements remain\n            break\n        # Reduce current element to its residue class representative\n        residue = current % n\n        # Update running product by incorporating current residue\n        result *= residue\n        # Constrain result to valid range [0, n-1] after multiplication\n        result %= n\n    # Deliver the accumulated modular product as final answer\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_remainder(arr, n): \n    # Handle special case where any number mod 1 is always 0\n    if n == 1:\n        return 0\n    # Use list comprehension to pre-compute all remainders in one pass\n    remainders = [x % n for x in arr]\n    # Check if any remainder is zero, which would make entire product zero mod n\n    if 0 in remainders:\n        return 0\n    # Import math module for its prod function to compute product efficiently\n    import math\n    # Compute product of all remainders using built-in math.prod (Python 3.8+)\n    total_product = math.prod(remainders)\n    # Apply final modulo operation to get result in valid range\n    return total_product % n",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

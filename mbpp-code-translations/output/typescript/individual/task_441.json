@@ -1,0 +1,17 @@
+{
+  "task_id": 441,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cube of a given size.",
+  "python_code": "def surfacearea_cube(l):\n  surfacearea= 6*l*l\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cube(5)==150",
+    "assert surfacearea_cube(3)==54",
+    "assert surfacearea_cube(10)==600"
+  ],
+  "code_typescript": "function surfacearea_cube(l: number): number {\n  const surfacearea = 6 * l * l;\n  return surfacearea;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

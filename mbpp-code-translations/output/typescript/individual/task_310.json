@@ -1,0 +1,17 @@
+{
+  "task_id": 310,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given string to a tuple of characters.",
+  "python_code": "def string_to_tuple(str1):\n    result = tuple(x for x in str1 if not x.isspace()) \n    return result",
+  "test_list": [
+    "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+    "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+    "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')"
+  ],
+  "code_typescript": "function string_to_tuple(str1: string): string[] {\n    const result: string[] = [];\n    for (const x of str1) {\n        if (!/\\s/.test(x)) {\n            result.push(x);\n        }\n    }\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

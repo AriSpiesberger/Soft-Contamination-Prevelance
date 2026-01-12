@@ -1,0 +1,27 @@
+{
+  "task_id": 437,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove odd characters in a string.",
+  "code_python": "def remove_odd(str1):\n str2 = ''\n for i in range(1, len(str1) + 1):\n    if(i % 2 == 0):\n        str2 = str2 + str1[i - 1]\n return str2",
+  "test_list": [
+    "assert remove_odd(\"python\")==(\"yhn\")",
+    "assert remove_odd(\"program\")==(\"rga\")",
+    "assert remove_odd(\"language\")==(\"agae\")"
+  ],
+  "python_1": "def remove_odd(str1):\n    # Use list slicing to extract every second character starting from index 1\n    # This directly selects characters at even positions (1-indexed: 2, 4, 6...)\n    result = str1[1::2]\n    # Return the sliced string containing only even-positioned characters\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_odd(str1):\n    # Use list comprehension with enumerate to filter characters at even 1-indexed positions\n    # enumerate gives 0-indexed positions, so we check for odd 0-indexed values (which are even 1-indexed)\n    filtered_chars = [char for idx, char in enumerate(str1) if idx % 2 == 1]\n    # Join the filtered character list back into a single string\n    result = ''.join(filtered_chars)\n    # Return the string containing only characters from even positions (1-indexed)\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_odd(str1):\n    # Use filter function with lambda to select characters at odd indices (even 1-indexed positions)\n    filtered_result = filter(lambda pair: pair[0] % 2 == 1, enumerate(str1))\n    # Extract only the character values from the filtered index-character pairs using map\n    chars_only = map(lambda pair: pair[1], filtered_result)\n    # Combine all selected characters into a single string result\n    final_string = ''.join(chars_only)\n    # Return the constructed string with only even-positioned characters (1-indexed)\n    return final_string",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_odd(str1):\n    # Use reduce pattern via recursive approach to build result string\n    def helper(index, accumulator):\n        # Base case: when index reaches string length, return accumulated result\n        if index >= len(str1):\n            return accumulator\n        # Check if current position is even in 1-indexed terms (odd in 0-indexed)\n        if (index + 1) % 2 == 0:\n            # Recursively process next index, appending current character to accumulator\n            return helper(index + 1, accumulator + str1[index])\n        else:\n            # Skip this character and move to next index without modifying accumulator\n            return helper(index + 1, accumulator)\n    # Start recursion from index 0 with empty accumulator string\n    return helper(0, '')",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_odd(str1):\n    # Import functools to access reduce function for functional programming approach\n    from functools import reduce\n    # Create list of tuples pairing each index with its corresponding character\n    indexed_chars = list(zip(range(len(str1)), str1))\n    # Apply reduce to concatenate characters that are at odd indices (even 1-indexed positions)\n    result = reduce(\n        # Lambda takes accumulator and current (index, char) tuple, appends char if index is odd\n        lambda acc, pair: acc + pair[1] if pair[0] % 2 == 1 else acc,\n        # The sequence of (index, character) tuples to process\n        indexed_chars,\n        # Initial value is empty string to start accumulation\n        ''\n    )\n    # Return the reduced string containing only even-positioned characters (1-indexed)\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

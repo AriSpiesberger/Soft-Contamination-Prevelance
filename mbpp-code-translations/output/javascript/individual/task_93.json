@@ -1,0 +1,37 @@
+{
+  "task_id": 93,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the value of 'a' to the power 'b'.",
+  "python_code": "def power(a,b):\n\tif b==0:\n\t\treturn 1\n\telif a==0:\n\t\treturn 0\n\telif b==1:\n\t\treturn a\n\telse:\n\t\treturn a*power(a,b-1)",
+  "test_list": [
+    "assert power(3,4) == 81",
+    "assert power(2,3) == 8",
+    "assert power(5,5) == 3125"
+  ],
+  "code_javascript": "function power(a, b) {\n\tif (b === 0) {\n\t\treturn 1;\n\t} else if (a === 0) {\n\t\treturn 0;\n\t} else if (b === 1) {\n\t\treturn a;\n\t} else {\n\t\treturn a * power(a, b - 1);\n\t}\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert power(3,4) == 81",
+      "generated_test": "const result = power(3, 4);\nconst expected = 81;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power(2,3) == 8",
+      "generated_test": "const result = power(2, 3);\nconst expected = 8;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power(5,5) == 3125",
+      "generated_test": "const result = power(5, 5);\nconst expected = 3125;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

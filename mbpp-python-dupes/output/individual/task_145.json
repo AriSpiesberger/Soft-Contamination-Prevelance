@@ -1,0 +1,27 @@
+{
+  "task_id": 145,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum difference between any two elements in a given array.",
+  "code_python": "def max_Abs_Diff(arr): \n    n = len(arr)\n    minEle = arr[0] \n    maxEle = arr[0] \n    for i in range(1, n): \n        minEle = min(minEle,arr[i]) \n        maxEle = max(maxEle,arr[i]) \n    return (maxEle - minEle) ",
+  "test_list": [
+    "assert max_Abs_Diff((2,1,5,3)) == 4",
+    "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+    "assert max_Abs_Diff((3,2,1)) == 2"
+  ],
+  "python_1": "def max_Abs_Diff(arr): \n    # Convert input to list to use built-in sorting capability\n    sorted_arr = sorted(arr)\n    # The minimum element is now at the first position after sorting\n    min_element = sorted_arr[0]\n    # The maximum element is now at the last position after sorting\n    max_element = sorted_arr[-1]\n    # The maximum absolute difference is simply max minus min\n    return max_element - min_element",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def max_Abs_Diff(arr): \n    # Use Python's built-in min() function to find smallest element in one pass\n    min_val = min(arr)\n    # Use Python's built-in max() function to find largest element in one pass\n    max_val = max(arr)\n    # Calculate and return the difference between extremes\n    return max_val - min_val",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def max_Abs_Diff(arr): \n    # Use reduce with a lambda to accumulate both min and max in a single traversal\n    from functools import reduce\n    # Define a reducer that updates a tuple of (current_min, current_max) for each element\n    result = reduce(\n        # Lambda takes accumulator tuple and next element, returns updated tuple\n        lambda acc, x: (x if x < acc[0] else acc[0], x if x > acc[1] else acc[1]),\n        # Start iteration from second element onwards\n        arr[1:],\n        # Initial accumulator uses first element as both min and max\n        (arr[0], arr[0])\n    )\n    # Unpack the final minimum value from result tuple\n    min_element = result[0]\n    # Unpack the final maximum value from result tuple\n    max_element = result[1]\n    # Compute difference between extremes to get maximum absolute difference\n    return max_element - min_element",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def max_Abs_Diff(arr): \n    # Convert tuple/list to a list for index-based recursive search\n    elements = list(arr)\n    # Get total count of elements for boundary checking\n    length = len(elements)\n    \n    # Define recursive helper to find minimum element from index i onwards\n    def find_min(i):\n        # Base case: last element is the minimum of the single-element subarray\n        if i == length - 1:\n            return elements[i]\n        # Recursively get minimum from rest of array\n        rest_min = find_min(i + 1)\n        # Compare current element with minimum of remaining elements\n        return elements[i] if elements[i] < rest_min else rest_min\n    \n    # Define recursive helper to find maximum element from index i onwards\n    def find_max(i):\n        # Base case: last element is the maximum of the single-element subarray\n        if i == length - 1:\n            return elements[i]\n        # Recursively get maximum from rest of array\n        rest_max = find_max(i + 1)\n        # Compare current element with maximum of remaining elements\n        return elements[i] if elements[i] > rest_max else rest_max\n    \n    # Start recursive minimum search from first index\n    min_val = find_min(0)\n    # Start recursive maximum search from first index\n    max_val = find_max(0)\n    # Subtract minimum from maximum to get the largest possible difference\n    return max_val - min_val",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def max_Abs_Diff(arr): \n    # Convert input to list to enable index-based access and manipulation\n    data = list(arr)\n    # Determine array size for iteration bounds\n    n = len(data)\n    # Initialize tracking variable to store the maximum difference found so far\n    max_diff = 0\n    # Outer loop selects each element as a potential candidate for difference calculation\n    for i in range(n):\n        # Inner loop pairs current element with all subsequent elements\n        for j in range(i + 1, n):\n            # Compute absolute difference between the two selected elements\n            current_diff = abs(data[i] - data[j])\n            # Update maximum difference if current pair yields a larger value\n            if current_diff > max_diff:\n                # Store new maximum as the best difference encountered\n                max_diff = current_diff\n    # Handle edge case where array has only one element by also checking first-last difference\n    if n == 1:\n        # Single element array has zero difference with itself\n        return 0\n    # Return the largest absolute difference discovered through exhaustive pairwise comparison\n    return max_diff",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 93,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the value of 'a' to the power 'b'.",
+  "python_code": "def power(a,b):\n\tif b==0:\n\t\treturn 1\n\telif a==0:\n\t\treturn 0\n\telif b==1:\n\t\treturn a\n\telse:\n\t\treturn a*power(a,b-1)",
+  "test_list": [
+    "assert power(3,4) == 81",
+    "assert power(2,3) == 8",
+    "assert power(5,5) == 3125"
+  ],
+  "code_typescript": "function power(a: number, b: number): number {\n    if (b === 0) {\n        return 1;\n    } else if (a === 0) {\n        return 0;\n    } else if (b === 1) {\n        return a;\n    } else {\n        return a * power(a, b - 1);\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 171,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the perimeter of a regular pentagon from the length of its sides.",
+  "python_code": "import math\ndef perimeter_pentagon(a):\n  perimeter=(5*a)\n  return perimeter",
+  "test_list": [
+    "assert perimeter_pentagon(5) == 25",
+    "assert perimeter_pentagon(10) == 50",
+    "assert perimeter_pentagon(15) == 75"
+  ],
+  "code_rust": "pub fn perimeter_pentagon(a: i32) -> i32 {\n    5 * a\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert perimeter_pentagon(5) == 25",
+      "generated_test": "let result = perimeter_pentagon(5);\nlet expected = 25;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perimeter_pentagon(10) == 50",
+      "generated_test": "let result = perimeter_pentagon(10);\nlet expected = 50;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perimeter_pentagon(15) == 75",
+      "generated_test": "let result = perimeter_pentagon(15);\nlet expected = 75;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

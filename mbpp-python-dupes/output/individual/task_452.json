@@ -1,0 +1,27 @@
+{
+  "task_id": 452,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that gives loss amount on a sale if the given amount has loss else return 0.",
+  "code_python": "def loss_amount(actual_cost,sale_amount): \n  if(sale_amount > actual_cost):\n    amount = sale_amount - actual_cost\n    return amount\n  else:\n    return 0",
+  "test_list": [
+    "assert loss_amount(1500,1200)==0",
+    "assert loss_amount(100,200)==100",
+    "assert loss_amount(2000,5000)==3000"
+  ],
+  "python_1": "def loss_amount(actual_cost,sale_amount): \n  # Calculate the difference between sale price and cost (profit if positive, indicates loss scenario)\n  difference = sale_amount - actual_cost\n  # Use max function to return the difference if positive (loss occurred) or 0 if negative/zero (no loss)\n  return max(0, difference)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def loss_amount(actual_cost,sale_amount): \n  # Compute the potential loss as sale price minus original cost\n  potential_loss = sale_amount - actual_cost\n  # Use conditional expression to return loss only when it's a positive value (profit for seller means loss scenario)\n  return potential_loss if potential_loss > 0 else 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def loss_amount(actual_cost,sale_amount): \n  # Create a tuple containing zero and the computed difference for selection\n  loss_options = (0, sale_amount - actual_cost)\n  # Use boolean comparison as index: True(1) selects difference, False(0) selects zero\n  index = sale_amount > actual_cost\n  # Return the appropriate value from tuple based on the boolean index\n  return loss_options[index]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def loss_amount(actual_cost,sale_amount): \n  # Use bitwise right shift to extract sign bit: negative values produce -1, non-negative produce 0\n  difference = sale_amount - actual_cost\n  # Shift right by 31 bits (for 32-bit representation) to get all 1s for negative or all 0s for non-negative\n  sign_mask = difference >> 31\n  # Apply bitwise AND: if difference is negative, mask is -1 (all 1s) so result is 0; otherwise keeps difference\n  # Complement the mask to flip the logic: non-negative difference passes through, negative becomes 0\n  result = difference & ~sign_mask\n  # Return the masked result which eliminates negative values while preserving positive ones\n  return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def loss_amount(actual_cost,sale_amount): \n  # Define a lambda function that computes the loss as the positive difference or zero\n  compute_loss = lambda cost, sale: (sale - cost) * (sale > cost)\n  # Invoke the lambda with our parameters, leveraging boolean multiplication where True=1, False=0\n  return compute_loss(actual_cost, sale_amount)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

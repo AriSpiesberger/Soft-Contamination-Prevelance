@@ -1,0 +1,37 @@
+{
+  "task_id": 295,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return the sum of all divisors of a number.",
+  "python_code": "def sum_div(number):\n    divisors = [1]\n    for i in range(2, number):\n        if (number % i)==0:\n            divisors.append(i)\n    return sum(divisors)",
+  "test_list": [
+    "assert sum_div(8)==7",
+    "assert sum_div(12)==16",
+    "assert sum_div(7)==1"
+  ],
+  "code_ruby": "def sum_div(number)\n  divisors = [1]\n  (2...number).each do |i|\n    if number % i == 0\n      divisors << i\n    end\n  end\n  divisors.sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sum_div(8)==7",
+      "generated_test": "result = sum_div(8)\nexpected = 7\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_div(12)==16",
+      "generated_test": "result = sum_div(12)\nexpected = 16\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_div(7)==1",
+      "generated_test": "result = sum_div(7)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

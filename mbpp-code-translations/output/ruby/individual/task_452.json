@@ -1,0 +1,37 @@
+{
+  "task_id": 452,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that gives loss amount on a sale if the given amount has loss else return 0.",
+  "python_code": "def loss_amount(actual_cost,sale_amount): \n  if(sale_amount > actual_cost):\n    amount = sale_amount - actual_cost\n    return amount\n  else:\n    return 0",
+  "test_list": [
+    "assert loss_amount(1500,1200)==0",
+    "assert loss_amount(100,200)==100",
+    "assert loss_amount(2000,5000)==3000"
+  ],
+  "code_ruby": "def loss_amount(actual_cost, sale_amount)\n  if sale_amount > actual_cost\n    sale_amount - actual_cost\n  else\n    0\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert loss_amount(1500,1200)==0",
+      "generated_test": "result = loss_amount(1500, 1200)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert loss_amount(100,200)==100",
+      "generated_test": "result = loss_amount(100, 200)\nexpected = 100\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert loss_amount(2000,5000)==3000",
+      "generated_test": "result = loss_amount(2000, 5000)\nexpected = 3000\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

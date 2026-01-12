@@ -1,0 +1,37 @@
+{
+  "task_id": 101,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the kth element in the given array using 1-based indexing.",
+  "python_code": "def kth_element(arr, k):\n  n = len(arr)\n  for i in range(n):\n    for j in range(0, n-i-1):\n      if arr[j] > arr[j+1]:\n        arr[j], arr[j+1] == arr[j+1], arr[j]\n  return arr[k-1]",
+  "test_list": [
+    "assert kth_element([12,3,5,7,19], 2) == 3",
+    "assert kth_element([17,24,8,23], 3) == 8",
+    "assert kth_element([16,21,25,36,4], 4) == 36"
+  ],
+  "code_javascript": "function kth_element(arr, k) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        [arr[j], arr[j + 1]] == [arr[j + 1], arr[j]];\n      }\n    }\n  }\n  return arr[k - 1];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert kth_element([12,3,5,7,19], 2) == 3",
+      "generated_test": "const result = kth_element([12,3,5,7,19], 2);\nconst expected = 3;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert kth_element([17,24,8,23], 3) == 8",
+      "generated_test": "const result = kth_element([17,24,8,23], 3);\nconst expected = 8;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert kth_element([16,21,25,36,4], 4) == 36",
+      "generated_test": "const result = kth_element([16,21,25,36,4], 4);\nconst expected = 36;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

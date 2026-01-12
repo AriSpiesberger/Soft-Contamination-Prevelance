@@ -1,0 +1,28 @@
+{
+  "task_id": 758,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count lists within a list. The function should return a dictionary where every list is converted to a tuple and the value of such tuple is the number of its occurencies in the original list.",
+  "code_python": "def unique_sublists(list1):\n    result ={}\n    for l in  list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]] )=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[10, 20, 30, 40], [60, 70, 50, 50], [90, 100, 200]])=={(10, 20, 30, 40): 1, (60, 70, 50, 50): 1, (90, 100, 200): 1}",
+    "assert unique_sublists([['john']])=={('john',): 1}"
+  ],
+  "python_1": "def unique_sublists(list1):\n    # Import Counter from collections for efficient frequency counting\n    from collections import Counter\n    # Convert each sublist to a tuple and use Counter to tally occurrences in one step\n    tuple_counts = Counter(tuple(sublist) for sublist in list1)\n    # Convert Counter object to a regular dictionary for the expected return type\n    return dict(tuple_counts)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def unique_sublists(list1):\n    # Create empty dictionary to store tuple frequencies\n    result = {}\n    # Process each sublist in the input list\n    for sublist in list1:\n        # Transform the sublist into an immutable tuple for use as dictionary key\n        key = tuple(sublist)\n        # Check if this tuple pattern has been encountered before\n        if key in result:\n            # Increment the count for this existing tuple pattern\n            result[key] += 1\n        else:\n            # Initialize count to 1 for first occurrence of this tuple\n            result[key] = 1\n    # Return the dictionary mapping tuples to their occurrence counts\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def unique_sublists(list1):\n    # Transform all sublists to tuples upfront using map for functional approach\n    tuple_list = list(map(tuple, list1))\n    # Extract unique tuple keys by converting to a set\n    unique_keys = set(tuple_list)\n    # Build result dictionary using dictionary comprehension with count method\n    result = {key: tuple_list.count(key) for key in unique_keys}\n    # Return the frequency mapping dictionary\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def unique_sublists(list1):\n    # Use reduce from functools to accumulate counts in a single pass\n    from functools import reduce\n    # Define a reducer function that updates the accumulator dictionary\n    def count_reducer(acc, sublist):\n        # Convert current sublist to tuple for hashability\n        key = tuple(sublist)\n        # Use dict.get() with default 0 and add 1 to handle both new and existing keys\n        acc[key] = acc.get(key, 0) + 1\n        # Return the modified accumulator for the next iteration\n        return acc\n    # Apply reduce with the reducer function, starting with empty dict as initial value\n    result = reduce(count_reducer, list1, {})\n    # Return the accumulated frequency dictionary\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def unique_sublists(list1):\n    # Leverage defaultdict to auto-initialize missing keys with integer 0\n    from collections import defaultdict\n    # Create a defaultdict that returns 0 for any new key access\n    freq_dict = defaultdict(int)\n    # Enumerate through sublists though we only need the sublist value here\n    for idx in range(len(list1)):\n        # Access sublist by index and convert to hashable tuple in one expression\n        tuple_key = tuple(list1[idx])\n        # Increment count using += which works seamlessly with defaultdict's default value\n        freq_dict[tuple_key] += 1\n    # Cast defaultdict back to regular dict to match expected return type\n    return dict(freq_dict)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

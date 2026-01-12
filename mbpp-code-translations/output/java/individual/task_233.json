@@ -1,0 +1,37 @@
+{
+  "task_id": 233,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cylinder.",
+  "python_code": "def lateralsuface_cylinder(r,h):\n  lateralsurface= 2*3.1415*r*h\n  return lateralsurface",
+  "test_list": [
+    "assert math.isclose(lateralsuface_cylinder(10,5), 314.15000000000003, rel_tol=0.001)",
+    "assert math.isclose(lateralsuface_cylinder(4,5), 125.66000000000001, rel_tol=0.001)",
+    "assert math.isclose(lateralsuface_cylinder(4,10), 251.32000000000002, rel_tol=0.001)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double lateralsuface_cylinder(double r, double h) {\n        double lateralsurface = 2 * 3.1415 * r * h;\n        return lateralsurface;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert math.isclose(lateralsuface_cylinder(10,5), 314.15000000000003, rel_tol=0.001)",
+      "generated_test": "double result = lateralsuface_cylinder(10, 5);\ndouble expected = 314.15000000000003;\ndouble relTol = 0.001;\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(lateralsuface_cylinder(4,5), 125.66000000000001, rel_tol=0.001)",
+      "generated_test": "double result = lateralsuface_cylinder(4, 5);\ndouble expected = 125.66000000000001;\ndouble relTol = 0.001;\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(lateralsuface_cylinder(4,10), 251.32000000000002, rel_tol=0.001)",
+      "generated_test": "double result = lateralsuface_cylinder(4, 10);\ndouble expected = 251.32000000000002;\ndouble relTol = 0.001;\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

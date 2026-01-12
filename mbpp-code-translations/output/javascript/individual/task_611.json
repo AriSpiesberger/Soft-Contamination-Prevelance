@@ -1,0 +1,37 @@
+{
+  "task_id": 611,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which given a matrix represented as a list of lists returns the max of the n'th column.",
+  "python_code": "def max_of_nth(test_list, N):\n  res = max([sub[N] for sub in test_list])\n  return (res) ",
+  "test_list": [
+    "assert max_of_nth([[5, 6, 7], [1, 3, 5], [8, 9, 19]], 2) == 19",
+    "assert max_of_nth([[6, 7, 8], [2, 4, 6], [9, 10, 20]], 1) == 10",
+    "assert max_of_nth([[7, 8, 9], [3, 5, 7], [10, 11, 21]], 1) == 11"
+  ],
+  "code_javascript": "function max_of_nth(test_list, N) {\n  const res = Math.max(...test_list.map(sub => sub[N]));\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert max_of_nth([[5, 6, 7], [1, 3, 5], [8, 9, 19]], 2) == 19",
+      "generated_test": "const result = max_of_nth([[5, 6, 7], [1, 3, 5], [8, 9, 19]], 2);\nconst expected = 19;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_of_nth([[6, 7, 8], [2, 4, 6], [9, 10, 20]], 1) == 10",
+      "generated_test": "const result = max_of_nth([[6, 7, 8], [2, 4, 6], [9, 10, 20]], 1);\nconst expected = 10;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_of_nth([[7, 8, 9], [3, 5, 7], [10, 11, 21]], 1) == 11",
+      "generated_test": "const result = max_of_nth([[7, 8, 9], [3, 5, 7], [10, 11, 21]], 1);\nconst expected = 11;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

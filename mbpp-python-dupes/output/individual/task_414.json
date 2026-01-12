@@ -1,0 +1,27 @@
+{
+  "task_id": 414,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether any value in a sequence exists in a sequence or not.",
+  "code_python": "def overlapping(list1,list2):  \n    for i in range(len(list1)): \n        for j in range(len(list2)): \n            if(list1[i]==list2[j]): \n                return True\n    return False",
+  "test_list": [
+    "assert overlapping([1,2,3,4,5],[6,7,8,9]) == False",
+    "assert overlapping([1,2,3],[4,5,6]) == False",
+    "assert overlapping([1,4,5],[1,4,5]) == True"
+  ],
+  "python_1": "def overlapping(list1,list2):  \n    # Convert the second list to a set for O(1) lookup efficiency\n    set2 = set(list2)\n    # Iterate directly over elements in list1 using pythonic for-each style\n    for item in list1:\n        # Check if current item exists in the set using fast membership test\n        if item in set2:\n            # Found a common element, return True immediately\n            return True\n    # No common elements found after checking all items in list1\n    return False",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def overlapping(list1,list2):  \n    # Convert both input sequences to sets for efficient intersection computation\n    set1 = set(list1)\n    # Transform second sequence to set as well for set operation\n    set2 = set(list2)\n    # Use set intersection to find common elements between both collections\n    common = set1 & set2\n    # Return True if intersection is non-empty, False otherwise using bool conversion\n    return len(common) > 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def overlapping(list1,list2):  \n    # Use Python's any() built-in with generator expression for lazy evaluation\n    # This stops checking as soon as first match is found, avoiding unnecessary work\n    return any(element in list2 for element in list1)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def overlapping(list1,list2):  \n    # Convert first list to set for mathematical set operations\n    set1 = set(list1)\n    # Convert second list to set for intersection check\n    set2 = set(list2)\n    # Use isdisjoint() which returns True when sets share no elements\n    no_overlap = set1.isdisjoint(set2)\n    # Negate the result since we want True when overlap exists\n    return not no_overlap",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def overlapping(list1,list2):  \n    # Use filter function with lambda to find elements from list1 that exist in list2\n    matching_elements = filter(lambda x: x in list2, list1)\n    # Convert filter object to list to materialize the filtered results\n    matches_list = list(matching_elements)\n    # Check if the resulting list has any elements using truthiness of non-empty list\n    has_overlap = bool(matches_list)\n    # Return whether any overlapping elements were found\n    return has_overlap",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

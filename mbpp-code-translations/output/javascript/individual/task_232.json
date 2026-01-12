@@ -1,0 +1,37 @@
+{
+  "task_id": 232,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and returns a list containing the n largest items from the list.",
+  "python_code": "import heapq\ndef larg_nnum(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest",
+  "test_list": [
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])"
+  ],
+  "code_javascript": "function larg_nnum(list1, n) {\n  const sorted = [...list1].sort((a, b) => b - a);\n  return sorted.slice(0, n);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+      "generated_test": "const result = larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100], 2);\nconst expected = [100, 90];\n\nconst resultSet = new Set(result);\nconst expectedSet = new Set(expected);\n\nconst pass = resultSet.size === expectedSet.size && [...expectedSet].every(x => resultSet.has(x));\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected:\", expected);\n  console.log(\"  Got:\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+      "generated_test": "const result = larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100], 5);\nconst expected = [100, 90, 80, 70, 60];\n\nconst resultSet = new Set(result);\nconst expectedSet = new Set(expected);\n\nconst pass = resultSet.size === expectedSet.size && [...expectedSet].every(x => resultSet.has(x));\n\nif (pass) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected:\", [...expectedSet].sort((a, b) => b - a));\n  console.log(\"  Got:\", [...resultSet].sort((a, b) => b - a));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])",
+      "generated_test": "const result = larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100], 3);\nconst expected = [100, 90, 80];\n\nconst resultSet = new Set(result);\nconst expectedSet = new Set(expected);\n\nconst setsEqual = resultSet.size === expectedSet.size && [...expectedSet].every(x => resultSet.has(x));\n\nif (setsEqual) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected:\", expected);\n  console.log(\"  Got:\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

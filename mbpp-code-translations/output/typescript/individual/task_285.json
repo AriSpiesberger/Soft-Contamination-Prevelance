@@ -1,0 +1,17 @@
+{
+  "task_id": 285,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that checks whether a string contains the 'a' character followed by two or three 'b' characters.",
+  "python_code": "import re\ndef text_match_two_three(text):\n        patterns = 'ab{2,3}'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_two_three(\"ac\")==(False)",
+    "assert text_match_two_three(\"dc\")==(False)",
+    "assert text_match_two_three(\"abbbba\")==(True)"
+  ],
+  "code_typescript": "function text_match_two_three(text: string): boolean {\n    const pattern = /ab{2,3}/;\n    return pattern.test(text);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

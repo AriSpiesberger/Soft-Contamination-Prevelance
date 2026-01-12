@@ -1,0 +1,37 @@
+{
+  "task_id": 463,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum product subarray of the given array.",
+  "python_code": "def max_subarray_product(arr):\n\tn = len(arr)\n\tmax_ending_here = 1\n\tmin_ending_here = 1\n\tmax_so_far = 0\n\tflag = 0\n\tfor i in range(0, n):\n\t\tif arr[i] > 0:\n\t\t\tmax_ending_here = max_ending_here * arr[i]\n\t\t\tmin_ending_here = min (min_ending_here * arr[i], 1)\n\t\t\tflag = 1\n\t\telif arr[i] == 0:\n\t\t\tmax_ending_here = 1\n\t\t\tmin_ending_here = 1\n\t\telse:\n\t\t\ttemp = max_ending_here\n\t\t\tmax_ending_here = max (min_ending_here * arr[i], 1)\n\t\t\tmin_ending_here = temp * arr[i]\n\t\tif (max_so_far < max_ending_here):\n\t\t\tmax_so_far = max_ending_here\n\tif flag == 0 and max_so_far == 0:\n\t\treturn 0\n\treturn max_so_far",
+  "test_list": [
+    "assert max_subarray_product([1, -2, -3, 0, 7, -8, -2]) == 112",
+    "assert max_subarray_product([6, -3, -10, 0, 2]) == 180",
+    "assert max_subarray_product([-2, -40, 0, -2, -3]) == 80"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_subarray_product(int[] arr) {\n        int n = arr.length;\n        int max_ending_here = 1;\n        int min_ending_here = 1;\n        int max_so_far = 0;\n        int flag = 0;\n        \n        for (int i = 0; i < n; i++) {\n            if (arr[i] > 0) {\n                max_ending_here = max_ending_here * arr[i];\n                min_ending_here = Math.min(min_ending_here * arr[i], 1);\n                flag = 1;\n            } else if (arr[i] == 0) {\n                max_ending_here = 1;\n                min_ending_here = 1;\n            } else {\n                int temp = max_ending_here;\n                max_ending_here = Math.max(min_ending_here * arr[i], 1);\n                min_ending_here = temp * arr[i];\n            }\n            if (max_so_far < max_ending_here) {\n                max_so_far = max_ending_here;\n            }\n        }\n        \n        if (flag == 0 && max_so_far == 0) {\n            return 0;\n        }\n        return max_so_far;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_subarray_product([1, -2, -3, 0, 7, -8, -2]) == 112",
+      "generated_test": "int[] arr = new int[]{1, -2, -3, 0, 7, -8, -2};\nint result = max_subarray_product(arr);\nint expected = 112;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_subarray_product([6, -3, -10, 0, 2]) == 180",
+      "generated_test": "int[] arr = new int[]{6, -3, -10, 0, 2};\nint result = max_subarray_product(arr);\nint expected = 180;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_subarray_product([-2, -40, 0, -2, -3]) == 80",
+      "generated_test": "int[] arr = new int[]{-2, -40, 0, -2, -3};\nint result = max_subarray_product(arr);\nint expected = 80;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 456,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse each string in a given list of string values.",
+  "code_python": "def reverse_string_list(stringlist):\n    result = [x[::-1] for x in stringlist]\n    return result",
+  "test_list": [
+    "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+    "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+    "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']"
+  ],
+  "python_1": "def reverse_string_list(stringlist):\n    # Use map with a lambda to apply reversal to each string element\n    reversed_strings = map(lambda s: s[::-1], stringlist)\n    # Convert the map iterator back to a list for the final result\n    return list(reversed_strings)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def reverse_string_list(stringlist):\n    # Create empty list to accumulate reversed strings\n    result = []\n    # Process each string in the input list sequentially\n    for string in stringlist:\n        # Initialize empty string to build reversed version character by character\n        reversed_str = \"\"\n        # Iterate through string indices in reverse order from last to first\n        for i in range(len(string) - 1, -1, -1):\n            # Append each character to build the reversed string progressively\n            reversed_str += string[i]\n        # Add the fully reversed string to our results collection\n        result.append(reversed_str)\n    # Return the complete list of reversed strings\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def reverse_string_list(stringlist):\n    # Define a helper function that reverses a single string using recursion\n    def reverse_single(s):\n        # Base case: empty or single character strings are already reversed\n        if len(s) <= 1:\n            return s\n        # Recursive case: take last character and prepend it to reversed remainder\n        return s[-1] + reverse_single(s[:-1])\n    \n    # Apply the recursive reversal function to each string in the input list\n    result = []\n    # Iterate through each string that needs to be reversed\n    for word in stringlist:\n        # Call recursive helper and append the reversed string to results\n        result.append(reverse_single(word))\n    # Return the accumulated list of all reversed strings\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def reverse_string_list(stringlist):\n    # Use join with reversed iterator to construct each reversed string efficiently\n    def reverse_via_join(s):\n        # reversed() returns an iterator that yields characters in reverse order\n        return ''.join(reversed(s))\n    \n    # Build result using list comprehension with our custom reversal function\n    result = [reverse_via_join(word) for word in stringlist]\n    # Return the transformed list containing all reversed strings\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def reverse_string_list(stringlist):\n    # Use reduce from functools to build reversed strings through accumulation\n    from functools import reduce\n    \n    # Define reversal using reduce to prepend each character to accumulator\n    def reverse_with_reduce(s):\n        # reduce iterates left-to-right, prepending each char reverses order\n        return reduce(lambda acc, char: char + acc, s, '')\n    \n    # Apply reduce-based reversal to every string using map function\n    reversed_iterator = map(reverse_with_reduce, stringlist)\n    \n    # Materialize the lazy map iterator into a concrete list structure\n    return list(reversed_iterator)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

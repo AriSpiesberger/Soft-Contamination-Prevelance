@@ -1,0 +1,37 @@
+{
+  "task_id": 581,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the surface area of a square pyramid with a given base edge and height.",
+  "python_code": "def surface_Area(b,s): \n    return 2 * b * s + pow(b,2) ",
+  "test_list": [
+    "assert surface_Area(3,4) == 33",
+    "assert surface_Area(4,5) == 56",
+    "assert surface_Area(1,2) == 5"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static double surface_Area(double b, double s) {\n        return 2 * b * s + Math.pow(b, 2);\n    }\n    \n    public static int surface_Area(int b, int s) {\n        return 2 * b * s + (int)Math.pow(b, 2);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert surface_Area(3,4) == 33",
+      "generated_test": "int result = surface_Area(3, 4);\nint expected = 33;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surface_Area(4,5) == 56",
+      "generated_test": "int result = surface_Area(4, 5);\nint expected = 56;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surface_Area(1,2) == 5",
+      "generated_test": "int result = surface_Area(1, 2);\nint expected = 5;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

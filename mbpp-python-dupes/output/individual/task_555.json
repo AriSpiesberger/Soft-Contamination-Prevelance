@@ -1,0 +1,27 @@
+{
+  "task_id": 555,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the difference between the sum of cubes of the first n natural numbers and the sum of the first n natural numbers.",
+  "code_python": "def difference(n) :  \n    S = (n*(n + 1))//2;  \n    res = S*(S-1);  \n    return res;  ",
+  "test_list": [
+    "assert difference(3) == 30",
+    "assert difference(5) == 210",
+    "assert difference(2) == 6"
+  ],
+  "python_1": "def difference(n) :  \n    # Calculate sum of cubes using explicit loop accumulation\n    sum_of_cubes = 0\n    # Iterate through each natural number from 1 to n\n    for i in range(1, n + 1):\n        # Add the cube of current number to running total\n        sum_of_cubes += i ** 3\n    # Calculate sum of first n natural numbers using arithmetic formula\n    sum_of_numbers = (n * (n + 1)) // 2\n    # Return the difference between sum of cubes and sum of numbers\n    return sum_of_cubes - sum_of_numbers",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def difference(n) :  \n    # Generate list of all natural numbers from 1 to n inclusive\n    numbers = list(range(1, n + 1))\n    # Compute sum of cubes using list comprehension with map-style cube operation\n    sum_cubes = sum(x ** 3 for x in numbers)\n    # Compute simple sum of all natural numbers in the list\n    sum_natural = sum(numbers)\n    # Calculate and return the difference between cubed sum and linear sum\n    return sum_cubes - sum_natural",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def difference(n) :  \n    # Use reduce to accumulate sum of cubes via functional programming approach\n    from functools import reduce\n    # Create a lambda that cubes a number and adds to accumulator\n    sum_of_cubes = reduce(lambda acc, x: acc + x * x * x, range(1, n + 1), 0)\n    # Use reduce again to compute sum of natural numbers functionally\n    sum_of_naturals = reduce(lambda acc, x: acc + x, range(1, n + 1), 0)\n    # Compute the difference between the two reduced sums\n    return sum_of_cubes - sum_of_naturals",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def difference(n) :  \n    # Apply the mathematical identity: sum of cubes equals square of triangular number\n    triangular = (n * (n + 1)) // 2\n    # Compute sum of cubes as the square of the triangular number\n    sum_cubes = triangular ** 2\n    # The sum of first n naturals is exactly the triangular number itself\n    sum_naturals = triangular\n    # Subtract the linear sum from the quadratic sum of cubes\n    result = sum_cubes - sum_naturals\n    # Return the computed difference between the two sums\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def difference(n) :  \n    # Use recursive helper to compute sum of cubes via divide-and-conquer style\n    def cube_sum_recursive(start, end):\n        # Base case: single element returns its cube value\n        if start == end:\n            return start ** 3\n        # Find midpoint to split the range into two halves\n        mid = (start + end) // 2\n        # Recursively sum cubes of left half plus right half\n        return cube_sum_recursive(start, mid) + cube_sum_recursive(mid + 1, end)\n    \n    # Use recursive helper to compute sum of naturals via same divide approach\n    def natural_sum_recursive(start, end):\n        # Base case: single element returns itself\n        if start == end:\n            return start\n        # Calculate midpoint for balanced recursive splitting\n        mid = (start + end) // 2\n        # Combine left and right partition sums recursively\n        return natural_sum_recursive(start, mid) + natural_sum_recursive(mid + 1, end)\n    \n    # Compute total sum of cubes from 1 to n using recursive decomposition\n    cubes_total = cube_sum_recursive(1, n)\n    # Compute total sum of naturals from 1 to n using same recursive pattern\n    naturals_total = natural_sum_recursive(1, n)\n    # Subtract the linear sum from cubic sum to get final answer\n    return cubes_total - naturals_total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

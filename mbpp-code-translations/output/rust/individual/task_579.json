@@ -1,0 +1,37 @@
+{
+  "task_id": 579,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the dissimilar elements in the given two tuples.",
+  "python_code": "def find_dissimilar(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) ^ set(test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert find_dissimilar((3, 4, 5, 6), (5, 7, 4, 10)) == (3, 6, 7, 10)",
+    "assert find_dissimilar((1, 2, 3, 4), (7, 2, 3, 9)) == (1, 4, 7, 9)",
+    "assert find_dissimilar((21, 11, 25, 26), (26, 34, 21, 36)) == (34, 36, 11, 25)"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn find_dissimilar(test_tup1: &[i32], test_tup2: &[i32]) -> Vec<i32> {\n    let set1: HashSet<i32> = test_tup1.iter().cloned().collect();\n    let set2: HashSet<i32> = test_tup2.iter().cloned().collect();\n    \n    let symmetric_diff: Vec<i32> = set1.symmetric_difference(&set2).cloned().collect();\n    symmetric_diff\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_dissimilar((3, 4, 5, 6), (5, 7, 4, 10)) == (3, 6, 7, 10)",
+      "generated_test": "let result = find_dissimilar(&[3, 4, 5, 6], &[5, 7, 4, 10]);\nlet expected: HashSet<i32> = vec![3, 6, 7, 10].into_iter().collect();\nlet result_set: HashSet<i32> = result.iter().cloned().collect();\nif result_set == expected {\n    println!(\"PASS\");\n} else {\n    let mut expected_vec: Vec<i32> = expected.iter().cloned().collect();\n    expected_vec.sort();\n    let mut result_vec: Vec<i32> = result.clone();\n    result_vec.sort();\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected_vec);\n    println!(\"  Got: {:?}\", result_vec);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_dissimilar((1, 2, 3, 4), (7, 2, 3, 9)) == (1, 4, 7, 9)",
+      "generated_test": "let result = find_dissimilar(&[1, 2, 3, 4], &[7, 2, 3, 9]);\nlet mut result_sorted = result.clone();\nresult_sorted.sort();\nlet expected = vec![1, 4, 7, 9];\nlet mut expected_sorted = expected.clone();\nexpected_sorted.sort();\nif result_sorted == expected_sorted {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_dissimilar((21, 11, 25, 26), (26, 34, 21, 36)) == (34, 36, 11, 25)",
+      "generated_test": "let input1 = [21, 11, 25, 26];\nlet input2 = [26, 34, 21, 36];\nlet result = find_dissimilar(&input1, &input2);\nlet expected: HashSet<i32> = [34, 36, 11, 25].iter().cloned().collect();\nlet result_set: HashSet<i32> = result.iter().cloned().collect();\nif result_set == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result_set);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

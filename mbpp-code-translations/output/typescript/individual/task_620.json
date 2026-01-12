@@ -1,0 +1,17 @@
+{
+  "task_id": 620,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the size of the largest subset of a list of numbers so that every pair is divisible.",
+  "python_code": "def largest_subset(a):\n\tn = len(a)\n\tdp = [0 for i in range(n)]\n\tdp[n - 1] = 1; \n\tfor i in range(n - 2, -1, -1):\n\t\tmxm = 0;\n\t\tfor j in range(i + 1, n):\n\t\t\tif a[j] % a[i] == 0 or a[i] % a[j] == 0:\n\t\t\t\tmxm = max(mxm, dp[j])\n\t\tdp[i] = 1 + mxm\n\treturn max(dp)",
+  "test_list": [
+    "assert largest_subset([ 1, 3, 6, 13, 17, 18 ]) == 4",
+    "assert largest_subset([10, 5, 3, 15, 20]) == 3",
+    "assert largest_subset([18, 1, 3, 6, 13, 17]) == 4"
+  ],
+  "code_typescript": "function largest_subset(a: number[]): number {\n    const n: number = a.length;\n    if (n === 0) {\n        return 0;\n    }\n    const dp: number[] = new Array(n).fill(0);\n    dp[n - 1] = 1;\n    for (let i = n - 2; i >= 0; i--) {\n        let mxm: number = 0;\n        for (let j = i + 1; j < n; j++) {\n            if (a[j] % a[i] === 0 || a[i] % a[j] === 0) {\n                mxm = Math.max(mxm, dp[j]);\n            }\n        }\n        dp[i] = 1 + mxm;\n    }\n    return Math.max(...dp);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

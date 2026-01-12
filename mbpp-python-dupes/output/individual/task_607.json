@@ -1,0 +1,27 @@
+{
+  "task_id": 607,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to search a string for a regex pattern. The function should return the matching subtring, a start index and an end index.",
+  "code_python": "import re\n\ndef find_literals(text, pattern):\n  match = re.search(pattern, text)\n  s = match.start()\n  e = match.end()\n  return (match.re.pattern, s, e)",
+  "test_list": [
+    "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+    "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+    "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)"
+  ],
+  "python_1": "import re\n\ndef find_literals(text, pattern):\n    # Compile the regex pattern into a reusable pattern object\n    compiled_pattern = re.compile(pattern)\n    # Use the compiled pattern's search method to find the first match\n    match = compiled_pattern.search(text)\n    # Extract start position using span which returns a tuple of (start, end)\n    start_pos, end_pos = match.span()\n    # Return tuple with original pattern string and the matched positions\n    return (pattern, start_pos, end_pos)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\n\ndef find_literals(text, pattern):\n    # Use finditer to get an iterator of all match objects in the text\n    match_iterator = re.finditer(pattern, text)\n    # Retrieve the first match from the iterator using next()\n    first_match = next(match_iterator)\n    # Access the group(0) method to get the actual matched string (which equals the pattern for literal searches)\n    matched_string = first_match.group(0)\n    # Calculate start index by finding where the match begins in text\n    start_index = first_match.start()\n    # Calculate end index by adding the length of matched string to start\n    end_index = start_index + len(matched_string)\n    # Construct and return the result tuple with pattern and boundary indices\n    return (pattern, start_index, end_index)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\n\ndef find_literals(text, pattern):\n    # Use re.match with a capturing approach by searching from each position\n    # Start by finding the pattern's location using string's built-in find method\n    start_idx = text.find(pattern)\n    # Verify the match exists and get proper regex validation using fullmatch on substring\n    substring = text[start_idx:start_idx + len(pattern)]\n    # Create a match object by applying regex to confirm the pattern matches exactly\n    validation_match = re.fullmatch(pattern, substring)\n    # Extract the matched pattern string from the match object's re attribute\n    pattern_str = validation_match.re.pattern\n    # Compute the ending index by adding pattern length to starting position\n    end_idx = start_idx + len(substring)\n    # Bundle the pattern, start boundary, and end boundary into result tuple\n    result = (pattern_str, start_idx, end_idx)\n    # Return the assembled tuple containing match details\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\n\ndef find_literals(text, pattern):\n    # Build a list of all match objects found in the text using findall's counterpart\n    all_matches = list(re.finditer(pattern, text))\n    # Select the initial match from our collected list of matches\n    target_match = all_matches[0]\n    # Retrieve the matched text content using group accessor method\n    matched_content = target_match.group()\n    # Determine where the match begins by querying the match object's position\n    begin = target_match.start()\n    # Determine where the match concludes using the end position accessor\n    finish = target_match.end()\n    # Assemble the output as a three-element tuple with pattern and boundaries\n    output_tuple = (matched_content, begin, finish)\n    # Deliver the constructed result back to the caller\n    return output_tuple",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\n\ndef find_literals(text, pattern):\n    # Create a regex scanner that yields matches at specific positions\n    scanner = re.Scanner([(pattern, lambda scanner, token: token)])\n    # Initialize position tracker to scan through text character by character\n    position = 0\n    # Loop through each possible starting position in the text\n    while position < len(text):\n        # Attempt to scan the remaining portion of text from current position\n        tokens, remainder = scanner.scan(text[position:])\n        # Check if any tokens were captured at this position\n        if tokens:\n            # The first token represents our matched pattern string\n            matched_text = tokens[0]\n            # Current position marks where the match begins in original text\n            start_position = position\n            # End position is start plus the length of what was matched\n            end_position = position + len(matched_text)\n            # Construct tuple with the original pattern and boundary positions\n            return (pattern, start_position, end_position)\n        # Advance to next character position if no match found here\n        position += 1\n    # Return None if exhausted all positions without finding a match\n    return None",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

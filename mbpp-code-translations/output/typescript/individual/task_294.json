@@ -1,0 +1,17 @@
+{
+  "task_id": 294,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum value in a given heterogeneous list.",
+  "python_code": "def max_val(listval):\n     max_val = max(i for i in listval if isinstance(i, int)) \n     return(max_val)",
+  "test_list": [
+    "assert max_val(['Python', 3, 2, 4, 5, 'version'])==5",
+    "assert max_val(['Python', 15, 20, 25])==25",
+    "assert max_val(['Python', 30, 20, 40, 50, 'version'])==50"
+  ],
+  "code_typescript": "function max_val(listval: (string | number)[]): number {\n    const integers = listval.filter((i): i is number => typeof i === 'number' && Number.isInteger(i));\n    if (integers.length === 0) {\n        throw new Error('No integers found in the list');\n    }\n    return Math.max(...integers);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

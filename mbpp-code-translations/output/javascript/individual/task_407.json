@@ -1,0 +1,37 @@
+{
+  "task_id": 407,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create the next bigger number by rearranging the digits of a given number.",
+  "python_code": "def rearrange_bigger(n):\n    nums = list(str(n))\n    for i in range(len(nums)-2,-1,-1):\n        if nums[i] < nums[i+1]:\n            z = nums[i:]\n            y = min(filter(lambda x: x > z[0], z))\n            z.remove(y)\n            z.sort()\n            nums[i:] = [y] + z\n            return int(\"\".join(nums))\n    return False",
+  "test_list": [
+    "assert rearrange_bigger(12)==21",
+    "assert rearrange_bigger(10)==False",
+    "assert rearrange_bigger(102)==120"
+  ],
+  "code_javascript": "function rearrange_bigger(n) {\n    let nums = String(n).split('');\n    for (let i = nums.length - 2; i >= 0; i--) {\n        if (nums[i] < nums[i + 1]) {\n            let z = nums.slice(i);\n            let y = z.filter(x => x > z[0]).sort()[0];\n            z.splice(z.indexOf(y), 1);\n            z.sort();\n            nums.splice(i, nums.length - i, y, ...z);\n            return parseInt(nums.join(''), 10);\n        }\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert rearrange_bigger(12)==21",
+      "generated_test": "const result = rearrange_bigger(12);\nconst expected = 21;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(10)==False",
+      "generated_test": "const result = rearrange_bigger(10);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rearrange_bigger(102)==120",
+      "generated_test": "const result = rearrange_bigger(102);\nconst expected = 120;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

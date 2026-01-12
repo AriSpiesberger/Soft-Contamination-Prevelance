@@ -1,0 +1,27 @@
+{
+  "task_id": 17,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the perimeter of a square given its side length as input.",
+  "code_python": "def square_perimeter(a):\n  perimeter=4*a\n  return perimeter",
+  "test_list": [
+    "assert square_perimeter(10)==40",
+    "assert square_perimeter(5)==20",
+    "assert square_perimeter(4)==16"
+  ],
+  "python_1": "def square_perimeter(a):\n    # Use sum to add the side length four times, representing all sides\n    return sum([a for _ in range(4)])",
+  "python_1_status": "success",
+  "python_1_attempts": 3,
+  "python_2": "def square_perimeter(a):\n    # Define the number of sides a square has as a constant\n    num_sides = 4\n    # Accumulator variable to build up the perimeter value\n    total = 0\n    # Loop through each side of the square\n    for side in range(num_sides):\n        # Add one side length to the running total\n        total += a\n    # Return the computed perimeter after processing all sides\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def square_perimeter(a):\n    # Use repeated addition via the multiplication identity: a + a + a + a\n    first_pair = a + a\n    # Combine two pairs of sides to get all four sides summed\n    second_pair = a + a\n    # Merge both pairs to compute the full perimeter without explicit multiplication\n    return first_pair + second_pair",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def square_perimeter(a):\n    # Use functools.reduce to apply repeated addition across four sides\n    from functools import reduce\n    # Create a list representing the four equal sides of the square\n    sides = [a] * 4\n    # Reduce the list by summing pairs until a single perimeter value remains\n    return reduce(lambda x, y: x + y, sides)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def square_perimeter(a):\n    # Leverage bit shifting to multiply by 4 (equivalent to left shift by 2 positions)\n    return a << 2",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

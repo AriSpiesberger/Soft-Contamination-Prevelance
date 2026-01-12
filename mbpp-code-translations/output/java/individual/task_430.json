@@ -1,0 +1,37 @@
+{
+  "task_id": 430,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the directrix of a parabola.",
+  "python_code": "def parabola_directrix(a, b, c): \n  directrix=((int)(c - ((b * b) + 1) * 4 * a ))\n  return directrix",
+  "test_list": [
+    "assert parabola_directrix(5,3,2)==-198",
+    "assert parabola_directrix(9,8,4)==-2336",
+    "assert parabola_directrix(2,4,6)==-130"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int parabola_directrix(int a, int b, int c) {\n        int directrix = (int)(c - ((b * b) + 1) * 4 * a);\n        return directrix;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert parabola_directrix(5,3,2)==-198",
+      "generated_test": "int result = parabola_directrix(5, 3, 2);\nint expected = -198;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(9,8,4)==-2336",
+      "generated_test": "int result = parabola_directrix(9, 8, 4);\nint expected = -2336;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(2,4,6)==-130",
+      "generated_test": "int result = parabola_directrix(2, 4, 6);\nint expected = -130;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

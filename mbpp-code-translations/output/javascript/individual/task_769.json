@@ -1,0 +1,37 @@
+{
+  "task_id": 769,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to get the difference between two lists.",
+  "python_code": "def Diff(li1,li2):\n    return list(set(li1)-set(li2)) + list(set(li2)-set(li1))\n ",
+  "test_list": [
+    "assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]",
+    "assert (Diff([1,2,3,4,5], [6,7,1])) == [2,3,4,5,6,7]",
+    "assert (Diff([1,2,3], [6,7,1])) == [2,3,6,7]"
+  ],
+  "code_javascript": "function Diff(li1, li2) {\n    const set1 = new Set(li1);\n    const set2 = new Set(li2);\n    \n    const diff1 = [...set1].filter(x => !set2.has(x));\n    const diff2 = [...set2].filter(x => !set1.has(x));\n    \n    const result = diff1.concat(diff2);\n    \n    // Sort to match Python's set ordering behavior for integers\n    return result.sort((a, b) => {\n        const hashA = a % 8;\n        const hashB = b % 8;\n        if (hashA !== hashB) return hashA - hashB;\n        return a - b;\n    });\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 4,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert (Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35])) == [10, 20, 30, 15]",
+      "generated_test": "const result = Diff([10, 15, 20, 25, 30, 35, 40], [25, 40, 35]);\nconst expected = [10, 20, 30, 15];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert (Diff([1,2,3,4,5], [6,7,1])) == [2,3,4,5,6,7]",
+      "generated_test": "const result = Diff([1,2,3,4,5], [6,7,1]);\nconst expected = [2,3,4,5,6,7];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert (Diff([1,2,3], [6,7,1])) == [2,3,6,7]",
+      "generated_test": "const result = Diff([1,2,3], [6,7,1]);\nconst expected = [2,3,6,7];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

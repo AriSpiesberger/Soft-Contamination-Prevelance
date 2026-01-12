@@ -1,0 +1,17 @@
+{
+  "task_id": 2,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the shared elements from the given two lists.",
+  "python_code": "def similar_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) & set(test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))",
+    "assert set(similar_elements((1, 2, 3, 4),(5, 4, 3, 7))) == set((3, 4))",
+    "assert set(similar_elements((11, 12, 14, 13),(17, 15, 14, 13))) == set((13, 14))"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn similar_elements(test_tup1: Vec<i32>, test_tup2: Vec<i32>) -> Vec<i32> {\n    let set1: HashSet<i32> = test_tup1.into_iter().collect();\n    let set2: HashSet<i32> = test_tup2.into_iter().collect();\n    set1.intersection(&set2).cloned().collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0
+}

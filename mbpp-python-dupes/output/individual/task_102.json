@@ -1,0 +1,27 @@
+{
+  "task_id": 102,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a snake case string to camel case string.",
+  "code_python": "def snake_to_camel(word):\n        import re\n        return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('python_program')=='PythonProgram'",
+    "assert snake_to_camel('python_language')==('PythonLanguage')",
+    "assert snake_to_camel('programming_language')==('ProgrammingLanguage')"
+  ],
+  "python_1": "def snake_to_camel(word):\n    # Split the snake_case string into individual words using underscore delimiter\n    parts = word.split('_')\n    # Initialize empty result string to accumulate capitalized words\n    result = ''\n    # Loop through each segment obtained from splitting\n    for part in parts:\n        # Check if the current segment is non-empty to handle edge cases\n        if part:\n            # Convert first character to uppercase and concatenate with remaining lowercase chars\n            result = result + part[0].upper() + part[1:]\n    # Return the fully assembled PascalCase/CamelCase string\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def snake_to_camel(word):\n    # Use the title() method which capitalizes first letter of each word after underscore\n    titled = word.title()\n    # Remove all underscores from the titled string using replace method\n    result = titled.replace('_', '')\n    # Return the camelCase string with all underscores stripped out\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def snake_to_camel(word):\n    # Use map function to apply capitalize transformation to each split segment\n    capitalized_parts = map(str.capitalize, word.split('_'))\n    # Join all capitalized segments into a single string without separators\n    return ''.join(capitalized_parts)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def snake_to_camel(word):\n    # Use regex substitution to find underscore followed by any character and transform it\n    import re\n    # First capitalize the very first character of the string\n    if word:\n        word = word[0].upper() + word[1:]\n    # Define a lambda that takes a regex match and returns the uppercase version of char after underscore\n    def replace_underscore(match):\n        # Extract the character that follows the underscore and capitalize it\n        return match.group(1).upper()\n    # Apply regex substitution: pattern matches underscore followed by single character\n    result = re.sub(r'_([a-zA-Z])', replace_underscore, word)\n    # Handle any remaining underscores (e.g., trailing or consecutive) by removing them\n    result = result.replace('_', '')\n    # Return the transformed PascalCase string\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def snake_to_camel(word):\n    # Use reduce from functools to accumulate the result character by character\n    from functools import reduce\n    # Split word into segments separated by underscores\n    segments = word.split('_')\n    # Filter out any empty segments that might occur from consecutive underscores\n    non_empty_segments = [s for s in segments if s]\n    # Define a reducer function that capitalizes and appends each segment\n    def capitalize_and_join(accumulator, segment):\n        # Concatenate accumulator with segment's first char uppercased plus rest of segment\n        return accumulator + segment[0].upper() + segment[1:]\n    # Handle edge case where input might be empty or only underscores\n    if not non_empty_segments:\n        # Return empty string if no valid segments exist\n        return ''\n    # Use reduce to fold all segments into a single PascalCase string starting with empty accumulator\n    camel_result = reduce(capitalize_and_join, non_empty_segments, '')\n    # Return the fully transformed camelCase/PascalCase string\n    return camel_result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

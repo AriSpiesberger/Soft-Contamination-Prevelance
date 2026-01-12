@@ -1,0 +1,17 @@
+{
+  "task_id": 788,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create a new tuple from the given string and list.",
+  "python_code": "def new_tuple(test_list, test_str):\n  return tuple(test_list + [test_str])",
+  "test_list": [
+    "assert new_tuple([\"WEB\", \"is\"], \"best\") == ('WEB', 'is', 'best')",
+    "assert new_tuple([\"We\", \"are\"], \"Developers\") == ('We', 'are', 'Developers')",
+    "assert new_tuple([\"Part\", \"is\"], \"Wrong\") == ('Part', 'is', 'Wrong')"
+  ],
+  "code_typescript": "function new_tuple<T>(test_list: T[], test_str: T): T[] {\n  return [...test_list, test_str];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

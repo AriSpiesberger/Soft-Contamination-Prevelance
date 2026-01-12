@@ -1,0 +1,44 @@
+{
+  "task_id": 730,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove consecutive duplicates of a given list.",
+  "python_code": "from itertools import groupby\ndef consecutive_duplicates(nums):\n    return [key for key, group in groupby(nums)] ",
+  "test_list": [
+    "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+    "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']"
+  ],
+  "code_rust": "pub fn consecutive_duplicates<T: Clone + PartialEq>(nums: &[T]) -> Vec<T> {\n    if nums.is_empty() {\n        return Vec::new();\n    }\n    \n    let mut result = Vec::new();\n    let mut prev = &nums[0];\n    result.push(prev.clone());\n    \n    for item in nums.iter().skip(1) {\n        if item != prev {\n            result.push(item.clone());\n            prev = item;\n        }\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+      "generated_test": "let input = vec![0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4];\nlet expected = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4];\nlet result = consecutive_duplicates(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+      "generated_test": "let input = vec![10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10];\nlet expected = vec![10, 15, 19, 18, 17, 26, 17, 18, 10];\nlet result = consecutive_duplicates(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+      "generated_test": "let input: Vec<&str> = vec![\"a\", \"a\", \"b\", \"c\", \"d\", \"d\"];\nlet expected: Vec<&str> = vec![\"a\", \"b\", \"c\", \"d\"];\nlet result = consecutive_duplicates(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']",
+      "generated_test": "let input = vec![\"a\", \"a\", \"b\", \"c\", \"d\", \"d\", \"a\", \"a\"];\nlet expected = vec![\"a\", \"b\", \"c\", \"d\", \"a\"];\nlet result = consecutive_duplicates(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

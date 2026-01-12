@@ -1,0 +1,17 @@
+{
+  "task_id": 4,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n largest integers from a given list of numbers, returned in descending order.",
+  "python_code": "import heapq as hq\ndef heap_queue_largest(nums,n):\n  largest_nums = hq.nlargest(n, nums)\n  return largest_nums",
+  "test_list": [
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]",
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]",
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]"
+  ],
+  "code_rust": "pub fn heap_queue_largest(nums: &[i32], n: usize) -> Vec<i32> {\n    use std::collections::BinaryHeap;\n    \n    if nums.is_empty() || n == 0 {\n        return Vec::new();\n    }\n    \n    let mut heap = BinaryHeap::from(nums.to_vec());\n    let mut result = Vec::with_capacity(n.min(nums.len()));\n    \n    for _ in 0..n {\n        if let Some(val) = heap.pop() {\n            result.push(val);\n        } else {\n            break;\n        }\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0
+}

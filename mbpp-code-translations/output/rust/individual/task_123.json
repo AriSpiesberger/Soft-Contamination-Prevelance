@@ -1,0 +1,37 @@
+{
+  "task_id": 123,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum all amicable numbers from 1 to a specified number.",
+  "python_code": "def amicable_numbers_sum(limit):\n    if not isinstance(limit, int):\n        return \"Input is not an integer!\"\n    if limit < 1:\n        return \"Input must be bigger than 0!\"\n    amicables = set()\n    for num in range(2, limit+1):\n        if num in amicables:\n            continue\n        sum_fact = sum([fact for fact in range(1, num) if num % fact == 0])\n        sum_fact2 = sum([fact for fact in range(1, sum_fact) if sum_fact % fact == 0])\n        if num == sum_fact2 and num != sum_fact:\n            amicables.add(num)\n            amicables.add(sum_fact2)\n    return sum(amicables)",
+  "test_list": [
+    "assert amicable_numbers_sum(999)==504",
+    "assert amicable_numbers_sum(9999)==31626",
+    "assert amicable_numbers_sum(99)==0"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn amicable_numbers_sum(limit: i32) -> Result<i32, &'static str> {\n    if limit < 1 {\n        return Err(\"Input must be bigger than 0!\");\n    }\n    \n    let mut amicables: HashSet<i32> = HashSet::new();\n    \n    for num in 2..=limit {\n        if amicables.contains(&num) {\n            continue;\n        }\n        \n        let sum_fact: i32 = (1..num).filter(|&fact| num % fact == 0).sum();\n        let sum_fact2: i32 = (1..sum_fact).filter(|&fact| sum_fact % fact == 0).sum();\n        \n        if num == sum_fact2 && num != sum_fact {\n            amicables.insert(num);\n            amicables.insert(sum_fact2);\n        }\n    }\n    \n    Ok(amicables.iter().sum())\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert amicable_numbers_sum(999)==504",
+      "generated_test": "let result = amicable_numbers_sum(999);\nmatch result {\n    Ok(value) => {\n        if value == 504 {\n            println!(\"PASS\");\n        } else {\n            println!(\"FAIL\");\n            println!(\"  Expected: 504\");\n            println!(\"  Got: {}\", value);\n        }\n    }\n    Err(e) => {\n        println!(\"FAIL\");\n        println!(\"  Expected: 504\");\n        println!(\"  Got: Err({})\", e);\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(9999)==31626",
+      "generated_test": "let result = amicable_numbers_sum(9999);\nlet expected = 31626;\nmatch result {\n    Ok(value) if value == expected => println!(\"PASS\"),\n    Ok(value) => {\n        println!(\"FAIL\");\n        println!(\"  Expected: {}\", expected);\n        println!(\"  Got: {}\", value);\n    },\n    Err(e) => {\n        println!(\"FAIL\");\n        println!(\"  Expected: {}\", expected);\n        println!(\"  Got: Err({})\", e);\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert amicable_numbers_sum(99)==0",
+      "generated_test": "let result = amicable_numbers_sum(99);\nlet expected = 0;\nmatch result {\n    Ok(got) => {\n        if got == expected {\n            println!(\"PASS\");\n        } else {\n            println!(\"FAIL\");\n            println!(\"  Expected: {}\", expected);\n            println!(\"  Got: {}\", got);\n        }\n    }\n    Err(e) => {\n        println!(\"FAIL\");\n        println!(\"  Expected: {}\", expected);\n        println!(\"  Got: Err({})\", e);\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

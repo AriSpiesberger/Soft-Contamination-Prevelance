@@ -1,0 +1,37 @@
+{
+  "task_id": 595,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count minimum number of swaps required to convert one binary number represented as a string to another.",
+  "python_code": "def min_Swaps(str1,str2) : \n    count = 0\n    for i in range(len(str1)) :  \n        if str1[i] != str2[i] : \n            count += 1\n    if count % 2 == 0 : \n        return (count // 2) \n    else : \n        return (\"Not Possible\") ",
+  "test_list": [
+    "assert min_Swaps(\"1101\",\"1110\") == 1",
+    "assert min_Swaps(\"111\",\"000\") == \"Not Possible\"",
+    "assert min_Swaps(\"111\",\"110\") == \"Not Possible\""
+  ],
+  "code_rust": "pub fn min_Swaps(str1: &str, str2: &str) -> Result<i32, &'static str> {\n    let mut count = 0;\n    \n    let chars1: Vec<char> = str1.chars().collect();\n    let chars2: Vec<char> = str2.chars().collect();\n    \n    for i in 0..chars1.len() {\n        if chars1[i] != chars2[i] {\n            count += 1;\n        }\n    }\n    \n    if count % 2 == 0 {\n        Ok(count / 2)\n    } else {\n        Err(\"Not Possible\")\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert min_Swaps(\"1101\",\"1110\") == 1",
+      "generated_test": "let result = min_Swaps(\"1101\", \"1110\");\nlet expected = 1;\nmatch result {\n    Ok(value) if value == expected => println!(\"PASS\"),\n    Ok(value) => {\n        println!(\"FAIL\");\n        println!(\"  Expected: {}\", expected);\n        println!(\"  Got: {}\", value);\n    }\n    Err(e) => {\n        println!(\"FAIL\");\n        println!(\"  Expected: {}\", expected);\n        println!(\"  Got: Err({})\", e);\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Swaps(\"111\",\"000\") == \"Not Possible\"",
+      "generated_test": "let result = min_Swaps(\"111\", \"000\");\nlet expected: Result<i32, &'static str> = Err(\"Not Possible\");\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Swaps(\"111\",\"110\") == \"Not Possible\"",
+      "generated_test": "let result = min_Swaps(\"111\", \"110\");\nlet expected: Result<i32, &'static str> = Err(\"Not Possible\");\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

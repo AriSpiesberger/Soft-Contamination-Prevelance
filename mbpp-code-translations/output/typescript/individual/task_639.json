@@ -1,0 +1,17 @@
+{
+  "task_id": 639,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.",
+  "python_code": "def sample_nam(sample_names):\n  sample_names=list(filter(lambda el:el[0].isupper() and el[1:].islower(),sample_names))\n  return len(''.join(sample_names))",
+  "test_list": [
+    "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+    "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+    "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6"
+  ],
+  "code_typescript": "function sample_nam(sample_names: string[]): number {\n  const filtered = sample_names.filter(el => {\n    if (el.length === 0) return false;\n    if (el.length === 1) return el[0] === el[0].toUpperCase() && el[0] !== el[0].toLowerCase();\n    const firstChar = el[0];\n    const rest = el.slice(1);\n    const firstIsUpper = firstChar === firstChar.toUpperCase() && firstChar !== firstChar.toLowerCase();\n    const restIsLower = rest === rest.toLowerCase() && [...rest].every(c => c === c.toLowerCase() && c !== c.toUpperCase() || c === c.toLowerCase());\n    return firstIsUpper && rest.length > 0 ? [...rest].every(c => c === c.toLowerCase()) && [...rest].some(c => c !== c.toUpperCase()) || rest === rest.toLowerCase() && [...rest].every(c => c.toLowerCase() !== c.toUpperCase() ? c === c.toLowerCase() : true) : firstIsUpper && rest.length === 0;\n  });\n  \n  const properFiltered = sample_names.filter(el => {\n    if (el.length === 0) return false;\n    const firstChar = el[0];\n    const isFirstUpper = firstChar >= 'A' && firstChar <= 'Z';\n    if (!isFirstUpper) return false;\n    if (el.length === 1) return true;\n    const rest = el.slice(1);\n    for (const c of rest) {\n      if (c >= 'A' && c <= 'Z') return false;\n      if (!(c >= 'a' && c <= 'z')) return false;\n    }\n    return true;\n  });\n  \n  return properFiltered.join('').length;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

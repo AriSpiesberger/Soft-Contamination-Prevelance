@@ -1,0 +1,37 @@
+{
+  "task_id": 408,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find k number of smallest pairs which consist of one element from the first array and one element from the second array.",
+  "python_code": "import heapq\ndef k_smallest_pairs(nums1, nums2, k):\n   queue = []\n   def push(i, j):\n       if i < len(nums1) and j < len(nums2):\n           heapq.heappush(queue, [nums1[i] + nums2[j], i, j])\n   push(0, 0)\n   pairs = []\n   while queue and len(pairs) < k:\n       _, i, j = heapq.heappop(queue)\n       pairs.append([nums1[i], nums2[j]])\n       push(i, j + 1)\n       if j == 0:\n           push(i + 1, 0)\n   return pairs",
+  "test_list": [
+    "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]"
+  ],
+  "code_javascript": "function k_smallest_pairs(nums1, nums2, k) {\n    class MinHeap {\n        constructor() {\n            this.heap = [];\n        }\n        \n        push(val) {\n            this.heap.push(val);\n            this._bubbleUp(this.heap.length - 1);\n        }\n        \n        pop() {\n            if (this.heap.length === 0) return undefined;\n            if (this.heap.length === 1) return this.heap.pop();\n            const min = this.heap[0];\n            this.heap[0] = this.heap.pop();\n            this._bubbleDown(0);\n            return min;\n        }\n        \n        _bubbleUp(idx) {\n            while (idx > 0) {\n                const parentIdx = Math.floor((idx - 1) / 2);\n                if (this.heap[parentIdx][0] <= this.heap[idx][0]) break;\n                [this.heap[parentIdx], this.heap[idx]] = [this.heap[idx], this.heap[parentIdx]];\n                idx = parentIdx;\n            }\n        }\n        \n        _bubbleDown(idx) {\n            const length = this.heap.length;\n            while (true) {\n                const leftIdx = 2 * idx + 1;\n                const rightIdx = 2 * idx + 2;\n                let smallest = idx;\n                \n                if (leftIdx < length && this.heap[leftIdx][0] < this.heap[smallest][0]) {\n                    smallest = leftIdx;\n                }\n                if (rightIdx < length && this.heap[rightIdx][0] < this.heap[smallest][0]) {\n                    smallest = rightIdx;\n                }\n                if (smallest === idx) break;\n                [this.heap[smallest], this.heap[idx]] = [this.heap[idx], this.heap[smallest]];\n                idx = smallest;\n            }\n        }\n        \n        get length() {\n            return this.heap.length;\n        }\n    }\n    \n    const queue = new MinHeap();\n    \n    function push(i, j) {\n        if (i < nums1.length && j < nums2.length) {\n            queue.push([nums1[i] + nums2[j], i, j]);\n        }\n    }\n    \n    push(0, 0);\n    const pairs = [];\n    \n    while (queue.length > 0 && pairs.length < k) {\n        const [_, i, j] = queue.pop();\n        pairs.push([nums1[i], nums2[j]]);\n        push(i, j + 1);\n        if (j === 0) {\n            push(i + 1, 0);\n        }\n    }\n    \n    return pairs;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+      "generated_test": "const result = k_smallest_pairs([1,3,7], [2,4,6], 2);\nconst expected = [[1, 2], [1, 4]];\nconst passed = JSON.stringify(result) === JSON.stringify(expected);\nif (passed) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+      "generated_test": "const result = k_smallest_pairs([1,3,7], [2,4,6], 1);\nconst expected = [[1, 2]];\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]",
+      "generated_test": "const result = k_smallest_pairs([1,3,7], [2,4,6], 7);\nconst expected = [[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": false,
+      "llm_validated": true
+    }
+  ]
+}

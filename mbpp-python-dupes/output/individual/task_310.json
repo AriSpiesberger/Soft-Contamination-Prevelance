@@ -1,0 +1,27 @@
+{
+  "task_id": 310,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given string to a tuple of characters.",
+  "code_python": "def string_to_tuple(str1):\n    result = tuple(x for x in str1 if not x.isspace()) \n    return result",
+  "test_list": [
+    "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+    "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+    "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')"
+  ],
+  "python_1": "def string_to_tuple(str1):\n    # Create an empty list to accumulate non-whitespace characters\n    chars = []\n    # Loop through each character in the input string using index-based iteration\n    for i in range(len(str1)):\n        # Extract the character at the current index position\n        char = str1[i]\n        # Check if the character is not a whitespace character\n        if char != ' ' and char != '\\t' and char != '\\n':\n            # Append valid characters to our accumulator list\n            chars.append(char)\n    # Convert the accumulated list to a tuple and return it\n    return tuple(chars)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def string_to_tuple(str1):\n    # Use filter with lambda to remove whitespace characters from the string\n    filtered_chars = filter(lambda c: not c.isspace(), str1)\n    # Convert the filter object directly to a tuple for the final result\n    result = tuple(filtered_chars)\n    # Return the tuple containing only non-whitespace characters\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def string_to_tuple(str1):\n    # Replace all whitespace characters with empty string to remove them\n    cleaned_string = str1.replace(' ', '').replace('\\t', '').replace('\\n', '')\n    # Unpack the cleaned string directly into a tuple using the tuple constructor\n    result = tuple(cleaned_string)\n    # Return the tuple of individual characters without any whitespace\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def string_to_tuple(str1):\n    # Use string's split and join to eliminate all whitespace in one operation\n    no_whitespace = ''.join(str1.split())\n    # Build tuple by using list comprehension with direct character extraction\n    char_list = [no_whitespace[idx] for idx in range(len(no_whitespace))]\n    # Transform the list of characters into an immutable tuple structure\n    return tuple(char_list)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def string_to_tuple(str1):\n    # Use regular expression module to handle whitespace removal\n    import re\n    # Apply regex substitution to strip all whitespace characters (\\s matches any whitespace)\n    cleaned = re.sub(r'\\s', '', str1)\n    # Leverage the unpacking operator * to spread characters into tuple constructor\n    return (*cleaned,)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

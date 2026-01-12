@@ -1,0 +1,37 @@
+{
+  "task_id": 753,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum k records from tuple list. https://www.geeksforgeeks.org/python-find-minimum-k-records-from-tuple-list/ - in this case a verbatim copy of test cases",
+  "python_code": "def min_k(test_list, K):\n  res = sorted(test_list, key = lambda x: x[1])[:K]\n  return (res) ",
+  "test_list": [
+    "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+    "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+    "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]"
+  ],
+  "code_rust": "pub fn min_k(test_list: Vec<(&str, i32)>, k: usize) -> Vec<(&str, i32)> {\n    let mut sorted_list = test_list.clone();\n    sorted_list.sort_by_key(|x| x.1);\n    sorted_list.into_iter().take(k).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+      "generated_test": "let result = min_k(vec![(\"Manjeet\", 10), (\"Akshat\", 4), (\"Akash\", 2), (\"Nikhil\", 8)], 2);\nlet expected: Vec<(&str, i32)> = vec![(\"Akash\", 2), (\"Akshat\", 4)];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+      "generated_test": "let result = min_k(vec![(\"Sanjeev\", 11), (\"Angat\", 5), (\"Akash\", 3), (\"Nepin\", 9)], 3);\nlet expected: Vec<(&str, i32)> = vec![(\"Akash\", 3), (\"Angat\", 5), (\"Nepin\", 9)];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]",
+      "generated_test": "let result = min_k(vec![(\"tanmay\", 14), (\"Amer\", 11), (\"Ayesha\", 9), (\"SKD\", 16)], 1);\nlet expected: Vec<(&str, i32)> = vec![(\"Ayesha\", 9)];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

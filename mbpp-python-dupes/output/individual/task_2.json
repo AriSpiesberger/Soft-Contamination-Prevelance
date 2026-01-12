@@ -1,0 +1,27 @@
+{
+  "task_id": 2,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the shared elements from the given two lists.",
+  "code_python": "def similar_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1) & set(test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))",
+    "assert set(similar_elements((1, 2, 3, 4),(5, 4, 3, 7))) == set((3, 4))",
+    "assert set(similar_elements((11, 12, 14, 13),(17, 15, 14, 13))) == set((13, 14))"
+  ],
+  "python_1": "def similar_elements(test_tup1, test_tup2):\n  # Initialize empty list to collect common elements found\n  common = []\n  # Convert second tuple to set for O(1) membership testing\n  set2 = set(test_tup2)\n  # Track elements already added to avoid duplicates\n  seen = set()\n  # Iterate through each element in the first tuple\n  for elem in test_tup1:\n    # Check if element exists in second collection and hasn't been added yet\n    if elem in set2 and elem not in seen:\n      # Append the shared element to our result list\n      common.append(elem)\n      # Mark this element as processed to prevent duplicates\n      seen.add(elem)\n  # Convert the list of common elements to a tuple for return\n  return tuple(common)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def similar_elements(test_tup1, test_tup2):\n  # Use set intersection method instead of & operator for finding common elements\n  set1 = set(test_tup1)\n  # Create set from second tuple to enable intersection operation\n  set2 = set(test_tup2)\n  # Call intersection method which returns elements present in both sets\n  common_set = set1.intersection(set2)\n  # Convert resulting set back to tuple format as required by function signature\n  result = tuple(common_set)\n  # Return the tuple containing all shared elements between inputs\n  return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def similar_elements(test_tup1, test_tup2):\n  # Use list comprehension with uniqueness filter via dict.fromkeys to find shared elements\n  unique_first = list(dict.fromkeys(test_tup1))\n  # Create a lookup dictionary from second tuple for efficient membership checking\n  lookup = dict.fromkeys(test_tup2)\n  # Build result by filtering elements that exist in the lookup dictionary\n  shared = [x for x in unique_first if x in lookup]\n  # Transform the filtered list into immutable tuple format for return\n  return tuple(shared)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def similar_elements(test_tup1, test_tup2):\n  # Use filter function with lambda to select elements present in both collections\n  set_tup2 = set(test_tup2)\n  # Apply filter to get iterator of elements from first tuple that exist in second\n  filtered = filter(lambda x: x in set_tup2, test_tup1)\n  # Convert filtered iterator to set to eliminate any duplicate matches\n  unique_common = set(filtered)\n  # Cast the deduplicated set into tuple format for the expected return type\n  return tuple(unique_common)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def similar_elements(test_tup1, test_tup2):\n  # Leverage set symmetric difference to find elements NOT shared between collections\n  set1 = set(test_tup1)\n  # Build second set for symmetric difference computation\n  set2 = set(test_tup2)\n  # Compute union of both sets to get all possible elements\n  all_elements = set1 | set2\n  # Symmetric difference gives elements in either set but not both\n  not_shared = set1 ^ set2\n  # Subtract non-shared elements from union to isolate only common elements\n  common_elements = all_elements - not_shared\n  # Package the intersection result as an immutable tuple for return\n  return tuple(common_elements)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

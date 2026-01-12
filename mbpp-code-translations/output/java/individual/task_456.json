@@ -1,0 +1,37 @@
+{
+  "task_id": 456,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse each string in a given list of string values.",
+  "python_code": "def reverse_string_list(stringlist):\n    result = [x[::-1] for x in stringlist]\n    return result",
+  "test_list": [
+    "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+    "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+    "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<String> reverse_string_list(List<String> stringlist) {\n        List<String> result = new ArrayList<>();\n        for (String x : stringlist) {\n            StringBuilder sb = new StringBuilder(x);\n            result.add(sb.reverse().toString());\n        }\n        return result;\n    }\n    \n    public static String[] reverse_string_list(String[] stringlist) {\n        String[] result = new String[stringlist.length];\n        for (int i = 0; i < stringlist.length; i++) {\n            StringBuilder sb = new StringBuilder(stringlist[i]);\n            result[i] = sb.reverse().toString();\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 3,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+      "generated_test": "String[] input = new String[]{\"Red\", \"Green\", \"Blue\", \"White\", \"Black\"};\nString[] expected = new String[]{\"deR\", \"neerG\", \"eulB\", \"etihW\", \"kcalB\"};\nString[] result = reverse_string_list(input);\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.print(\"  Expected: [\");\n    for (int i = 0; i < expected.length; i++) {\n        System.out.print(expected[i]);\n        if (i < expected.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n    System.out.print(\"  Got: [\");\n    for (int i = 0; i < result.length; i++) {\n        System.out.print(result[i]);\n        if (i < result.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"john\");\ninput.add(\"amal\");\ninput.add(\"joel\");\ninput.add(\"george\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"nhoj\");\nexpected.add(\"lama\");\nexpected.add(\"leoj\");\nexpected.add(\"egroeg\");\n\nList<String> result = reverse_string_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"jack\");\ninput.add(\"john\");\ninput.add(\"mary\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"kcaj\");\nexpected.add(\"nhoj\");\nexpected.add(\"yram\");\n\nList<String> result = reverse_string_list(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

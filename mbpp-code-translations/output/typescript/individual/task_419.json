@@ -1,0 +1,17 @@
+{
+  "task_id": 419,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to round every number of a given list of numbers and print the total sum multiplied by the length of the list.",
+  "python_code": "def round_and_sum(list1):\n  lenght=len(list1)\n  round_and_sum=sum(list(map(round,list1))* lenght)\n  return round_and_sum",
+  "test_list": [
+    "assert round_and_sum([22.4, 4.0, -16.22, -9.10, 11.00, -12.22, 14.20, -5.20, 17.50])==243",
+    "assert round_and_sum([5,2,9,24.3,29])==345",
+    "assert round_and_sum([25.0,56.7,89.2])==513"
+  ],
+  "code_typescript": "function round_and_sum(list1: number[]): number {\n  const length = list1.length;\n  const roundedSum = list1.map(x => Math.round(x)).reduce((a, b) => a + b, 0);\n  return roundedSum * length;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

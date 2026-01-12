@@ -1,0 +1,37 @@
+{
+  "task_id": 630,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract all the adjacent coordinates of the given coordinate tuple.",
+  "python_code": "def adjac(ele, sub = []): \n  if not ele: \n     yield sub \n  else: \n     yield from [idx for j in range(ele[0] - 1, ele[0] + 2) \n                for idx in adjac(ele[1:], sub + [j])] \ndef get_coordinates(test_tup):\n  return list(adjac(test_tup))",
+  "test_list": [
+    "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+    "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+    "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    \n    public static List<List<Integer>> get_coordinates(int[] test_tup) {\n        List<List<Integer>> result = new ArrayList<>();\n        adjac(test_tup, 0, new ArrayList<>(), result);\n        return result;\n    }\n    \n    private static void adjac(int[] ele, int index, List<Integer> sub, List<List<Integer>> result) {\n        if (index >= ele.length) {\n            result.add(new ArrayList<>(sub));\n        } else {\n            for (int j = ele[index] - 1; j <= ele[index] + 1; j++) {\n                List<Integer> newSub = new ArrayList<>(sub);\n                newSub.add(j);\n                adjac(ele, index + 1, newSub, result);\n            }\n        }\n    }\n    \n    public static List<List<Integer>> adjac(int[] ele, List<Integer> sub) {\n        List<List<Integer>> result = new ArrayList<>();\n        adjac(ele, 0, sub, result);\n        return result;\n    }\n    \n    public static List<List<Integer>> adjac(int[] ele) {\n        return adjac(ele, new ArrayList<>());\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 5,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+      "generated_test": "int[] input = new int[]{3, 4};\nList<List<Integer>> result = get_coordinates(input);\n\nList<List<Integer>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(List.of(2, 3)));\nexpected.add(new ArrayList<>(List.of(2, 4)));\nexpected.add(new ArrayList<>(List.of(2, 5)));\nexpected.add(new ArrayList<>(List.of(3, 3)));\nexpected.add(new ArrayList<>(List.of(3, 4)));\nexpected.add(new ArrayList<>(List.of(3, 5)));\nexpected.add(new ArrayList<>(List.of(4, 3)));\nexpected.add(new ArrayList<>(List.of(4, 4)));\nexpected.add(new ArrayList<>(List.of(4, 5)));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+      "generated_test": "int[] input = new int[]{4, 5};\nList<List<Integer>> result = get_coordinates(input);\n\nList<List<Integer>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(List.of(3, 4)));\nexpected.add(new ArrayList<>(List.of(3, 5)));\nexpected.add(new ArrayList<>(List.of(3, 6)));\nexpected.add(new ArrayList<>(List.of(4, 4)));\nexpected.add(new ArrayList<>(List.of(4, 5)));\nexpected.add(new ArrayList<>(List.of(4, 6)));\nexpected.add(new ArrayList<>(List.of(5, 4)));\nexpected.add(new ArrayList<>(List.of(5, 5)));\nexpected.add(new ArrayList<>(List.of(5, 6)));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]",
+      "generated_test": "int[] input = new int[]{5, 6};\nList<List<Integer>> result = get_coordinates(input);\n\nList<List<Integer>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(List.of(4, 5)));\nexpected.add(new ArrayList<>(List.of(4, 6)));\nexpected.add(new ArrayList<>(List.of(4, 7)));\nexpected.add(new ArrayList<>(List.of(5, 5)));\nexpected.add(new ArrayList<>(List.of(5, 6)));\nexpected.add(new ArrayList<>(List.of(5, 7)));\nexpected.add(new ArrayList<>(List.of(6, 5)));\nexpected.add(new ArrayList<>(List.of(6, 6)));\nexpected.add(new ArrayList<>(List.of(6, 7)));\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

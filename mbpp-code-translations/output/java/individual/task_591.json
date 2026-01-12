@@ -1,0 +1,37 @@
+{
+  "task_id": 591,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to interchange the first and last elements in a list.",
+  "python_code": "def swap_List(newList): \n    size = len(newList) \n    temp = newList[0] \n    newList[0] = newList[size - 1] \n    newList[size - 1] = temp  \n    return newList ",
+  "test_list": [
+    "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+    "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+    "assert swap_List([4, 5, 6]) == [6, 5, 4]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> swap_List(ArrayList<Integer> newList) {\n        int size = newList.size();\n        int temp = newList.get(0);\n        newList.set(0, newList.get(size - 1));\n        newList.set(size - 1, temp);\n        return newList;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(12);\ninput.add(35);\ninput.add(9);\ninput.add(56);\ninput.add(24);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(24);\nexpected.add(35);\nexpected.add(9);\nexpected.add(56);\nexpected.add(12);\n\nArrayList<Integer> result = swap_List(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(1);\ninput.add(2);\ninput.add(3);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(3);\nexpected.add(2);\nexpected.add(1);\n\nArrayList<Integer> result = swap_List(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_List([4, 5, 6]) == [6, 5, 4]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(4);\ninput.add(5);\ninput.add(6);\n\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(6);\nexpected.add(5);\nexpected.add(4);\n\nArrayList<Integer> result = swap_List(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

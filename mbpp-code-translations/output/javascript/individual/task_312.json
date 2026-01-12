@@ -1,0 +1,37 @@
+{
+  "task_id": 312,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cone.",
+  "python_code": "import math\ndef volume_cone(r,h):\n  volume = (1.0/3) * math.pi * r * r * h\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_cone(5,12), 314.15926535897927, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(10,15), 1570.7963267948965, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(19,17), 6426.651371693521, rel_tol=0.001)"
+  ],
+  "code_javascript": "function volume_cone(r, h) {\n  const volume = (1.0 / 3) * Math.PI * r * r * h;\n  return volume;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert math.isclose(volume_cone(5,12), 314.15926535897927, rel_tol=0.001)",
+      "generated_test": "const result = volume_cone(5, 12);\nconst expected = 314.15926535897927;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_cone(10,15), 1570.7963267948965, rel_tol=0.001)",
+      "generated_test": "const result = volume_cone(10, 15);\nconst expected = 1570.7963267948965;\nconst relTol = 0.001;\n\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_cone(19,17), 6426.651371693521, rel_tol=0.001)",
+      "generated_test": "const result = volume_cone(19, 17);\nconst expected = 6426.651371693521;\nconst relTol = 0.001;\n\nif (Math.abs(result - expected) <= relTol * Math.abs(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

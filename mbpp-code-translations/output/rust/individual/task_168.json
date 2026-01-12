@@ -1,0 +1,37 @@
+{
+  "task_id": 168,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurrences of a number in a given list.",
+  "python_code": "def frequency(a,x): \n    count = 0  \n    for i in a: \n      if i == x: \n        count += 1\n\n    return count ",
+  "test_list": [
+    "assert frequency([1,2,3], 4) == 0",
+    "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+    "assert frequency([0,1,2,3,1,2], 1) == 2"
+  ],
+  "code_rust": "pub fn frequency(a: &[i32], x: i32) -> i32 {\n    let mut count = 0;\n    for &i in a {\n        if i == x {\n            count += 1;\n        }\n    }\n    count\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert frequency([1,2,3], 4) == 0",
+      "generated_test": "let result = frequency(&[1, 2, 3], 4);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+      "generated_test": "let result = frequency(&[1, 2, 2, 3, 3, 3, 4], 3);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency([0,1,2,3,1,2], 1) == 2",
+      "generated_test": "let result = frequency(&[0, 1, 2, 3, 1, 2], 1);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

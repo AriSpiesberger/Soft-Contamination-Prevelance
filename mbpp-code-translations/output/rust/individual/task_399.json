@@ -1,0 +1,37 @@
+{
+  "task_id": 399,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to perform the mathematical bitwise xor operation across the given tuples.",
+  "python_code": "def bitwise_xor(test_tup1, test_tup2):\n  res = tuple(ele1 ^ ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+    "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+    "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)"
+  ],
+  "code_rust": "pub fn bitwise_xor(test_tup1: &[i32], test_tup2: &[i32]) -> Vec<i32> {\n    test_tup1\n        .iter()\n        .zip(test_tup2.iter())\n        .map(|(ele1, ele2)| ele1 ^ ele2)\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert bitwise_xor((10, 4, 6, 9), (5, 2, 3, 3)) == (15, 6, 5, 10)",
+      "generated_test": "let result = bitwise_xor(&[10, 4, 6, 9], &[5, 2, 3, 3]);\nlet expected = vec![15, 6, 5, 10];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bitwise_xor((11, 5, 7, 10), (6, 3, 4, 4)) == (13, 6, 3, 14)",
+      "generated_test": "let result = bitwise_xor(&[11, 5, 7, 10], &[6, 3, 4, 4]);\nlet expected = vec![13, 6, 3, 14];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert bitwise_xor((12, 6, 8, 11), (7, 4, 5, 6)) == (11, 2, 13, 13)",
+      "generated_test": "let result = bitwise_xor(&[12, 6, 8, 11], &[7, 4, 5, 6]);\nlet expected = vec![11, 2, 13, 13];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

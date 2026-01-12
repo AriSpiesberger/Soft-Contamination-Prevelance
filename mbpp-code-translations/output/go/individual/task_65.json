@@ -1,0 +1,37 @@
+{
+  "task_id": 65,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a list and sum all of its elements.",
+  "python_code": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total",
+  "test_list": [
+    "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+    "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+    "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210"
+  ],
+  "code_go": "package main\n\nimport \"reflect\"\n\nfunc recursive_list_sum(data_list []interface{}) int {\n\ttotal := 0\n\tfor _, element := range data_list {\n\t\tv := reflect.ValueOf(element)\n\t\t\n\t\t// Check if element is a slice or array\n\t\tif v.Kind() == reflect.Slice || v.Kind() == reflect.Array {\n\t\t\t// Convert to []interface{}\n\t\t\tnested := make([]interface{}, v.Len())\n\t\t\tfor i := 0; i < v.Len(); i++ {\n\t\t\t\tnested[i] = v.Index(i).Interface()\n\t\t\t}\n\t\t\ttotal = total + recursive_list_sum(nested)\n\t\t} else {\n\t\t\t// Handle various numeric types\n\t\t\tswitch num := element.(type) {\n\t\t\tcase int:\n\t\t\t\ttotal = total + num\n\t\t\tcase int64:\n\t\t\t\ttotal = total + int(num)\n\t\t\tcase int32:\n\t\t\t\ttotal = total + int(num)\n\t\t\tcase float64:\n\t\t\t\ttotal = total + int(num)\n\t\t\tcase float32:\n\t\t\t\ttotal = total + int(num)\n\t\t\t}\n\t\t}\n\t}\n\treturn total\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+      "generated_test": "result := recursive_list_sum([]interface{}{1, 2, []interface{}{3, 4}, []interface{}{5, 6}})\nexpected := 21\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+      "generated_test": "input := []interface{}{7, 10, []interface{}{15, 14}, []interface{}{19, 41}}\nresult := recursive_list_sum(input)\nexpected := 106\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210",
+      "generated_test": "input := []interface{}{10, 20, []interface{}{30, 40}, []interface{}{50, 60}}\nresult := recursive_list_sum(input)\nexpected := 210\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

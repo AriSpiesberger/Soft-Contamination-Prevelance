@@ -1,0 +1,37 @@
+{
+  "task_id": 796,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write function to find the sum of all items in the given dictionary.",
+  "python_code": "def return_sum(dict):\n  sum = 0\n  for i in dict.values():\n    sum = sum + i\n  return sum",
+  "test_list": [
+    "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+    "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+    "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124"
+  ],
+  "code_go": "func return_sum(dict map[string]int) int {\n\tsum := 0\n\tfor _, v := range dict {\n\t\tsum = sum + v\n\t}\n\treturn sum\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 4,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+      "generated_test": "result := return_sum(map[string]int{\"a\": 100, \"b\": 200, \"c\": 300})\nexpected := 600\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+      "generated_test": "input := map[string]int{\"a\": 25, \"b\": 18, \"c\": 45}\nexpected := 88\ngot := return_sum(input)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124",
+      "generated_test": "dict := map[string]int{\"a\": 36, \"b\": 39, \"c\": 49}\nresult := return_sum(dict)\nexpected := 124\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 595,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count minimum number of swaps required to convert one binary number represented as a string to another.",
+  "python_code": "def min_Swaps(str1,str2) : \n    count = 0\n    for i in range(len(str1)) :  \n        if str1[i] != str2[i] : \n            count += 1\n    if count % 2 == 0 : \n        return (count // 2) \n    else : \n        return (\"Not Possible\") ",
+  "test_list": [
+    "assert min_Swaps(\"1101\",\"1110\") == 1",
+    "assert min_Swaps(\"111\",\"000\") == \"Not Possible\"",
+    "assert min_Swaps(\"111\",\"110\") == \"Not Possible\""
+  ],
+  "code_typescript": "function min_Swaps(str1: string, str2: string): number | string {\n    let count = 0;\n    for (let i = 0; i < str1.length; i++) {\n        if (str1[i] !== str2[i]) {\n            count += 1;\n        }\n    }\n    if (count % 2 === 0) {\n        return Math.floor(count / 2);\n    } else {\n        return \"Not Possible\";\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

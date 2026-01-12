@@ -1,0 +1,37 @@
+{
+  "task_id": 16,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.",
+  "python_code": "import re\ndef text_lowercase_underscore(text):\n        patterns = '^[a-z]+_[a-z]+$'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+    "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+    "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc text_lowercase_underscore(text string) bool {\n\tpattern := `^[a-z]+_[a-z]+$`\n\tmatched, _ := regexp.MatchString(pattern, text)\n\treturn matched\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+      "generated_test": "result := text_lowercase_underscore(\"aab_cbbbc\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+      "generated_test": "result := text_lowercase_underscore(\"aab_Abbbc\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)",
+      "generated_test": "result := text_lowercase_underscore(\"Aaab_abbbc\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

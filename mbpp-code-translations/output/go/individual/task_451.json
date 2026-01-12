@@ -1,0 +1,37 @@
+{
+  "task_id": 451,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from the given string.",
+  "python_code": "import re\ndef remove_whitespaces(text1):\n  return (re.sub(r'\\s+', '',text1))",
+  "test_list": [
+    "assert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'",
+    "assert remove_whitespaces(' Google    Dart ') == 'GoogleDart'",
+    "assert remove_whitespaces(' iOS    Swift ') == 'iOSSwift'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc remove_whitespaces(text1 string) string {\n\tre := regexp.MustCompile(`\\s+`)\n\treturn re.ReplaceAllString(text1, \"\")\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'",
+      "generated_test": "result := remove_whitespaces(\" Google    Flutter \")\nexpected := \"GoogleFlutter\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_whitespaces(' Google    Dart ') == 'GoogleDart'",
+      "generated_test": "result := remove_whitespaces(\" Google    Dart \")\nexpected := \"GoogleDart\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_whitespaces(' iOS    Swift ') == 'iOSSwift'",
+      "generated_test": "result := remove_whitespaces(\" iOS    Swift \")\nexpected := \"iOSSwift\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

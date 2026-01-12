@@ -1,0 +1,27 @@
+{
+  "task_id": 798,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of an array.",
+  "code_python": "def _sum(arr):  \n    sum=0\n    for i in arr: \n        sum = sum + i      \n    return(sum)  ",
+  "test_list": [
+    "assert _sum([1, 2, 3]) == 6",
+    "assert _sum([15, 12, 13, 10]) == 50",
+    "assert _sum([0, 1, 2]) == 3"
+  ],
+  "python_1": "def _sum(arr):  \n    # Leverage Python's built-in sum function for optimal performance\n    return sum(arr)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def _sum(arr):  \n    # Handle empty array edge case by returning zero immediately\n    if len(arr) == 0:\n        return 0\n    # Base case: single element array returns that element\n    if len(arr) == 1:\n        return arr[0]\n    # Recursive case: add first element to sum of remaining elements\n    return arr[0] + _sum(arr[1:])",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def _sum(arr):  \n    # Import reduce function for functional-style accumulation\n    from functools import reduce\n    # Guard against empty array which would cause reduce to fail\n    if not arr:\n        return 0\n    # Apply reduce with lambda to accumulate sum across all elements\n    return reduce(lambda accumulator, current: accumulator + current, arr)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def _sum(arr):  \n    # Convert array to iterator for memory-efficient index-based traversal\n    index = 0\n    # Initialize accumulator to store running total\n    total = 0\n    # Use while loop with explicit index control instead of for-each iteration\n    while index < len(arr):\n        # Access element by index and add to running total\n        total += arr[index]\n        # Manually increment index to move to next position\n        index += 1\n    # Return the computed sum after all elements processed\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def _sum(arr):  \n    # Use generator expression with sum to process elements lazily\n    # This demonstrates a different syntactic approach using generator comprehension\n    return sum(element for element in arr)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

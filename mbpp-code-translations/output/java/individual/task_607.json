@@ -1,0 +1,37 @@
+{
+  "task_id": 607,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to search a string for a regex pattern. The function should return the matching subtring, a start index and an end index.",
+  "python_code": "import re\n\ndef find_literals(text, pattern):\n  match = re.search(pattern, text)\n  s = match.start()\n  e = match.end()\n  return (match.re.pattern, s, e)",
+  "test_list": [
+    "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+    "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+    "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)"
+  ],
+  "code_java": "import java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\npublic class Solution {\n    public static Object[] find_literals(String text, String pattern) {\n        Pattern p = Pattern.compile(pattern);\n        Matcher m = p.matcher(text);\n        m.find();\n        int s = m.start();\n        int e = m.end();\n        return new Object[] {pattern, s, e};\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_literals('The quick brown fox jumps over the lazy dog.', 'fox') == ('fox', 16, 19)",
+      "generated_test": "Object[] result = find_literals(\"The quick brown fox jumps over the lazy dog.\", \"fox\");\nObject[] expected = new Object[]{\"fox\", 16, 19};\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < result.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (\" + expected[0] + \", \" + expected[1] + \", \" + expected[2] + \")\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \", \" + result[2] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_literals('Its been a very crazy procedure right', 'crazy') == ('crazy', 16, 21)",
+      "generated_test": "Object[] result = find_literals(\"Its been a very crazy procedure right\", \"crazy\");\nObject[] expected = new Object[]{\"crazy\", 16, 21};\n\nboolean pass = result.length == expected.length;\nif (pass) {\n    for (int i = 0; i < result.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (\" + expected[0] + \", \" + expected[1] + \", \" + expected[2] + \")\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \", \" + result[2] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_literals('Hardest choices required strongest will', 'will') == ('will', 35, 39)",
+      "generated_test": "Object[] result = find_literals(\"Hardest choices required strongest will\", \"will\");\nObject[] expected = new Object[]{\"will\", 35, 39};\n\nboolean pass = result.length == expected.length;\nif (pass) {\n    for (int i = 0; i < result.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \", \" + expected[2] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \", \" + result[2] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

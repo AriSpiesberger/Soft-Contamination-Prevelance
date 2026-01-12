@@ -1,0 +1,37 @@
+{
+  "task_id": 630,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract all the adjacent coordinates of the given coordinate tuple.",
+  "python_code": "def adjac(ele, sub = []): \n  if not ele: \n     yield sub \n  else: \n     yield from [idx for j in range(ele[0] - 1, ele[0] + 2) \n                for idx in adjac(ele[1:], sub + [j])] \ndef get_coordinates(test_tup):\n  return list(adjac(test_tup))",
+  "test_list": [
+    "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+    "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+    "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]"
+  ],
+  "code_rust": "pub fn adjac(ele: &[i32], sub: Vec<i32>) -> Vec<Vec<i32>> {\n    if ele.is_empty() {\n        vec![sub]\n    } else {\n        let mut result = Vec::new();\n        for j in (ele[0] - 1)..=(ele[0] + 1) {\n            let mut new_sub = sub.clone();\n            new_sub.push(j);\n            result.extend(adjac(&ele[1..], new_sub));\n        }\n        result\n    }\n}\n\npub fn get_coordinates(test_tup: (i32, i32)) -> Vec<Vec<i32>> {\n    let ele = vec![test_tup.0, test_tup.1];\n    adjac(&ele, Vec::new())\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+      "generated_test": "let result = get_coordinates((3, 4));\nlet expected: Vec<Vec<i32>> = vec![\n    vec![2, 3],\n    vec![2, 4],\n    vec![2, 5],\n    vec![3, 3],\n    vec![3, 4],\n    vec![3, 5],\n    vec![4, 3],\n    vec![4, 4],\n    vec![4, 5],\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+      "generated_test": "let result = get_coordinates((4, 5));\nlet expected: Vec<Vec<i32>> = vec![\n    vec![3, 4],\n    vec![3, 5],\n    vec![3, 6],\n    vec![4, 4],\n    vec![4, 5],\n    vec![4, 6],\n    vec![5, 4],\n    vec![5, 5],\n    vec![5, 6],\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]",
+      "generated_test": "let result = get_coordinates((5, 6));\nlet expected: Vec<Vec<i32>> = vec![\n    vec![4, 5],\n    vec![4, 6],\n    vec![4, 7],\n    vec![5, 5],\n    vec![5, 6],\n    vec![5, 7],\n    vec![6, 5],\n    vec![6, 6],\n    vec![6, 7],\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

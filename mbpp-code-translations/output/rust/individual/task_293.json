@@ -1,0 +1,37 @@
+{
+  "task_id": 293,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the third side of a right angled triangle.",
+  "python_code": "import math\ndef otherside_rightangle(w,h):\n  s=math.sqrt((w*w)+(h*h))\n  return s",
+  "test_list": [
+    "assert otherside_rightangle(7,8)==10.63014581273465",
+    "assert otherside_rightangle(3,4)==5",
+    "assert otherside_rightangle(7,15)==16.55294535724685"
+  ],
+  "code_rust": "pub fn otherside_rightangle(w: f64, h: f64) -> f64 {\n    ((w * w) + (h * h)).sqrt()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert otherside_rightangle(7,8)==10.63014581273465",
+      "generated_test": "let result = otherside_rightangle(7.0, 8.0);\nlet expected = 10.63014581273465;\nif (result - expected).abs() < 1e-10 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert otherside_rightangle(3,4)==5",
+      "generated_test": "let result = otherside_rightangle(3.0, 4.0);\nlet expected = 5.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert otherside_rightangle(7,15)==16.55294535724685",
+      "generated_test": "let result = otherside_rightangle(7.0, 15.0);\nlet expected = 16.55294535724685;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

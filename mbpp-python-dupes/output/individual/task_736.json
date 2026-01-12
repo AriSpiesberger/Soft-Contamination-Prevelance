@@ -1,0 +1,27 @@
+{
+  "task_id": 736,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the left insertion point for a specified value in sorted order. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-data-structure-exercise-24.php",
+  "code_python": "import bisect\ndef left_insertion(a, x):\n    i = bisect.bisect_left(a, x)\n    return i",
+  "test_list": [
+    "assert left_insertion([1,2,4,5],6)==4",
+    "assert left_insertion([1,2,4,5],3)==2",
+    "assert left_insertion([1,2,4,5],7)==4"
+  ],
+  "python_1": "def left_insertion(a, x):\n    # Set the lower bound of our search range to the start of the array\n    low = 0\n    # Set the upper bound to the length of the array (one past the last valid index)\n    high = len(a)\n    # Continue searching while there's a valid range to explore\n    while low < high:\n        # Calculate midpoint using integer division to avoid overflow\n        mid = (low + high) // 2\n        # Check if the middle element is less than our target value\n        if a[mid] < x:\n            # Target must be in the right half, move lower bound past mid\n            low = mid + 1\n        else:\n            # Target is at mid or in left half, narrow upper bound to mid\n            high = mid\n    # Return low which now points to the leftmost valid insertion position\n    return low",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def left_insertion(a, x):\n    # Use enumerate to pair each element with its index for iteration\n    for index, value in enumerate(a):\n        # When we find an element >= target, this is the insertion point\n        if value >= x:\n            # Return immediately since we want the leftmost position\n            return index\n    # If no element is >= target, insert at the end of the list\n    return len(a)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def left_insertion(a, x):\n    # Use list comprehension to count elements strictly less than target\n    count_smaller = sum(1 for elem in a if elem < x)\n    # The count of smaller elements equals the left insertion index\n    return count_smaller",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def left_insertion(a, x):\n    # Use recursion to perform binary search, starting with full array bounds\n    def recursive_search(lo, hi):\n        # Base case: when bounds converge, we've found the insertion point\n        if lo >= hi:\n            # Return the converged position as the answer\n            return lo\n        # Compute middle index using bit shift for efficient division by 2\n        mid = (lo + hi) >> 1\n        # Recursive case: decide which half contains the insertion point\n        if a[mid] < x:\n            # Element at mid is smaller, so insertion point is in right half\n            return recursive_search(mid + 1, hi)\n        # Element at mid is >= target, insertion point is at mid or in left half\n        return recursive_search(lo, mid)\n    # Kick off the recursive search spanning the entire array\n    return recursive_search(0, len(a))",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def left_insertion(a, x):\n    # Use filter with lambda to create iterator of elements smaller than target\n    smaller_elements = filter(lambda elem: elem < x, a)\n    # Convert filter iterator to list to enable length calculation\n    smaller_list = list(smaller_elements)\n    # Length of filtered list gives exact insertion index for left position\n    insertion_index = len(smaller_list)\n    # Return the computed insertion point\n    return insertion_index",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

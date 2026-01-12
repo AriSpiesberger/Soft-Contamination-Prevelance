@@ -1,0 +1,37 @@
+{
+  "task_id": 739,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the index of smallest triangular number with n digits. https://www.geeksforgeeks.org/index-of-smallest-triangular-number-with-n-digits/",
+  "python_code": "import math \ndef find_Index(n): \n    x = math.sqrt(2 * math.pow(10,(n - 1)))\n    return round(x)",
+  "test_list": [
+    "assert find_Index(2) == 4",
+    "assert find_Index(3) == 14",
+    "assert find_Index(4) == 45"
+  ],
+  "code_ruby": "def find_Index(n)\n  x = Math.sqrt(2 * (10 ** (n - 1)))\n  x.round\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert find_Index(2) == 4",
+      "generated_test": "result = find_Index(2)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Index(3) == 14",
+      "generated_test": "result = find_Index(3)\nexpected = 14\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Index(4) == 45",
+      "generated_test": "result = find_Index(4)\nexpected = 45\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

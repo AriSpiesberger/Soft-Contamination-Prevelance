@@ -1,0 +1,37 @@
+{
+  "task_id": 245,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.",
+  "python_code": "def max_sum(arr): \n\tMSIBS = arr[:] \n\tfor i in range(len(arr)): \n\t\tfor j in range(0, i): \n\t\t\tif arr[i] > arr[j] and MSIBS[i] < MSIBS[j] + arr[i]: \n\t\t\t\tMSIBS[i] = MSIBS[j] + arr[i] \n\tMSDBS = arr[:] \n\tfor i in range(1, len(arr) + 1): \n\t\tfor j in range(1, i): \n\t\t\tif arr[-i] > arr[-j] and MSDBS[-i] < MSDBS[-j] + arr[-i]: \n\t\t\t\tMSDBS[-i] = MSDBS[-j] + arr[-i] \n\tmax_sum = float(\"-Inf\") \n\tfor i, j, k in zip(MSIBS, MSDBS, arr): \n\t\tmax_sum = max(max_sum, i + j - k) \n\treturn max_sum",
+  "test_list": [
+    "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+    "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+    "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc max_sum(arr []int) float64 {\n\tn := len(arr)\n\tif n == 0 {\n\t\treturn math.Inf(-1)\n\t}\n\n\t// MSIBS - Maximum Sum Increasing Bitonic Subsequence (from left)\n\tMSIBS := make([]int, n)\n\tcopy(MSIBS, arr)\n\tfor i := 0; i < n; i++ {\n\t\tfor j := 0; j < i; j++ {\n\t\t\tif arr[i] > arr[j] && MSIBS[i] < MSIBS[j]+arr[i] {\n\t\t\t\tMSIBS[i] = MSIBS[j] + arr[i]\n\t\t\t}\n\t\t}\n\t}\n\n\t// MSDBS - Maximum Sum Decreasing Bitonic Subsequence (from right)\n\tMSDBS := make([]int, n)\n\tcopy(MSDBS, arr)\n\tfor i := n - 2; i >= 0; i-- {\n\t\tfor j := n - 1; j > i; j-- {\n\t\t\tif arr[i] > arr[j] && MSDBS[i] < MSDBS[j]+arr[i] {\n\t\t\t\tMSDBS[i] = MSDBS[j] + arr[i]\n\t\t\t}\n\t\t}\n\t}\n\n\t// Find maximum sum\n\tmaxSum := math.Inf(-1)\n\tfor i := 0; i < n; i++ {\n\t\tcurrent := float64(MSIBS[i] + MSDBS[i] - arr[i])\n\t\tif current > maxSum {\n\t\t\tmaxSum = current\n\t\t}\n\t}\n\n\treturn maxSum\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+      "generated_test": "result := max_sum([]int{1, 15, 51, 45, 33, 100, 12, 18, 9})\nexpected := 194.0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+      "generated_test": "arr := []int{80, 60, 30, 40, 20, 10}\nexpected := 210.0\ngot := max_sum(arr)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138",
+      "generated_test": "result := max_sum([]int{2, 3, 14, 16, 21, 23, 29, 30})\nexpected := 138.0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

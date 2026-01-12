@@ -1,0 +1,37 @@
+{
+  "task_id": 269,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ascii value of a character.",
+  "python_code": "def ascii_value(k):\n  ch=k\n  return ord(ch)",
+  "test_list": [
+    "assert ascii_value('A')==65",
+    "assert ascii_value('R')==82",
+    "assert ascii_value('S')==83"
+  ],
+  "code_ruby": "def ascii_value(k)\n  k.ord\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert ascii_value('A')==65",
+      "generated_test": "result = ascii_value('A')\nexpected = 65\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert ascii_value('R')==82",
+      "generated_test": "result = ascii_value('R')\nexpected = 82\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert ascii_value('S')==83",
+      "generated_test": "result = ascii_value('S')\nexpected = 83\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

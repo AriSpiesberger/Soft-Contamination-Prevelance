@@ -1,0 +1,37 @@
+{
+  "task_id": 417,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find common first element in given list of tuple.",
+  "python_code": "def group_tuples(Input): \n\tout = {} \n\tfor elem in Input: \n\t\ttry: \n\t\t\tout[elem[0]].extend(elem[1:]) \n\t\texcept KeyError: \n\t\t\tout[elem[0]] = list(elem) \n\treturn [tuple(values) for values in out.values()] ",
+  "test_list": [
+    "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+    "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+    "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]"
+  ],
+  "code_ruby": "def group_tuples(input)\n  out = {}\n  input.each do |elem|\n    if out.key?(elem[0])\n      out[elem[0]].concat(elem[1..])\n    else\n      out[elem[0]] = elem.dup\n    end\n  end\n  out.values.map(&:to_a)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+      "generated_test": "result = group_tuples([['x', 'y'], ['x', 'z'], ['w', 't']])\nexpected = [['x', 'y', 'z'], ['w', 't']]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+      "generated_test": "result = group_tuples([['a', 'b'], ['a', 'c'], ['d', 'e']])\nexpected = [['a', 'b', 'c'], ['d', 'e']]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]",
+      "generated_test": "result = group_tuples([['f', 'g'], ['f', 'g'], ['h', 'i']])\nexpected = [['f', 'g', 'g'], ['h', 'i']]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

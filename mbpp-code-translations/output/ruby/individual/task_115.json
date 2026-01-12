@@ -1,0 +1,37 @@
+{
+  "task_id": 115,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether all dictionaries in a list are empty or not.",
+  "python_code": "def empty_dit(list1):\n empty_dit=all(not d for d in list1)\n return empty_dit",
+  "test_list": [
+    "assert empty_dit([{},{},{}])==True",
+    "assert empty_dit([{1,2},{},{}])==False",
+    "assert empty_dit({})==True"
+  ],
+  "code_ruby": "require 'set'\n\ndef empty_dit(list1)\n  return true if list1.is_a?(Hash) && list1.empty?\n  return false unless list1.is_a?(Array)\n  \n  list1.all? { |d| d.respond_to?(:empty?) ? d.empty? : !d }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 2,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert empty_dit([{},{},{}])==True",
+      "generated_test": "result = empty_dit([{},{},{}])\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit([{1,2},{},{}])==False",
+      "generated_test": "require 'set'\n\ndef empty_dit(list1)\n  return true if list1.is_a?(Hash) && list1.empty?\n  return false unless list1.is_a?(Array)\n  \n  list1.all? { |d| d.respond_to?(:empty?) ? d.empty? : !d }\nend\n\nresult = empty_dit([Set.new([1, 2]), Set.new, Set.new])\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_dit({})==True",
+      "generated_test": "result = empty_dit({})\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

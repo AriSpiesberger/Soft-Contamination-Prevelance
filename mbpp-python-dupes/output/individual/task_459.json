@@ -1,0 +1,27 @@
+{
+  "task_id": 459,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove uppercase substrings from a given string.",
+  "code_python": "import re\ndef remove_uppercase(str1):\n  return re.sub('[A-Z]', '', str1)",
+  "test_list": [
+    "assert remove_uppercase('cAstyoUrFavoRitETVshoWs') == 'cstyoravoitshos'",
+    "assert remove_uppercase('wAtchTheinTernEtrAdIo') == 'wtchheinerntrdo'",
+    "assert remove_uppercase('VoicESeaRchAndreComMendaTionS') == 'oiceachndreomendaion'"
+  ],
+  "python_1": "def remove_uppercase(str1):\n    # Initialize an empty list to collect lowercase characters efficiently\n    result = []\n    # Iterate through each character in the input string\n    for char in str1:\n        # Check if character falls outside the uppercase ASCII range (65-90)\n        if not (ord(char) >= 65 and ord(char) <= 90):\n            # Append non-uppercase characters to our result list\n            result.append(char)\n    # Join all collected characters into a single string and return\n    return ''.join(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_uppercase(str1):\n    # Use list comprehension with islower() check, but also keep non-alphabetic chars\n    filtered_chars = [c for c in str1 if not c.isupper()]\n    # Concatenate filtered characters using string join method\n    return ''.join(filtered_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_uppercase(str1):\n    # Use filter function with a lambda that rejects uppercase characters\n    filtered_iterator = filter(lambda c: c < 'A' or c > 'Z', str1)\n    # Convert the filter iterator object to a string by joining its elements\n    return ''.join(filtered_iterator)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_uppercase(str1):\n    # Create a translation table mapping uppercase letters to None for deletion\n    uppercase_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n    # Build the translation mapping using str.maketrans with third arg for deletion\n    translation_table = str.maketrans('', '', uppercase_letters)\n    # Apply the translation table to remove all uppercase characters in one pass\n    return str1.translate(translation_table)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_uppercase(str1):\n    # Use reduce to accumulate only non-uppercase characters from left to right\n    from functools import reduce\n    # Define accumulator function that appends char only if not uppercase\n    def accumulate_lowercase(acc, char):\n        # Check if character's ASCII code is outside uppercase range 65-90\n        if ord(char) < 65 or ord(char) > 90:\n            # Concatenate the valid character to the accumulated result\n            return acc + char\n        # Skip uppercase by returning accumulator unchanged\n        return acc\n    # Apply reduce with empty string as initial value to fold the string\n    return reduce(accumulate_lowercase, str1, '')",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

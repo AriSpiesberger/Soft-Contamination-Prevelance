@@ -1,0 +1,37 @@
+{
+  "task_id": 574,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cylinder.",
+  "python_code": "def surfacearea_cylinder(r,h):\n  surfacearea=((2*3.1415*r*r) +(2*3.1415*r*h))\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cylinder(10,5)==942.45",
+    "assert surfacearea_cylinder(4,5)==226.18800000000002",
+    "assert surfacearea_cylinder(4,10)==351.848"
+  ],
+  "code_javascript": "function surfacearea_cylinder(r, h) {\n  const surfacearea = ((2 * 3.1415 * r * r) + (2 * 3.1415 * r * h));\n  return surfacearea;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert surfacearea_cylinder(10,5)==942.45",
+      "generated_test": "const result = surfacearea_cylinder(10, 5);\nconst expected = 942.45;\nif (Math.abs(result - expected) < 0.01) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cylinder(4,5)==226.18800000000002",
+      "generated_test": "const result = surfacearea_cylinder(4, 5);\nconst expected = 226.18800000000002;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cylinder(4,10)==351.848",
+      "generated_test": "const result = surfacearea_cylinder(4, 10);\nconst expected = 351.848;\nif (Math.abs(result - expected) < 0.001) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

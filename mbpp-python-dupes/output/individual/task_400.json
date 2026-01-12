@@ -1,0 +1,27 @@
+{
+  "task_id": 400,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the number of unique tuples in the given list.",
+  "code_python": "def extract_freq(test_list):\n  res = len(list(set(tuple(sorted(sub)) for sub in test_list)))\n  return (res)",
+  "test_list": [
+    "assert extract_freq([(3, 4), (1, 2), (4, 3), (5, 6)] ) == 3",
+    "assert extract_freq([(4, 15), (2, 3), (5, 4), (6, 7)] ) == 4",
+    "assert extract_freq([(5, 16), (2, 3), (6, 5), (6, 9)] ) == 4"
+  ],
+  "python_1": "def extract_freq(test_list):\n    # Create an empty set to accumulate normalized tuple representations\n    unique_tuples = set()\n    # Loop through each tuple element in the input list\n    for sub in test_list:\n        # Convert tuple to list, sort it, then back to tuple for consistent ordering\n        normalized = tuple(sorted(list(sub)))\n        # Add the normalized tuple to the set, duplicates automatically ignored\n        unique_tuples.add(normalized)\n    # Calculate the count of unique elements by getting set length\n    count = len(unique_tuples)\n    # Return the final count of unique tuples\n    return count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def extract_freq(test_list):\n    # Use a dictionary to track seen normalized tuples as keys\n    seen_dict = {}\n    # Process each tuple from the input list\n    for sub in test_list:\n        # Create a frozenset from tuple elements to handle order-insensitive comparison\n        normalized_key = frozenset(sub) if len(sub) == len(set(sub)) else tuple(sorted(sub))\n        # Use tuple(sorted()) for tuples with duplicate elements, frozenset otherwise\n        normalized_key = tuple(sorted(sub))\n        # Mark this normalized form as encountered by assigning True\n        seen_dict[normalized_key] = True\n    # The number of dictionary keys represents unique tuple count\n    unique_count = sum(1 for _ in seen_dict.keys())\n    # Return the computed count of distinct tuples\n    return unique_count",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def extract_freq(test_list):\n    # Use reduce pattern from functools to accumulate unique sorted tuples\n    from functools import reduce\n    # Define a reducer function that adds normalized tuples to accumulator set\n    def accumulator(acc, sub):\n        # Sort tuple elements and convert back to tuple for order-independent comparison\n        sorted_tuple = tuple(sorted(sub))\n        # Return union of current set with new single-element set containing this tuple\n        return acc | {sorted_tuple}\n    # Apply reduce with empty set as initial value, building up unique tuples\n    unique_set = reduce(accumulator, test_list, set())\n    # Extract and return the cardinality of the resulting unique tuple set\n    return len(unique_set)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def extract_freq(test_list):\n    # Convert input list to a list of normalized tuples using map transformation\n    normalized_list = list(map(lambda sub: tuple(sorted(sub)), test_list))\n    # Initialize counter variable to track distinct tuple occurrences\n    unique_count = 0\n    # Track which indices have already been counted as part of a unique group\n    counted_indices = []\n    # Iterate through each position in the normalized list\n    for i in range(len(normalized_list)):\n        # Skip this index if it was already matched with an earlier occurrence\n        if i in counted_indices:\n            continue\n        # This is a new unique tuple, increment our counter\n        unique_count += 1\n        # Scan remaining elements to mark duplicates of current tuple\n        for j in range(i + 1, len(normalized_list)):\n            # Check if later tuple matches current one element by element\n            if normalized_list[j] == normalized_list[i]:\n                # Mark duplicate index so we don't count it again\n                counted_indices.append(j)\n    # Return total number of distinct tuple patterns found\n    return unique_count",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def extract_freq(test_list):\n    # Use collections.Counter to count occurrences of each normalized tuple pattern\n    from collections import Counter\n    # Build a generator that yields sorted tuple representations for counting\n    sorted_tuples_gen = (tuple(sorted(sub)) for sub in test_list)\n    # Create a Counter object which automatically tallies each unique pattern\n    frequency_counter = Counter(sorted_tuples_gen)\n    # The number of keys in Counter equals the number of distinct tuple patterns\n    distinct_count = len(frequency_counter)\n    # Return how many unique normalized tuples exist in the original list\n    return distinct_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

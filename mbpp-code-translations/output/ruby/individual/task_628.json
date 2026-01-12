@@ -1,0 +1,37 @@
+{
+  "task_id": 628,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all spaces in the given string with '%20'.",
+  "python_code": "def replace_spaces(string):\n  return string.replace(\" \", \"%20\")",
+  "test_list": [
+    "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+    "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+    "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'"
+  ],
+  "code_ruby": "def replace_spaces(string)\n  string.gsub(\" \", \"%20\")\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+      "generated_test": "result = replace_spaces(\"My Name is Dawood\")\nexpected = \"My%20Name%20is%20Dawood\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+      "generated_test": "result = replace_spaces(\"I am a Programmer\")\nexpected = \"I%20am%20a%20Programmer\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'",
+      "generated_test": "result = replace_spaces(\"I love Coding\")\nexpected = \"I%20love%20Coding\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

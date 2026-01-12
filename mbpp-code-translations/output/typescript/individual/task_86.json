@@ -1,0 +1,17 @@
+{
+  "task_id": 86,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find nth centered hexagonal number.",
+  "python_code": "def centered_hexagonal_number(n):\n  return 3 * n * (n - 1) + 1",
+  "test_list": [
+    "assert centered_hexagonal_number(10) == 271",
+    "assert centered_hexagonal_number(2) == 7",
+    "assert centered_hexagonal_number(9) == 217"
+  ],
+  "code_typescript": "function centered_hexagonal_number(n: number): number {\n  return 3 * n * (n - 1) + 1;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

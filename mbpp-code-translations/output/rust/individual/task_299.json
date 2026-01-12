@@ -1,0 +1,37 @@
+{
+  "task_id": 299,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the maximum aggregate from the list of tuples.",
+  "python_code": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])",
+  "test_list": [
+    "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+    "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+    "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn max_aggregate(stdata: Vec<(&str, i32)>) -> (&str, i32) {\n    let mut temp: HashMap<&str, i32> = HashMap::new();\n    \n    for (name, marks) in stdata {\n        *temp.entry(name).or_insert(0) += marks;\n    }\n    \n    temp.into_iter()\n        .max_by_key(|&(_, v)| v)\n        .unwrap_or((\"\", 0))\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+      "generated_test": "let result = max_aggregate(vec![(\"Juan Whelan\", 90), (\"Sabah Colley\", 88), (\"Peter Nichols\", 7), (\"Juan Whelan\", 122), (\"Sabah Colley\", 84)]);\nlet expected = (\"Juan Whelan\", 212);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+      "generated_test": "let result = max_aggregate(vec![(\"Juan Whelan\", 50), (\"Sabah Colley\", 48), (\"Peter Nichols\", 37), (\"Juan Whelan\", 22), (\"Sabah Colley\", 14)]);\nlet expected = (\"Juan Whelan\", 72);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)",
+      "generated_test": "let result = max_aggregate(vec![(\"Juan Whelan\", 10), (\"Sabah Colley\", 20), (\"Peter Nichols\", 30), (\"Juan Whelan\", 40), (\"Sabah Colley\", 50)]);\nlet expected = (\"Sabah Colley\", 70);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

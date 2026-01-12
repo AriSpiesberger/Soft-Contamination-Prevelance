@@ -1,0 +1,17 @@
+{
+  "task_id": 257,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two numbers and returns a tuple with the second number and then the first number.",
+  "python_code": "def swap_numbers(a,b):\n temp = a\n a = b\n b = temp\n return (a,b)",
+  "test_list": [
+    "assert swap_numbers(10,20)==(20,10)",
+    "assert swap_numbers(15,17)==(17,15)",
+    "assert swap_numbers(100,200)==(200,100)"
+  ],
+  "code_typescript": "function swap_numbers(a: number, b: number): [number, number] {\n  let temp = a;\n  a = b;\n  b = temp;\n  return [a, b];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

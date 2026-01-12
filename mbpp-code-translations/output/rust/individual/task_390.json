@@ -1,0 +1,37 @@
+{
+  "task_id": 390,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to apply a given format string to all of the elements in a list.",
+  "python_code": "def add_string(list_, string):\n add_string=[string.format(i) for i in  list_]\n return add_string",
+  "test_list": [
+    "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+    "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+    "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']"
+  ],
+  "code_rust": "pub fn add_string<T: std::fmt::Display>(list_: &[T], string: &str) -> Vec<String> {\n    list_\n        .iter()\n        .map(|i| string.replace(\"{0}\", &i.to_string()))\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+      "generated_test": "let result = add_string(&[1, 2, 3, 4], \"temp{0}\");\nlet expected = vec![\"temp1\".to_string(), \"temp2\".to_string(), \"temp3\".to_string(), \"temp4\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+      "generated_test": "let result = add_string(&[\"a\", \"b\", \"c\", \"d\"], \"python{0}\");\nlet expected = vec![\"pythona\".to_string(), \"pythonb\".to_string(), \"pythonc\".to_string(), \"pythond\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']",
+      "generated_test": "let result = add_string(&[5, 6, 7, 8], \"string{0}\");\nlet expected = vec![\"string5\".to_string(), \"string6\".to_string(), \"string7\".to_string(), \"string8\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

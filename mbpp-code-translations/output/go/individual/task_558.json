@@ -1,0 +1,37 @@
+{
+  "task_id": 558,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the per-digit difference between two integers.",
+  "python_code": "def digit_distance_nums(n1, n2):\n         return sum(map(int,str(abs(n1-n2))))",
+  "test_list": [
+    "assert digit_distance_nums(1,2) == 1",
+    "assert digit_distance_nums(23,56) == 6",
+    "assert digit_distance_nums(123,256) == 7"
+  ],
+  "code_go": "package main\n\nfunc digit_distance_nums(n1, n2 int) int {\n\tdiff := n1 - n2\n\tif diff < 0 {\n\t\tdiff = -diff\n\t}\n\t\n\tif diff == 0 {\n\t\treturn 0\n\t}\n\t\n\tsum := 0\n\tfor diff > 0 {\n\t\tsum += diff % 10\n\t\tdiff /= 10\n\t}\n\t\n\treturn sum\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert digit_distance_nums(1,2) == 1",
+      "generated_test": "result := digit_distance_nums(1, 2)\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert digit_distance_nums(23,56) == 6",
+      "generated_test": "result := digit_distance_nums(23, 56)\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert digit_distance_nums(123,256) == 7",
+      "generated_test": "result := digit_distance_nums(123, 256)\nexpected := 7\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

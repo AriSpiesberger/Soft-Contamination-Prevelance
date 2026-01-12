@@ -1,0 +1,37 @@
+{
+  "task_id": 631,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace whitespaces with an underscore and vice versa in a given string.",
+  "python_code": "def replace_spaces(text):\n  return \"\".join(\" \" if c == \"_\" else (\"_\" if c == \" \" else c) for c in text)",
+  "test_list": [
+    "assert replace_spaces('Jumanji The Jungle') == 'Jumanji_The_Jungle'",
+    "assert replace_spaces('The_Avengers') == 'The Avengers'",
+    "assert replace_spaces('Fast and Furious') == 'Fast_and_Furious'"
+  ],
+  "code_go": "package main\n\nfunc replace_spaces(text string) string {\n\tresult := make([]rune, len([]rune(text)))\n\tfor i, c := range text {\n\t\tif c == '_' {\n\t\t\tresult[i] = ' '\n\t\t} else if c == ' ' {\n\t\t\tresult[i] = '_'\n\t\t} else {\n\t\t\tresult[i] = c\n\t\t}\n\t}\n\treturn string(result)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert replace_spaces('Jumanji The Jungle') == 'Jumanji_The_Jungle'",
+      "generated_test": "result := replace_spaces(\"Jumanji The Jungle\")\nexpected := \"Jumanji_The_Jungle\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces('The_Avengers') == 'The Avengers'",
+      "generated_test": "result := replace_spaces(\"The_Avengers\")\nexpected := \"The Avengers\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces('Fast and Furious') == 'Fast_and_Furious'",
+      "generated_test": "result := replace_spaces(\"Fast and Furious\")\nexpected := \"Fast_and_Furious\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

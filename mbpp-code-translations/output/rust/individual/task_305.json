@@ -1,0 +1,37 @@
+{
+  "task_id": 305,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return two words from a list of words starting with letter 'p'.",
+  "python_code": "import re\ndef start_withp(words):\n for w in words:\n        m = re.match(\"(P\\w+)\\W(P\\w+)\", w)\n        if m:\n            return m.groups()",
+  "test_list": [
+    "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+    "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+    "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')"
+  ],
+  "code_rust": "use regex::Regex;\n\npub fn start_withp(words: Vec<&str>) -> Option<(String, String)> {\n    let re = Regex::new(r\"(P\\w+)\\W(P\\w+)\").unwrap();\n    for w in words {\n        if let Some(caps) = re.captures(w) {\n            if let (Some(m1), Some(m2)) = (caps.get(1), caps.get(2)) {\n                return Some((m1.as_str().to_string(), m2.as_str().to_string()));\n            }\n        }\n    }\n    None\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+      "generated_test": "let result = start_withp(vec![\"Python PHP\", \"Java JavaScript\", \"c c++\"]);\nlet expected = Some((\"Python\".to_string(), \"PHP\".to_string()));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+      "generated_test": "let result = start_withp(vec![\"Python Programming\", \"Java Programming\"]);\nlet expected = Some((\"Python\".to_string(), \"Programming\".to_string()));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')",
+      "generated_test": "let result = start_withp(vec![\"Pqrst Pqr\", \"qrstuv\"]);\nlet expected = Some((\"Pqrst\".to_string(), \"Pqr\".to_string()));\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

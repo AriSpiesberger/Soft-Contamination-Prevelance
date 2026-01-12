@@ -1,0 +1,58 @@
+{
+  "task_id": 803,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is a perfect square or not. https://www.geeksforgeeks.org/check-if-given-number-is-perfect-square-in-cpp/",
+  "python_code": "def is_perfect_square(n) :\n    i = 1\n    while (i * i<= n):\n        if ((n % i == 0) and (n / i == i)):\n            return True     \n        i = i + 1\n    return False",
+  "test_list": [
+    "assert not is_perfect_square(10)",
+    "assert is_perfect_square(36)",
+    "assert not is_perfect_square(14)",
+    "assert is_perfect_square(14*14)",
+    "assert not is_perfect_square(125)",
+    "assert is_perfect_square(125*125)"
+  ],
+  "code_rust": "pub fn is_perfect_square(n: i64) -> bool {\n    if n < 0 {\n        return false;\n    }\n    let mut i: i64 = 1;\n    while i * i <= n {\n        if n % i == 0 && n / i == i {\n            return true;\n        }\n        i += 1;\n    }\n    false\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 6,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert not is_perfect_square(10)",
+      "generated_test": "let result = is_perfect_square(10);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_perfect_square(36)",
+      "generated_test": "let result = is_perfect_square(36);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not is_perfect_square(14)",
+      "generated_test": "let result = is_perfect_square(14);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_perfect_square(14*14)",
+      "generated_test": "let result = is_perfect_square(14 * 14);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not is_perfect_square(125)",
+      "generated_test": "let result = is_perfect_square(125);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_perfect_square(125*125)",
+      "generated_test": "let result = is_perfect_square(125 * 125);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

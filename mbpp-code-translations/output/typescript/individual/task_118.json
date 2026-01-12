@@ -1,0 +1,17 @@
+{
+  "task_id": 118,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a string to a list of strings split on the space character.",
+  "python_code": "def string_to_list(string): \n    lst = list(string.split(\" \")) \n    return lst",
+  "test_list": [
+    "assert string_to_list(\"python programming\")==['python','programming']",
+    "assert string_to_list(\"lists tuples strings\")==['lists','tuples','strings']",
+    "assert string_to_list(\"write a program\")==['write','a','program']"
+  ],
+  "code_typescript": "function string_to_list(string: string): string[] {\n    const lst: string[] = string.split(\" \");\n    return lst;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

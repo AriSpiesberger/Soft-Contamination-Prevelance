@@ -1,0 +1,44 @@
+{
+  "task_id": 800,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from a string.",
+  "python_code": "import re\ndef remove_all_spaces(text):\n return (re.sub(r'\\s+', '',text))",
+  "test_list": [
+    "assert remove_all_spaces('python  program')==('pythonprogram')",
+    "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+    "assert remove_all_spaces('python                     program')==('pythonprogram')",
+    "assert remove_all_spaces('   python                     program')=='pythonprogram'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"unicode\"\n)\n\nfunc remove_all_spaces(text string) string {\n\tresult := make([]rune, 0, len(text))\n\tfor _, r := range text {\n\t\tif !unicode.IsSpace(r) {\n\t\t\tresult = append(result, r)\n\t\t}\n\t}\n\treturn string(result)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert remove_all_spaces('python  program')==('pythonprogram')",
+      "generated_test": "result := remove_all_spaces(\"python  program\")\nexpected := \"pythonprogram\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python   programming    language')==('pythonprogramminglanguage')",
+      "generated_test": "result := remove_all_spaces(\"python   programming    language\")\nexpected := \"pythonprogramminglanguage\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('python                     program')==('pythonprogram')",
+      "generated_test": "result := remove_all_spaces(\"python                     program\")\nexpected := \"pythonprogram\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_all_spaces('   python                     program')=='pythonprogram'",
+      "generated_test": "result := remove_all_spaces(\"   python                     program\")\nexpected := \"pythonprogram\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

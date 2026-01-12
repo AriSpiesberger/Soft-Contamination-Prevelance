@@ -1,0 +1,37 @@
+{
+  "task_id": 311,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to set the left most unset bit.",
+  "python_code": "def set_left_most_unset_bit(n): \n    if not (n & (n + 1)): \n        return n \n    pos, temp, count = 0, n, 0 \n    while temp: \n        if not (temp & 1): \n            pos = count      \n        count += 1; temp>>=1\n    return (n | (1 << (pos))) ",
+  "test_list": [
+    "assert set_left_most_unset_bit(10) == 14",
+    "assert set_left_most_unset_bit(12) == 14",
+    "assert set_left_most_unset_bit(15) == 15"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int set_left_most_unset_bit(int n) {\n        if ((n & (n + 1)) == 0) {\n            return n;\n        }\n        int pos = 0;\n        int temp = n;\n        int count = 0;\n        while (temp != 0) {\n            if ((temp & 1) == 0) {\n                pos = count;\n            }\n            count += 1;\n            temp >>= 1;\n        }\n        return (n | (1 << pos));\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert set_left_most_unset_bit(10) == 14",
+      "generated_test": "int result = set_left_most_unset_bit(10);\nint expected = 14;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(12) == 14",
+      "generated_test": "int result = set_left_most_unset_bit(12);\nint expected = 14;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(15) == 15",
+      "generated_test": "int result = set_left_most_unset_bit(15);\nint expected = 15;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

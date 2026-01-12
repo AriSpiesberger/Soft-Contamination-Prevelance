@@ -1,0 +1,37 @@
+{
+  "task_id": 433,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the entered number is greater than the elements of the given array.",
+  "python_code": "def check_greater(arr, number):\n  arr.sort()\n  return number > arr[-1]",
+  "test_list": [
+    "assert check_greater([1, 2, 3, 4, 5], 4) == False",
+    "assert check_greater([2, 3, 4, 5, 6], 8) == True",
+    "assert check_greater([9, 7, 4, 8, 6, 1], 11) == True"
+  ],
+  "code_go": "package main\n\nfunc check_greater(arr []int, number int) bool {\n\tif len(arr) == 0 {\n\t\treturn true\n\t}\n\t\n\tmax := arr[0]\n\tfor _, v := range arr[1:] {\n\t\tif v > max {\n\t\t\tmax = v\n\t\t}\n\t}\n\t\n\treturn number > max\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_greater([1, 2, 3, 4, 5], 4) == False",
+      "generated_test": "expected := false\ngot := check_greater([]int{1, 2, 3, 4, 5}, 4)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_greater([2, 3, 4, 5, 6], 8) == True",
+      "generated_test": "result := check_greater([]int{2, 3, 4, 5, 6}, 8)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_greater([9, 7, 4, 8, 6, 1], 11) == True",
+      "generated_test": "arr := []int{9, 7, 4, 8, 6, 1}\nexpected := true\nresult := check_greater(arr, 11)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

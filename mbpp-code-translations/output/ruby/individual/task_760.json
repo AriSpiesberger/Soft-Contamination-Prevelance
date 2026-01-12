@@ -1,0 +1,37 @@
+{
+  "task_id": 760,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether a list of numbers contains only one distinct element or not.",
+  "python_code": "def unique_Element(arr):\n    s = set(arr)\n    return len(s) == 1",
+  "test_list": [
+    "assert unique_Element([1,1,1]) == True",
+    "assert unique_Element([1,2,1,2]) == False",
+    "assert unique_Element([1,2,3,4,5]) == False"
+  ],
+  "code_ruby": "def unique_Element(arr)\n  arr.uniq.length == 1\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert unique_Element([1,1,1]) == True",
+      "generated_test": "result = unique_Element([1,1,1])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_Element([1,2,1,2]) == False",
+      "generated_test": "result = unique_Element([1,2,1,2])\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_Element([1,2,3,4,5]) == False",
+      "generated_test": "result = unique_Element([1,2,3,4,5])\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

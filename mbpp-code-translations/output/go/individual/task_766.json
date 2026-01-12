@@ -1,0 +1,44 @@
+{
+  "task_id": 766,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return a list of all pairs of consecutive items in a given list.",
+  "python_code": "def pair_wise(l1):\n    temp = []\n    for i in range(len(l1) - 1):\n        current_element, next_element = l1[i], l1[i + 1]\n        x = (current_element, next_element)\n        temp.append(x)\n    return temp",
+  "test_list": [
+    "assert pair_wise([1,1,2,3,3,4,4,5])==[(1, 1), (1, 2), (2, 3), (3, 3), (3, 4), (4, 4), (4, 5)]",
+    "assert pair_wise([1,5,7,9,10])==[(1, 5), (5, 7), (7, 9), (9, 10)]",
+    "assert pair_wise([5,1,9,7,10])==[(5, 1), (1, 9), (9, 7), (7, 10)]",
+    "assert pair_wise([1,2,3,4,5,6,7,8,9,10])==[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10)]"
+  ],
+  "code_go": "package main\n\nfunc pair_wise(l1 []int) [][2]int {\n    temp := [][2]int{}\n    for i := 0; i < len(l1)-1; i++ {\n        current_element := l1[i]\n        next_element := l1[i+1]\n        x := [2]int{current_element, next_element}\n        temp = append(temp, x)\n    }\n    return temp\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert pair_wise([1,1,2,3,3,4,4,5])==[(1, 1), (1, 2), (2, 3), (3, 3), (3, 4), (4, 4), (4, 5)]",
+      "generated_test": "expected := [][2]int{{1, 1}, {1, 2}, {2, 3}, {3, 3}, {3, 4}, {4, 4}, {4, 5}}\nresult := pair_wise([]int{1, 1, 2, 3, 3, 4, 4, 5})\n\npass := true\nif len(result) != len(expected) {\n    pass = false\n} else {\n    for i := range result {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_wise([1,5,7,9,10])==[(1, 5), (5, 7), (7, 9), (9, 10)]",
+      "generated_test": "expected := [][2]int{{1, 5}, {5, 7}, {7, 9}, {9, 10}}\nresult := pair_wise([]int{1, 5, 7, 9, 10})\n\npass := true\nif len(result) != len(expected) {\n    pass = false\n} else {\n    for i := range expected {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_wise([5,1,9,7,10])==[(5, 1), (1, 9), (9, 7), (7, 10)]",
+      "generated_test": "result := pair_wise([]int{5, 1, 9, 7, 10})\nexpected := [][2]int{{5, 1}, {1, 9}, {9, 7}, {7, 10}}\n\npassed := true\nif len(result) != len(expected) {\n    passed = false\n} else {\n    for i := range result {\n        if result[i] != expected[i] {\n            passed = false\n            break\n        }\n    }\n}\n\nif passed {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_wise([1,2,3,4,5,6,7,8,9,10])==[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10)]",
+      "generated_test": "input := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\nexpected := [][2]int{{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}}\nresult := pair_wise(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

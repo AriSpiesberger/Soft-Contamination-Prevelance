@@ -1,0 +1,37 @@
+{
+  "task_id": 450,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract specified size of strings from a given list of string values.",
+  "python_code": "def extract_string(str, l):\n    result = [e for e in str if len(e) == l] \n    return result",
+  "test_list": [
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,8)==['practice', 'solution']",
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,6)==['Python']",
+    "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,9)==['exercises']"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<String> extract_string(List<String> str, int l) {\n        ArrayList<String> result = new ArrayList<>();\n        for (String e : str) {\n            if (e.length() == l) {\n                result.add(e);\n            }\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,8)==['practice', 'solution']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"Python\");\ninput.add(\"list\");\ninput.add(\"exercises\");\ninput.add(\"practice\");\ninput.add(\"solution\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"practice\");\nexpected.add(\"solution\");\n\nList<String> result = extract_string(input, 8);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,6)==['Python']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"Python\");\ninput.add(\"list\");\ninput.add(\"exercises\");\ninput.add(\"practice\");\ninput.add(\"solution\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"Python\");\n\nList<String> result = extract_string(input, 6);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_string(['Python', 'list', 'exercises', 'practice', 'solution'] ,9)==['exercises']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"Python\");\ninput.add(\"list\");\ninput.add(\"exercises\");\ninput.add(\"practice\");\ninput.add(\"solution\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"exercises\");\n\nList<String> result = extract_string(input, 9);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

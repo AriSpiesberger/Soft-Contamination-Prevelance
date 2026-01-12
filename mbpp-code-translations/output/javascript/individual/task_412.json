@@ -1,0 +1,37 @@
+{
+  "task_id": 412,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove odd numbers from a given list.",
+  "python_code": "def remove_odd(l):\n    for i in l:\n        if i % 2 != 0:\n            l.remove(i)\n    return l",
+  "test_list": [
+    "assert remove_odd([1,2,3]) == [2]",
+    "assert remove_odd([2,4,6]) == [2,4,6]",
+    "assert remove_odd([10,20,3]) == [10,20]"
+  ],
+  "code_javascript": "function remove_odd(l) {\n    for (let i = l.length - 1; i >= 0; i--) {\n        if (l[i] % 2 !== 0) {\n            l.splice(i, 1);\n        }\n    }\n    return l;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert remove_odd([1,2,3]) == [2]",
+      "generated_test": "const result = remove_odd([1, 2, 3]);\nconst expected = [2];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_odd([2,4,6]) == [2,4,6]",
+      "generated_test": "const result = remove_odd([2,4,6]);\nconst expected = [2,4,6];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_odd([10,20,3]) == [10,20]",
+      "generated_test": "const result = remove_odd([10, 20, 3]);\nconst expected = [10, 20];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

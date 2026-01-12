@@ -1,0 +1,27 @@
+{
+  "task_id": 109,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.",
+  "code_python": "def odd_Equivalent(s,n): \n    count=0\n    for i in range(0,n): \n        if (s[i] == '1'): \n            count = count + 1\n    return count ",
+  "test_list": [
+    "assert odd_Equivalent(\"011001\",6) == 3",
+    "assert odd_Equivalent(\"11011\",5) == 4",
+    "assert odd_Equivalent(\"1010\",4) == 2"
+  ],
+  "python_1": "def odd_Equivalent(s,n): \n    # Use string slicing to extract only the first n characters we need to examine\n    substring = s[:n]\n    # Apply the count method to directly count occurrences of '1' in the substring\n    ones_count = substring.count('1')\n    # Return the count of '1's which represents numbers that become odd when rotated\n    return ones_count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def odd_Equivalent(s,n): \n    # Convert the string slice to a list of individual characters for functional processing\n    chars = list(s[:n])\n    # Use filter with lambda to extract only '1' characters from the list\n    ones_filtered = filter(lambda c: c == '1', chars)\n    # Convert filter object to list to enable length calculation\n    ones_list = list(ones_filtered)\n    # Return the length of filtered list which represents count of odd-producing rotations\n    return len(ones_list)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def odd_Equivalent(s,n): \n    # Use sum with generator expression to count '1's in a single expression\n    # A binary number is odd when its rightmost bit is 1\n    # After rotation, position i becomes the rightmost bit, so we check each position\n    return sum(1 for i in range(n) if s[i] == '1')",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def odd_Equivalent(s,n): \n    # Convert each character in the first n positions to its integer value (0 or 1)\n    binary_digits = map(int, s[:n])\n    # Sum all the integer values directly - '1' becomes 1, '0' becomes 0\n    total_ones = sum(binary_digits)\n    # The sum equals the count of '1's which determine odd values after rotation\n    return total_ones",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def odd_Equivalent(s,n): \n    # Use reduce from functools to accumulate count through functional fold operation\n    from functools import reduce\n    # Define accumulator function that adds 1 when character equals '1', else adds 0\n    accumulator = lambda acc, char: acc + (1 if char == '1' else 0)\n    # Apply reduce over the first n characters with initial accumulator value of 0\n    result = reduce(accumulator, s[:n], 0)\n    # Return the accumulated count of positions that yield odd numbers when rotated\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

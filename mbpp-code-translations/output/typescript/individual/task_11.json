@@ -1,0 +1,17 @@
+{
+  "task_id": 11,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove first and last occurrence of a given character from the string.",
+  "python_code": "def remove_Occ(s,ch): \n    for i in range(len(s)): \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    for i in range(len(s) - 1,-1,-1):  \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    return s ",
+  "test_list": [
+    "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+    "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+    "assert remove_Occ(\"PHP\",\"P\") == \"H\""
+  ],
+  "code_typescript": "function remove_Occ(s: string, ch: string): string {\n    for (let i = 0; i < s.length; i++) {\n        if (s[i] === ch) {\n            s = s.slice(0, i) + s.slice(i + 1);\n            break;\n        }\n    }\n    for (let i = s.length - 1; i >= 0; i--) {\n        if (s[i] === ch) {\n            s = s.slice(0, i) + s.slice(i + 1);\n            break;\n        }\n    }\n    return s;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

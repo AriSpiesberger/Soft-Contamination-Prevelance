@@ -1,0 +1,17 @@
+{
+  "task_id": 732,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all occurrences of spaces, commas, or dots with a colon.",
+  "python_code": "import re\ndef replace_specialchar(text):\n return (re.sub(\"[ ,.]\", \":\", text))\n",
+  "test_list": [
+    "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+    "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+    "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')"
+  ],
+  "code_typescript": "function replace_specialchar(text: string): string {\n    return text.replace(/[ ,.]/g, \":\");\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

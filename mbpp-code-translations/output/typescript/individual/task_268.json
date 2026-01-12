@@ -1,0 +1,17 @@
+{
+  "task_id": 268,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n'th star number.",
+  "python_code": "def find_star_num(n): \n\treturn (6 * n * (n - 1) + 1) ",
+  "test_list": [
+    "assert find_star_num(3) == 37",
+    "assert find_star_num(4) == 73",
+    "assert find_star_num(5) == 121"
+  ],
+  "code_typescript": "function find_star_num(n: number): number {\n    return (6 * n * (n - 1) + 1);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

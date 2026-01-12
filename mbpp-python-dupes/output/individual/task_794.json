@@ -1,0 +1,27 @@
+{
+  "task_id": 794,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.",
+  "code_python": "import re\ndef text_starta_endb(text):\n        patterns = 'a.*?b$'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert text_starta_endb(\"aabbbb\")",
+    "assert not text_starta_endb(\"aabAbbbc\")",
+    "assert not text_starta_endb(\"accddbbjjj\")"
+  ],
+  "python_1": "import re\ndef text_starta_endb(text):\n    # Define pattern using greedy quantifier instead of non-greedy\n    pattern = r'a.+b$|ab$'\n    # Use match object boolean evaluation with fullmatch-style anchoring via search\n    result = re.search(pattern, text)\n    # Return the match object which evaluates to truthy/falsy appropriately\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef text_starta_endb(text):\n    # Compile the regex pattern separately for potential reuse efficiency\n    compiled_pattern = re.compile(r'a.*b$')\n    # Use the match method starting from each position by searching the full string\n    match_result = compiled_pattern.search(text)\n    # Convert match object to boolean explicitly for clearer intent\n    if match_result is not None:\n        # Return truthy value when pattern is found\n        return match_result\n    # Return None explicitly when no match exists\n    return None",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef text_starta_endb(text):\n    # Use re.findall to get all matches and check if list is non-empty\n    pattern = r'a.*b$'\n    # findall returns list of matches - empty list is falsy, non-empty is truthy\n    matches = re.findall(pattern, text)\n    # Return the first match if exists, otherwise return empty string (falsy)\n    return matches[0] if matches else None",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\ndef text_starta_endb(text):\n    # Use re.fullmatch with pattern that allows any prefix before 'a'\n    pattern = r'.*a.*b'\n    # fullmatch requires the entire string to match the pattern\n    full_match = re.fullmatch(pattern, text)\n    # Return the match object directly - truthy if found, None if not\n    return full_match",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\ndef text_starta_endb(text):\n    # Use re.split to check if pattern can divide the string meaningfully\n    pattern = r'a.*b$'\n    # Split returns list with >1 element only if pattern matches and splits string\n    split_result = re.split(pattern, text)\n    # If pattern matches at end, split creates empty string as last element\n    # Original string appears if no match; shorter/modified list if match exists\n    original_length = len(text)\n    # Calculate total length of all parts after split\n    rejoined_length = sum(len(part) for part in split_result)\n    # If rejoined length < original, pattern was found and removed during split\n    pattern_was_found = rejoined_length < original_length\n    # Return truthy match object if found, None otherwise for consistency with tests\n    return re.search(pattern, text) if pattern_was_found else None",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 629,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find even numbers from a list of numbers.",
+  "python_code": "def Split(list): \n    return [num for num in list if num % 2 == 0]",
+  "test_list": [
+    "assert Split([1,2,3,4,5]) == [2,4]",
+    "assert Split([4,5,6,7,8,0,1]) == [4,6,8,0]",
+    "assert Split ([8,12,15,19]) == [8,12]"
+  ],
+  "code_go": "package main\n\nfunc Split(list []int) []int {\n\tresult := make([]int, 0)\n\tfor _, num := range list {\n\t\tif num%2 == 0 {\n\t\t\tresult = append(result, num)\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert Split([1,2,3,4,5]) == [2,4]",
+      "generated_test": "result := Split([]int{1, 2, 3, 4, 5})\nexpected := []int{2, 4}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Split([4,5,6,7,8,0,1]) == [4,6,8,0]",
+      "generated_test": "result := Split([]int{4, 5, 6, 7, 8, 0, 1})\nexpected := []int{4, 6, 8, 0}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Split ([8,12,15,19]) == [8,12]",
+      "generated_test": "result := Split([]int{8, 12, 15, 19})\nexpected := []int{8, 12}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

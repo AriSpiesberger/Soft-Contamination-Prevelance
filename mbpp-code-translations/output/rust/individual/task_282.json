@@ -1,0 +1,37 @@
+{
+  "task_id": 282,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to subtract two lists element-wise.",
+  "python_code": "def sub_list(nums1,nums2):\n  result = map(lambda x, y: x - y, nums1, nums2)\n  return list(result)",
+  "test_list": [
+    "assert sub_list([1, 2, 3],[4,5,6])==[-3,-3,-3]",
+    "assert sub_list([1,2],[3,4])==[-2,-2]",
+    "assert sub_list([90,120],[50,70])==[40,50]"
+  ],
+  "code_rust": "pub fn sub_list(nums1: &[i32], nums2: &[i32]) -> Vec<i32> {\n    nums1.iter().zip(nums2.iter()).map(|(x, y)| x - y).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert sub_list([1, 2, 3],[4,5,6])==[-3,-3,-3]",
+      "generated_test": "let result = sub_list(&[1, 2, 3], &[4, 5, 6]);\nlet expected = vec![-3, -3, -3];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sub_list([1,2],[3,4])==[-2,-2]",
+      "generated_test": "let result = sub_list(&[1, 2], &[3, 4]);\nlet expected = vec![-2, -2];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sub_list([90,120],[50,70])==[40,50]",
+      "generated_test": "let result = sub_list(&[90, 120], &[50, 70]);\nlet expected = vec![40, 50];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

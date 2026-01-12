@@ -1,0 +1,37 @@
+{
+  "task_id": 595,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count minimum number of swaps required to convert one binary number represented as a string to another.",
+  "python_code": "def min_Swaps(str1,str2) : \n    count = 0\n    for i in range(len(str1)) :  \n        if str1[i] != str2[i] : \n            count += 1\n    if count % 2 == 0 : \n        return (count // 2) \n    else : \n        return (\"Not Possible\") ",
+  "test_list": [
+    "assert min_Swaps(\"1101\",\"1110\") == 1",
+    "assert min_Swaps(\"111\",\"000\") == \"Not Possible\"",
+    "assert min_Swaps(\"111\",\"110\") == \"Not Possible\""
+  ],
+  "code_go": "package main\n\nfunc min_Swaps(str1, str2 string) interface{} {\n\tcount := 0\n\tfor i := 0; i < len(str1); i++ {\n\t\tif str1[i] != str2[i] {\n\t\t\tcount++\n\t\t}\n\t}\n\tif count%2 == 0 {\n\t\treturn count / 2\n\t} else {\n\t\treturn \"Not Possible\"\n\t}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert min_Swaps(\"1101\",\"1110\") == 1",
+      "generated_test": "result := min_Swaps(\"1101\", \"1110\")\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Swaps(\"111\",\"000\") == \"Not Possible\"",
+      "generated_test": "result := min_Swaps(\"111\", \"000\")\nexpected := \"Not Possible\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_Swaps(\"111\",\"110\") == \"Not Possible\"",
+      "generated_test": "result := min_Swaps(\"111\", \"110\")\nexpected := \"Not Possible\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

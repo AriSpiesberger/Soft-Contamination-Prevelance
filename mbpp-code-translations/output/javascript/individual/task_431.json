@@ -1,0 +1,37 @@
+{
+  "task_id": 431,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes two lists and returns true if they have at least one common element.",
+  "python_code": "def common_element(list1, list2):\n     result = False\n     for x in list1:\n         for y in list2:\n             if x == y:\n                 result = True\n                 return result",
+  "test_list": [
+    "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+    "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+    "assert common_element(['a','b','c'], ['d','b','e'])==True"
+  ],
+  "code_javascript": "function common_element(list1, list2) {\n    let result = false;\n    for (let x of list1) {\n        for (let y of list2) {\n            if (x === y) {\n                result = true;\n                return result;\n            }\n        }\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+      "generated_test": "const result = common_element([1,2,3,4,5], [5,6,7,8,9]);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+      "generated_test": "const result = common_element([1,2,3,4,5], [6,7,8,9]);\nconst expected = undefined;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element(['a','b','c'], ['d','b','e'])==True",
+      "generated_test": "const result = common_element(['a','b','c'], ['d','b','e']);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 429,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the elementwise and tuples from the given two tuples.",
+  "code_python": "def and_tuples(test_tup1, test_tup2):\n  res = tuple(ele1 & ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert and_tuples((10, 4, 6, 9), (5, 2, 3, 3)) == (0, 0, 2, 1)",
+    "assert and_tuples((1, 2, 3, 4), (5, 6, 7, 8)) == (1, 2, 3, 0)",
+    "assert and_tuples((8, 9, 11, 12), (7, 13, 14, 17)) == (0, 9, 10, 0)"
+  ],
+  "python_1": "def and_tuples(test_tup1, test_tup2):\n  # Use map to apply bitwise AND operation across paired elements\n  mapped_result = map(lambda pair: pair[0] & pair[1], zip(test_tup1, test_tup2))\n  # Convert the map iterator to a tuple for the final result\n  res = tuple(mapped_result)\n  # Return the tuple containing elementwise AND results\n  return res",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def and_tuples(test_tup1, test_tup2):\n    # Initialize an empty list to accumulate AND results iteratively\n    result_list = []\n    # Determine the length to iterate based on the first tuple\n    length = len(test_tup1)\n    # Use index-based iteration instead of zip for explicit element access\n    for i in range(length):\n        # Retrieve element from first tuple at current index\n        first_elem = test_tup1[i]\n        # Retrieve corresponding element from second tuple\n        second_elem = test_tup2[i]\n        # Compute bitwise AND and append to result accumulator\n        result_list.append(first_elem & second_elem)\n    # Convert the accumulated list to an immutable tuple\n    res = tuple(result_list)\n    # Return the final tuple containing all AND operations\n    return res",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def and_tuples(test_tup1, test_tup2):\n    # Use operator module's and_ function for bitwise AND operation\n    from operator import and_\n    # Apply and_ function to each pair using starmap for unpacking pairs directly\n    from itertools import starmap\n    # Pair up elements from both tuples into coordinate pairs\n    paired_elements = zip(test_tup1, test_tup2)\n    # starmap unpacks each pair and applies and_ to the two values\n    and_iterator = starmap(and_, paired_elements)\n    # Materialize the lazy iterator into a concrete tuple structure\n    res = tuple(and_iterator)\n    # Deliver the computed elementwise AND results\n    return res",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def and_tuples(test_tup1, test_tup2):\n    # Use list comprehension with explicit indexing via enumerate\n    result = [test_tup1[idx] & test_tup2[idx] for idx, _ in enumerate(test_tup1)]\n    # Transform mutable list into immutable tuple for return value\n    return tuple(result)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def and_tuples(test_tup1, test_tup2):\n    # Import reduce for cumulative operations on sequences\n    from functools import reduce\n    # Create index sequence to traverse both tuples simultaneously\n    indices = range(len(test_tup1))\n    # Use reduce to build tuple incrementally by processing each index\n    res = reduce(\n        # Accumulator function concatenates single-element tuple with AND result\n        lambda acc, i: acc + (test_tup1[i] & test_tup2[i],),\n        # Sequence of indices to iterate through\n        indices,\n        # Start with empty tuple as initial accumulator value\n        ()\n    )\n    # Return the fully constructed tuple of bitwise AND results\n    return res",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

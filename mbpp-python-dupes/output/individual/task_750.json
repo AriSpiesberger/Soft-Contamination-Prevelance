@@ -1,0 +1,27 @@
+{
+  "task_id": 750,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add the given tuple to the given list.",
+  "code_python": "def add_tuple(test_list, test_tup):\n  test_list += test_tup\n  return test_list",
+  "test_list": [
+    "assert add_tuple([5, 6, 7], (9, 10)) == [5, 6, 7, 9, 10]",
+    "assert add_tuple([6, 7, 8], (10, 11)) == [6, 7, 8, 10, 11]",
+    "assert add_tuple([7, 8, 9], (11, 12)) == [7, 8, 9, 11, 12]"
+  ],
+  "python_1": "def add_tuple(test_list, test_tup):\n    # Convert the tuple to a list for explicit concatenation\n    tuple_as_list = list(test_tup)\n    # Use the extend method to add all elements from tuple_as_list to test_list\n    test_list.extend(tuple_as_list)\n    # Return the modified original list with appended tuple elements\n    return test_list",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "def add_tuple(test_list, test_tup):\n    # Iterate over each element contained within the input tuple\n    for element in test_tup:\n        # Append each individual tuple element to the end of the list\n        test_list.append(element)\n    # Return the mutated list now containing all original and tuple elements\n    return test_list",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def add_tuple(test_list, test_tup):\n    # Unpack both sequences using splat operators to create a fresh combined list\n    combined = [*test_list, *test_tup]\n    # Clear the original list to prepare for repopulation\n    test_list.clear()\n    # Extend the now-empty original list with all combined elements\n    test_list.extend(combined)\n    # Return the same list object now containing merged contents\n    return test_list",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def add_tuple(test_list, test_tup):\n    # Use slice assignment to insert tuple elements at the end position\n    test_list[len(test_list):] = test_tup\n    # Return the in-place modified list with tuple elements appended\n    return test_list",
+  "python_4_status": "success",
+  "python_4_attempts": 3,
+  "python_5": "def add_tuple(test_list, test_tup):\n    # Use map to create an identity transformation over tuple elements\n    tuple_elements = map(lambda x: x, test_tup)\n    # Convert the mapped iterator into a list structure\n    elements_to_add = list(tuple_elements)\n    # Concatenate original list with new elements using + operator\n    result = test_list + elements_to_add\n    # Replace all contents of original list via full slice assignment\n    test_list[:] = result\n    # Return the mutated original list reference\n    return test_list",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 787,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by three 'b'.",
+  "python_code": "import re\ndef text_match_three(text):\n        patterns = 'ab{3}?'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert not text_match_three(\"ac\")",
+    "assert not text_match_three(\"dc\")",
+    "assert text_match_three(\"abbbba\")",
+    "assert text_match_three(\"caacabbbba\")"
+  ],
+  "code_ruby": "def text_match_three(text)\n  /ab{3}/.match(text)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 2,
+  "code_ruby_tests_passed": 4,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert not text_match_three(\"ac\")",
+      "generated_test": "result = text_match_three(\"ac\")\nexpected = nil\n\nif !result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_match_three(\"dc\")",
+      "generated_test": "result = text_match_three(\"dc\")\nexpected = nil\n\nif !result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"abbbba\")",
+      "generated_test": "result = text_match_three(\"abbbba\")\nif result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: truthy value\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"caacabbbba\")",
+      "generated_test": "result = text_match_three(\"caacabbbba\")\nif result\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: truthy value\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

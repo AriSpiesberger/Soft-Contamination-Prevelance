@@ -1,0 +1,37 @@
+{
+  "task_id": 731,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cone given radius r and the height h.",
+  "python_code": "import math\ndef lateralsurface_cone(r,h):\n  l = math.sqrt(r * r + h * h)\n  LSA = math.pi * r  * l\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cone(5,12)==204.20352248333654",
+    "assert lateralsurface_cone(10,15)==566.3586699569488",
+    "assert lateralsurface_cone(19,17)==1521.8090132193388"
+  ],
+  "code_rust": "use std::f64::consts::PI;\n\npub fn lateralsurface_cone(r: f64, h: f64) -> f64 {\n    let l = (r * r + h * h).sqrt();\n    let lsa = PI * r * l;\n    lsa\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert lateralsurface_cone(5,12)==204.20352248333654",
+      "generated_test": "let result = lateralsurface_cone(5.0, 12.0);\nlet expected = 204.20352248333654;\nif (result - expected).abs() < 1e-10 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cone(10,15)==566.3586699569488",
+      "generated_test": "let result = lateralsurface_cone(10.0, 15.0);\nlet expected = 566.3586699569488;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cone(19,17)==1521.8090132193388",
+      "generated_test": "let result = lateralsurface_cone(19.0, 17.0);\nlet expected = 1521.8090132193388;\nif (result - expected).abs() < 1e-10 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

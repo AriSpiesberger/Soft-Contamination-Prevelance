@@ -1,0 +1,37 @@
+{
+  "task_id": 568,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create a list of N empty dictionaries.",
+  "python_code": "def empty_list(length):\n empty_list = [{} for _ in range(length)]\n return empty_list",
+  "test_list": [
+    "assert empty_list(5)==[{},{},{},{},{}]",
+    "assert empty_list(6)==[{},{},{},{},{},{}]",
+    "assert empty_list(7)==[{},{},{},{},{},{},{}]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.HashMap;\n\npublic class Solution {\n    public static ArrayList<HashMap<Object, Object>> empty_list(int length) {\n        ArrayList<HashMap<Object, Object>> empty_list = new ArrayList<>();\n        for (int i = 0; i < length; i++) {\n            empty_list.add(new HashMap<>());\n        }\n        return empty_list;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert empty_list(5)==[{},{},{},{},{}]",
+      "generated_test": "ArrayList<HashMap<Object, Object>> result = empty_list(5);\nArrayList<HashMap<Object, Object>> expected = new ArrayList<>();\nfor (int i = 0; i < 5; i++) {\n    expected.add(new HashMap<>());\n}\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_list(6)==[{},{},{},{},{},{}]",
+      "generated_test": "ArrayList<HashMap<Object, Object>> result = empty_list(6);\nArrayList<HashMap<Object, Object>> expected = new ArrayList<>();\nfor (int i = 0; i < 6; i++) {\n    expected.add(new HashMap<>());\n}\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert empty_list(7)==[{},{},{},{},{},{},{}]",
+      "generated_test": "ArrayList<HashMap<Object, Object>> result = empty_list(7);\nArrayList<HashMap<Object, Object>> expected = new ArrayList<>();\nfor (int i = 0; i < 7; i++) {\n    expected.add(new HashMap<>());\n}\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

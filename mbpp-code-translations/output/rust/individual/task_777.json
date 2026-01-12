@@ -1,0 +1,37 @@
+{
+  "task_id": 777,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of non-repeated elements in a given list.",
+  "python_code": "def find_sum(arr): \n    arr.sort() \n    sum = arr[0] \n    for i in range(len(arr)-1): \n        if (arr[i] != arr[i+1]): \n            sum = sum + arr[i+1]   \n    return sum",
+  "test_list": [
+    "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+    "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+    "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78"
+  ],
+  "code_rust": "pub fn find_sum(arr: &[i32]) -> i32 {\n    if arr.is_empty() {\n        return 0;\n    }\n    \n    let mut arr = arr.to_vec();\n    arr.sort();\n    \n    let mut sum = arr[0];\n    for i in 0..arr.len() - 1 {\n        if arr[i] != arr[i + 1] {\n            sum += arr[i + 1];\n        }\n    }\n    \n    sum\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+      "generated_test": "let result = find_sum(&[1, 2, 3, 1, 1, 4, 5, 6]);\nlet expected = 21;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+      "generated_test": "let result = find_sum(&[1, 10, 9, 4, 2, 10, 10, 45, 4]);\nlet expected = 71;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78",
+      "generated_test": "let result = find_sum(&[12, 10, 9, 45, 2, 10, 10, 45, 10]);\nlet expected = 78;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

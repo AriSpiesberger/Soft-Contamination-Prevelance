@@ -1,0 +1,37 @@
+{
+  "task_id": 590,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert polar coordinates to rectangular coordinates.",
+  "python_code": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)",
+  "test_list": [
+    "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    \n    public static List<Object> polar_rect(double x, double y) {\n        // Create complex number from x and y, then convert to polar coordinates\n        double r = Math.sqrt(x * x + y * y);\n        double theta = Math.atan2(y, x);\n        \n        // Create polar tuple as List<Double>\n        List<Double> polarTuple = new ArrayList<>();\n        polarTuple.add(r);\n        polarTuple.add(theta);\n        \n        // Create rect from polar (2, pi) -> returns complex number\n        // For cmath.rect(2, cmath.pi): real = 2*cos(pi) = -2, imag = 2*sin(pi) \u2248 0\n        double rect_real = 2 * Math.cos(Math.PI);\n        double rect_imag = 2 * Math.sin(Math.PI);\n        \n        // Create complex number as List<Double> [real, imag]\n        List<Double> complexNum = new ArrayList<>();\n        complexNum.add(rect_real);\n        complexNum.add(rect_imag);\n        \n        // Return as List containing the polar tuple and complex list\n        List<Object> result = new ArrayList<>();\n        result.add(polarTuple);\n        result.add(complexNum);\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 7,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+      "generated_test": "List<Object> result = polar_rect(3, 4);\n\n// Expected values\ndouble expectedR = 5.0;\ndouble expectedTheta = 0.9272952180016122;\ndouble expectedRectReal = -2.0;\ndouble expectedRectImag = 2.4492935982947064e-16;\n\n// Extract actual values\nList<Double> actualPolar = (List<Double>) result.get(0);\nList<Double> actualComplex = (List<Double>) result.get(1);\n\ndouble actualR = actualPolar.get(0);\ndouble actualTheta = actualPolar.get(1);\ndouble actualRectReal = actualComplex.get(0);\ndouble actualRectImag = actualComplex.get(1);\n\n// Compare with tolerance for floating point\ndouble tolerance = 1e-10;\nboolean pass = Math.abs(actualR - expectedR) < tolerance &&\n               Math.abs(actualTheta - expectedTheta) < tolerance &&\n               Math.abs(actualRectReal - expectedRectReal) < tolerance &&\n               Math.abs(actualRectImag - expectedRectImag) < tolerance;\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: ((\" + expectedR + \", \" + expectedTheta + \"), (\" + expectedRectReal + \", \" + expectedRectImag + \"))\");\n    System.out.println(\"  Got: ((\" + actualR + \", \" + actualTheta + \"), (\" + actualRectReal + \", \" + actualRectImag + \"))\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+      "generated_test": "List<Object> result = polar_rect(4, 7);\n\n// Expected values\ndouble expectedR = 8.06225774829855;\ndouble expectedTheta = 1.0516502125483738;\ndouble expectedRectReal = -2.0;\ndouble expectedRectImag = 2.4492935982947064e-16;\n\n// Extract actual values\nList<Double> actualPolar = (List<Double>) result.get(0);\nList<Double> actualComplex = (List<Double>) result.get(1);\n\ndouble actualR = actualPolar.get(0);\ndouble actualTheta = actualPolar.get(1);\ndouble actualRectReal = actualComplex.get(0);\ndouble actualRectImag = actualComplex.get(1);\n\n// Compare with tolerance for floating point\ndouble tolerance = 1e-10;\nboolean pass = Math.abs(actualR - expectedR) < tolerance &&\n               Math.abs(actualTheta - expectedTheta) < tolerance &&\n               Math.abs(actualRectReal - expectedRectReal) < tolerance &&\n               Math.abs(actualRectImag - expectedRectImag) < tolerance;\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: ((\" + expectedR + \", \" + expectedTheta + \"), (\" + expectedRectReal + \", \" + expectedRectImag + \"))\");\n    System.out.println(\"  Got: ((\" + actualR + \", \" + actualTheta + \"), (\" + actualRectReal + \", \" + actualRectImag + \"))\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))",
+      "generated_test": "List<Object> result = polar_rect(15, 17);\n\n// Expected values\ndouble expectedR = 22.67156809750927;\ndouble expectedTheta = 0.8478169733934057;\ndouble expectedRectReal = -2.0;\ndouble expectedRectImag = 2.4492935982947064e-16;\n\n// Extract actual values\nList<Double> polarTuple = (List<Double>) result.get(0);\nList<Double> complexNum = (List<Double>) result.get(1);\n\ndouble actualR = polarTuple.get(0);\ndouble actualTheta = polarTuple.get(1);\ndouble actualRectReal = complexNum.get(0);\ndouble actualRectImag = complexNum.get(1);\n\n// Compare with tolerance for floating point\ndouble tolerance = 1e-10;\nboolean pass = Math.abs(actualR - expectedR) < tolerance &&\n               Math.abs(actualTheta - expectedTheta) < tolerance &&\n               Math.abs(actualRectReal - expectedRectReal) < tolerance &&\n               Math.abs(actualRectImag - expectedRectImag) < tolerance;\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: ((\" + expectedR + \", \" + expectedTheta + \"), (\" + expectedRectReal + \", \" + expectedRectImag + \"))\");\n    System.out.println(\"  Got: ((\" + actualR + \", \" + actualTheta + \"), (\" + actualRectReal + \", \" + actualRectImag + \"))\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

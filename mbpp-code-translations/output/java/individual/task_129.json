@@ -1,0 +1,37 @@
+{
+  "task_id": 129,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate whether the matrix is a magic square.",
+  "python_code": "def magic_square_test(my_matrix):\n    iSize = len(my_matrix[0])\n    sum_list = []\n    sum_list.extend([sum (lines) for lines in my_matrix])   \n    for col in range(iSize):\n        sum_list.append(sum(row[col] for row in my_matrix))\n    result1 = 0\n    for i in range(0,iSize):\n        result1 +=my_matrix[i][i]\n    sum_list.append(result1)      \n    result2 = 0\n    for i in range(iSize-1,-1,-1):\n        result2 +=my_matrix[i][i]\n    sum_list.append(result2)\n    if len(set(sum_list))>1:\n        return False\n    return True",
+  "test_list": [
+    "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean magic_square_test(int[][] my_matrix) {\n        int iSize = my_matrix[0].length;\n        ArrayList<Integer> sum_list = new ArrayList<>();\n        \n        // Sum of each row\n        for (int[] lines : my_matrix) {\n            int rowSum = 0;\n            for (int val : lines) {\n                rowSum += val;\n            }\n            sum_list.add(rowSum);\n        }\n        \n        // Sum of each column\n        for (int col = 0; col < iSize; col++) {\n            int colSum = 0;\n            for (int[] row : my_matrix) {\n                colSum += row[col];\n            }\n            sum_list.add(colSum);\n        }\n        \n        // Sum of main diagonal\n        int result1 = 0;\n        for (int i = 0; i < iSize; i++) {\n            result1 += my_matrix[i][i];\n        }\n        sum_list.add(result1);\n        \n        // Sum of anti-diagonal\n        int result2 = 0;\n        for (int i = iSize - 1; i >= 0; i--) {\n            result2 += my_matrix[i][i];\n        }\n        sum_list.add(result2);\n        \n        // Check if all sums are equal\n        HashSet<Integer> sumSet = new HashSet<>(sum_list);\n        if (sumSet.size() > 1) {\n            return false;\n        }\n        return true;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+      "generated_test": "int[][] input = new int[][]{{7, 12, 1, 14}, {2, 13, 8, 11}, {16, 3, 10, 5}, {9, 6, 15, 4}};\nboolean expected = true;\nboolean result = magic_square_test(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+      "generated_test": "int[][] input = new int[][]{{2, 7, 6}, {9, 5, 1}, {4, 3, 8}};\nboolean expected = true;\nboolean result = magic_square_test(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False",
+      "generated_test": "int[][] input = new int[][]{{2, 7, 6}, {9, 5, 1}, {4, 3, 7}};\nboolean expected = false;\nboolean result = magic_square_test(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

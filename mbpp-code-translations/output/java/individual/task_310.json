@@ -1,0 +1,37 @@
+{
+  "task_id": 310,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a given string to a tuple of characters.",
+  "python_code": "def string_to_tuple(str1):\n    result = tuple(x for x in str1 if not x.isspace()) \n    return result",
+  "test_list": [
+    "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+    "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+    "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static char[] string_to_tuple(String str1) {\n        ArrayList<Character> result = new ArrayList<>();\n        for (int i = 0; i < str1.length(); i++) {\n            char x = str1.charAt(i);\n            if (!Character.isWhitespace(x)) {\n                result.add(x);\n            }\n        }\n        char[] resultArray = new char[result.size()];\n        for (int i = 0; i < result.size(); i++) {\n            resultArray[i] = result.get(i);\n        }\n        return resultArray;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert string_to_tuple(\"python 3.0\")==('p', 'y', 't', 'h', 'o', 'n', '3', '.', '0')",
+      "generated_test": "char[] result = string_to_tuple(\"python 3.0\");\nchar[] expected = new char[]{'p', 'y', 't', 'h', 'o', 'n', '3', '.', '0'};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expStr.append(\"'\").append(expected[i]).append(\"'\");\n        if (i < expected.length - 1) expStr.append(\", \");\n    }\n    expStr.append(\"]\");\n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.length; i++) {\n        gotStr.append(\"'\").append(result[i]).append(\"'\");\n        if (i < result.length - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    System.out.println(\"  Expected: \" + expStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"item1\")==('i', 't', 'e', 'm', '1')",
+      "generated_test": "char[] result = string_to_tuple(\"item1\");\nchar[] expected = new char[]{'i', 't', 'e', 'm', '1'};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expectedStr = new StringBuilder();\n    for (int i = 0; i < expected.length; i++) {\n        if (i > 0) expectedStr.append(\", \");\n        expectedStr.append(\"'\" + expected[i] + \"'\");\n    }\n    StringBuilder gotStr = new StringBuilder();\n    for (int i = 0; i < result.length; i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(\"'\" + result[i] + \"'\");\n    }\n    System.out.println(\"  Expected: (\" + expectedStr + \")\");\n    System.out.println(\"  Got: (\" + gotStr + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_tuple(\"15.10\")==('1', '5', '.', '1', '0')",
+      "generated_test": "char[] result = string_to_tuple(\"15.10\");\nchar[] expected = new char[]{'1', '5', '.', '1', '0'};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.length; i++) {\n        expectedStr.append(\"'\").append(expected[i]).append(\"'\");\n        if (i < expected.length - 1) expectedStr.append(\", \");\n    }\n    expectedStr.append(\"]\");\n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.length; i++) {\n        gotStr.append(\"'\").append(result[i]).append(\"'\");\n        if (i < result.length - 1) gotStr.append(\", \");\n    }\n    gotStr.append(\"]\");\n    System.out.println(\"  Expected: \" + expectedStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 407,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create the next bigger number by rearranging the digits of a given number.",
+  "python_code": "def rearrange_bigger(n):\n    nums = list(str(n))\n    for i in range(len(nums)-2,-1,-1):\n        if nums[i] < nums[i+1]:\n            z = nums[i:]\n            y = min(filter(lambda x: x > z[0], z))\n            z.remove(y)\n            z.sort()\n            nums[i:] = [y] + z\n            return int(\"\".join(nums))\n    return False",
+  "test_list": [
+    "assert rearrange_bigger(12)==21",
+    "assert rearrange_bigger(10)==False",
+    "assert rearrange_bigger(102)==120"
+  ],
+  "code_typescript": "function rearrange_bigger(n: number): number | false {\n    const nums: string[] = String(n).split('');\n    \n    for (let i = nums.length - 2; i >= 0; i--) {\n        if (nums[i] < nums[i + 1]) {\n            const z: string[] = nums.slice(i);\n            const filtered = z.filter(x => x > z[0]);\n            const y = filtered.reduce((min, curr) => curr < min ? curr : min);\n            const yIndex = z.indexOf(y);\n            z.splice(yIndex, 1);\n            z.sort();\n            nums.splice(i, nums.length - i, y, ...z);\n            return parseInt(nums.join(''), 10);\n        }\n    }\n    \n    return false;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

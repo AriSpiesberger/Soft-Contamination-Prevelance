@@ -1,0 +1,17 @@
+{
+  "task_id": 474,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace characters in a string.",
+  "python_code": "def replace_char(str1,ch,newch):\n str2 = str1.replace(ch, newch)\n return str2",
+  "test_list": [
+    "assert replace_char(\"polygon\",'y','l')==(\"pollgon\")",
+    "assert replace_char(\"character\",'c','a')==(\"aharaater\")",
+    "assert replace_char(\"python\",'l','a')==(\"python\")"
+  ],
+  "code_typescript": "function replace_char(str1: string, ch: string, newch: string): string {\n    const str2 = str1.split(ch).join(newch);\n    return str2;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

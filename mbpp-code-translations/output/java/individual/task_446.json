@@ -1,0 +1,37 @@
+{
+  "task_id": 446,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the occurence of all elements of list in a tuple.",
+  "python_code": "from collections import Counter \ndef count_Occurrence(tup, lst): \n    count = 0\n    for item in tup: \n        if item in lst: \n            count+= 1 \n    return count  ",
+  "test_list": [
+    "assert count_Occurrence(('a', 'a', 'c', 'b', 'd'),['a', 'b'] ) == 3",
+    "assert count_Occurrence((1, 2, 3, 1, 4, 6, 7, 1, 4),[1, 4, 7]) == 6",
+    "assert count_Occurrence((1,2,3,4,5,6),[1,2]) == 2"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int count_Occurrence(Object[] tup, List<?> lst) {\n        int count = 0;\n        for (Object item : tup) {\n            if (lst.contains(item)) {\n                count++;\n            }\n        }\n        return count;\n    }\n    \n    public static int count_Occurrence(List<?> tup, List<?> lst) {\n        int count = 0;\n        for (Object item : tup) {\n            if (lst.contains(item)) {\n                count++;\n            }\n        }\n        return count;\n    }\n    \n    public static int count_Occurrence(String[] tup, String[] lst) {\n        int count = 0;\n        List<String> lstList = Arrays.asList(lst);\n        for (String item : tup) {\n            if (lstList.contains(item)) {\n                count++;\n            }\n        }\n        return count;\n    }\n    \n    public static int count_Occurrence(int[] tup, int[] lst) {\n        int count = 0;\n        Set<Integer> lstSet = new HashSet<>();\n        for (int i : lst) {\n            lstSet.add(i);\n        }\n        for (int item : tup) {\n            if (lstSet.contains(item)) {\n                count++;\n            }\n        }\n        return count;\n    }\n    \n    public static int count_Occurrence(Integer[] tup, Integer[] lst) {\n        int count = 0;\n        List<Integer> lstList = Arrays.asList(lst);\n        for (Integer item : tup) {\n            if (lstList.contains(item)) {\n                count++;\n            }\n        }\n        return count;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 8,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_Occurrence(('a', 'a', 'c', 'b', 'd'),['a', 'b'] ) == 3",
+      "generated_test": "String[] tup = new String[]{\"a\", \"a\", \"c\", \"b\", \"d\"};\nString[] lst = new String[]{\"a\", \"b\"};\nint result = count_Occurrence(tup, lst);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Occurrence((1, 2, 3, 1, 4, 6, 7, 1, 4),[1, 4, 7]) == 6",
+      "generated_test": "int[] tup = new int[]{1, 2, 3, 1, 4, 6, 7, 1, 4};\nint[] lst = new int[]{1, 4, 7};\nint expected = 6;\nint result = count_Occurrence(tup, lst);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Occurrence((1,2,3,4,5,6),[1,2]) == 2",
+      "generated_test": "int[] tup = new int[]{1, 2, 3, 4, 5, 6};\nint[] lst = new int[]{1, 2};\nint result = count_Occurrence(tup, lst);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

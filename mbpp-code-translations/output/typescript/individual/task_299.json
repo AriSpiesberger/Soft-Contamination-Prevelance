@@ -1,0 +1,17 @@
+{
+  "task_id": 299,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the maximum aggregate from the list of tuples.",
+  "python_code": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])",
+  "test_list": [
+    "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+    "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+    "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)"
+  ],
+  "code_typescript": "function max_aggregate(stdata: [string, number][]): [string, number] {\n    const temp: Map<string, number> = new Map();\n    \n    for (const [name, marks] of stdata) {\n        temp.set(name, (temp.get(name) || 0) + marks);\n    }\n    \n    let maxEntry: [string, number] | null = null;\n    \n    for (const [name, total] of temp.entries()) {\n        if (maxEntry === null || total > maxEntry[1]) {\n            maxEntry = [name, total];\n        }\n    }\n    \n    return maxEntry!;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

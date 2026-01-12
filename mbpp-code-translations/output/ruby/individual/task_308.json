@@ -1,0 +1,37 @@
+{
+  "task_id": 308,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the specified number of largest products from two given lists, selecting one factor from each list.",
+  "python_code": "def large_product(nums1, nums2, N):\n    result = sorted([x*y for x in nums1 for y in nums2], reverse=True)[:N]\n    return result",
+  "test_list": [
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]"
+  ],
+  "code_ruby": "def large_product(nums1, nums2, n)\n  nums1.product(nums2).map { |x, y| x * y }.sort.reverse.first(n)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+      "generated_test": "result = large_product([1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 3)\nexpected = [60, 54, 50]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+      "generated_test": "result = large_product([1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 4)\nexpected = [60, 54, 50, 48]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]",
+      "generated_test": "result = large_product([1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 5)\nexpected = [60, 54, 50, 48, 45]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

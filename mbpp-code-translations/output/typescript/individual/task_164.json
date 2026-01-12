@@ -1,0 +1,17 @@
+{
+  "task_id": 164,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to determine if the sum of the divisors of two integers are the same.",
+  "python_code": "import math \ndef div_sum(n): \n  total = 1\n  i = 2\n\n  while i * i <= n:\n    if (n % i == 0):\n      total = (total + i + math.floor(n / i))\n    i += 1\n\n  return total\n\ndef are_equivalent(num1, num2): \n    return div_sum(num1) == div_sum(num2); ",
+  "test_list": [
+    "assert are_equivalent(36, 57) == False",
+    "assert are_equivalent(2, 4) == False",
+    "assert are_equivalent(23, 47) == True"
+  ],
+  "code_typescript": "function div_sum(n: number): number {\n  let total = 1;\n  let i = 2;\n\n  while (i * i <= n) {\n    if (n % i === 0) {\n      total = total + i + Math.floor(n / i);\n    }\n    i += 1;\n  }\n\n  return total;\n}\n\nfunction are_equivalent(num1: number, num2: number): boolean {\n  return div_sum(num1) === div_sum(num2);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

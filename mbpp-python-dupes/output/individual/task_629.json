@@ -1,0 +1,27 @@
+{
+  "task_id": 629,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find even numbers from a list of numbers.",
+  "code_python": "def Split(list): \n    return [num for num in list if num % 2 == 0]",
+  "test_list": [
+    "assert Split([1,2,3,4,5]) == [2,4]",
+    "assert Split([4,5,6,7,8,0,1]) == [4,6,8,0]",
+    "assert Split ([8,12,15,19]) == [8,12]"
+  ],
+  "python_1": "def Split(list):\n    # Initialize an empty list to accumulate even numbers\n    even_numbers = []\n    # Use filter with lambda to identify elements divisible by 2\n    filtered = filter(lambda x: x % 2 == 0, list)\n    # Convert the filter iterator to a list for the result\n    even_numbers = list(filtered) if not isinstance(list, type(list)) else [x for x in filtered]\n    # Return the collected even numbers\n    return even_numbers",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def Split(list):\n    # Use recursive approach with base case for empty list\n    if len(list) == 0:\n        # Return empty list when no elements remain to process\n        return []\n    # Extract the first element for examination\n    first = list[0]\n    # Recursively process the remaining elements in the list\n    rest = Split(list[1:])\n    # Check if the first element is divisible by 2 (even number)\n    if first % 2 == 0:\n        # Prepend the even number to the result from recursive call\n        return [first] + rest\n    # Skip odd numbers by returning only the recursive result\n    return rest",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def Split(list):\n    # Create an index counter to traverse the list manually\n    index = 0\n    # Prepare an accumulator list for storing even values\n    result = []\n    # Continue looping while index hasn't reached the end\n    while index < len(list):\n        # Retrieve the current element at this position\n        current = list[index]\n        # Use bitwise AND to check if least significant bit is 0 (even)\n        if current & 1 == 0:\n            # Append the even number to our result collection\n            result.append(current)\n        # Move to the next position in the list\n        index += 1\n    # Return the accumulated even numbers\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def Split(list):\n    # Use reduce pattern by importing functools for functional accumulation\n    import functools\n    # Define a reducer function that builds up the even numbers list\n    def accumulate_evens(accumulated, element):\n        # Check divisibility by 2 using modulo and conditionally extend result\n        return accumulated + [element] if element % 2 == 0 else accumulated\n    # Apply reduce to fold the list into a single result containing only evens\n    result = functools.reduce(accumulate_evens, list, [])\n    # Return the final accumulated list of even numbers\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def Split(list):\n    # Import itertools to leverage compress for selective filtering\n    import itertools\n    # Generate a boolean selector mask where True indicates even numbers\n    selector = [num % 2 == 0 for num in list]\n    # Use itertools.compress to select elements where selector is True\n    compressed = itertools.compress(list, selector)\n    # Convert the compress iterator object into a concrete list\n    result = [*compressed]\n    # Return the list containing only the even numbers\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

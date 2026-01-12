@@ -1,0 +1,17 @@
+{
+  "task_id": 615,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which takes a tuple of tuples and returns the average value for each tuple as a list.",
+  "python_code": "def average_tuple(nums):\n    result = [sum(x) / len(x) for x in zip(*nums)]\n    return result",
+  "test_list": [
+    "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+    "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+    "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]"
+  ],
+  "code_typescript": "function average_tuple(nums: number[][]): number[] {\n    if (nums.length === 0) {\n        return [];\n    }\n    \n    const numColumns = nums[0].length;\n    const result: number[] = [];\n    \n    for (let col = 0; col < numColumns; col++) {\n        let sum = 0;\n        let count = 0;\n        for (let row = 0; row < nums.length; row++) {\n            if (col < nums[row].length) {\n                sum += nums[row][col];\n                count++;\n            }\n        }\n        result.push(sum / count);\n    }\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

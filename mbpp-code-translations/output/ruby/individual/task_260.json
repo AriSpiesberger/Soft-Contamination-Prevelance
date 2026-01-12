@@ -1,0 +1,37 @@
+{
+  "task_id": 260,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth newman\u2013shanks\u2013williams prime number.",
+  "python_code": "def newman_prime(n): \n\tif n == 0 or n == 1: \n\t\treturn 1\n\treturn 2 * newman_prime(n - 1) + newman_prime(n - 2)",
+  "test_list": [
+    "assert newman_prime(3) == 7",
+    "assert newman_prime(4) == 17",
+    "assert newman_prime(5) == 41"
+  ],
+  "code_ruby": "def newman_prime(n)\n  if n == 0 || n == 1\n    return 1\n  end\n  2 * newman_prime(n - 1) + newman_prime(n - 2)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert newman_prime(3) == 7",
+      "generated_test": "result = newman_prime(3)\nexpected = 7\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert newman_prime(4) == 17",
+      "generated_test": "result = newman_prime(4)\nexpected = 17\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert newman_prime(5) == 41",
+      "generated_test": "result = newman_prime(5)\nexpected = 41\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

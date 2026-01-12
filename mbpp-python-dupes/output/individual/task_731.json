@@ -1,0 +1,27 @@
+{
+  "task_id": 731,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cone given radius r and the height h.",
+  "code_python": "import math\ndef lateralsurface_cone(r,h):\n  l = math.sqrt(r * r + h * h)\n  LSA = math.pi * r  * l\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cone(5,12)==204.20352248333654",
+    "assert lateralsurface_cone(10,15)==566.3586699569488",
+    "assert lateralsurface_cone(19,17)==1521.8090132193388"
+  ],
+  "python_1": "import math\n\ndef lateralsurface_cone(r, h):\n    # Compute the square of the radius for Pythagorean theorem\n    r_squared = r ** 2\n    # Compute the square of the height for Pythagorean theorem\n    h_squared = h ** 2\n    # Calculate slant height using Pythagorean theorem with power operator\n    slant_height = (r_squared + h_squared) ** 0.5\n    # Multiply pi, radius, and slant height using chained multiplication\n    lateral_surface_area = math.pi * r * slant_height\n    # Return the computed lateral surface area\n    return lateral_surface_area",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef lateralsurface_cone(r, h):\n    # Use hypot function which computes sqrt(r^2 + h^2) more accurately and efficiently\n    slant_length = math.hypot(r, h)\n    # Apply the cone lateral surface formula: pi * radius * slant_height\n    result = math.pi * r * slant_length\n    # Return the calculated lateral surface area\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef lateralsurface_cone(r, h):\n    # Import reduce function for functional programming approach\n    from functools import reduce\n    # Store radius and height in a tuple for functional processing\n    dimensions = (r, h)\n    # Square each dimension using map and lambda, then convert to list\n    squared_dims = list(map(lambda x: x * x, dimensions))\n    # Sum the squared values using reduce to get r^2 + h^2\n    sum_of_squares = reduce(lambda a, b: a + b, squared_dims)\n    # Take square root of sum to derive the slant height of cone\n    slant = math.sqrt(sum_of_squares)\n    # Pack the three factors needed for lateral surface area formula\n    factors = [math.pi, r, slant]\n    # Use reduce with multiplication to compute pi * r * slant_height\n    lateral_area = reduce(lambda x, y: x * y, factors)\n    # Return the computed lateral surface area of the cone\n    return lateral_area",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef lateralsurface_cone(r, h):\n    # Define a nested helper function to compute slant height using Pythagorean theorem\n    def compute_slant(radius, height):\n        # Return the hypotenuse of right triangle formed by radius and height\n        return (radius ** 2 + height ** 2) ** 0.5\n    \n    # Define another helper function for the lateral surface formula application\n    def compute_lateral_area(radius, slant):\n        # Implement the cone lateral surface formula: \u03c0 \u00d7 r \u00d7 l\n        return math.pi * radius * slant\n    \n    # Call the slant height helper with the given cone dimensions\n    l = compute_slant(r, h)\n    \n    # Invoke the lateral area helper to get the final result\n    area = compute_lateral_area(r, l)\n    \n    # Return the computed lateral surface area value\n    return area",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef lateralsurface_cone(r, h):\n    # Create a class to encapsulate cone geometry calculations\n    class Cone:\n        # Constructor accepts radius and height as cone parameters\n        def __init__(self, radius, height):\n            # Store radius as instance attribute\n            self.radius = radius\n            # Store height as instance attribute\n            self.height = height\n        \n        # Property method to lazily compute slant height when accessed\n        @property\n        def slant_height(self):\n            # Use sum and generator expression to compute r^2 + h^2\n            sum_squares = sum(dim ** 2 for dim in [self.radius, self.height])\n            # Return square root of sum to get the slant height\n            return math.sqrt(sum_squares)\n        \n        # Method to calculate lateral surface area using formula pi*r*l\n        def lateral_surface(self):\n            # Access slant_height property and multiply by pi and radius\n            return math.pi * self.radius * self.slant_height\n    \n    # Instantiate a Cone object with the provided radius and height values\n    cone = Cone(r, h)\n    # Call the lateral_surface method to compute and return the area\n    return cone.lateral_surface()",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

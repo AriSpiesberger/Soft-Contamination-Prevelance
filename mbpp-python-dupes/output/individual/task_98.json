@@ -1,0 +1,27 @@
+{
+  "task_id": 98,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to multiply all the numbers in a list and divide with the length of the list.",
+  "code_python": "def multiply_num(numbers):  \n    total = 1\n    for x in numbers:\n        total *= x  \n    return total/len(numbers) ",
+  "test_list": [
+    "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+    "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)"
+  ],
+  "python_1": "import math\nfrom functools import reduce\n\ndef multiply_num(numbers):  \n    # Use reduce to apply multiplication across all elements in the sequence\n    product = reduce(lambda acc, x: acc * x, numbers)\n    # Calculate the count of elements to use as divisor\n    count = len(numbers)\n    # Divide the accumulated product by the element count and return\n    return product / count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef multiply_num(numbers):  \n    # Convert input to list to enable indexed access and length calculation\n    num_list = list(numbers)\n    # Handle edge case by starting with first element as initial product\n    product = num_list[0]\n    # Iterate through remaining elements starting from index 1\n    i = 1\n    # Continue multiplication while there are elements left to process\n    while i < len(num_list):\n        # Multiply current product by the element at position i\n        product = product * num_list[i]\n        # Advance index to move to next element\n        i += 1\n    # Compute final result by dividing accumulated product by total count\n    result = product / len(num_list)\n    # Return the computed average-style result\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef multiply_num(numbers):  \n    # Convert input to list for numpy-like operations without importing numpy\n    num_list = list(numbers)\n    # Use recursive approach to compute product of all elements\n    def recursive_product(lst, index=0):\n        # Base case: when index reaches end, return multiplicative identity\n        if index == len(lst):\n            return 1\n        # Recursive case: multiply current element with product of remaining elements\n        return lst[index] * recursive_product(lst, index + 1)\n    # Invoke recursive function starting from index 0 to get total product\n    product = recursive_product(num_list)\n    # Determine divisor as the cardinality of the input sequence\n    divisor = len(num_list)\n    # Perform floating-point division of product by element count\n    return product / divisor",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef multiply_num(numbers):  \n    # Transform input sequence into a mutable list for processing\n    num_list = list(numbers)\n    # Extract the length once to avoid repeated computation\n    length = len(num_list)\n    # Use eval with a generator expression to compute product via string multiplication syntax\n    # Build a string like \"a * b * c\" and evaluate it mathematically\n    product_expression = \" * \".join(str(n) for n in num_list)\n    # Evaluate the constructed arithmetic expression to obtain the product\n    product = eval(product_expression)\n    # Divide the evaluated product by the sequence length for final result\n    return product / length",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef multiply_num(numbers):  \n    # Leverage Python's math.prod function introduced in Python 3.8 for direct product computation\n    from math import prod\n    # Convert input to tuple to ensure it can be iterated multiple times safely\n    nums_tuple = tuple(numbers)\n    # Compute product using built-in math.prod which handles the multiplication internally\n    product = prod(nums_tuple)\n    # Calculate length separately to use as denominator in division\n    element_count = len(nums_tuple)\n    # Perform division and return result as floating point number\n    return product / element_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

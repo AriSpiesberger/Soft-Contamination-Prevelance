@@ -1,0 +1,27 @@
+{
+  "task_id": 390,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to apply a given format string to all of the elements in a list.",
+  "code_python": "def add_string(list_, string):\n add_string=[string.format(i) for i in  list_]\n return add_string",
+  "test_list": [
+    "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+    "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+    "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']"
+  ],
+  "python_1": "def add_string(list_, string):\n    # Initialize an empty list to accumulate formatted results\n    result = []\n    # Use map to apply the format operation to each element in the input list\n    formatted_items = map(lambda x: string.format(x), list_)\n    # Convert the map iterator to a list and return it\n    result = list(formatted_items)\n    # Return the list containing all formatted strings\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def add_string(list_, string):\n    # Use a traditional for loop with index-based iteration for explicit control\n    result = []\n    # Get the total number of elements to process\n    length = len(list_)\n    # Iterate through indices from 0 to length-1\n    index = 0\n    # Continue processing while we haven't reached the end of the list\n    while index < length:\n        # Extract the current element using index-based access\n        current_element = list_[index]\n        # Apply the format string with the current element as the argument\n        formatted_string = string.format(current_element)\n        # Append the newly formatted string to our result accumulator\n        result.append(formatted_string)\n        # Move to the next index position\n        index += 1\n    # Return the fully populated list of formatted strings\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def add_string(list_, string):\n    # Use recursion to process the list by handling head and tail separately\n    def format_recursive(items, format_str):\n        # Base case: empty list returns empty list to terminate recursion\n        if not items:\n            return []\n        # Extract the first element from the list for formatting\n        head = items[0]\n        # Recursively process remaining elements to build up the tail\n        tail = format_recursive(items[1:], format_str)\n        # Format the head element and prepend it to the processed tail\n        return [format_str.format(head)] + tail\n    # Invoke the recursive helper with the full list and format string\n    return format_recursive(list_, string)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def add_string(list_, string):\n    # Import reduce function from functools for fold-based aggregation\n    from functools import reduce\n    # Define accumulator function that appends formatted element to growing list\n    def accumulate_formatted(acc, element):\n        # Apply format string to current element and extend accumulator list\n        return acc + [string.format(element)]\n    # Use reduce to fold over input list, starting with empty list as initial value\n    result = reduce(accumulate_formatted, list_, [])\n    # Return the accumulated list of all formatted strings\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def add_string(list_, string):\n    # Use enumerate to iterate with index for explicit position tracking\n    result = [None] * len(list_)\n    # Enumerate provides both index and value simultaneously for direct assignment\n    for idx, element in enumerate(list_):\n        # Format the current element and place directly at its position in pre-allocated list\n        result[idx] = string.format(element)\n    # Return the pre-allocated and fully populated result array\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 796,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write function to find the sum of all items in the given dictionary.",
+  "python_code": "def return_sum(dict):\n  sum = 0\n  for i in dict.values():\n    sum = sum + i\n  return sum",
+  "test_list": [
+    "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+    "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+    "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn return_sum(dict: &HashMap<&str, i32>) -> i32 {\n    dict.values().sum()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+      "generated_test": "let mut dict: HashMap<&str, i32> = HashMap::new();\ndict.insert(\"a\", 100);\ndict.insert(\"b\", 200);\ndict.insert(\"c\", 300);\nlet result = return_sum(&dict);\nlet expected = 600;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+      "generated_test": "let mut dict: HashMap<&str, i32> = HashMap::new();\ndict.insert(\"a\", 25);\ndict.insert(\"b\", 18);\ndict.insert(\"c\", 45);\n\nlet result = return_sum(&dict);\nlet expected = 88;\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124",
+      "generated_test": "let mut dict: HashMap<&str, i32> = HashMap::new();\ndict.insert(\"a\", 36);\ndict.insert(\"b\", 39);\ndict.insert(\"c\", 49);\nlet result = return_sum(&dict);\nlet expected = 124;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

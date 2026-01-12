@@ -1,0 +1,27 @@
+{
+  "task_id": 97,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find frequency of each element in a flattened list of lists, returned in a dictionary.",
+  "code_python": "def frequency_lists(list1):\n    list1 = [item for sublist in list1 for item in sublist]\n    dic_data = {}\n    for num in list1:\n        if num in dic_data.keys():\n            dic_data[num] += 1\n        else:\n            key = num\n            value = 1\n            dic_data[key] = value\n    return dic_data\n",
+  "test_list": [
+    "assert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}",
+    "assert frequency_lists([[1,2,3,4],[5,6,7,8],[9,10,11,12]])=={1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1,10:1,11:1,12:1}",
+    "assert frequency_lists([[20,30,40,17],[18,16,14,13],[10,20,30,40]])=={20:2,30:2,40:2,17: 1,18:1, 16: 1,14: 1,13: 1, 10: 1}"
+  ],
+  "python_1": "from collections import Counter\nfrom itertools import chain\n\ndef frequency_lists(list1):\n    # Use chain.from_iterable to lazily flatten the nested list structure\n    flattened = chain.from_iterable(list1)\n    # Leverage Counter class to efficiently count occurrences of each element\n    frequency_counter = Counter(flattened)\n    # Convert Counter object to regular dictionary for expected return type\n    return dict(frequency_counter)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def frequency_lists(list1):\n    # Use dict.get() method to simplify frequency counting without explicit key checking\n    result = {}\n    # Iterate through each sublist in the nested list structure\n    for sublist in list1:\n        # Process each individual element within the current sublist\n        for element in sublist:\n            # Retrieve current count (defaulting to 0) and increment by 1 in single operation\n            result[element] = result.get(element, 0) + 1\n    # Return the accumulated frequency dictionary\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def frequency_lists(list1):\n    # Import reduce for functional-style accumulation without prior import\n    from functools import reduce\n    # Concatenate all sublists into single flat list using reduce with addition operator\n    flattened = reduce(lambda acc, sublist: acc + sublist, list1, [])\n    # Extract unique elements by converting to set for iteration keys\n    unique_elements = set(flattened)\n    # Build frequency dict using dictionary comprehension with count method\n    frequency_dict = {elem: flattened.count(elem) for elem in unique_elements}\n    # Return the constructed frequency mapping\n    return frequency_dict",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def frequency_lists(list1):\n    # Import defaultdict to auto-initialize missing keys with default factory\n    from collections import defaultdict\n    # Create defaultdict with int factory, providing automatic zero initialization\n    frequency_map = defaultdict(int)\n    # Leverage sum with generator to create flattened list in single expression\n    flattened_items = sum(list1, [])\n    # Apply map to trigger side-effect of incrementing counts for each element\n    list(map(lambda x: frequency_map.__setitem__(x, frequency_map[x] + 1), flattened_items))\n    # Convert defaultdict back to standard dict for consistent return type\n    return dict(frequency_map)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def frequency_lists(list1):\n    # Create empty dictionary to store final frequency counts\n    result = {}\n    # Use nested generator expression with tuple unpacking via enumerate for index tracking\n    for sublist_idx, sublist in enumerate(list1):\n        # Access each element position within current sublist\n        for elem_idx in range(len(sublist)):\n            # Extract element using index-based access pattern\n            current_elem = list1[sublist_idx][elem_idx]\n            # Utilize setdefault to insert key with zero if absent, then add one atomically\n            result[current_elem] = result.setdefault(current_elem, 0) + 1\n    # Yield accumulated frequency mapping as standard dictionary\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

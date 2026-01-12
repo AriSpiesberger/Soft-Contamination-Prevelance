@@ -1,0 +1,37 @@
+{
+  "task_id": 806,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find maximum run of uppercase characters in the given string.",
+  "python_code": "def max_run_uppercase(test_str):\n  cnt = 0\n  res = 0\n  for idx in range(0, len(test_str)):\n    if test_str[idx].isupper():\n      cnt += 1\n    else:\n      res = cnt\n      cnt = 0\n  if test_str[len(test_str) - 1].isupper():\n    res = cnt\n  return (res)",
+  "test_list": [
+    "assert max_run_uppercase('GeMKSForGERksISBESt') == 5",
+    "assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6",
+    "assert max_run_uppercase('GooGLEFluTTER') == 4"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_run_uppercase(String test_str) {\n        int cnt = 0;\n        int res = 0;\n        for (int idx = 0; idx < test_str.length(); idx++) {\n            if (Character.isUpperCase(test_str.charAt(idx))) {\n                cnt += 1;\n            } else {\n                res = cnt;\n                cnt = 0;\n            }\n        }\n        if (Character.isUpperCase(test_str.charAt(test_str.length() - 1))) {\n            res = cnt;\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_run_uppercase('GeMKSForGERksISBESt') == 5",
+      "generated_test": "int result = max_run_uppercase(\"GeMKSForGERksISBESt\");\nint expected = 5;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6",
+      "generated_test": "int result = max_run_uppercase(\"PrECIOusMOVemENTSYT\");\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_run_uppercase('GooGLEFluTTER') == 4",
+      "generated_test": "int result = max_run_uppercase(\"GooGLEFluTTER\");\nint expected = 4;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 767,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose sum is equal to \u2018sum\u2019. The funtion gets as input a list of numbers and the sum,",
+  "python_code": "def get_pairs_count(arr, sum):\n    count = 0  \n    for i in range(len(arr)):\n        for j in range(i + 1,len(arr)):\n            if arr[i] + arr[j] == sum:\n                count += 1\n    return count",
+  "test_list": [
+    "assert get_pairs_count([1,1,1,1],2) == 6",
+    "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+    "assert get_pairs_count([1,-2,3],1) == 1",
+    "assert get_pairs_count([-1,-2,3],-3) == 1"
+  ],
+  "code_javascript": "function get_pairs_count(arr, sum) {\n    let count = 0;\n    for (let i = 0; i < arr.length; i++) {\n        for (let j = i + 1; j < arr.length; j++) {\n            if (arr[i] + arr[j] === sum) {\n                count += 1;\n            }\n        }\n    }\n    return count;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert get_pairs_count([1,1,1,1],2) == 6",
+      "generated_test": "const result = get_pairs_count([1,1,1,1], 2);\nconst expected = 6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+      "generated_test": "const result = get_pairs_count([1, 5, 7, -1, 5], 6);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([1,-2,3],1) == 1",
+      "generated_test": "const result = get_pairs_count([1, -2, 3], 1);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([-1,-2,3],-3) == 1",
+      "generated_test": "const result = get_pairs_count([-1, -2, 3], -3);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

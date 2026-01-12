@@ -1,0 +1,37 @@
+{
+  "task_id": 736,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the left insertion point for a specified value in sorted order. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-data-structure-exercise-24.php",
+  "python_code": "import bisect\ndef left_insertion(a, x):\n    i = bisect.bisect_left(a, x)\n    return i",
+  "test_list": [
+    "assert left_insertion([1,2,4,5],6)==4",
+    "assert left_insertion([1,2,4,5],3)==2",
+    "assert left_insertion([1,2,4,5],7)==4"
+  ],
+  "code_rust": "pub fn left_insertion(a: &[i32], x: i32) -> usize {\n    let mut lo = 0;\n    let mut hi = a.len();\n    \n    while lo < hi {\n        let mid = (lo + hi) / 2;\n        if a[mid] < x {\n            lo = mid + 1;\n        } else {\n            hi = mid;\n        }\n    }\n    \n    lo\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert left_insertion([1,2,4,5],6)==4",
+      "generated_test": "let result = left_insertion(&[1, 2, 4, 5], 6);\nlet expected: usize = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_insertion([1,2,4,5],3)==2",
+      "generated_test": "let result = left_insertion(&[1, 2, 4, 5], 3);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_insertion([1,2,4,5],7)==4",
+      "generated_test": "let result = left_insertion(&[1, 2, 4, 5], 7);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

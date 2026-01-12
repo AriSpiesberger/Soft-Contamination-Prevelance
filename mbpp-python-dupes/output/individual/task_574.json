@@ -1,0 +1,27 @@
+{
+  "task_id": 574,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cylinder.",
+  "code_python": "def surfacearea_cylinder(r,h):\n  surfacearea=((2*3.1415*r*r) +(2*3.1415*r*h))\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cylinder(10,5)==942.45",
+    "assert surfacearea_cylinder(4,5)==226.18800000000002",
+    "assert surfacearea_cylinder(4,10)==351.848"
+  ],
+  "python_1": "def surfacearea_cylinder(r,h):\n  # Define pi as a constant for cylinder surface area calculation\n  pi = 3.1415\n  # Calculate the area of both circular ends (top and bottom caps)\n  circular_ends_area = 2 * pi * r ** 2\n  # Calculate the lateral surface area (the curved side of the cylinder)\n  lateral_area = 2 * pi * r * h\n  # Sum both components to get total surface area\n  total_surface_area = circular_ends_area + lateral_area\n  # Return the computed surface area value\n  return total_surface_area",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def surfacearea_cylinder(r,h):\n  # Use pi constant matching expected precision for test cases\n  pi = 3.1415\n  # Factor out the common term (2 * pi * r) from the surface area formula\n  common_factor = 2 * pi * r\n  # Multiply common factor by sum of radius and height to get total surface area\n  surfacearea = common_factor * (r + h)\n  # Return the computed cylinder surface area\n  return surfacearea",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def surfacearea_cylinder(r,h):\n  # Use a lambda function to encapsulate the circle circumference calculation\n  circumference = lambda radius: 2 * 3.1415 * radius\n  # Compute a single circle's area using radius squared times pi\n  circle_area = 3.1415 * r * r\n  # Double the circle area to account for both top and bottom caps\n  both_caps = 2 * circle_area\n  # Calculate the rectangular wrap-around surface using circumference times height\n  curved_surface = circumference(r) * h\n  # Combine both components using addition to get total surface area\n  result = both_caps + curved_surface\n  # Return the final calculated surface area of the cylinder\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def surfacearea_cylinder(r,h):\n  # Import reduce function for functional programming approach\n  from functools import reduce\n  # Store pi value that matches expected test precision\n  pi = 3.1415\n  # Create a list of tuples representing area formulas as (coefficient, dimension1, dimension2)\n  area_components = [(2 * pi, r, r), (2 * pi, r, h)]\n  # Define a helper function that multiplies three values together for each area component\n  compute_component = lambda component: component[0] * component[1] * component[2]\n  # Map the computation function across all area components to get individual areas\n  individual_areas = map(compute_component, area_components)\n  # Use reduce with addition to sum all individual area values into total surface area\n  surfacearea = reduce(lambda acc, area: acc + area, individual_areas, 0)\n  # Return the accumulated surface area of the cylinder\n  return surfacearea",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def surfacearea_cylinder(r,h):\n  # Define pi as class attribute through a simple namespace object\n  class Constants:\n    pi = 3.1415\n  # Create a dictionary mapping surface type names to their area calculation formulas\n  surface_formulas = {\n    'top_cap': lambda: Constants.pi * r * r,\n    'bottom_cap': lambda: Constants.pi * r * r,\n    'lateral': lambda: 2 * Constants.pi * r * h\n  }\n  # Initialize accumulator variable to store running total of all surface areas\n  total = 0\n  # Iterate through each named surface component in the formula dictionary\n  for surface_name in surface_formulas:\n    # Execute the lambda function for current surface and add result to running total\n    total += surface_formulas[surface_name]()\n  # Return the summed surface area from all three cylinder components\n  return total",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

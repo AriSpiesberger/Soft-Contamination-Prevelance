@@ -1,0 +1,27 @@
+{
+  "task_id": 294,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum value in a given heterogeneous list.",
+  "code_python": "def max_val(listval):\n     max_val = max(i for i in listval if isinstance(i, int)) \n     return(max_val)",
+  "test_list": [
+    "assert max_val(['Python', 3, 2, 4, 5, 'version'])==5",
+    "assert max_val(['Python', 15, 20, 25])==25",
+    "assert max_val(['Python', 30, 20, 40, 50, 'version'])==50"
+  ],
+  "python_1": "def max_val(listval):\n    # Initialize result variable to None to handle empty list case\n    result = None\n    # Loop through each element in the heterogeneous list\n    for item in listval:\n        # Check if current item is an integer using type checking\n        if type(item) == int:\n            # For first integer found, set it as initial result\n            if result is None:\n                result = item\n            # Compare current integer with stored maximum and update if larger\n            elif item > result:\n                result = item\n    # Return the largest integer found in the list\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def max_val(listval):\n    # Use filter function to extract only integer elements from the mixed list\n    integers_only = filter(lambda x: isinstance(x, int), listval)\n    # Convert filter object to list for further processing\n    int_list = list(integers_only)\n    # Sort the integer list in descending order so largest comes first\n    int_list.sort(reverse=True)\n    # Return the first element which is the maximum after descending sort\n    return int_list[0]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def max_val(listval):\n    # Use list comprehension to build a new list containing only integer elements\n    numeric_elements = [elem for elem in listval if isinstance(elem, int)]\n    # Apply reduce pattern manually using recursion base case - take first element\n    maximum = numeric_elements[0]\n    # Use while loop with index to traverse remaining integers\n    index = 1\n    # Continue comparing until all integers have been examined\n    while index < len(numeric_elements):\n        # Ternary expression to update maximum if current element is greater\n        maximum = numeric_elements[index] if numeric_elements[index] > maximum else maximum\n        # Move to next position in the integer list\n        index += 1\n    # Return the largest integer discovered through iterative comparison\n    return maximum",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def max_val(listval):\n    # Import functools to access the reduce function for functional-style aggregation\n    from functools import reduce\n    # Extract integers using a conditional list comprehension that checks type\n    int_values = [x for x in listval if type(x) is int]\n    # Use reduce to repeatedly compare pairs, keeping the larger value each time\n    result = reduce(lambda a, b: a if a > b else b, int_values)\n    # Return the single maximum value that survived all pairwise comparisons\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def max_val(listval):\n    # Create a helper function that recursively finds max from a list of integers\n    def find_max_recursive(int_list, current_max):\n        # Base case: when list is exhausted, return the accumulated maximum\n        if not int_list:\n            return current_max\n        # Extract the first element from the remaining list\n        head = int_list[0]\n        # Recursively process tail with updated maximum using max comparison\n        return find_max_recursive(int_list[1:], head if head > current_max else current_max)\n    \n    # Use isinstance check with tuple to allow both int types for broader compatibility\n    integers = [val for val in listval if isinstance(val, (int,)) and not isinstance(val, bool)]\n    # Guard against empty integer list by returning None\n    if not integers:\n        return None\n    # Kick off recursion with first integer as initial maximum candidate\n    initial = integers[0]\n    # Slice remaining integers and delegate to recursive helper function\n    remaining = integers[1:]\n    # Invoke the recursive maximum finder and return its result\n    return find_max_recursive(remaining, initial)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

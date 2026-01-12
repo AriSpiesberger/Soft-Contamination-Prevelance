@@ -1,0 +1,37 @@
+{
+  "task_id": 12,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a given matrix in ascending order according to the sum of its rows.",
+  "python_code": "def sort_matrix(M):\n    result = sorted(M, key=sum)\n    return result",
+  "test_list": [
+    "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+    "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+    "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]"
+  ],
+  "code_javascript": "function sort_matrix(M) {\n    const sum = arr => arr.reduce((acc, val) => acc + val, 0);\n    return [...M].sort((a, b) => sum(a) - sum(b));\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]",
+      "generated_test": "const result = sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]]);\nconst expected = [[1, 1, 1], [1, 2, 3], [2, 4, 5]];\n\nconst arraysEqual = (a, b) => {\n    if (a.length !== b.length) return false;\n    for (let i = 0; i < a.length; i++) {\n        if (Array.isArray(a[i]) && Array.isArray(b[i])) {\n            if (!arraysEqual(a[i], b[i])) return false;\n        } else if (a[i] !== b[i]) {\n            return false;\n        }\n    }\n    return true;\n};\n\nif (arraysEqual(result, expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]])==[[-2, 4, -5], [1, -1, 1], [1, 2, 3]]",
+      "generated_test": "const result = sort_matrix([[1, 2, 3], [-2, 4, -5], [1, -1, 1]]);\nconst expected = [[-2, 4, -5], [1, -1, 1], [1, 2, 3]];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_matrix([[5,8,9],[6,4,3],[2,1,4]])==[[2, 1, 4], [6, 4, 3], [5, 8, 9]]",
+      "generated_test": "const result = sort_matrix([[5,8,9],[6,4,3],[2,1,4]]);\nconst expected = [[2, 1, 4], [6, 4, 3], [5, 8, 9]];\n\nconst arraysEqual = (a, b) => {\n    if (a.length !== b.length) return false;\n    for (let i = 0; i < a.length; i++) {\n        if (Array.isArray(a[i]) && Array.isArray(b[i])) {\n            if (!arraysEqual(a[i], b[i])) return false;\n        } else if (a[i] !== b[i]) {\n            return false;\n        }\n    }\n    return true;\n};\n\nif (arraysEqual(result, expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 65,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a list and sum all of its elements.",
+  "python_code": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total",
+  "test_list": [
+    "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+    "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+    "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210"
+  ],
+  "code_java": "import java.util.List;\n\npublic class Solution {\n    public static int recursive_list_sum(List<?> data_list) {\n        int total = 0;\n        for (Object element : data_list) {\n            if (element instanceof List) {\n                total = total + recursive_list_sum((List<?>) element);\n            } else if (element instanceof Number) {\n                total = total + ((Number) element).intValue();\n            }\n        }\n        return total;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+      "generated_test": "List<Object> innerList1 = new java.util.ArrayList<>();\ninnerList1.add(3);\ninnerList1.add(4);\n\nList<Object> innerList2 = new java.util.ArrayList<>();\ninnerList2.add(5);\ninnerList2.add(6);\n\nList<Object> testList = new java.util.ArrayList<>();\ntestList.add(1);\ntestList.add(2);\ntestList.add(innerList1);\ntestList.add(innerList2);\n\nint result = recursive_list_sum(testList);\nint expected = 21;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+      "generated_test": "List<Object> innerList1 = new java.util.ArrayList<>();\ninnerList1.add(15);\ninnerList1.add(14);\n\nList<Object> innerList2 = new java.util.ArrayList<>();\ninnerList2.add(19);\ninnerList2.add(41);\n\nList<Object> testList = new java.util.ArrayList<>();\ntestList.add(7);\ntestList.add(10);\ntestList.add(innerList1);\ntestList.add(innerList2);\n\nint result = recursive_list_sum(testList);\nint expected = 106;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210",
+      "generated_test": "List<Object> innerList1 = new java.util.ArrayList<>();\ninnerList1.add(30);\ninnerList1.add(40);\n\nList<Object> innerList2 = new java.util.ArrayList<>();\ninnerList2.add(50);\ninnerList2.add(60);\n\nList<Object> testList = new java.util.ArrayList<>();\ntestList.add(10);\ntestList.add(20);\ntestList.add(innerList1);\ntestList.add(innerList2);\n\nint result = recursive_list_sum(testList);\nint expected = 210;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

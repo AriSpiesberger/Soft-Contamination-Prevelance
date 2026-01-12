@@ -1,0 +1,37 @@
+{
+  "task_id": 166,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that counts the number of pairs of integers in a list that xor to an even number.",
+  "python_code": "def find_even_pair(A): \n  count = 0\n  for i in range(0, len(A)): \n    for j in range(i+1, len(A)): \n        if ((A[i] ^ A[j]) % 2 == 0): \n          count += 1\n\n  return count",
+  "test_list": [
+    "assert find_even_pair([5, 4, 7, 2, 1]) == 4",
+    "assert find_even_pair([7, 2, 8, 1, 0, 5, 11]) == 9",
+    "assert find_even_pair([1, 2, 3]) == 1"
+  ],
+  "code_rust": "pub fn find_even_pair(a: &[i32]) -> i32 {\n    let mut count = 0;\n    for i in 0..a.len() {\n        for j in (i + 1)..a.len() {\n            if (a[i] ^ a[j]) % 2 == 0 {\n                count += 1;\n            }\n        }\n    }\n    count\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_even_pair([5, 4, 7, 2, 1]) == 4",
+      "generated_test": "let result = find_even_pair(&[5, 4, 7, 2, 1]);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_even_pair([7, 2, 8, 1, 0, 5, 11]) == 9",
+      "generated_test": "let result = find_even_pair(&[7, 2, 8, 1, 0, 5, 11]);\nlet expected = 9;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_even_pair([1, 2, 3]) == 1",
+      "generated_test": "let result = find_even_pair(&[1, 2, 3]);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

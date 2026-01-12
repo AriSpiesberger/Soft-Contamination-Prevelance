@@ -1,0 +1,37 @@
+{
+  "task_id": 142,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count number items that are identical in the same position of three given lists.",
+  "python_code": "def count_samepair(list1,list2,list3):\n    result = sum(m == n == o for m, n, o in zip(list1,list2,list3))\n    return result",
+  "test_list": [
+    "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,9],[2,1,3,1,2,6,7,9])==3",
+    "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==4",
+    "assert count_samepair([1,2,3,4,2,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==5"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int count_samepair(ArrayList<Integer> list1, ArrayList<Integer> list2, ArrayList<Integer> list3) {\n        int result = 0;\n        int minLength = Math.min(Math.min(list1.size(), list2.size()), list3.size());\n        \n        for (int i = 0; i < minLength; i++) {\n            if (list1.get(i).equals(list2.get(i)) && list2.get(i).equals(list3.get(i))) {\n                result++;\n            }\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,9],[2,1,3,1,2,6,7,9])==3",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1); list1.add(2); list1.add(3); list1.add(4); list1.add(5); list1.add(6); list1.add(7); list1.add(8);\n\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(2); list2.add(2); list2.add(3); list2.add(1); list2.add(2); list2.add(6); list2.add(7); list2.add(9);\n\nArrayList<Integer> list3 = new ArrayList<>();\nlist3.add(2); list3.add(1); list3.add(3); list3.add(1); list3.add(2); list3.add(6); list3.add(7); list3.add(9);\n\nint result = count_samepair(list1, list2, list3);\nint expected = 3;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==4",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1); list1.add(2); list1.add(3); list1.add(4); list1.add(5); list1.add(6); list1.add(7); list1.add(8);\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(2); list2.add(2); list2.add(3); list2.add(1); list2.add(2); list2.add(6); list2.add(7); list2.add(8);\nArrayList<Integer> list3 = new ArrayList<>();\nlist3.add(2); list3.add(1); list3.add(3); list3.add(1); list3.add(2); list3.add(6); list3.add(7); list3.add(8);\n\nint result = count_samepair(list1, list2, list3);\nint expected = 4;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_samepair([1,2,3,4,2,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==5",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1); list1.add(2); list1.add(3); list1.add(4); list1.add(2); list1.add(6); list1.add(7); list1.add(8);\n\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(2); list2.add(2); list2.add(3); list2.add(1); list2.add(2); list2.add(6); list2.add(7); list2.add(8);\n\nArrayList<Integer> list3 = new ArrayList<>();\nlist3.add(2); list3.add(1); list3.add(3); list3.add(1); list3.add(2); list3.add(6); list3.add(7); list3.add(8);\n\nint result = count_samepair(list1, list2, list3);\nint expected = 5;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

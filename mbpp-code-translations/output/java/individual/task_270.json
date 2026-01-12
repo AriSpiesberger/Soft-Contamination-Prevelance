@@ -1,0 +1,37 @@
+{
+  "task_id": 270,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of even numbers at even positions of a list.",
+  "python_code": "def sum_even_and_even_index(arr):  \n    i = 0\n    sum = 0\n    for i in range(0, len(arr),2): \n        if (arr[i] % 2 == 0) : \n            sum += arr[i]  \n    return sum",
+  "test_list": [
+    "assert sum_even_and_even_index([5, 6, 12, 1, 18, 8]) == 30",
+    "assert sum_even_and_even_index([3, 20, 17, 9, 2, 10, 18, 13, 6, 18]) == 26",
+    "assert sum_even_and_even_index([5, 6, 12, 1]) == 12"
+  ],
+  "code_java": "import java.util.*;\n\nclass Solution {\n    public static int sum_even_and_even_index(ArrayList<Integer> arr) {\n        int sum = 0;\n        for (int i = 0; i < arr.size(); i += 2) {\n            if (arr.get(i) % 2 == 0) {\n                sum += arr.get(i);\n            }\n        }\n        return sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sum_even_and_even_index([5, 6, 12, 1, 18, 8]) == 30",
+      "generated_test": "ArrayList<Integer> testList = new ArrayList<>();\ntestList.add(5);\ntestList.add(6);\ntestList.add(12);\ntestList.add(1);\ntestList.add(18);\ntestList.add(8);\nint result = sum_even_and_even_index(testList);\nint expected = 30;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_even_and_even_index([3, 20, 17, 9, 2, 10, 18, 13, 6, 18]) == 26",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(3);\narr.add(20);\narr.add(17);\narr.add(9);\narr.add(2);\narr.add(10);\narr.add(18);\narr.add(13);\narr.add(6);\narr.add(18);\nint expected = 26;\nint result = sum_even_and_even_index(arr);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_even_and_even_index([5, 6, 12, 1]) == 12",
+      "generated_test": "int result = sum_even_and_even_index(new ArrayList<Integer>(Arrays.asList(5, 6, 12, 1)));\nint expected = 12;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

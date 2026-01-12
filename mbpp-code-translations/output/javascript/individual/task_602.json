@@ -1,0 +1,37 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "python_code": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "code_javascript": "function first_repeated_char(str1) {\n  for (let index = 0; index < str1.length; index++) {\n    const c = str1[index];\n    const substring = str1.slice(0, index + 1);\n    const count = substring.split(c).length - 1;\n    if (count > 1) {\n      return c;\n    }\n  }\n  return null;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert first_repeated_char(\"abcabc\") == \"a\"",
+      "generated_test": "const result = first_repeated_char(\"abcabc\");\nconst expected = \"a\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"abc\") == None",
+      "generated_test": "const result = first_repeated_char(\"abc\");\nconst expected = null;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"123123\") == \"1\"",
+      "generated_test": "const result = first_repeated_char(\"123123\");\nconst expected = \"1\";\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

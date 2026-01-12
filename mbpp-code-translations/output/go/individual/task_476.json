@@ -1,0 +1,37 @@
+{
+  "task_id": 476,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the largest and smallest value in a given array.",
+  "python_code": "def big_sum(nums):\n      sum= max(nums)+min(nums)\n      return sum",
+  "test_list": [
+    "assert big_sum([1,2,3]) == 4",
+    "assert big_sum([-1,2,3,4]) == 3",
+    "assert big_sum([2,3,6]) == 8"
+  ],
+  "code_go": "package main\n\nfunc big_sum(nums []int) int {\n\tif len(nums) == 0 {\n\t\treturn 0\n\t}\n\t\n\tminVal := nums[0]\n\tmaxVal := nums[0]\n\t\n\tfor _, num := range nums {\n\t\tif num < minVal {\n\t\t\tminVal = num\n\t\t}\n\t\tif num > maxVal {\n\t\t\tmaxVal = num\n\t\t}\n\t}\n\t\n\treturn maxVal + minVal\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert big_sum([1,2,3]) == 4",
+      "generated_test": "result := big_sum([]int{1, 2, 3})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert big_sum([-1,2,3,4]) == 3",
+      "generated_test": "result := big_sum([]int{-1, 2, 3, 4})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert big_sum([2,3,6]) == 8",
+      "generated_test": "result := big_sum([]int{2, 3, 6})\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

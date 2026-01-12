@@ -1,0 +1,37 @@
+{
+  "task_id": 94,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value.",
+  "python_code": "from operator import itemgetter \ndef index_minimum(test_list):\n  res = min(test_list, key = itemgetter(1))[0]\n  return (res) ",
+  "test_list": [
+    "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+    "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+    "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'"
+  ],
+  "code_go": "package main\n\nfunc index_minimum(test_list [][2]interface{}) interface{} {\n\tif len(test_list) == 0 {\n\t\treturn nil\n\t}\n\t\n\tminIdx := 0\n\tminVal := test_list[0][1].(int)\n\t\n\tfor i := 1; i < len(test_list); i++ {\n\t\tval := test_list[i][1].(int)\n\t\tif val < minVal {\n\t\t\tminVal = val\n\t\t\tminIdx = i\n\t\t}\n\t}\n\t\n\treturn test_list[minIdx][0]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'",
+      "generated_test": "testList := [][2]interface{}{{\"Rash\", 143}, {\"Manjeet\", 200}, {\"Varsha\", 100}}\nresult := index_minimum(testList)\nexpected := \"Varsha\"\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_minimum([('Yash', 185), ('Dawood', 125), ('Sanya', 175)]) == 'Dawood'",
+      "generated_test": "testInput := [][2]interface{}{{\"Yash\", 185}, {\"Dawood\", 125}, {\"Sanya\", 175}}\nexpected := \"Dawood\"\nresult := index_minimum(testInput)\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_minimum([('Sai', 345), ('Salman', 145), ('Ayesha', 96)]) == 'Ayesha'",
+      "generated_test": "input := [][2]interface{}{{\"Sai\", 345}, {\"Salman\", 145}, {\"Ayesha\", 96}}\nexpected := \"Ayesha\"\nresult := index_minimum(input)\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

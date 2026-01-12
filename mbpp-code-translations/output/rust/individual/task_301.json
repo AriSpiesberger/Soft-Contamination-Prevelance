@@ -1,0 +1,37 @@
+{
+  "task_id": 301,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the depth of a dictionary.",
+  "python_code": "def dict_depth(d):\n    if isinstance(d, dict):\n        return 1 + (max(map(dict_depth, d.values())) if d else 0)\n    return 0",
+  "test_list": [
+    "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+    "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+    "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\n#[derive(Debug, Clone)]\npub enum Value {\n    Int(i32),\n    Str(String),\n    Dict(HashMap<String, Value>),\n}\n\npub fn dict_depth(d: &HashMap<String, Value>) -> usize {\n    if d.is_empty() {\n        return 1;\n    }\n    \n    1 + d.values()\n        .map(|v| match v {\n            Value::Dict(inner) => dict_depth(inner),\n            _ => 0,\n        })\n        .max()\n        .unwrap_or(0)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+      "generated_test": "let mut inner_d = HashMap::new();\nlet mut inner_c = HashMap::new();\ninner_c.insert(\"d\".to_string(), Value::Dict(inner_d));\nlet mut inner_b = HashMap::new();\ninner_b.insert(\"c\".to_string(), Value::Dict(inner_c));\nlet mut test_dict = HashMap::new();\ntest_dict.insert(\"a\".to_string(), Value::Int(1));\ntest_dict.insert(\"b\".to_string(), Value::Dict(inner_b));\n\nlet result = dict_depth(&test_dict);\nlet expected = 4;\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+      "generated_test": "let mut inner = HashMap::new();\ninner.insert(\"c\".to_string(), Value::Str(\"python\".to_string()));\n\nlet mut d = HashMap::new();\nd.insert(\"a\".to_string(), Value::Int(1));\nd.insert(\"b\".to_string(), Value::Dict(inner));\n\nlet result = dict_depth(&d);\nlet expected = 2;\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3",
+      "generated_test": "let mut inner_inner = HashMap::new();\ninner_inner.insert(\"4\".to_string(), Value::Str(\"Mon\".to_string()));\n\nlet mut inner = HashMap::new();\ninner.insert(\"3\".to_string(), Value::Dict(inner_inner));\n\nlet mut d = HashMap::new();\nd.insert(\"1\".to_string(), Value::Str(\"Sun\".to_string()));\nd.insert(\"2\".to_string(), Value::Dict(inner));\n\nlet result = dict_depth(&d);\nlet expected = 3;\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

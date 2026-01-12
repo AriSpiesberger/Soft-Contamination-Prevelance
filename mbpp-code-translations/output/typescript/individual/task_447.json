@@ -1,0 +1,17 @@
+{
+  "task_id": 447,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find cubes of individual elements in a list.",
+  "python_code": "def cube_nums(nums):\n cube_nums = list(map(lambda x: x ** 3, nums))\n return cube_nums",
+  "test_list": [
+    "assert cube_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]",
+    "assert cube_nums([10,20,30])==([1000, 8000, 27000])",
+    "assert cube_nums([12,15])==([1728, 3375])"
+  ],
+  "code_typescript": "function cube_nums(nums: number[]): number[] {\n    return nums.map(x => x ** 3);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

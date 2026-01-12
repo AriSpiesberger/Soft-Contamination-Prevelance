@@ -1,0 +1,17 @@
+{
+  "task_id": 568,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create a list of N empty dictionaries.",
+  "python_code": "def empty_list(length):\n empty_list = [{} for _ in range(length)]\n return empty_list",
+  "test_list": [
+    "assert empty_list(5)==[{},{},{},{},{}]",
+    "assert empty_list(6)==[{},{},{},{},{},{}]",
+    "assert empty_list(7)==[{},{},{},{},{},{},{}]"
+  ],
+  "code_typescript": "function empty_list(length: number): Record<string, never>[] {\n    const result: Record<string, never>[] = [];\n    for (let i = 0; i < length; i++) {\n        result.push({});\n    }\n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

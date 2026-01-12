@@ -1,0 +1,37 @@
+{
+  "task_id": 760,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether a list of numbers contains only one distinct element or not.",
+  "python_code": "def unique_Element(arr):\n    s = set(arr)\n    return len(s) == 1",
+  "test_list": [
+    "assert unique_Element([1,1,1]) == True",
+    "assert unique_Element([1,2,1,2]) == False",
+    "assert unique_Element([1,2,3,4,5]) == False"
+  ],
+  "code_go": "package main\n\nfunc unique_Element(arr []int) bool {\n\tif len(arr) == 0 {\n\t\treturn false\n\t}\n\t\n\ts := make(map[int]struct{})\n\tfor _, v := range arr {\n\t\ts[v] = struct{}{}\n\t}\n\treturn len(s) == 1\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert unique_Element([1,1,1]) == True",
+      "generated_test": "result := unique_Element([]int{1, 1, 1})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_Element([1,2,1,2]) == False",
+      "generated_test": "result := unique_Element([]int{1, 2, 1, 2})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_Element([1,2,3,4,5]) == False",
+      "generated_test": "result := unique_Element([]int{1, 2, 3, 4, 5})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

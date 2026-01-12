@@ -1,0 +1,37 @@
+{
+  "task_id": 91,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string is present as a substring in a given list of string values.",
+  "python_code": "def find_substring(str1, sub_str):\n   if any(sub_str in s for s in str1):\n       return True\n   return False",
+  "test_list": [
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ack\")==True",
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"abc\")==False",
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ange\")==True"
+  ],
+  "code_go": "package main\n\nimport \"strings\"\n\nfunc find_substring(str1 []string, sub_str string) bool {\n    for _, s := range str1 {\n        if strings.Contains(s, sub_str) {\n            return true\n        }\n    }\n    return false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ack\")==True",
+      "generated_test": "result := find_substring([]string{\"red\", \"black\", \"white\", \"green\", \"orange\"}, \"ack\")\nexpected := true\nif result == expected {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"abc\")==False",
+      "generated_test": "result := find_substring([]string{\"red\", \"black\", \"white\", \"green\", \"orange\"}, \"abc\")\nexpected := false\nif result == expected {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ange\")==True",
+      "generated_test": "expected := true\nresult := find_substring([]string{\"red\", \"black\", \"white\", \"green\", \"orange\"}, \"ange\")\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

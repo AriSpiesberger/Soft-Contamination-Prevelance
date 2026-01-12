@@ -1,0 +1,37 @@
+{
+  "task_id": 805,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the list in a list of lists whose sum of elements is the highest.",
+  "python_code": "def max_sum_list(lists):\n return max(lists, key=sum)",
+  "test_list": [
+    "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+    "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+    "assert max_sum_list([[2,3,1]])==[2,3,1]"
+  ],
+  "code_go": "package main\n\nfunc max_sum_list(lists [][]int) []int {\n\tif len(lists) == 0 {\n\t\treturn []int{}\n\t}\n\t\n\tmaxIdx := 0\n\tmaxSum := sumSlice(lists[0])\n\t\n\tfor i := 1; i < len(lists); i++ {\n\t\tcurrentSum := sumSlice(lists[i])\n\t\tif currentSum > maxSum {\n\t\t\tmaxSum = currentSum\n\t\t\tmaxIdx = i\n\t\t}\n\t}\n\t\n\tresult := make([]int, len(lists[maxIdx]))\n\tcopy(result, lists[maxIdx])\n\treturn result\n}\n\nfunc sumSlice(slice []int) int {\n\ttotal := 0\n\tfor _, v := range slice {\n\t\ttotal += v\n\t}\n\treturn total\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+      "generated_test": "input := [][]int{{1, 2, 3}, {4, 5, 6}, {10, 11, 12}, {7, 8, 9}}\nexpected := []int{10, 11, 12}\nresult := max_sum_list(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+      "generated_test": "input := [][]int{{3, 2, 1}, {6, 5, 4}, {12, 11, 10}}\nexpected := []int{12, 11, 10}\nresult := max_sum_list(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_list([[2,3,1]])==[2,3,1]",
+      "generated_test": "input := [][]int{{2, 3, 1}}\nexpected := []int{2, 3, 1}\nresult := max_sum_list(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

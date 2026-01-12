@@ -1,0 +1,37 @@
+{
+  "task_id": 280,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in an array and element and returns a tuple containing a boolean that indicates if the element is in the array and the index position of the element (or -1 if the element is not found).",
+  "python_code": "def sequential_search(dlist, item):\n    pos = 0\n    found = False\n    while pos < len(dlist) and not found:\n        if dlist[pos] == item:\n            found = True\n        else:\n            pos = pos + 1\n    return found, pos",
+  "test_list": [
+    "assert sequential_search([11,23,58,31,56,77,43,12,65,19],31) == (True, 3)",
+    "assert sequential_search([12, 32, 45, 62, 35, 47, 44, 61],61) == (True, 7)",
+    "assert sequential_search([9, 10, 17, 19, 22, 39, 48, 56],48) == (True, 6)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int[] sequential_search(ArrayList<Integer> dlist, int item) {\n        int pos = 0;\n        boolean found = false;\n        while (pos < dlist.size() && !found) {\n            if (dlist.get(pos) == item) {\n                found = true;\n            } else {\n                pos = pos + 1;\n            }\n        }\n        return new int[] {found ? 1 : 0, pos};\n    }\n    \n    public static Object[] sequential_search_obj(ArrayList<Integer> dlist, int item) {\n        int pos = 0;\n        boolean found = false;\n        while (pos < dlist.size() && !found) {\n            if (dlist.get(pos) == item) {\n                found = true;\n            } else {\n                pos = pos + 1;\n            }\n        }\n        return new Object[] {found, pos};\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sequential_search([11,23,58,31,56,77,43,12,65,19],31) == (True, 3)",
+      "generated_test": "ArrayList<Integer> testList = new ArrayList<>();\ntestList.add(11);\ntestList.add(23);\ntestList.add(58);\ntestList.add(31);\ntestList.add(56);\ntestList.add(77);\ntestList.add(43);\ntestList.add(12);\ntestList.add(65);\ntestList.add(19);\n\nint[] result = sequential_search(testList, 31);\nint[] expected = new int[] {1, 3};\n\nif (result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sequential_search([12, 32, 45, 62, 35, 47, 44, 61],61) == (True, 7)",
+      "generated_test": "ArrayList<Integer> dlist = new ArrayList<>();\ndlist.add(12);\ndlist.add(32);\ndlist.add(45);\ndlist.add(62);\ndlist.add(35);\ndlist.add(47);\ndlist.add(44);\ndlist.add(61);\nint[] result = sequential_search(dlist, 61);\nint[] expected = new int[] {1, 7};\nif (result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sequential_search([9, 10, 17, 19, 22, 39, 48, 56],48) == (True, 6)",
+      "generated_test": "ArrayList<Integer> list = new ArrayList<>();\nlist.add(9);\nlist.add(10);\nlist.add(17);\nlist.add(19);\nlist.add(22);\nlist.add(39);\nlist.add(48);\nlist.add(56);\nint[] result = sequential_search(list, 48);\nint[] expected = new int[] {1, 6};\nif (result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

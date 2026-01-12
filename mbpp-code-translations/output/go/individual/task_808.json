@@ -1,0 +1,37 @@
+{
+  "task_id": 808,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuples contain the k or not.",
+  "python_code": "def check_K(test_tup, K):\n  res = False\n  for ele in test_tup:\n    if ele == K:\n      res = True\n      break\n  return res ",
+  "test_list": [
+    "assert check_K((10, 4, 5, 6, 8), 6) == True",
+    "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+    "assert check_K((7, 8, 9, 44, 11, 12), 11) == True"
+  ],
+  "code_go": "package main\n\nfunc check_K(test_tup []int, K int) bool {\n\tres := false\n\tfor _, ele := range test_tup {\n\t\tif ele == K {\n\t\t\tres = true\n\t\t\tbreak\n\t\t}\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_K((10, 4, 5, 6, 8), 6) == True",
+      "generated_test": "result := check_K([]int{10, 4, 5, 6, 8}, 6)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+      "generated_test": "result := check_K([]int{1, 2, 3, 4, 5, 6}, 7)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_K((7, 8, 9, 44, 11, 12), 11) == True",
+      "generated_test": "result := check_K([]int{7, 8, 9, 44, 11, 12}, 11)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 775,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether every odd index contains odd numbers of a given list.",
+  "code_python": "def odd_position(nums):\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))",
+  "test_list": [
+    "assert odd_position([2,1,4,3,6,7,6,3]) == True",
+    "assert odd_position([4,1,2]) == True",
+    "assert odd_position([1,2,3]) == False"
+  ],
+  "python_1": "def odd_position(nums):\n    # Iterate through only odd indices using step of 2 starting from index 1\n    for i in range(1, len(nums), 2):\n        # Check if the element at current odd index is even (not odd)\n        if nums[i] % 2 == 0:\n            # Found an even number at odd index, so condition fails\n            return False\n    # All odd indices contain odd numbers, return success\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def odd_position(nums):\n    # Extract all elements located at odd indices using list slicing\n    odd_indexed_elements = nums[1::2]\n    # Check if every extracted element is an odd number using filter and lambda\n    odd_count = len(list(filter(lambda x: x % 2 == 1, odd_indexed_elements)))\n    # Compare count of odd numbers with total elements at odd indices\n    return odd_count == len(odd_indexed_elements)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def odd_position(nums):\n    # Use enumerate to pair each element with its index for cleaner iteration\n    for index, value in enumerate(nums):\n        # Skip even indices since we only care about odd index positions\n        if index % 2 == 0:\n            continue\n        # At odd index: verify the value itself is odd by checking remainder\n        if value % 2 != 1:\n            # Immediately fail if we find non-odd number at odd index\n            return False\n    # Successfully verified all odd indices contain odd numbers\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def odd_position(nums):\n    # Use list comprehension to check condition at each odd index, collecting boolean results\n    checks = [nums[i] % 2 == 1 for i in range(1, len(nums), 2)]\n    # Leverage the fact that True equals 1 in Python, so sum equals length when all True\n    return sum(checks) == len(checks)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def odd_position(nums):\n    # Create an index counter to track position while iterating\n    idx = 0\n    # Use while loop for manual index control instead of for/range\n    while idx < len(nums):\n        # Determine if current index is odd using bitwise AND (faster than modulo)\n        is_odd_index = idx & 1\n        # When at an odd index position, validate the element\n        if is_odd_index:\n            # Use bitwise AND to check oddness of value (odd numbers have LSB = 1)\n            is_odd_value = nums[idx] & 1\n            # Return False immediately if value at odd index is not odd\n            if not is_odd_value:\n                return False\n        # Advance to the next position in the list\n        idx += 1\n    # All odd-indexed positions verified to contain odd numbers\n    return True",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

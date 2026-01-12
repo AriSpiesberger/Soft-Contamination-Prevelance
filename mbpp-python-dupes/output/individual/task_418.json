@@ -1,0 +1,27 @@
+{
+  "task_id": 418,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the element of a list having maximum length.",
+  "code_python": "def Find_Max(lst): \n    maxList = max((x) for x in lst) \n    return maxList",
+  "test_list": [
+    "assert Find_Max([['A'],['A','B'],['A','B','C']]) == ['A','B','C']",
+    "assert Find_Max([[1],[1,2],[1,2,3]]) == [1,2,3]",
+    "assert Find_Max([[1,1],[1,2,3],[1,5,6,1]]) == [1,5,6,1]"
+  ],
+  "python_1": "def Find_Max(lst): \n    # Use the key parameter to compare elements by their length\n    maxList = max(lst, key=len)\n    # Return the sublist with the greatest number of elements\n    return maxList",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def Find_Max(lst): \n    # Initialize result variable to store the longest sublist found\n    result = lst[0]\n    # Track the maximum length encountered so far\n    max_length = len(lst[0])\n    # Iterate through remaining sublists starting from index 1\n    for i in range(1, len(lst)):\n        # Calculate length of current sublist for comparison\n        current_length = len(lst[i])\n        # Update result when we find a longer sublist\n        if current_length > max_length:\n            # Store the new maximum length value\n            max_length = current_length\n            # Replace result with the current longer sublist\n            result = lst[i]\n    # Return the sublist that had the greatest length\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def Find_Max(lst): \n    # Use reduce to compare pairs of sublists and keep the longer one\n    from functools import reduce\n    # Define a lambda that returns the longer of two lists based on length comparison\n    maxList = reduce(lambda a, b: a if len(a) >= len(b) else b, lst)\n    # Return the accumulated longest sublist after all comparisons\n    return maxList",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def Find_Max(lst): \n    # Create tuples pairing each sublist with its length for sorting\n    paired = [(len(sublist), sublist) for sublist in lst]\n    # Sort the pairs by length in ascending order, longest will be last\n    paired.sort(key=lambda x: x[0])\n    # Extract and return the sublist from the last tuple (maximum length)\n    return paired[-1][1]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def Find_Max(lst): \n    # Build a dictionary mapping each sublist's index to its length\n    length_map = {idx: len(sublist) for idx, sublist in enumerate(lst)}\n    # Find the index that corresponds to the maximum length value in the dictionary\n    max_idx = max(length_map, key=length_map.get)\n    # Use the discovered index to retrieve and return the longest sublist\n    return lst[max_idx]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

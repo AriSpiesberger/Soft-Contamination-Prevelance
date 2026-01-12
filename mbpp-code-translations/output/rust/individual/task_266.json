@@ -1,0 +1,37 @@
+{
+  "task_id": 266,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the lateral surface area of a cube given its side length.",
+  "python_code": "def lateralsurface_cube(l):\n  LSA = 4 * (l * l)\n  return LSA",
+  "test_list": [
+    "assert lateralsurface_cube(5)==100",
+    "assert lateralsurface_cube(9)==324",
+    "assert lateralsurface_cube(10)==400"
+  ],
+  "code_rust": "pub fn lateralsurface_cube(l: i32) -> i32 {\n    let lsa = 4 * (l * l);\n    lsa\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert lateralsurface_cube(5)==100",
+      "generated_test": "let result = lateralsurface_cube(5);\nlet expected = 100;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cube(9)==324",
+      "generated_test": "let result = lateralsurface_cube(9);\nlet expected = 324;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lateralsurface_cube(10)==400",
+      "generated_test": "let result = lateralsurface_cube(10);\nlet expected = 400;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

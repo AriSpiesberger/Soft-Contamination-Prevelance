@@ -1,0 +1,37 @@
+{
+  "task_id": 565,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a string into characters.",
+  "python_code": "def split(word): \n    return [char for char in word] ",
+  "test_list": [
+    "assert split('python') == ['p','y','t','h','o','n']",
+    "assert split('Name') == ['N','a','m','e']",
+    "assert split('program') == ['p','r','o','g','r','a','m']"
+  ],
+  "code_go": "package main\n\nfunc split(word string) []string {\n    result := []string{}\n    for _, char := range word {\n        result = append(result, string(char))\n    }\n    return result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert split('python') == ['p','y','t','h','o','n']",
+      "generated_test": "expected := []string{\"p\", \"y\", \"t\", \"h\", \"o\", \"n\"}\ngot := split(\"python\")\n\npass := len(got) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif got[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Printf(\"FAIL\\n  Expected: %v\\n  Got: %v\\n\", expected, got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split('Name') == ['N','a','m','e']",
+      "generated_test": "result := split(\"Name\")\nexpected := []string{\"N\", \"a\", \"m\", \"e\"}\npass := true\nif len(result) != len(expected) {\n    pass = false\n} else {\n    for i := range expected {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split('program') == ['p','r','o','g','r','a','m']",
+      "generated_test": "result := split(\"program\")\nexpected := []string{\"p\", \"r\", \"o\", \"g\", \"r\", \"a\", \"m\"}\n\npass := len(result) == len(expected)\nif pass {\n    for i := range result {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 135,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth hexagonal number.",
+  "code_python": "def hexagonal_num(n): \n\treturn n*(2*n - 1) ",
+  "test_list": [
+    "assert hexagonal_num(10) == 190",
+    "assert hexagonal_num(5) == 45",
+    "assert hexagonal_num(7) == 91"
+  ],
+  "python_1": "def hexagonal_num(n):\n    # Start with zero as the base sum for accumulating the hexagonal number\n    result = 0\n    # Build the hexagonal number iteratively by adding consecutive terms\n    for i in range(1, n + 1):\n        # Each hexagonal number adds (4*i - 3) to the previous sum\n        # This is derived from the difference between consecutive hexagonal numbers\n        result += 4 * i - 3\n    # Return the accumulated sum which equals the nth hexagonal number\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def hexagonal_num(n):\n    # Use recursion base case: first hexagonal number is 1\n    if n == 1:\n        return 1\n    # Recursively compute previous hexagonal number and add the nth increment\n    # The increment follows pattern: 1, 5, 9, 13... which is (4*n - 3)\n    return hexagonal_num(n - 1) + (4 * n - 3)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def hexagonal_num(n):\n    # Hexagonal numbers are a subset of triangular numbers at odd positions\n    # The nth hexagonal number equals the (2n-1)th triangular number\n    odd_triangular_index = 2 * n - 1\n    # Triangular number formula: T(k) = k * (k + 1) / 2\n    # Substituting k = 2n-1 gives us our hexagonal number\n    triangular_value = odd_triangular_index * (odd_triangular_index + 1) // 2\n    # Return the computed value which equals n*(2n-1) through triangular relationship\n    return triangular_value",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def hexagonal_num(n):\n    # Use reduce to perform a functional programming approach to accumulation\n    from functools import reduce\n    # Generate sequence of increments: 1, 5, 9, 13... (4k-3 for k from 1 to n)\n    increments = range(1, n + 1)\n    # Apply reduce with lambda to sum all increments (4*k - 3) for each k\n    # The lambda takes accumulated sum and current index, adding the hexagonal increment\n    result = reduce(lambda acc, k: acc + (4 * k - 3), increments, 0)\n    # Return the final accumulated hexagonal number\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def hexagonal_num(n):\n    # Leverage list comprehension to generate all hexagonal increments up to n\n    increments = [4 * k - 3 for k in range(1, n + 1)]\n    # Use built-in sum() on the generated list to compute the total\n    # This approach separates data generation from aggregation\n    return sum(increments)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

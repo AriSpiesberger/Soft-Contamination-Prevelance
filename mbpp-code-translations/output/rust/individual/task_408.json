@@ -1,0 +1,37 @@
+{
+  "task_id": 408,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find k number of smallest pairs which consist of one element from the first array and one element from the second array.",
+  "python_code": "import heapq\ndef k_smallest_pairs(nums1, nums2, k):\n   queue = []\n   def push(i, j):\n       if i < len(nums1) and j < len(nums2):\n           heapq.heappush(queue, [nums1[i] + nums2[j], i, j])\n   push(0, 0)\n   pairs = []\n   while queue and len(pairs) < k:\n       _, i, j = heapq.heappop(queue)\n       pairs.append([nums1[i], nums2[j]])\n       push(i, j + 1)\n       if j == 0:\n           push(i + 1, 0)\n   return pairs",
+  "test_list": [
+    "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]"
+  ],
+  "code_rust": "use std::collections::BinaryHeap;\nuse std::cmp::Ordering;\n\n#[derive(Eq, PartialEq)]\nstruct HeapItem {\n    sum: i32,\n    i: usize,\n    j: usize,\n}\n\nimpl Ord for HeapItem {\n    fn cmp(&self, other: &Self) -> Ordering {\n        other.sum.cmp(&self.sum)\n    }\n}\n\nimpl PartialOrd for HeapItem {\n    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {\n        Some(self.cmp(other))\n    }\n}\n\npub fn k_smallest_pairs(nums1: Vec<i32>, nums2: Vec<i32>, k: i32) -> Vec<Vec<i32>> {\n    let mut heap: BinaryHeap<HeapItem> = BinaryHeap::new();\n    let k = k as usize;\n    \n    let push = |heap: &mut BinaryHeap<HeapItem>, i: usize, j: usize, nums1: &Vec<i32>, nums2: &Vec<i32>| {\n        if i < nums1.len() && j < nums2.len() {\n            heap.push(HeapItem {\n                sum: nums1[i] + nums2[j],\n                i,\n                j,\n            });\n        }\n    };\n    \n    push(&mut heap, 0, 0, &nums1, &nums2);\n    \n    let mut pairs: Vec<Vec<i32>> = Vec::new();\n    \n    while !heap.is_empty() && pairs.len() < k {\n        let item = heap.pop().unwrap();\n        let i = item.i;\n        let j = item.j;\n        \n        pairs.push(vec![nums1[i], nums2[j]]);\n        \n        push(&mut heap, i, j + 1, &nums1, &nums2);\n        \n        if j == 0 {\n            push(&mut heap, i + 1, 0, &nums1, &nums2);\n        }\n    }\n    \n    pairs\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+      "generated_test": "let result = k_smallest_pairs(vec![1, 3, 7], vec![2, 4, 6], 2);\nlet expected: Vec<Vec<i32>> = vec![vec![1, 2], vec![1, 4]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+      "generated_test": "let result = k_smallest_pairs(vec![1, 3, 7], vec![2, 4, 6], 1);\nlet expected: Vec<Vec<i32>> = vec![vec![1, 2]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]",
+      "generated_test": "let result = k_smallest_pairs(vec![1, 3, 7], vec![2, 4, 6], 7);\nlet expected: Vec<Vec<i32>> = vec![\n    vec![1, 2],\n    vec![1, 4],\n    vec![3, 2],\n    vec![1, 6],\n    vec![3, 4],\n    vec![3, 6],\n    vec![7, 2],\n];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": false,
+      "llm_validated": true
+    }
+  ]
+}

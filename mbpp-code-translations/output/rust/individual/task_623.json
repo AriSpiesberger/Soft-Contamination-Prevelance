@@ -1,0 +1,37 @@
+{
+  "task_id": 623,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the n-th power of each number in a list.",
+  "python_code": "def nth_nums(nums,n):\n nth_nums = list(map(lambda x: x ** n, nums))\n return nth_nums",
+  "test_list": [
+    "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+    "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+    "assert nth_nums([12,15],5)==([248832, 759375])"
+  ],
+  "code_rust": "pub fn nth_nums(nums: &[i64], n: u32) -> Vec<i64> {\n    nums.iter().map(|x| x.pow(n)).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert nth_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]",
+      "generated_test": "let result = nth_nums(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2);\nlet expected: Vec<i64> = vec![1, 4, 9, 16, 25, 36, 49, 64, 81, 100];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert nth_nums([10,20,30],3)==([1000, 8000, 27000])",
+      "generated_test": "let result = nth_nums(&[10, 20, 30], 3);\nlet expected = vec![1000, 8000, 27000];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert nth_nums([12,15],5)==([248832, 759375])",
+      "generated_test": "let result = nth_nums(&[12, 15], 5);\nlet expected = vec![248832_i64, 759375_i64];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

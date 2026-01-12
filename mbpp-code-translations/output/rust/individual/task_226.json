@@ -1,0 +1,44 @@
+{
+  "task_id": 226,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove the characters which have odd index values of a given string.",
+  "python_code": "def odd_values_string(str):\n  result = \"\" \n  for i in range(len(str)):\n    if i % 2 == 0:\n      result = result + str[i]\n  return result",
+  "test_list": [
+    "assert odd_values_string('abcdef') == 'ace'",
+    "assert odd_values_string('python') == 'pto'",
+    "assert odd_values_string('data') == 'dt'",
+    "assert odd_values_string('lambs') == 'lms'"
+  ],
+  "code_rust": "pub fn odd_values_string(s: &str) -> String {\n    let mut result = String::new();\n    for (i, c) in s.chars().enumerate() {\n        if i % 2 == 0 {\n            result.push(c);\n        }\n    }\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 4,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert odd_values_string('abcdef') == 'ace'",
+      "generated_test": "let result = odd_values_string(\"abcdef\");\nlet expected = \"ace\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_values_string('python') == 'pto'",
+      "generated_test": "let result = odd_values_string(\"python\");\nlet expected = \"pto\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_values_string('data') == 'dt'",
+      "generated_test": "let result = odd_values_string(\"data\");\nlet expected = \"dt\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_values_string('lambs') == 'lms'",
+      "generated_test": "let result = odd_values_string(\"lambs\");\nlet expected = \"lms\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

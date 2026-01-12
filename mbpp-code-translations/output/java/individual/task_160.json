@@ -1,0 +1,37 @@
+{
+  "task_id": 160,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns integers x and y that satisfy ax + by = n as a tuple, or return None if no solution exists.",
+  "python_code": "def find_solution(a, b, n):\n\ti = 0\n\twhile i * a <= n:\n\t\tif (n - (i * a)) % b == 0: \n\t\t\treturn (i, (n - (i * a)) // b)\n\t\ti = i + 1\n\treturn None",
+  "test_list": [
+    "assert find_solution(2, 3, 7) == (2, 1)",
+    "assert find_solution(4, 2, 7) == None",
+    "assert find_solution(1, 13, 17) == (4, 1)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int[] find_solution(int a, int b, int n) {\n        int i = 0;\n        while (i * a <= n) {\n            if ((n - (i * a)) % b == 0) {\n                return new int[] {i, (n - (i * a)) / b};\n            }\n            i = i + 1;\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_solution(2, 3, 7) == (2, 1)",
+      "generated_test": "int[] result = find_solution(2, 3, 7);\nint[] expected = new int[] {2, 1};\nif (result != null && result.length == expected.length && result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    if (result == null) {\n        System.out.println(\"  Got: null\");\n    } else {\n        System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_solution(4, 2, 7) == None",
+      "generated_test": "int[] result = find_solution(4, 2, 7);\nint[] expected = null;\nif (result == null && expected == null) {\n    System.out.println(\"PASS\");\n} else if (result == null || expected == null) {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + (expected == null ? \"null\" : Arrays.toString(expected)));\n    System.out.println(\"  Got: \" + (result == null ? \"null\" : Arrays.toString(result)));\n} else if (Arrays.equals(result, expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_solution(1, 13, 17) == (4, 1)",
+      "generated_test": "int[] result = find_solution(1, 13, 17);\nint[] expected = new int[] {4, 1};\nif (result != null && result.length == expected.length && result[0] == expected[0] && result[1] == expected[1]) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [\" + expected[0] + \", \" + expected[1] + \"]\");\n    if (result == null) {\n        System.out.println(\"  Got: null\");\n    } else {\n        System.out.println(\"  Got: [\" + result[0] + \", \" + result[1] + \"]\");\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

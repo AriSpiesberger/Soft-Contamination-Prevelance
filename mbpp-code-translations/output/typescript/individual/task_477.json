@@ -1,0 +1,17 @@
+{
+  "task_id": 477,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert the given string to lower case.",
+  "python_code": "def is_lower(string):\n  return (string.lower())",
+  "test_list": [
+    "assert is_lower(\"InValid\") == \"invalid\"",
+    "assert is_lower(\"TruE\") == \"true\"",
+    "assert is_lower(\"SenTenCE\") == \"sentence\""
+  ],
+  "code_typescript": "function is_lower(string: string): string {\n  return string.toLowerCase();\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

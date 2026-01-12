@@ -1,0 +1,44 @@
+{
+  "task_id": 723,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "The input is defined as two lists of the same length. Write a function to count indices where the lists have the same values.",
+  "python_code": "from operator import eq\ndef count_same_pair(nums1, nums2):\n    result = sum(map(eq, nums1, nums2))\n    return result",
+  "test_list": [
+    "assert count_same_pair([1, 2, 3, 4, 5, 6, 7, 8],[2, 2, 3, 1, 2, 6, 7, 9])==4",
+    "assert count_same_pair([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==11",
+    "assert count_same_pair([2, 4, -6, -9, 11, -12, 14, -5, 17],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==1",
+    "assert count_same_pair([0, 1, 1, 2],[0, 1, 2, 2])==3"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int count_same_pair(ArrayList<Integer> nums1, ArrayList<Integer> nums2) {\n        int result = 0;\n        int length = Math.min(nums1.size(), nums2.size());\n        for (int i = 0; i < length; i++) {\n            if (nums1.get(i).equals(nums2.get(i))) {\n                result++;\n            }\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_same_pair([1, 2, 3, 4, 5, 6, 7, 8],[2, 2, 3, 1, 2, 6, 7, 9])==4",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(1);\nnums1.add(2);\nnums1.add(3);\nnums1.add(4);\nnums1.add(5);\nnums1.add(6);\nnums1.add(7);\nnums1.add(8);\n\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(2);\nnums2.add(2);\nnums2.add(3);\nnums2.add(1);\nnums2.add(2);\nnums2.add(6);\nnums2.add(7);\nnums2.add(9);\n\nint result = count_same_pair(nums1, nums2);\nint expected = 4;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_same_pair([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==11",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(0); nums1.add(1); nums1.add(2); nums1.add(-1); nums1.add(-5);\nnums1.add(6); nums1.add(0); nums1.add(-3); nums1.add(-2); nums1.add(3);\nnums1.add(4); nums1.add(6); nums1.add(8);\n\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(2); nums2.add(1); nums2.add(2); nums2.add(-1); nums2.add(-5);\nnums2.add(6); nums2.add(4); nums2.add(-3); nums2.add(-2); nums2.add(3);\nnums2.add(4); nums2.add(6); nums2.add(8);\n\nint result = count_same_pair(nums1, nums2);\nint expected = 11;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_same_pair([2, 4, -6, -9, 11, -12, 14, -5, 17],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==1",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(2);\nnums1.add(4);\nnums1.add(-6);\nnums1.add(-9);\nnums1.add(11);\nnums1.add(-12);\nnums1.add(14);\nnums1.add(-5);\nnums1.add(17);\n\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(2);\nnums2.add(1);\nnums2.add(2);\nnums2.add(-1);\nnums2.add(-5);\nnums2.add(6);\nnums2.add(4);\nnums2.add(-3);\nnums2.add(-2);\nnums2.add(3);\nnums2.add(4);\nnums2.add(6);\nnums2.add(8);\n\nint result = count_same_pair(nums1, nums2);\nint expected = 1;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_same_pair([0, 1, 1, 2],[0, 1, 2, 2])==3",
+      "generated_test": "ArrayList<Integer> nums1 = new ArrayList<>();\nnums1.add(0);\nnums1.add(1);\nnums1.add(1);\nnums1.add(2);\n\nArrayList<Integer> nums2 = new ArrayList<>();\nnums2.add(0);\nnums2.add(1);\nnums2.add(2);\nnums2.add(2);\n\nint result = count_same_pair(nums1, nums2);\nint expected = 3;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

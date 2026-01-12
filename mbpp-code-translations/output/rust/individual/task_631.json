@@ -1,0 +1,37 @@
+{
+  "task_id": 631,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace whitespaces with an underscore and vice versa in a given string.",
+  "python_code": "def replace_spaces(text):\n  return \"\".join(\" \" if c == \"_\" else (\"_\" if c == \" \" else c) for c in text)",
+  "test_list": [
+    "assert replace_spaces('Jumanji The Jungle') == 'Jumanji_The_Jungle'",
+    "assert replace_spaces('The_Avengers') == 'The Avengers'",
+    "assert replace_spaces('Fast and Furious') == 'Fast_and_Furious'"
+  ],
+  "code_rust": "pub fn replace_spaces(text: &str) -> String {\n    text.chars()\n        .map(|c| {\n            if c == '_' {\n                ' '\n            } else if c == ' ' {\n                '_'\n            } else {\n                c\n            }\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert replace_spaces('Jumanji The Jungle') == 'Jumanji_The_Jungle'",
+      "generated_test": "let result = replace_spaces(\"Jumanji The Jungle\");\nlet expected = \"Jumanji_The_Jungle\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces('The_Avengers') == 'The Avengers'",
+      "generated_test": "let result = replace_spaces(\"The_Avengers\");\nlet expected = \"The Avengers\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces('Fast and Furious') == 'Fast_and_Furious'",
+      "generated_test": "let result = replace_spaces(\"Fast and Furious\");\nlet expected = \"Fast_and_Furious\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

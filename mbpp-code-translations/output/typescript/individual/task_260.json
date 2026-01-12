@@ -1,0 +1,17 @@
+{
+  "task_id": 260,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth newman\u2013shanks\u2013williams prime number.",
+  "python_code": "def newman_prime(n): \n\tif n == 0 or n == 1: \n\t\treturn 1\n\treturn 2 * newman_prime(n - 1) + newman_prime(n - 2)",
+  "test_list": [
+    "assert newman_prime(3) == 7",
+    "assert newman_prime(4) == 17",
+    "assert newman_prime(5) == 41"
+  ],
+  "code_typescript": "function newman_prime(n: number): number {\n    if (n === 0 || n === 1) {\n        return 1;\n    }\n    return 2 * newman_prime(n - 1) + newman_prime(n - 2);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

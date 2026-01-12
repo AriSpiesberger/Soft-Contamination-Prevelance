@@ -1,0 +1,37 @@
+{
+  "task_id": 593,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove leading zeroes from an ip address.",
+  "python_code": "import re\ndef removezero_ip(ip):\n string = re.sub('\\.[0]*', '.', ip)\n return string\n",
+  "test_list": [
+    "assert removezero_ip(\"216.08.094.196\")==('216.8.94.196')",
+    "assert removezero_ip(\"12.01.024\")==('12.1.24')",
+    "assert removezero_ip(\"216.08.094.0196\")==('216.8.94.196')"
+  ],
+  "code_java": "import java.util.regex.*;\n\npublic class Solution {\n    public static String removezero_ip(String ip) {\n        String result = ip.replaceAll(\"\\\\.[0]*\", \".\");\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert removezero_ip(\"216.08.094.196\")==('216.8.94.196')",
+      "generated_test": "String result = removezero_ip(\"216.08.094.196\");\nString expected = \"216.8.94.196\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert removezero_ip(\"12.01.024\")==('12.1.24')",
+      "generated_test": "String result = removezero_ip(\"12.01.024\");\nString expected = \"12.1.24\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert removezero_ip(\"216.08.094.0196\")==('216.8.94.196')",
+      "generated_test": "String result = removezero_ip(\"216.08.094.0196\");\nString expected = \"216.8.94.196\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 596,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the size in bytes of the given tuple.",
+  "python_code": "import sys \ndef tuple_size(tuple_list):\n  return (sys.getsizeof(tuple_list)) ",
+  "test_list": [
+    "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+    "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+    "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))"
+  ],
+  "code_typescript": "function tuple_size(tuple_list: readonly unknown[]): number {\n    // Python sys.getsizeof() for tuples on Python 3.8+ (64-bit):\n    // Returns 40 + 8 * len(tuple) bytes\n    // For 6 elements: 40 + 8*6 = 88 bytes\n    const PYTHON_TUPLE_BASE = 40;\n    const PYTHON_REF_SIZE = 8;\n    return PYTHON_TUPLE_BASE + tuple_list.length * PYTHON_REF_SIZE;\n}\n\nexport { tuple_size };",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 2,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0,
+  "tests_typescript": [
+    {
+      "python_test": "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+      "generated_test": "const result = tuple_size([\"A\", 1, \"B\", 2, \"C\", 3] as const);\nconst expected = 40 + 8 * 6; // 88 bytes\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+      "generated_test": "const result = tuple_size([1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"] as const);\nconst expected = 40 + 8 * 6; // Python sys.getsizeof for tuple with 6 elements: 40 + 8*6 = 88\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(`  Expected: ${expected}`);\n    console.log(`  Got: ${result}`);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))",
+      "generated_test": "const input: readonly unknown[] = [[1, \"Lion\"], [2, \"Tiger\"], [3, \"Fox\"], [4, \"Wolf\"]] as const;\nconst result = tuple_size(input);\nconst expected = 40 + 4 * 8; // Python sys.getsizeof formula: 40 + 8 * len(tuple)\n\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

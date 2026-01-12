@@ -1,0 +1,27 @@
+{
+  "task_id": 105,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count true booleans in the given list.",
+  "code_python": "def count(lst):   \n    return sum(lst) ",
+  "test_list": [
+    "assert count([True,False,True]) == 2",
+    "assert count([False,False]) == 0",
+    "assert count([True,True,True]) == 3"
+  ],
+  "python_1": "def count(lst):   \n    # Initialize a counter variable to track True values\n    true_count = 0\n    # Loop through each boolean element in the input list\n    for boolean in lst:\n        # Check if the current element is True\n        if boolean == True:\n            # Increment the counter when a True value is found\n            true_count += 1\n    # Return the total number of True values encountered\n    return true_count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count(lst):   \n    # Filter the list to keep only True values using list comprehension\n    true_values = [x for x in lst if x is True]\n    # Return the length of filtered list which equals count of True booleans\n    return len(true_values)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count(lst):   \n    # Use the filter function with None to filter truthy values from the list\n    filtered = filter(None, lst)\n    # Convert the filter iterator to a list to get all True elements\n    true_list = list(filtered)\n    # Calculate and return the number of True values by measuring list length\n    return len(true_list)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count(lst):   \n    # Use the count method of list to directly count True occurrences\n    return lst.count(True)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count(lst):   \n    # Use reduce from functools to accumulate count across the list\n    from functools import reduce\n    # Handle empty list edge case by returning 0 immediately\n    if not lst:\n        return 0\n    # Apply reduce with lambda that adds 1 for True, 0 for False to accumulator\n    return reduce(lambda acc, x: acc + (1 if x else 0), lst, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 222,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if all the elements in tuple have same data type or not.",
+  "python_code": "def check_type(test_tuple):\n  res = True\n  for ele in test_tuple:\n    if not isinstance(ele, type(test_tuple[0])):\n      res = False\n      break\n  return (res) ",
+  "test_list": [
+    "assert check_type((5, 6, 7, 3, 5, 6) ) == True",
+    "assert check_type((1, 2, \"4\") ) == False",
+    "assert check_type((3, 2, 1, 4, 5) ) == True"
+  ],
+  "code_javascript": "function check_type(test_tuple) {\n  let res = true;\n  if (test_tuple.length === 0) {\n    return res;\n  }\n  const firstType = typeof test_tuple[0];\n  const firstConstructor = test_tuple[0] !== null && test_tuple[0] !== undefined ? test_tuple[0].constructor : null;\n  \n  for (let ele of test_tuple) {\n    const eleType = typeof ele;\n    const eleConstructor = ele !== null && ele !== undefined ? ele.constructor : null;\n    \n    if (eleType !== firstType || eleConstructor !== firstConstructor) {\n      res = false;\n      break;\n    }\n  }\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert check_type((5, 6, 7, 3, 5, 6) ) == True",
+      "generated_test": "const result = check_type([5, 6, 7, 3, 5, 6]);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_type((1, 2, \"4\") ) == False",
+      "generated_test": "const result = check_type([1, 2, \"4\"]);\nconst expected = false;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_type((3, 2, 1, 4, 5) ) == True",
+      "generated_test": "const result = check_type([3, 2, 1, 4, 5]);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

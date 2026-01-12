@@ -1,0 +1,27 @@
+{
+  "task_id": 639,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.",
+  "code_python": "def sample_nam(sample_names):\n  sample_names=list(filter(lambda el:el[0].isupper() and el[1:].islower(),sample_names))\n  return len(''.join(sample_names))",
+  "test_list": [
+    "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+    "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+    "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6"
+  ],
+  "python_1": "def sample_nam(sample_names):\n    # Initialize accumulator to track total character count\n    total_length = 0\n    # Process each name in the input list one by one\n    for name in sample_names:\n        # Check if name starts with uppercase and rest is lowercase (proper case)\n        if name[0].isupper() and name[1:].islower():\n            # Add this valid name's length to our running total\n            total_length += len(name)\n    # Return the accumulated length of all properly-cased names\n    return total_length",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sample_nam(sample_names):\n    # Use list comprehension to extract lengths of valid names in one expression\n    valid_lengths = [len(name) for name in sample_names if name[0].isupper() and name[1:].islower()]\n    # Sum all the individual lengths using built-in sum function\n    return sum(valid_lengths)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sample_nam(sample_names):\n    # Define a helper function to check if a name has proper capitalization\n    def is_valid_name(name):\n        # Verify first character is uppercase using string method\n        first_upper = name[0].isupper()\n        # Verify remaining characters (if any) are all lowercase\n        rest_lower = name[1:].islower()\n        # Return True only when both conditions are satisfied\n        return first_upper and rest_lower\n    \n    # Use map to transform valid names to their lengths, invalid ones to 0\n    length_mapper = map(lambda n: len(n) if is_valid_name(n) else 0, sample_names)\n    # Reduce the mapped lengths into a single sum using built-in sum\n    total = sum(length_mapper)\n    # Return the computed total length of all properly capitalized names\n    return total",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sample_nam(sample_names):\n    # Use reduce from functools to accumulate length in a functional programming style\n    from functools import reduce\n    # Filter names using istitle() which checks if string is titlecased (first char upper, rest lower)\n    valid_names = [name for name in sample_names if name.istitle()]\n    # Use reduce with a lambda to accumulate total length, starting from 0\n    result = reduce(lambda acc, name: acc + len(name), valid_names, 0)\n    # Return the reduced sum of all valid name lengths\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sample_nam(sample_names):\n    # Use generator expression inside sum() to avoid creating intermediate list\n    # Combine filtering and length calculation in a single pass through the data\n    return sum(\n        # Compute length of each name that satisfies the capitalization rule\n        len(name) \n        # Iterate through all provided names in the input list\n        for name in sample_names \n        # Check proper capitalization: first letter uppercase, rest lowercase\n        # Using istitle() as an elegant single-method alternative\n        if len(name) > 0 and name[0].isupper() and (len(name) == 1 or name[1:].islower())\n    )",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

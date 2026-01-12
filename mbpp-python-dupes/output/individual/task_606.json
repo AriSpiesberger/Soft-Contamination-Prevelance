@@ -1,0 +1,27 @@
+{
+  "task_id": 606,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert degrees to radians.",
+  "code_python": "import math\ndef radian_degree(degree):\n radian = degree*(math.pi/180)\n return radian",
+  "test_list": [
+    "assert radian_degree(90)==1.5707963267948966",
+    "assert radian_degree(60)==1.0471975511965976",
+    "assert radian_degree(120)==2.0943951023931953"
+  ],
+  "python_1": "import math\n\ndef radian_degree(degree):\n    # Define the conversion factor from degrees to radians as a constant\n    DEGREES_TO_RADIANS = math.pi / 180\n    # Multiply the input degree value by the conversion factor using multiplication operator\n    radian = math.prod([degree, DEGREES_TO_RADIANS])\n    # Return the computed radian value\n    return radian",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef radian_degree(degree):\n    # Use math.radians() built-in function which directly converts degrees to radians\n    radian = math.radians(degree)\n    # Return the converted radian value from the built-in function\n    return radian",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef radian_degree(degree):\n    # Use a lambda expression to encapsulate the conversion formula\n    deg_to_rad = lambda d: d * math.pi / 180\n    # Apply the lambda function to perform the actual conversion\n    result = deg_to_rad(degree)\n    # Return the computed radian value from the lambda application\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef radian_degree(degree):\n    # Store the full circle in degrees as denominator for ratio calculation\n    full_circle_degrees = 180\n    # Calculate what fraction of a half-circle the input angle represents\n    half_circle_ratio = degree / full_circle_degrees\n    # Scale the ratio by pi to get the radian equivalent using reduce-style summation\n    radian = sum([half_circle_ratio * math.pi])\n    # Return the final radian measurement\n    return radian",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef radian_degree(degree):\n    # Create a generator expression that yields the radian value once computed\n    radian_generator = (degree * math.pi / 180 for _ in range(1))\n    # Extract the single computed value from the generator using next()\n    radian = next(radian_generator)\n    # Return the radian equivalent of the input degree angle\n    return radian",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

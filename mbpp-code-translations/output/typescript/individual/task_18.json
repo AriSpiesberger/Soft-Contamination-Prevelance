@@ -1,0 +1,17 @@
+{
+  "task_id": 18,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove characters from the first string which are present in the second string.",
+  "python_code": "NO_OF_CHARS = 256\ndef str_to_list(string): \n\ttemp = [] \n\tfor x in string: \n\t\ttemp.append(x) \n\treturn temp \ndef lst_to_string(List): \n\treturn ''.join(List) \ndef get_char_count_array(string): \n\tcount = [0] * NO_OF_CHARS \n\tfor i in string: \n\t\tcount[ord(i)] += 1\n\treturn count \ndef remove_dirty_chars(string, second_string): \n\tcount = get_char_count_array(second_string) \n\tip_ind = 0\n\tres_ind = 0\n\ttemp = '' \n\tstr_list = str_to_list(string) \n\twhile ip_ind != len(str_list): \n\t\ttemp = str_list[ip_ind] \n\t\tif count[ord(temp)] == 0: \n\t\t\tstr_list[res_ind] = str_list[ip_ind] \n\t\t\tres_ind += 1\n\t\tip_ind+=1\n\treturn lst_to_string(str_list[0:res_ind]) ",
+  "test_list": [
+    "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+    "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+    "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'"
+  ],
+  "code_typescript": "const NO_OF_CHARS = 256;\n\nfunction str_to_list(string: string): string[] {\n    const temp: string[] = [];\n    for (const x of string) {\n        temp.push(x);\n    }\n    return temp;\n}\n\nfunction lst_to_string(list: string[]): string {\n    return list.join('');\n}\n\nfunction get_char_count_array(string: string): number[] {\n    const count: number[] = new Array(NO_OF_CHARS).fill(0);\n    for (const i of string) {\n        count[i.charCodeAt(0)] += 1;\n    }\n    return count;\n}\n\nfunction remove_dirty_chars(string: string, second_string: string): string {\n    const count = get_char_count_array(second_string);\n    let ip_ind = 0;\n    let res_ind = 0;\n    let temp = '';\n    const str_list = str_to_list(string);\n    while (ip_ind !== str_list.length) {\n        temp = str_list[ip_ind];\n        if (count[temp.charCodeAt(0)] === 0) {\n            str_list[res_ind] = str_list[ip_ind];\n            res_ind += 1;\n        }\n        ip_ind += 1;\n    }\n    return lst_to_string(str_list.slice(0, res_ind));\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

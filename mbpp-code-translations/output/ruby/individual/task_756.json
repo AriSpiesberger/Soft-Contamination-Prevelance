@@ -1,0 +1,58 @@
+{
+  "task_id": 756,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by one or more 'b's. https://www.w3resource.com/python-exercises/re/python-re-exercise-3.php",
+  "python_code": "import re\ndef text_match_zero_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_zero_one(\"ac\")==False",
+    "assert text_match_zero_one(\"dc\")==False",
+    "assert text_match_zero_one(\"abbbba\")==True",
+    "assert text_match_zero_one(\"dsabbbba\")==True",
+    "assert text_match_zero_one(\"asbbbba\")==False",
+    "assert text_match_zero_one(\"abaaa\")==True"
+  ],
+  "code_ruby": "def text_match_zero_one(text)\n  pattern = /ab+?/\n  !!(text =~ pattern)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 6,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert text_match_zero_one(\"ac\")==False",
+      "generated_test": "result = text_match_zero_one(\"ac\")\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"dc\")==False",
+      "generated_test": "result = text_match_zero_one(\"dc\")\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"abbbba\")==True",
+      "generated_test": "result = text_match_zero_one(\"abbbba\")\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"dsabbbba\")==True",
+      "generated_test": "result = text_match_zero_one(\"dsabbbba\")\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"asbbbba\")==False",
+      "generated_test": "result = text_match_zero_one(\"asbbbba\")\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"abaaa\")==True",
+      "generated_test": "result = text_match_zero_one(\"abaaa\")\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

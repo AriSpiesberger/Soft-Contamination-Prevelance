@@ -1,0 +1,37 @@
+{
+  "task_id": 430,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the directrix of a parabola.",
+  "python_code": "def parabola_directrix(a, b, c): \n  directrix=((int)(c - ((b * b) + 1) * 4 * a ))\n  return directrix",
+  "test_list": [
+    "assert parabola_directrix(5,3,2)==-198",
+    "assert parabola_directrix(9,8,4)==-2336",
+    "assert parabola_directrix(2,4,6)==-130"
+  ],
+  "code_rust": "pub fn parabola_directrix(a: i32, b: i32, c: i32) -> i32 {\n    c - ((b * b) + 1) * 4 * a\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert parabola_directrix(5,3,2)==-198",
+      "generated_test": "let result = parabola_directrix(5, 3, 2);\nlet expected = -198;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(9,8,4)==-2336",
+      "generated_test": "let result = parabola_directrix(9, 8, 4);\nlet expected = -2336;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(2,4,6)==-130",
+      "generated_test": "let result = parabola_directrix(2, 4, 6);\nlet expected = -130;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

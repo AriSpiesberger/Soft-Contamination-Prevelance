@@ -1,0 +1,27 @@
+{
+  "task_id": 451,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from the given string.",
+  "code_python": "import re\ndef remove_whitespaces(text1):\n  return (re.sub(r'\\s+', '',text1))",
+  "test_list": [
+    "assert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'",
+    "assert remove_whitespaces(' Google    Dart ') == 'GoogleDart'",
+    "assert remove_whitespaces(' iOS    Swift ') == 'iOSSwift'"
+  ],
+  "python_1": "# Define function that takes a string and removes all whitespace characters\ndef remove_whitespaces(text1):\n    # Use str.split() without args to split on any whitespace, then join with empty string\n    # This elegantly handles multiple consecutive spaces and leading/trailing whitespace\n    return ''.join(text1.split())",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Define function to strip whitespace from input string\ndef remove_whitespaces(text1):\n    # Initialize empty result string to accumulate non-whitespace characters\n    result = ''\n    # Loop through each character in the input string one by one\n    for char in text1:\n        # Check if current character is NOT a whitespace using string method\n        if not char.isspace():\n            # Append non-whitespace character to our result string\n            result = result + char\n    # Return the constructed string with all whitespaces removed\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Define function that removes all whitespace characters from input string\ndef remove_whitespaces(text1):\n    # Use list comprehension to filter out whitespace, more memory efficient than string concatenation\n    non_whitespace_chars = [char for char in text1 if not char.isspace()]\n    # Join the filtered list of characters into a single string and return\n    return ''.join(non_whitespace_chars)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Define function to eliminate whitespace using functional programming approach\ndef remove_whitespaces(text1):\n    # Use filter() with a lambda that returns True only for non-whitespace characters\n    filtered_chars = filter(lambda c: not c.isspace(), text1)\n    # Convert the filter iterator to a string by joining all remaining characters\n    return ''.join(filtered_chars)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Define function using string translate method for efficient character removal\ndef remove_whitespaces(text1):\n    # Import string module to access predefined whitespace character constant\n    import string\n    # Create translation table that maps each whitespace char to None (deletion)\n    translation_table = str.maketrans('', '', string.whitespace)\n    # Apply translation table to input string, efficiently removing all whitespace in one pass\n    return text1.translate(translation_table)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

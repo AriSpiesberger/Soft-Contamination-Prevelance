@@ -1,0 +1,37 @@
+{
+  "task_id": 747,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the longest common subsequence for the given three string sequence. https://www.geeksforgeeks.org/lcs-longest-common-subsequence-three-strings/",
+  "python_code": "def lcs_of_three(X, Y, Z): \n  m = len(X)\n  n = len(Y)\n  o = len(Z)\n  L = [[[0 for i in range(o+1)] for j in range(n+1)] for k in range(m+1)]\n  for i in range(m+1): \n\t  for j in range(n+1): \n\t\t  for k in range(o+1): \n\t\t\t  if (i == 0 or j == 0 or k == 0): \n\t\t\t\t  L[i][j][k] = 0\n\t\t\t  elif (X[i-1] == Y[j-1] and X[i-1] == Z[k-1]): \n\t\t\t\t  L[i][j][k] = L[i-1][j-1][k-1] + 1\n\t\t\t  else: \n\t\t\t\t  L[i][j][k] = max(max(L[i-1][j][k], L[i][j-1][k]), L[i][j][k-1]) \n  return L[m][n][o]",
+  "test_list": [
+    "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+    "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+    "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3"
+  ],
+  "code_go": "package main\n\nfunc lcs_of_three(X, Y, Z string) int {\n\tm := len(X)\n\tn := len(Y)\n\to := len(Z)\n\n\t// Create 3D slice L[m+1][n+1][o+1]\n\tL := make([][][]int, m+1)\n\tfor i := range L {\n\t\tL[i] = make([][]int, n+1)\n\t\tfor j := range L[i] {\n\t\t\tL[i][j] = make([]int, o+1)\n\t\t}\n\t}\n\n\tfor i := 0; i <= m; i++ {\n\t\tfor j := 0; j <= n; j++ {\n\t\t\tfor k := 0; k <= o; k++ {\n\t\t\t\tif i == 0 || j == 0 || k == 0 {\n\t\t\t\t\tL[i][j][k] = 0\n\t\t\t\t} else if X[i-1] == Y[j-1] && X[i-1] == Z[k-1] {\n\t\t\t\t\tL[i][j][k] = L[i-1][j-1][k-1] + 1\n\t\t\t\t} else {\n\t\t\t\t\tL[i][j][k] = max(max(L[i-1][j][k], L[i][j-1][k]), L[i][j][k-1])\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\treturn L[m][n][o]\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+      "generated_test": "result := lcs_of_three(\"AGGT12\", \"12TXAYB\", \"12XBA\")\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+      "generated_test": "result := lcs_of_three(\"Reels\", \"Reelsfor\", \"ReelsforReels\")\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3",
+      "generated_test": "result := lcs_of_three(\"abcd1e2\", \"bc12ea\", \"bd1ea\")\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

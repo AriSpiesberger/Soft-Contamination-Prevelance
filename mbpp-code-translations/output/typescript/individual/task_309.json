@@ -1,0 +1,17 @@
+{
+  "task_id": 309,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum of two numbers.",
+  "python_code": "def maximum(a,b):   \n    if a >= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert maximum(5,10) == 10",
+    "assert maximum(-1,-2) == -1",
+    "assert maximum(9,7) == 9"
+  ],
+  "code_typescript": "function maximum(a: number, b: number): number {\n    if (a >= b) {\n        return a;\n    } else {\n        return b;\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

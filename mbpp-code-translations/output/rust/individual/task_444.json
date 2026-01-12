@@ -1,0 +1,37 @@
+{
+  "task_id": 444,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to trim each tuple by k in the given tuple list.",
+  "python_code": "def trim_tuple(test_list, K):\n  res = []\n  for ele in test_list:\n    N = len(ele)\n    res.append(tuple(list(ele)[K: N - K]))\n  return (str(res)) ",
+  "test_list": [
+    "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1),(9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 2) == '[(2,), (9,), (2,), (2,)]'",
+    "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1), (9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 1) == '[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]'",
+    "assert trim_tuple([(7, 8, 4, 9), (11, 8, 12, 4),(4, 1, 7, 8), (3, 6, 9, 7)], 1) == '[(8, 4), (8, 12), (1, 7), (6, 9)]'"
+  ],
+  "code_rust": "pub fn trim_tuple(test_list: Vec<Vec<i32>>, k: usize) -> String {\n    let mut res: Vec<Vec<i32>> = Vec::new();\n    \n    for ele in test_list {\n        let n = ele.len();\n        if k * 2 >= n {\n            res.push(Vec::new());\n        } else {\n            res.push(ele[k..n - k].to_vec());\n        }\n    }\n    \n    // Format output to match Python's tuple list string representation\n    let formatted: Vec<String> = res.iter().map(|inner| {\n        if inner.len() == 1 {\n            format!(\"({},)\", inner[0])\n        } else {\n            let inner_str: Vec<String> = inner.iter().map(|x| x.to_string()).collect();\n            format!(\"({})\", inner_str.join(\", \"))\n        }\n    }).collect();\n    \n    format!(\"[{}]\", formatted.join(\", \"))\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1),(9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 2) == '[(2,), (9,), (2,), (2,)]'",
+      "generated_test": "let input = vec![\n    vec![5, 3, 2, 1, 4],\n    vec![3, 4, 9, 2, 1],\n    vec![9, 1, 2, 3, 5],\n    vec![4, 8, 2, 1, 7]\n];\nlet result = trim_tuple(input, 2);\nlet expected = \"[(2,), (9,), (2,), (2,)]\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1), (9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 1) == '[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]'",
+      "generated_test": "let input = vec![\n    vec![5, 3, 2, 1, 4],\n    vec![3, 4, 9, 2, 1],\n    vec![9, 1, 2, 3, 5],\n    vec![4, 8, 2, 1, 7]\n];\nlet expected = \"[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]\";\nlet result = trim_tuple(input, 1);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert trim_tuple([(7, 8, 4, 9), (11, 8, 12, 4),(4, 1, 7, 8), (3, 6, 9, 7)], 1) == '[(8, 4), (8, 12), (1, 7), (6, 9)]'",
+      "generated_test": "let input = vec![\n    vec![7, 8, 4, 9],\n    vec![11, 8, 12, 4],\n    vec![4, 1, 7, 8],\n    vec![3, 6, 9, 7],\n];\nlet result = trim_tuple(input, 1);\nlet expected = \"[(8, 4), (8, 12), (1, 7), (6, 9)]\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": 766,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return a list of all pairs of consecutive items in a given list.",
+  "code_python": "def pair_wise(l1):\n    temp = []\n    for i in range(len(l1) - 1):\n        current_element, next_element = l1[i], l1[i + 1]\n        x = (current_element, next_element)\n        temp.append(x)\n    return temp",
+  "test_list": [
+    "assert pair_wise([1,1,2,3,3,4,4,5])==[(1, 1), (1, 2), (2, 3), (3, 3), (3, 4), (4, 4), (4, 5)]",
+    "assert pair_wise([1,5,7,9,10])==[(1, 5), (5, 7), (7, 9), (9, 10)]",
+    "assert pair_wise([5,1,9,7,10])==[(5, 1), (1, 9), (9, 7), (7, 10)]",
+    "assert pair_wise([1,2,3,4,5,6,7,8,9,10])==[(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10)]"
+  ],
+  "python_1": "def pair_wise(l1):\n    # Use zip to pair each element with its successor by offsetting the list by one position\n    paired_iterator = zip(l1, l1[1:])\n    # Convert the zip iterator to a list of tuples directly\n    result = list(paired_iterator)\n    # Return the list containing all consecutive pairs\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def pair_wise(l1):\n    # Use list comprehension to generate pairs in a single expression\n    return [(l1[i], l1[i + 1]) for i in range(len(l1) - 1)]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def pair_wise(l1):\n    # Use map function with lambda to transform indices into tuple pairs\n    result = map(lambda i: (l1[i], l1[i + 1]), range(len(l1) - 1))\n    # Convert the map object to a list and return it\n    return list(result)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def pair_wise(l1):\n    # Handle edge case where list has fewer than 2 elements\n    if len(l1) < 2:\n        return []\n    # Create an iterator from the input list for efficient traversal\n    iterator = iter(l1)\n    # Get the first element to start tracking the \"previous\" value\n    previous = next(iterator)\n    # Initialize empty result list to accumulate consecutive pairs\n    pairs = []\n    # Iterate through remaining elements using the iterator\n    for current in iterator:\n        # Create a tuple pairing the previous element with current element\n        pair = (previous, current)\n        # Add the consecutive pair to our result collection\n        pairs.append(pair)\n        # Update previous to current for the next iteration's pairing\n        previous = current\n    # Return the complete list of consecutive element pairs\n    return pairs",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def pair_wise(l1):\n    # Use recursion base case: empty result when list has fewer than 2 elements\n    if len(l1) < 2:\n        return []\n    # Extract the first two elements and create the initial pair tuple\n    first_pair = (l1[0], l1[1])\n    # Recursively process the rest of the list starting from index 1\n    remaining_pairs = pair_wise(l1[1:])\n    # Combine current pair with recursively computed pairs using list concatenation\n    return [first_pair] + remaining_pairs",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

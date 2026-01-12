@@ -1,0 +1,37 @@
+{
+  "task_id": 105,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count true booleans in the given list.",
+  "python_code": "def count(lst):   \n    return sum(lst) ",
+  "test_list": [
+    "assert count([True,False,True]) == 2",
+    "assert count([False,False]) == 0",
+    "assert count([True,True,True]) == 3"
+  ],
+  "code_javascript": "function count(lst) {\n    return lst.filter(Boolean).length;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert count([True,False,True]) == 2",
+      "generated_test": "const result = count([true, false, true]);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count([False,False]) == 0",
+      "generated_test": "const result = count([false, false]);\nconst expected = 0;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count([True,True,True]) == 3",
+      "generated_test": "const result = count([true, true, true]);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

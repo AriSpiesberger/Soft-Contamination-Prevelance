@@ -1,0 +1,27 @@
+{
+  "task_id": 436,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to return the negative numbers in a list.",
+  "code_python": "def neg_nos(list1):\n  out = []\n  for num in list1: \n    if num < 0: \n      out.append(num)\n  return out ",
+  "test_list": [
+    "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+    "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+    "assert neg_nos([-7,-6,8,9]) == [-7,-6]"
+  ],
+  "python_1": "def neg_nos(list1):\n  # Use list comprehension to filter elements in a single expression\n  # The conditional checks if each number is below zero\n  return [num for num in list1 if num < 0]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def neg_nos(list1):\n  # Use Python's built-in filter function with a lambda to select negative values\n  filtered_result = filter(lambda x: x < 0, list1)\n  # Convert the filter object iterator back to a list for the return value\n  return list(filtered_result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def neg_nos(list1):\n  # Use recursion base case: empty list returns empty result\n  if len(list1) == 0:\n    return []\n  # Extract the first element to examine it individually\n  first = list1[0]\n  # Recursively process the rest of the list to get negatives from tail\n  rest_negatives = neg_nos(list1[1:])\n  # Check if the current first element is a negative number\n  if first < 0:\n    # Prepend the negative number to the recursive result\n    return [first] + rest_negatives\n  # Skip positive numbers by just returning the recursive result\n  return rest_negatives",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def neg_nos(list1):\n  # Use reduce to accumulate negative numbers by folding over the list\n  from functools import reduce\n  # Define accumulator function that appends negative values to running list\n  def accumulator(acc, num):\n    # Extend accumulator list only when number is below zero threshold\n    if num < 0:\n      # Concatenate current negative into accumulated results\n      acc.append(num)\n    # Always return the accumulator for next iteration\n    return acc\n  # Apply reduce with accumulator starting from empty list seed\n  return reduce(accumulator, list1, [])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def neg_nos(list1):\n  # Initialize index pointer to traverse list positions\n  i = 0\n  # Create empty result container to store found negatives\n  result = []\n  # Continue looping while index hasn't exceeded list bounds\n  while i < len(list1):\n    # Retrieve the element at current index position\n    current = list1[i]\n    # Test if current element falls below zero boundary\n    if current < 0:\n      # Append qualifying negative to our result collection\n      result.append(current)\n    # Advance index to examine next list position\n    i += 1\n  # Deliver the collected negative numbers back to caller\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

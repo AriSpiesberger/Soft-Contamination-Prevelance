@@ -1,0 +1,37 @@
+{
+  "task_id": 299,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the maximum aggregate from the list of tuples.",
+  "python_code": "from collections import defaultdict\ndef max_aggregate(stdata):\n    temp = defaultdict(int)\n    for name, marks in stdata:\n        temp[name] += marks\n    return max(temp.items(), key=lambda x: x[1])",
+  "test_list": [
+    "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+    "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+    "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Object[] max_aggregate(List<Object[]> stdata) {\n        HashMap<String, Integer> temp = new HashMap<>();\n        \n        for (Object[] item : stdata) {\n            String name = (String) item[0];\n            int marks;\n            if (item[1] instanceof Integer) {\n                marks = (Integer) item[1];\n            } else {\n                marks = ((Number) item[1]).intValue();\n            }\n            temp.put(name, temp.getOrDefault(name, 0) + marks);\n        }\n        \n        String maxName = null;\n        int maxMarks = Integer.MIN_VALUE;\n        \n        for (Map.Entry<String, Integer> entry : temp.entrySet()) {\n            if (entry.getValue() > maxMarks) {\n                maxMarks = entry.getValue();\n                maxName = entry.getKey();\n            }\n        }\n        \n        return new Object[] {maxName, maxMarks};\n    }\n    \n    public static Object[] max_aggregate(Object[][] stdata) {\n        List<Object[]> list = new ArrayList<>();\n        for (Object[] item : stdata) {\n            list.add(item);\n        }\n        return max_aggregate(list);\n    }\n    \n    public static Object[] max_aggregate(List<List<Object>> stdata, boolean isList) {\n        HashMap<String, Integer> temp = new HashMap<>();\n        \n        for (List<Object> item : stdata) {\n            String name = (String) item.get(0);\n            int marks;\n            Object marksObj = item.get(1);\n            if (marksObj instanceof Integer) {\n                marks = (Integer) marksObj;\n            } else {\n                marks = ((Number) marksObj).intValue();\n            }\n            temp.put(name, temp.getOrDefault(name, 0) + marks);\n        }\n        \n        String maxName = null;\n        int maxMarks = Integer.MIN_VALUE;\n        \n        for (Map.Entry<String, Integer> entry : temp.entrySet()) {\n            if (entry.getValue() > maxMarks) {\n                maxMarks = entry.getValue();\n                maxName = entry.getKey();\n            }\n        }\n        \n        return new Object[] {maxName, maxMarks};\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 5,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',90),('Sabah Colley',88),('Peter Nichols',7),('Juan Whelan',122),('Sabah Colley',84)])==('Juan Whelan', 212)",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{\"Juan Whelan\", 90});\ninput.add(new Object[]{\"Sabah Colley\", 88});\ninput.add(new Object[]{\"Peter Nichols\", 7});\ninput.add(new Object[]{\"Juan Whelan\", 122});\ninput.add(new Object[]{\"Sabah Colley\", 84});\n\nObject[] result = max_aggregate(input);\nString expectedName = \"Juan Whelan\";\nint expectedMarks = 212;\n\nif (result[0].equals(expectedName) && ((Integer)result[1]).equals(expectedMarks)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (\" + expectedName + \", \" + expectedMarks + \")\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',50),('Sabah Colley',48),('Peter Nichols',37),('Juan Whelan',22),('Sabah Colley',14)])==('Juan Whelan', 72)",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{\"Juan Whelan\", 50});\ninput.add(new Object[]{\"Sabah Colley\", 48});\ninput.add(new Object[]{\"Peter Nichols\", 37});\ninput.add(new Object[]{\"Juan Whelan\", 22});\ninput.add(new Object[]{\"Sabah Colley\", 14});\n\nObject[] result = max_aggregate(input);\nString expectedName = \"Juan Whelan\";\nint expectedMarks = 72;\n\nif (result[0].equals(expectedName) && ((Integer)result[1]).equals(expectedMarks)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (\" + expectedName + \", \" + expectedMarks + \")\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_aggregate([('Juan Whelan',10),('Sabah Colley',20),('Peter Nichols',30),('Juan Whelan',40),('Sabah Colley',50)])==('Sabah Colley', 70)",
+      "generated_test": "List<Object[]> input = new ArrayList<>();\ninput.add(new Object[]{\"Juan Whelan\", 10});\ninput.add(new Object[]{\"Sabah Colley\", 20});\ninput.add(new Object[]{\"Peter Nichols\", 30});\ninput.add(new Object[]{\"Juan Whelan\", 40});\ninput.add(new Object[]{\"Sabah Colley\", 50});\n\nObject[] result = max_aggregate(input);\nObject[] expected = new Object[]{\"Sabah Colley\", 70};\n\nif (result[0].equals(expected[0]) && result[1].equals(expected[1])) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: (\" + expected[0] + \", \" + expected[1] + \")\");\n    System.out.println(\"  Got: (\" + result[0] + \", \" + result[1] + \")\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

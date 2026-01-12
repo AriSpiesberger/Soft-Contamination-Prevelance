@@ -1,0 +1,37 @@
+{
+  "task_id": 64,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of tuples using the second value of each tuple.",
+  "python_code": "def subject_marks(subjectmarks):\n#subject_marks = [('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])\n subjectmarks.sort(key = lambda x: x[1])\n return subjectmarks",
+  "test_list": [
+    "assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]",
+    "assert subject_marks([('Telugu',49),('Hindhi',54),('Social',33)])==([('Social',33),('Telugu',49),('Hindhi',54)])",
+    "assert subject_marks([('Physics',96),('Chemistry',97),('Biology',45)])==([('Biology',45),('Physics',96),('Chemistry',97)])"
+  ],
+  "code_javascript": "function subject_marks(subjectmarks) {\n    subjectmarks.sort((a, b) => a[1] - b[1]);\n    return subjectmarks;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]",
+      "generated_test": "const result = subject_marks([['English', 88], ['Science', 90], ['Maths', 97], ['Social sciences', 82]]);\nconst expected = [['Social sciences', 82], ['English', 88], ['Science', 90], ['Maths', 97]];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert subject_marks([('Telugu',49),('Hindhi',54),('Social',33)])==([('Social',33),('Telugu',49),('Hindhi',54)])",
+      "generated_test": "const result = subject_marks([['Telugu', 49], ['Hindhi', 54], ['Social', 33]]);\nconst expected = [['Social', 33], ['Telugu', 49], ['Hindhi', 54]];\n\nconst resultStr = JSON.stringify(result);\nconst expectedStr = JSON.stringify(expected);\n\nif (resultStr === expectedStr) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expectedStr);\n    console.log(\"  Got: \" + resultStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert subject_marks([('Physics',96),('Chemistry',97),('Biology',45)])==([('Biology',45),('Physics',96),('Chemistry',97)])",
+      "generated_test": "const result = subject_marks([['Physics', 96], ['Chemistry', 97], ['Biology', 45]]);\nconst expected = [['Biology', 45], ['Physics', 96], ['Chemistry', 97]];\n\nlet pass = true;\nif (result.length !== expected.length) {\n    pass = false;\n} else {\n    for (let i = 0; i < expected.length; i++) {\n        if (result[i][0] !== expected[i][0] || result[i][1] !== expected[i][1]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

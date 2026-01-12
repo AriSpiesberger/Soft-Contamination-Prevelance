@@ -1,0 +1,37 @@
+{
+  "task_id": 465,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to drop empty items from a given dictionary.",
+  "python_code": "def drop_empty(dict1):\n  dict1 = {key:value for (key, value) in dict1.items() if value is not None}\n  return dict1",
+  "test_list": [
+    "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+    "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+    "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}"
+  ],
+  "code_go": "package main\n\nimport \"reflect\"\n\nfunc drop_empty(dict1 map[string]interface{}) map[string]interface{} {\n\tresult := make(map[string]interface{})\n\tfor key, value := range dict1 {\n\t\tif value == nil {\n\t\t\tcontinue\n\t\t}\n\t\tv := reflect.ValueOf(value)\n\t\tif v.Kind() == reflect.Ptr || v.Kind() == reflect.Map || v.Kind() == reflect.Slice || v.Kind() == reflect.Chan || v.Kind() == reflect.Func || v.Kind() == reflect.Interface {\n\t\t\tif v.IsNil() {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t}\n\t\tresult[key] = value\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert drop_empty({'c1': 'Red', 'c2': 'Green', 'c3':None})=={'c1': 'Red', 'c2': 'Green'}",
+      "generated_test": "input := map[string]interface{}{\"c1\": \"Red\", \"c2\": \"Green\", \"c3\": nil}\nexpected := map[string]interface{}{\"c1\": \"Red\", \"c2\": \"Green\"}\nresult := drop_empty(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert drop_empty({'c1': 'Red', 'c2': None, 'c3':None})=={'c1': 'Red'}",
+      "generated_test": "input := map[string]interface{}{\"c1\": \"Red\", \"c2\": nil, \"c3\": nil}\nexpected := map[string]interface{}{\"c1\": \"Red\"}\nresult := drop_empty(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert drop_empty({'c1': None, 'c2': 'Green', 'c3':None})=={ 'c2': 'Green'}",
+      "generated_test": "input := map[string]interface{}{\"c1\": nil, \"c2\": \"Green\", \"c3\": nil}\nexpected := map[string]interface{}{\"c2\": \"Green\"}\nresult := drop_empty(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

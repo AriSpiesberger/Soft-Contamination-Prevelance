@@ -1,0 +1,27 @@
+{
+  "task_id": 644,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse an array upto a given position.",
+  "code_python": "def reverse_Array_Upto_K(input, k): \n  return (input[k-1::-1] + input[k:]) ",
+  "test_list": [
+    "assert reverse_Array_Upto_K([1, 2, 3, 4, 5, 6],4) == [4, 3, 2, 1, 5, 6]",
+    "assert reverse_Array_Upto_K([4, 5, 6, 7], 2) == [5, 4, 6, 7]",
+    "assert reverse_Array_Upto_K([9, 8, 7, 6, 5],3) == [7, 8, 9, 6, 5]"
+  ],
+  "python_1": "def reverse_Array_Upto_K(input, k): \n    # Create a mutable copy of the input list to avoid modifying original\n    result = list(input)\n    # Initialize left pointer at the start of the array\n    left = 0\n    # Initialize right pointer at position k-1 (last element to reverse)\n    right = k - 1\n    # Use two-pointer technique to swap elements moving inward\n    while left < right:\n        # Swap elements at left and right positions using tuple unpacking\n        result[left], result[right] = result[right], result[left]\n        # Move left pointer one step toward the center\n        left += 1\n        # Move right pointer one step toward the center\n        right -= 1\n    # Return the modified list with first k elements reversed\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def reverse_Array_Upto_K(input, k): \n    # Extract the first k elements that need to be reversed\n    first_part = input[:k]\n    # Use the built-in reversed() iterator to reverse the extracted portion\n    reversed_part = list(reversed(first_part))\n    # Extract the remaining elements after position k that stay in original order\n    remaining_part = input[k:]\n    # Concatenate the reversed portion with the untouched remainder\n    result = reversed_part + remaining_part\n    # Return the newly constructed list with first k elements reversed\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def reverse_Array_Upto_K(input, k): \n    # Use recursion helper to build reversed portion element by element\n    def build_reversed(index, acc):\n        # Base case: when we've collected all k elements, stop recursion\n        if index < 0:\n            return acc\n        # Append current element to accumulator and recurse to previous index\n        return build_reversed(index - 1, acc + [input[index]])\n    \n    # Start building reversed list from index k-1 down to 0\n    reversed_portion = build_reversed(k - 1, [])\n    # Extend the reversed portion with elements from position k onwards\n    reversed_portion.extend(input[k:])\n    # Return the complete list with first k elements now reversed\n    return reversed_portion",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def reverse_Array_Upto_K(input, k): \n    # Use list comprehension with conditional index mapping for each position\n    result = [\n        # For positions in the first k elements, map index i to k-1-i (reverse mapping)\n        input[k - 1 - i] if i < k else input[i]\n        # Generate indices for the entire length of the input array\n        for i in range(len(input))\n    ]\n    # Return the newly constructed list with reversed first k elements\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def reverse_Array_Upto_K(input, k): \n    # Import deque for efficient double-ended queue operations\n    from collections import deque\n    # Convert the first k elements into a deque data structure\n    front_deque = deque(input[:k])\n    # Initialize empty list to collect reversed elements via deque pops\n    reversed_front = []\n    # Pop elements from the right side of deque to achieve reversal\n    while front_deque:\n        # Each pop from right gives us elements in reverse order\n        reversed_front.append(front_deque.pop())\n    # Slice out the portion of array that remains unchanged (after position k)\n    unchanged_tail = input[k:]\n    # Merge reversed front portion with unchanged tail using addition\n    final_result = reversed_front + unchanged_tail\n    # Return the combined array with first k elements now reversed\n    return final_result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

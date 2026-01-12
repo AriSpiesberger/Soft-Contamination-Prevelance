@@ -1,0 +1,37 @@
+{
+  "task_id": 57,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the largest number that can be formed with the given list of digits.",
+  "python_code": "def find_Max_Num(arr) : \n    n = len(arr)\n    arr.sort(reverse = True) \n    num = arr[0] \n    for i in range(1,n) : \n        num = num * 10 + arr[i] \n    return num ",
+  "test_list": [
+    "assert find_Max_Num([1,2,3]) == 321",
+    "assert find_Max_Num([4,5,6,1]) == 6541",
+    "assert find_Max_Num([1,2,3,9]) == 9321"
+  ],
+  "code_rust": "pub fn find_Max_Num(arr: &[i32]) -> i64 {\n    if arr.is_empty() {\n        return 0;\n    }\n    \n    let mut arr = arr.to_vec();\n    arr.sort_by(|a, b| b.cmp(a));\n    \n    let mut num: i64 = arr[0] as i64;\n    for i in 1..arr.len() {\n        num = num * 10 + arr[i] as i64;\n    }\n    \n    num\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_Max_Num([1,2,3]) == 321",
+      "generated_test": "let result = find_Max_Num(&[1, 2, 3]);\nlet expected: i64 = 321;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Max_Num([4,5,6,1]) == 6541",
+      "generated_test": "let result = find_Max_Num(&[4, 5, 6, 1]);\nlet expected: i64 = 6541;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Max_Num([1,2,3,9]) == 9321",
+      "generated_test": "let result = find_Max_Num(&[1, 2, 3, 9]);\nlet expected: i64 = 9321;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

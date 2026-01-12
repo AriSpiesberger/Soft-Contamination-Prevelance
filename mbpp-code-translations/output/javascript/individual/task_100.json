@@ -1,0 +1,37 @@
+{
+  "task_id": 100,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the next smallest palindrome of a specified integer, returned as an integer.",
+  "python_code": "import sys\ndef next_smallest_palindrome(num):\n    numstr = str(num)\n    for i in range(num+1,sys.maxsize):\n        if str(i) == str(i)[::-1]:\n            return i",
+  "test_list": [
+    "assert next_smallest_palindrome(99)==101",
+    "assert next_smallest_palindrome(1221)==1331",
+    "assert next_smallest_palindrome(120)==121"
+  ],
+  "code_javascript": "function next_smallest_palindrome(num) {\n    for (let i = num + 1; i < Number.MAX_SAFE_INTEGER; i++) {\n        const str = String(i);\n        const reversed = str.split('').reverse().join('');\n        if (str === reversed) {\n            return i;\n        }\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert next_smallest_palindrome(99)==101",
+      "generated_test": "const result = next_smallest_palindrome(99);\nconst expected = 101;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(1221)==1331",
+      "generated_test": "const result = next_smallest_palindrome(1221);\nconst expected = 1331;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(120)==121",
+      "generated_test": "const result = next_smallest_palindrome(120);\nconst expected = 121;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

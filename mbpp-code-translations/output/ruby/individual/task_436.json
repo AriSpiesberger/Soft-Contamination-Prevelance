@@ -1,0 +1,37 @@
+{
+  "task_id": 436,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to return the negative numbers in a list.",
+  "python_code": "def neg_nos(list1):\n  out = []\n  for num in list1: \n    if num < 0: \n      out.append(num)\n  return out ",
+  "test_list": [
+    "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+    "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+    "assert neg_nos([-7,-6,8,9]) == [-7,-6]"
+  ],
+  "code_ruby": "def neg_nos(list1)\n  list1.select { |num| num < 0 }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+      "generated_test": "result = neg_nos([-1, 4, 5, -6])\nexpected = [-1, -6]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+      "generated_test": "result = neg_nos([-1, -2, 3, 4])\nexpected = [-1, -2]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert neg_nos([-7,-6,8,9]) == [-7,-6]",
+      "generated_test": "result = neg_nos([-7, -6, 8, 9])\nexpected = [-7, -6]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 809,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if each element of second tuple is smaller than its corresponding element in the first tuple.",
+  "python_code": "def check_smaller(test_tup1, test_tup2):\n  return all(x > y for x, y in zip(test_tup1, test_tup2))",
+  "test_list": [
+    "assert check_smaller((1, 2, 3), (2, 3, 4)) == False",
+    "assert check_smaller((4, 5, 6), (3, 4, 5)) == True",
+    "assert check_smaller((11, 12, 13), (10, 11, 12)) == True"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static boolean check_smaller(ArrayList<Integer> test_tup1, ArrayList<Integer> test_tup2) {\n        int minLength = Math.min(test_tup1.size(), test_tup2.size());\n        for (int i = 0; i < minLength; i++) {\n            if (!(test_tup1.get(i) > test_tup2.get(i))) {\n                return false;\n            }\n        }\n        return true;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_smaller((1, 2, 3), (2, 3, 4)) == False",
+      "generated_test": "ArrayList<Integer> test_tup1 = new ArrayList<>();\ntest_tup1.add(1);\ntest_tup1.add(2);\ntest_tup1.add(3);\n\nArrayList<Integer> test_tup2 = new ArrayList<>();\ntest_tup2.add(2);\ntest_tup2.add(3);\ntest_tup2.add(4);\n\nboolean result = check_smaller(test_tup1, test_tup2);\nboolean expected = false;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_smaller((4, 5, 6), (3, 4, 5)) == True",
+      "generated_test": "ArrayList<Integer> test_tup1 = new ArrayList<Integer>();\ntest_tup1.add(4);\ntest_tup1.add(5);\ntest_tup1.add(6);\n\nArrayList<Integer> test_tup2 = new ArrayList<Integer>();\ntest_tup2.add(3);\ntest_tup2.add(4);\ntest_tup2.add(5);\n\nboolean result = check_smaller(test_tup1, test_tup2);\nboolean expected = true;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_smaller((11, 12, 13), (10, 11, 12)) == True",
+      "generated_test": "ArrayList<Integer> test_tup1 = new ArrayList<>();\ntest_tup1.add(11);\ntest_tup1.add(12);\ntest_tup1.add(13);\n\nArrayList<Integer> test_tup2 = new ArrayList<>();\ntest_tup2.add(10);\ntest_tup2.add(11);\ntest_tup2.add(12);\n\nboolean result = check_smaller(test_tup1, test_tup2);\nboolean expected = true;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

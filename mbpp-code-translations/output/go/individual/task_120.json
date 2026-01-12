@@ -1,0 +1,37 @@
+{
+  "task_id": 120,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.",
+  "python_code": "def max_product_tuple(list1):\n    result_max = max([abs(x * y) for x, y in list1] )\n    return result_max",
+  "test_list": [
+    "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+    "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+    "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484"
+  ],
+  "code_go": "package main\n\nfunc max_product_tuple(list1 [][2]int) int {\n\tif len(list1) == 0 {\n\t\treturn 0\n\t}\n\t\n\tmaxProduct := abs(list1[0][0] * list1[0][1])\n\t\n\tfor _, pair := range list1 {\n\t\tproduct := abs(pair[0] * pair[1])\n\t\tif product > maxProduct {\n\t\t\tmaxProduct = product\n\t\t}\n\t}\n\t\n\treturn maxProduct\n}\n\nfunc abs(x int) int {\n\tif x < 0 {\n\t\treturn -x\n\t}\n\treturn x\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36",
+      "generated_test": "result := max_product_tuple([][2]int{{2, 7}, {2, 6}, {1, 8}, {4, 9}})\nexpected := 36\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(10,20), (15,2), (5,10)] )==200",
+      "generated_test": "result := max_product_tuple([][2]int{{10, 20}, {15, 2}, {5, 10}})\nexpected := 200\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==484",
+      "generated_test": "result := max_product_tuple([][2]int{{11, 44}, {10, 15}, {20, 5}, {12, 9}})\nexpected := 484\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

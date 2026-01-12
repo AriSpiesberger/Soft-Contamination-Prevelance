@@ -1,0 +1,37 @@
+{
+  "task_id": 806,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find maximum run of uppercase characters in the given string.",
+  "python_code": "def max_run_uppercase(test_str):\n  cnt = 0\n  res = 0\n  for idx in range(0, len(test_str)):\n    if test_str[idx].isupper():\n      cnt += 1\n    else:\n      res = cnt\n      cnt = 0\n  if test_str[len(test_str) - 1].isupper():\n    res = cnt\n  return (res)",
+  "test_list": [
+    "assert max_run_uppercase('GeMKSForGERksISBESt') == 5",
+    "assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6",
+    "assert max_run_uppercase('GooGLEFluTTER') == 4"
+  ],
+  "code_rust": "pub fn max_run_uppercase(test_str: &str) -> usize {\n    let chars: Vec<char> = test_str.chars().collect();\n    let mut cnt: usize = 0;\n    let mut res: usize = 0;\n    \n    for idx in 0..chars.len() {\n        if chars[idx].is_uppercase() {\n            cnt += 1;\n        } else {\n            res = cnt;\n            cnt = 0;\n        }\n    }\n    \n    if !chars.is_empty() && chars[chars.len() - 1].is_uppercase() {\n        res = cnt;\n    }\n    \n    res\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_run_uppercase('GeMKSForGERksISBESt') == 5",
+      "generated_test": "let result = max_run_uppercase(\"GeMKSForGERksISBESt\");\nlet expected: usize = 5;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_run_uppercase('PrECIOusMOVemENTSYT') == 6",
+      "generated_test": "let result = max_run_uppercase(\"PrECIOusMOVemENTSYT\");\nlet expected: usize = 6;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_run_uppercase('GooGLEFluTTER') == 4",
+      "generated_test": "let result = max_run_uppercase(\"GooGLEFluTTER\");\nlet expected: usize = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

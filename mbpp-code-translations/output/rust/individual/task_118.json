@@ -1,0 +1,37 @@
+{
+  "task_id": 118,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a string to a list of strings split on the space character.",
+  "python_code": "def string_to_list(string): \n    lst = list(string.split(\" \")) \n    return lst",
+  "test_list": [
+    "assert string_to_list(\"python programming\")==['python','programming']",
+    "assert string_to_list(\"lists tuples strings\")==['lists','tuples','strings']",
+    "assert string_to_list(\"write a program\")==['write','a','program']"
+  ],
+  "code_rust": "pub fn string_to_list(string: &str) -> Vec<String> {\n    string.split(\" \").map(|s| s.to_string()).collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert string_to_list(\"python programming\")==['python','programming']",
+      "generated_test": "let result = string_to_list(\"python programming\");\nlet expected: Vec<String> = vec![\"python\".to_string(), \"programming\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_list(\"lists tuples strings\")==['lists','tuples','strings']",
+      "generated_test": "let result = string_to_list(\"lists tuples strings\");\nlet expected: Vec<String> = vec![\"lists\".to_string(), \"tuples\".to_string(), \"strings\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert string_to_list(\"write a program\")==['write','a','program']",
+      "generated_test": "let result = string_to_list(\"write a program\");\nlet expected: Vec<String> = vec![\"write\".to_string(), \"a\".to_string(), \"program\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

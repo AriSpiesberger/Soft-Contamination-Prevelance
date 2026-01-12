@@ -1,0 +1,27 @@
+{
+  "task_id": 77,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find whether a number is divisible by 11.",
+  "code_python": "def is_Diff(n): \n    return (n % 11 == 0) ",
+  "test_list": [
+    "assert is_Diff (12345) == False",
+    "assert is_Diff(1212112) == True",
+    "assert is_Diff(1212) == False"
+  ],
+  "python_1": "def is_Diff(n): \n    # Convert the number to its absolute value to handle negative numbers\n    n = abs(n)\n    # Convert number to string to access individual digits\n    digits = str(n)\n    # Initialize accumulator for sum of digits at odd positions (1st, 3rd, 5th...)\n    odd_position_sum = 0\n    # Initialize accumulator for sum of digits at even positions (2nd, 4th, 6th...)\n    even_position_sum = 0\n    # Iterate through each digit with its index position\n    for index, digit in enumerate(digits):\n        # Check if position is odd (0-indexed, so even index means odd position)\n        if index % 2 == 0:\n            # Add digit value to odd position sum\n            odd_position_sum += int(digit)\n        # Otherwise it's an even position\n        else:\n            # Add digit value to even position sum\n            even_position_sum += int(digit)\n    # Calculate the absolute difference between the two sums\n    difference = abs(odd_position_sum - even_position_sum)\n    # A number is divisible by 11 if the difference is divisible by 11\n    return difference % 11 == 0",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_Diff(n): \n    # Ensure we work with positive number for consistent processing\n    n = abs(n)\n    # Use repeated subtraction technique: subtract alternating digits from right\n    # This implements the divisibility rule iteratively without converting to string\n    while n > 99:\n        # Extract the last digit (units place)\n        last_digit = n % 10\n        # Remove the last digit from the number\n        n = n // 10\n        # Subtract the extracted digit from remaining number (alternating sign rule)\n        n = abs(n - last_digit)\n    # After reducing, check if result is in the set of two-digit multiples of 11\n    # Including 0, 11, 22, 33, 44, 55, 66, 77, 88, 99\n    return n in {0, 11, 22, 33, 44, 55, 66, 77, 88, 99}",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_Diff(n): \n    # Handle negative numbers by taking absolute value\n    n = abs(n)\n    # Recursive base case: small numbers can be directly checked\n    if n < 11:\n        # Zero is divisible by 11, other single digits are not\n        return n == 0\n    # Recursive base case for two-digit numbers\n    if n < 100:\n        # Check if it equals one of the two-digit multiples of 11\n        return n == 11 or n == 22 or n == 33 or n == 44 or n == 55 or n == 66 or n == 77 or n == 88 or n == 99\n    # Extract digits from right side for the alternating sum technique\n    # Get the rightmost digit (position 1)\n    d0 = n % 10\n    # Shift number right by one decimal place\n    n = n // 10\n    # Get the second rightmost digit (position 2)\n    d1 = n % 10\n    # Remove the processed digit from remaining number\n    remaining = n // 10\n    # Apply alternating difference: add back d0, subtract d1 from remaining\n    # This preserves divisibility by 11 property through recursion\n    reduced = remaining + d0 - d1\n    # Recursively check the reduced number for divisibility by 11\n    return is_Diff(reduced)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_Diff(n): \n    # Work with absolute value to handle negative inputs uniformly\n    n = abs(n)\n    # Convert integer to list of digit values in reverse order (right to left)\n    digits_reversed = [int(d) for d in str(n)[::-1]]\n    # Multiply odd-indexed digits by -1 using list comprehension with ternary\n    weighted_digits = [d if i % 2 == 0 else -d for i, d in enumerate(digits_reversed)]\n    # Sum all weighted digits to get the alternating sum\n    alternating_sum = sum(weighted_digits)\n    # Check if the alternating sum is evenly divisible by 11\n    return alternating_sum % 11 == 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_Diff(n): \n    # Normalize input by converting to positive for uniform digit processing\n    n = abs(n)\n    # Use divmod to simultaneously extract digits and quotient in a generator approach\n    alternating_total = 0\n    # Track sign multiplier: starts at +1 for rightmost digit, alternates thereafter\n    sign = 1\n    # Process digits from right to left using integer arithmetic until exhausted\n    while n > 0:\n        # Extract rightmost digit and remaining number in single operation\n        n, digit = divmod(n, 10)\n        # Accumulate digit with current sign into running total\n        alternating_total += sign * digit\n        # Flip sign for next iteration to create alternating pattern\n        sign = -sign\n    # Divisibility holds if alternating sum is congruent to 0 mod 11\n    return alternating_total % 11 == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 746,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find area of a sector. The function takes the radius and angle as inputs. Function should return None if the angle is larger than 360 degrees.",
+  "code_python": "import math\ndef sector_area(r,a):\n    if a > 360:\n        return None\n    return (math.pi*r**2) * (a/360)",
+  "test_list": [
+    "assert sector_area(4,45)==6.283185307179586",
+    "assert sector_area(9,45)==31.808625617596654",
+    "assert sector_area(9,361)==None"
+  ],
+  "python_1": "import math\n\ndef sector_area(r, a):\n    # Define the full circle angle as a constant for clarity\n    full_circle = 360\n    # Check if angle exceeds a complete rotation, which is invalid\n    if a > full_circle:\n        # Return None to indicate invalid input per specification\n        return None\n    # Calculate the fraction of the circle that the sector represents\n    angle_fraction = a / full_circle\n    # Compute the total area of a circle with the given radius\n    circle_area = math.pi * r * r\n    # Multiply circle area by the angle fraction to get sector area\n    sector = circle_area * angle_fraction\n    # Return the computed sector area\n    return sector",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef sector_area(r, a):\n    # Use a ternary expression to handle the invalid angle case upfront\n    # Convert angle to radians since radians are the natural unit for arc calculations\n    angle_in_radians = None if a > 360 else math.radians(a)\n    # Early return if we detected an invalid angle above\n    if angle_in_radians is None:\n        return None\n    # Sector area formula using radians: (1/2) * r^2 * theta\n    # This is the integral-based derivation of sector area\n    area = 0.5 * (r ** 2) * angle_in_radians\n    # Return the computed area using the radian-based formula\n    return area",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef sector_area(r, a):\n    # Use a dictionary to map validity status to computation functions\n    # This approach uses callable values to defer computation\n    computations = {\n        # When valid, return a lambda that computes the actual sector area\n        True: lambda radius, angle: (angle / 360) * math.pi * radius ** 2,\n        # When invalid, return a lambda that always gives None\n        False: lambda radius, angle: None\n    }\n    # Determine validity by checking if angle is within acceptable bounds\n    is_valid = a <= 360\n    # Retrieve the appropriate computation function based on validity\n    compute_func = computations[is_valid]\n    # Execute the selected function with radius and angle parameters\n    result = compute_func(r, a)\n    # Return whatever the chosen computation produced\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef sector_area(r, a):\n    # Define a generator expression that yields the area calculation or None based on angle validity\n    area_generator = (None if a > 360 else (math.pi * r ** 2) * (a / 360) for _ in range(1))\n    # Extract the single computed value from the generator using next()\n    computed_area = next(area_generator)\n    # Leverage the walrus operator pattern by assigning and returning in a single logical flow\n    return computed_area if (valid := a <= 360) or not valid else None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef sector_area(r, a):\n    # Define a recursive helper that computes area or returns None based on angle validation\n    def compute(radius, angle, validated=False):\n        # Base case: if already validated, perform the actual sector calculation\n        if validated:\n            # Use the proportion formula: sector is angle/360 of the full circle area\n            return math.pi * radius * radius * angle / 360\n        # Recursive case: check validity then call self with validated flag\n        if angle > 360:\n            # Angle exceeds full rotation, so return None as specified\n            return None\n        # Valid angle detected, recurse with validated=True to compute result\n        return compute(radius, angle, True)\n    # Invoke the recursive helper with initial parameters\n    result = compute(r, a)\n    # Return the computed sector area or None from recursive computation\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

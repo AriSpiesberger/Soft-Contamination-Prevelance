@@ -1,0 +1,37 @@
+{
+  "task_id": 431,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes two lists and returns true if they have at least one common element.",
+  "python_code": "def common_element(list1, list2):\n     result = False\n     for x in list1:\n         for y in list2:\n             if x == y:\n                 result = True\n                 return result",
+  "test_list": [
+    "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+    "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+    "assert common_element(['a','b','c'], ['d','b','e'])==True"
+  ],
+  "code_go": "package main\n\nfunc common_element(list1, list2 []interface{}) interface{} {\n\tfor _, x := range list1 {\n\t\tfor _, y := range list2 {\n\t\t\tif x == y {\n\t\t\t\treturn true\n\t\t\t}\n\t\t}\n\t}\n\treturn nil\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+      "generated_test": "result := common_element([]interface{}{1, 2, 3, 4, 5}, []interface{}{5, 6, 7, 8, 9})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+      "generated_test": "result := common_element([]interface{}{1, 2, 3, 4, 5}, []interface{}{6, 7, 8, 9})\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", nil)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element(['a','b','c'], ['d','b','e'])==True",
+      "generated_test": "result := common_element([]interface{}{\"a\", \"b\", \"c\"}, []interface{}{\"d\", \"b\", \"e\"})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

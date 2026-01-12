@@ -1,0 +1,37 @@
+{
+  "task_id": 64,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of tuples using the second value of each tuple.",
+  "python_code": "def subject_marks(subjectmarks):\n#subject_marks = [('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])\n subjectmarks.sort(key = lambda x: x[1])\n return subjectmarks",
+  "test_list": [
+    "assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]",
+    "assert subject_marks([('Telugu',49),('Hindhi',54),('Social',33)])==([('Social',33),('Telugu',49),('Hindhi',54)])",
+    "assert subject_marks([('Physics',96),('Chemistry',97),('Biology',45)])==([('Biology',45),('Physics',96),('Chemistry',97)])"
+  ],
+  "code_go": "package main\n\nimport \"sort\"\n\nfunc subject_marks(subjectmarks [][2]interface{}) [][2]interface{} {\n\tsort.Slice(subjectmarks, func(i, j int) bool {\n\t\treturn subjectmarks[i][1].(int) < subjectmarks[j][1].(int)\n\t})\n\treturn subjectmarks\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 4,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]",
+      "generated_test": "input := [][2]interface{}{{\"English\", 88}, {\"Science\", 90}, {\"Maths\", 97}, {\"Social sciences\", 82}}\nexpected := [][2]interface{}{{\"Social sciences\", 82}, {\"English\", 88}, {\"Science\", 90}, {\"Maths\", 97}}\nresult := subject_marks(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i][0] != expected[i][0] || result[i][1] != expected[i][1] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert subject_marks([('Telugu',49),('Hindhi',54),('Social',33)])==([('Social',33),('Telugu',49),('Hindhi',54)])",
+      "generated_test": "input := [][2]interface{}{{\"Telugu\", 49}, {\"Hindhi\", 54}, {\"Social\", 33}}\nexpected := [][2]interface{}{{\"Social\", 33}, {\"Telugu\", 49}, {\"Hindhi\", 54}}\nresult := subject_marks(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i][0] != expected[i][0] || result[i][1] != expected[i][1] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert subject_marks([('Physics',96),('Chemistry',97),('Biology',45)])==([('Biology',45),('Physics',96),('Chemistry',97)])",
+      "generated_test": "result := subject_marks([][2]interface{}{{\"Physics\", 96}, {\"Chemistry\", 97}, {\"Biology\", 45}})\nexpected := [][2]interface{}{{\"Biology\", 45}, {\"Physics\", 96}, {\"Chemistry\", 97}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i][0] != expected[i][0] || result[i][1] != expected[i][1] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

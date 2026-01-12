@@ -1,0 +1,37 @@
+{
+  "task_id": 270,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of even numbers at even positions of a list.",
+  "python_code": "def sum_even_and_even_index(arr):  \n    i = 0\n    sum = 0\n    for i in range(0, len(arr),2): \n        if (arr[i] % 2 == 0) : \n            sum += arr[i]  \n    return sum",
+  "test_list": [
+    "assert sum_even_and_even_index([5, 6, 12, 1, 18, 8]) == 30",
+    "assert sum_even_and_even_index([3, 20, 17, 9, 2, 10, 18, 13, 6, 18]) == 26",
+    "assert sum_even_and_even_index([5, 6, 12, 1]) == 12"
+  ],
+  "code_ruby": "def sum_even_and_even_index(arr)\n  sum = 0\n  (0...arr.length).step(2) do |i|\n    sum += arr[i] if arr[i].even?\n  end\n  sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sum_even_and_even_index([5, 6, 12, 1, 18, 8]) == 30",
+      "generated_test": "result = sum_even_and_even_index([5, 6, 12, 1, 18, 8])\nexpected = 30\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_even_and_even_index([3, 20, 17, 9, 2, 10, 18, 13, 6, 18]) == 26",
+      "generated_test": "result = sum_even_and_even_index([3, 20, 17, 9, 2, 10, 18, 13, 6, 18])\nexpected = 26\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_even_and_even_index([5, 6, 12, 1]) == 12",
+      "generated_test": "result = sum_even_and_even_index([5, 6, 12, 1])\nexpected = 12\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

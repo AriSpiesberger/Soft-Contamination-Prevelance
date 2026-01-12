@@ -1,0 +1,27 @@
+{
+  "task_id": 293,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the third side of a right angled triangle.",
+  "code_python": "import math\ndef otherside_rightangle(w,h):\n  s=math.sqrt((w*w)+(h*h))\n  return s",
+  "test_list": [
+    "assert otherside_rightangle(7,8)==10.63014581273465",
+    "assert otherside_rightangle(3,4)==5",
+    "assert otherside_rightangle(7,15)==16.55294535724685"
+  ],
+  "python_1": "def otherside_rightangle(w,h):\n  # Use the exponentiation operator to square the first side\n  w_squared = w ** 2\n  # Use the exponentiation operator to square the second side\n  h_squared = h ** 2\n  # Sum the squares according to Pythagorean theorem: a\u00b2 + b\u00b2 = c\u00b2\n  sum_of_squares = w_squared + h_squared\n  # Calculate hypotenuse by raising to power 0.5 instead of using sqrt\n  hypotenuse = sum_of_squares ** 0.5\n  # Return the computed length of the third side\n  return hypotenuse",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\ndef otherside_rightangle(w,h):\n  # Leverage math.hypot which computes Euclidean distance directly\n  hypotenuse = math.hypot(w, h)\n  # Return the hypotenuse calculated using the optimized hypot function\n  return hypotenuse",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\ndef otherside_rightangle(w,h):\n  # Combine sides into a list to enable functional-style processing\n  sides = [w, h]\n  # Apply lambda function to square each side element using map\n  squared_sides = map(lambda x: x * x, sides)\n  # Aggregate squared values using sum function for cleaner arithmetic\n  total = sum(squared_sides)\n  # Extract square root using pow function with fractional exponent\n  result = pow(total, 1/2)\n  # Return the calculated hypotenuse length\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\ndef otherside_rightangle(w,h):\n  # Store both leg measurements in a tuple for paired processing\n  legs = (w, h)\n  # Use generator expression with sum to compute sum of squares in one pass\n  sum_squares = sum(side * side for side in legs)\n  # Apply math.sqrt on the accumulated squared sum to find hypotenuse\n  hypotenuse = math.sqrt(sum_squares)\n  # Return the length of the third side (hypotenuse) of the triangle\n  return hypotenuse",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import functools\nimport operator\n\ndef otherside_rightangle(w,h):\n  # Create a list containing both triangle legs for reduction processing\n  legs = [w, h]\n  # Use functools.reduce with operator.add to sum squared values via accumulation pattern\n  sum_of_squares = functools.reduce(operator.add, [leg * leg for leg in legs])\n  # Employ Newton's method iteratively to approximate square root without math module\n  guess = sum_of_squares / 2.0\n  # Iterate Newton-Raphson refinement until convergence within floating precision\n  for _ in range(50):\n    # Apply Newton's formula: next_guess = (guess + value/guess) / 2\n    guess = (guess + sum_of_squares / guess) / 2.0\n  # Return the converged approximation of the hypotenuse\n  return guess",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

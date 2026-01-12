@@ -1,0 +1,44 @@
+{
+  "task_id": 773,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the occurrence and position of the substrings within a string. Return None if there is no match.",
+  "python_code": "import re\ndef occurance_substring(text,pattern):\n for match in re.finditer(pattern, text):\n    s = match.start()\n    e = match.end()\n    return (text[s:e], s, e)",
+  "test_list": [
+    "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+    "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+    "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+    "assert occurance_substring('c++ programming, c++ language','python')==None"
+  ],
+  "code_ruby": "def occurance_substring(text, pattern)\n  match = text.match(Regexp.new(pattern))\n  if match\n    s = match.begin(0)\n    e = match.end(0)\n    [text[s...e], s, e]\n  else\n    nil\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 4,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+      "generated_test": "result = occurance_substring('python programming, python language', 'python')\nexpected = ['python', 0, 6]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+      "generated_test": "result = occurance_substring('python programming,programming language', 'programming')\nexpected = ['programming', 7, 18]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+      "generated_test": "result = occurance_substring('python programming,programming language', 'language')\nexpected = ['language', 31, 39]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('c++ programming, c++ language','python')==None",
+      "generated_test": "result = occurance_substring('c++ programming, c++ language', 'python')\nexpected = nil\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 398,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the sum of digits of each number of a given list.",
+  "python_code": "def sum_of_digits(nums):\n    return sum(int(el) for n in nums for el in str(n) if el.isdigit())",
+  "test_list": [
+    "assert sum_of_digits([10,2,56])==14",
+    "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+    "assert sum_of_digits([10,20,-4,5,-70])==19"
+  ],
+  "code_go": "package main\n\nfunc sum_of_digits(nums []interface{}) int {\n    total := 0\n    processNumber := func(n int) {\n        if n < 0 {\n            n = -n\n        }\n        for n > 0 {\n            total += n % 10\n            n /= 10\n        }\n    }\n    \n    for _, item := range nums {\n        switch v := item.(type) {\n        case int:\n            processNumber(v)\n        case []interface{}:\n            for _, inner := range v {\n                switch iv := inner.(type) {\n                case int:\n                    processNumber(iv)\n                }\n            }\n        }\n    }\n    return total\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sum_of_digits([10,2,56])==14",
+      "generated_test": "result := sum_of_digits([]interface{}{10, 2, 56})\nexpected := 14\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+      "generated_test": "input := []interface{}{[]interface{}{10, 20, 4, 5, \"b\", 70, \"a\"}}\nexpected := 19\nresult := sum_of_digits(input)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_of_digits([10,20,-4,5,-70])==19",
+      "generated_test": "result := sum_of_digits([]interface{}{10, 20, -4, 5, -70})\nexpected := 19\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

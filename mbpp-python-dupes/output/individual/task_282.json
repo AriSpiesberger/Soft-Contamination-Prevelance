@@ -1,0 +1,27 @@
+{
+  "task_id": 282,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to subtract two lists element-wise.",
+  "code_python": "def sub_list(nums1,nums2):\n  result = map(lambda x, y: x - y, nums1, nums2)\n  return list(result)",
+  "test_list": [
+    "assert sub_list([1, 2, 3],[4,5,6])==[-3,-3,-3]",
+    "assert sub_list([1,2],[3,4])==[-2,-2]",
+    "assert sub_list([90,120],[50,70])==[40,50]"
+  ],
+  "python_1": "def sub_list(nums1,nums2):\n  # Use list comprehension with zip to pair corresponding elements\n  result = [x - y for x, y in zip(nums1, nums2)]\n  # Return the list containing element-wise differences\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sub_list(nums1,nums2):\n  # Create an empty list to accumulate the differences\n  result = []\n  # Iterate through indices from 0 to the length of the first list\n  for i in range(len(nums1)):\n    # Compute difference at current index and append to result\n    result.append(nums1[i] - nums2[i])\n  # Return the populated list of element-wise subtractions\n  return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sub_list(nums1,nums2):\n  # Use enumerate to get both index and value from first list\n  result = []\n  # Iterate with index tracking via enumerate function\n  for idx, val in enumerate(nums1):\n    # Subtract corresponding element from nums2 using the current index\n    difference = val - nums2[idx]\n    # Build result list by adding each computed difference\n    result = result + [difference]\n  # Return the final list of element-wise subtractions\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sub_list(nums1,nums2):\n  # Use numpy-style approach with operator module for functional subtraction\n  import operator\n  # Create iterator that applies subtraction operator to paired elements\n  subtraction_iterator = map(operator.sub, nums1, nums2)\n  # Unpack the iterator into a list using starred expression in list literal\n  return [*subtraction_iterator]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sub_list(nums1,nums2):\n  # Determine how many elements need to be processed\n  length = len(nums1)\n  # Pre-allocate a list of zeros with the exact size needed\n  result = [0] * length\n  # Use a while loop with manual index management for element access\n  index = 0\n  # Continue until all positions have been filled with differences\n  while index < length:\n    # Directly assign the computed difference to the pre-allocated slot\n    result[index] = nums1[index] - nums2[index]\n    # Manually increment the index counter for next iteration\n    index += 1\n  # Return the filled result list containing all element-wise subtractions\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

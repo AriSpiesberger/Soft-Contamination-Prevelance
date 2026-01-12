@@ -1,0 +1,37 @@
+{
+  "task_id": 301,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the depth of a dictionary.",
+  "python_code": "def dict_depth(d):\n    if isinstance(d, dict):\n        return 1 + (max(map(dict_depth, d.values())) if d else 0)\n    return 0",
+  "test_list": [
+    "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+    "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+    "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3"
+  ],
+  "code_ruby": "def dict_depth(d)\n  if d.is_a?(Hash)\n    return 1 + (d.empty? ? 0 : d.values.map { |v| dict_depth(v) }.max)\n  end\n  0\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c': {'d': {}}}})==4",
+      "generated_test": "result = dict_depth({'a' => 1, 'b' => {'c' => {'d' => {}}}})\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({'a':1, 'b': {'c':'python'}})==2",
+      "generated_test": "result = dict_depth({'a' => 1, 'b' => {'c' => 'python'}})\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_depth({1: 'Sun', 2: {3: {4:'Mon'}}})==3",
+      "generated_test": "result = dict_depth({1 => 'Sun', 2 => {3 => {4 => 'Mon'}}})\nexpected = 3\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

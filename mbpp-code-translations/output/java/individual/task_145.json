@@ -1,0 +1,37 @@
+{
+  "task_id": 145,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum difference between any two elements in a given array.",
+  "python_code": "def max_Abs_Diff(arr): \n    n = len(arr)\n    minEle = arr[0] \n    maxEle = arr[0] \n    for i in range(1, n): \n        minEle = min(minEle,arr[i]) \n        maxEle = max(maxEle,arr[i]) \n    return (maxEle - minEle) ",
+  "test_list": [
+    "assert max_Abs_Diff((2,1,5,3)) == 4",
+    "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+    "assert max_Abs_Diff((3,2,1)) == 2"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_Abs_Diff(ArrayList<Integer> arr) {\n        int n = arr.size();\n        int minEle = arr.get(0);\n        int maxEle = arr.get(0);\n        for (int i = 1; i < n; i++) {\n            minEle = Math.min(minEle, arr.get(i));\n            maxEle = Math.max(maxEle, arr.get(i));\n        }\n        return (maxEle - minEle);\n    }\n    \n    public static int max_Abs_Diff(int[] arr) {\n        int n = arr.length;\n        int minEle = arr[0];\n        int maxEle = arr[0];\n        for (int i = 1; i < n; i++) {\n            minEle = Math.min(minEle, arr[i]);\n            maxEle = Math.max(maxEle, arr[i]);\n        }\n        return (maxEle - minEle);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_Abs_Diff((2,1,5,3)) == 4",
+      "generated_test": "int[] arr = new int[]{2, 1, 5, 3};\nint result = max_Abs_Diff(arr);\nint expected = 4;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Abs_Diff((9,3,2,5,1)) == 8",
+      "generated_test": "int[] arr = new int[]{9, 3, 2, 5, 1};\nint result = max_Abs_Diff(arr);\nint expected = 8;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_Abs_Diff((3,2,1)) == 2",
+      "generated_test": "int[] input = new int[]{3, 2, 1};\nint expected = 2;\nint result = max_Abs_Diff(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

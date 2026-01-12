@@ -1,0 +1,27 @@
+{
+  "task_id": 16,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.",
+  "code_python": "import re\ndef text_lowercase_underscore(text):\n        patterns = '^[a-z]+_[a-z]+$'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_lowercase_underscore(\"aab_cbbbc\")==(True)",
+    "assert text_lowercase_underscore(\"aab_Abbbc\")==(False)",
+    "assert text_lowercase_underscore(\"Aaab_abbbc\")==(False)"
+  ],
+  "python_1": "import re\ndef text_lowercase_underscore(text):\n        # Use re.match instead of re.search since we need to match the entire string from start\n        match_result = re.match(r'^[a-z]+_[a-z]+$', text)\n        # Directly convert match object to boolean - None becomes False, match becomes True\n        return bool(match_result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef text_lowercase_underscore(text):\n        # Use fullmatch which requires the entire string to match the pattern\n        pattern = r'[a-z]+_[a-z]+'\n        # fullmatch implicitly anchors at both ends, eliminating need for ^ and $\n        result = re.fullmatch(pattern, text)\n        # Return True if result is not None, False otherwise using ternary operator\n        return True if result else False",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef text_lowercase_underscore(text):\n        # Compile the regex pattern for potential performance benefits and clarity\n        compiled_pattern = re.compile(r'^[a-z]+_[a-z]+$')\n        # Apply the compiled pattern to test the input string\n        is_match = compiled_pattern.match(text)\n        # Use 'is not None' for explicit truthiness check of the match object\n        return is_match is not None",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def text_lowercase_underscore(text):\n        # Split the string on underscore to separate the expected parts\n        parts = text.split('_')\n        # Verify exactly two parts exist (exactly one underscore in the string)\n        if len(parts) != 2:\n                return False\n        # Extract the left and right segments around the underscore\n        left_part, right_part = parts[0], parts[1]\n        # Ensure neither segment is empty (requires at least one char on each side)\n        if not left_part or not right_part:\n                return False\n        # Check if left segment contains only lowercase letters using islower and isalpha\n        if not (left_part.islower() and left_part.isalpha()):\n                return False\n        # Check if right segment contains only lowercase letters using same validation\n        if not (right_part.islower() and right_part.isalpha()):\n                return False\n        # All validation checks passed, return True\n        return True",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def text_lowercase_underscore(text):\n        # Use partition to split on first underscore, returning (before, sep, after)\n        before, separator, after = text.partition('_')\n        # Check if underscore was actually found in the string\n        if separator != '_':\n                return False\n        # Ensure there's no additional underscore in the remaining part\n        if '_' in after:\n                return False\n        # Verify the part before underscore is non-empty\n        if len(before) == 0:\n                return False\n        # Verify the part after underscore is non-empty\n        if len(after) == 0:\n                return False\n        # Use generator expression with all() to validate each char in before section\n        all_lower_before = all(char >= 'a' and char <= 'z' for char in before)\n        # Use generator expression with all() to validate each char in after section\n        all_lower_after = all(char >= 'a' and char <= 'z' for char in after)\n        # Combine both validation results with logical AND\n        return all_lower_before and all_lower_after",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

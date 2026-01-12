@@ -1,0 +1,37 @@
+{
+  "task_id": 560,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the union of the elements of two given tuples and output them in sorted order.",
+  "python_code": "def union_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1 + test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert union_elements((3, 4, 5, 6),(5, 7, 4, 10) ) == (3, 4, 5, 6, 7, 10)",
+    "assert union_elements((1, 2, 3, 4),(3, 4, 5, 6) ) == (1, 2, 3, 4, 5, 6)",
+    "assert union_elements((11, 12, 13, 14),(13, 15, 16, 17) ) == (11, 12, 13, 14, 15, 16, 17)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int[] union_elements(int[] test_tup1, int[] test_tup2) {\n        Set<Integer> unionSet = new HashSet<>();\n        \n        for (int num : test_tup1) {\n            unionSet.add(num);\n        }\n        \n        for (int num : test_tup2) {\n            unionSet.add(num);\n        }\n        \n        List<Integer> resultList = new ArrayList<>(unionSet);\n        Collections.sort(resultList);\n        \n        int[] result = new int[resultList.size()];\n        for (int i = 0; i < resultList.size(); i++) {\n            result[i] = resultList.get(i);\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert union_elements((3, 4, 5, 6),(5, 7, 4, 10) ) == (3, 4, 5, 6, 7, 10)",
+      "generated_test": "int[] result = union_elements(new int[]{3, 4, 5, 6}, new int[]{5, 7, 4, 10});\nint[] expected = new int[]{3, 4, 5, 6, 7, 10};\nboolean pass = java.util.Arrays.equals(result, expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + java.util.Arrays.toString(expected));\n    System.out.println(\"  Got: \" + java.util.Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert union_elements((1, 2, 3, 4),(3, 4, 5, 6) ) == (1, 2, 3, 4, 5, 6)",
+      "generated_test": "int[] result = union_elements(new int[]{1, 2, 3, 4}, new int[]{3, 4, 5, 6});\nint[] expected = new int[]{1, 2, 3, 4, 5, 6};\nboolean pass = Arrays.equals(result, expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert union_elements((11, 12, 13, 14),(13, 15, 16, 17) ) == (11, 12, 13, 14, 15, 16, 17)",
+      "generated_test": "int[] result = union_elements(new int[]{11, 12, 13, 14}, new int[]{13, 15, 16, 17});\nint[] expected = new int[]{11, 12, 13, 14, 15, 16, 17};\nboolean pass = Arrays.equals(result, expected);\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

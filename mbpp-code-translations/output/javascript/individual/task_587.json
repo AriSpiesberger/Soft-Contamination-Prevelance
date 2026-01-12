@@ -1,0 +1,37 @@
+{
+  "task_id": 587,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a list to a tuple.",
+  "python_code": "def list_tuple(listx):\n  tuplex = tuple(listx)\n  return tuplex",
+  "test_list": [
+    "assert list_tuple([5, 10, 7, 4, 15, 3])==(5, 10, 7, 4, 15, 3)",
+    "assert list_tuple([2, 4, 5, 6, 2, 3, 4, 4, 7])==(2, 4, 5, 6, 2, 3, 4, 4, 7)",
+    "assert list_tuple([58,44,56])==(58,44,56)"
+  ],
+  "code_javascript": "function list_tuple(listx) {\n  return [...listx];\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert list_tuple([5, 10, 7, 4, 15, 3])==(5, 10, 7, 4, 15, 3)",
+      "generated_test": "const result = list_tuple([5, 10, 7, 4, 15, 3]);\nconst expected = [5, 10, 7, 4, 15, 3];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert list_tuple([2, 4, 5, 6, 2, 3, 4, 4, 7])==(2, 4, 5, 6, 2, 3, 4, 4, 7)",
+      "generated_test": "const result = list_tuple([2, 4, 5, 6, 2, 3, 4, 4, 7]);\nconst expected = [2, 4, 5, 6, 2, 3, 4, 4, 7];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert list_tuple([58,44,56])==(58,44,56)",
+      "generated_test": "const result = list_tuple([58, 44, 56]);\nconst expected = [58, 44, 56];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

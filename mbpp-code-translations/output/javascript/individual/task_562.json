@@ -1,0 +1,37 @@
+{
+  "task_id": 562,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the longest sublists.",
+  "python_code": "def Find_Max_Length(lst):  \n    maxLength = max(len(x) for x in lst )\n    return maxLength ",
+  "test_list": [
+    "assert Find_Max_Length([[1],[1,4],[5,6,7,8]]) == 4",
+    "assert Find_Max_Length([[0,1],[2,2,],[3,2,1]]) == 3",
+    "assert Find_Max_Length([[7],[22,23],[13,14,15],[10,20,30,40,50]]) == 5"
+  ],
+  "code_javascript": "function Find_Max_Length(lst) {\n    return Math.max(...lst.map(x => x.length));\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert Find_Max_Length([[1],[1,4],[5,6,7,8]]) == 4",
+      "generated_test": "const result = Find_Max_Length([[1],[1,4],[5,6,7,8]]);\nconst expected = 4;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Max_Length([[0,1],[2,2,],[3,2,1]]) == 3",
+      "generated_test": "const result = Find_Max_Length([[0,1],[2,2,],[3,2,1]]);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Max_Length([[7],[22,23],[13,14,15],[10,20,30,40,50]]) == 5",
+      "generated_test": "const result = Find_Max_Length([[7],[22,23],[13,14,15],[10,20,30,40,50]]);\nconst expected = 5;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

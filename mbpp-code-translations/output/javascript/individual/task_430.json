@@ -1,0 +1,37 @@
+{
+  "task_id": 430,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the directrix of a parabola.",
+  "python_code": "def parabola_directrix(a, b, c): \n  directrix=((int)(c - ((b * b) + 1) * 4 * a ))\n  return directrix",
+  "test_list": [
+    "assert parabola_directrix(5,3,2)==-198",
+    "assert parabola_directrix(9,8,4)==-2336",
+    "assert parabola_directrix(2,4,6)==-130"
+  ],
+  "code_javascript": "function parabola_directrix(a, b, c) {\n  const directrix = Math.trunc(c - ((b * b) + 1) * 4 * a);\n  return directrix;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert parabola_directrix(5,3,2)==-198",
+      "generated_test": "const result = parabola_directrix(5, 3, 2);\nconst expected = -198;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(9,8,4)==-2336",
+      "generated_test": "const result = parabola_directrix(9, 8, 4);\nconst expected = -2336;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(2,4,6)==-130",
+      "generated_test": "const result = parabola_directrix(2, 4, 6);\nconst expected = -130;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

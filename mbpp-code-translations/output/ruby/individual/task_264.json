@@ -1,0 +1,37 @@
+{
+  "task_id": 264,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate a dog's age in dog's years.",
+  "python_code": "def dog_age(h_age):\n if h_age < 0:\n \texit()\n elif h_age <= 2:\n\t d_age = h_age * 10.5\n else:\n\t d_age = 21 + (h_age - 2)*4\n return d_age",
+  "test_list": [
+    "assert dog_age(12)==61",
+    "assert dog_age(15)==73",
+    "assert dog_age(24)==109"
+  ],
+  "code_ruby": "def dog_age(h_age)\n  if h_age < 0\n    exit\n  elsif h_age <= 2\n    d_age = h_age * 10.5\n  else\n    d_age = 21 + (h_age - 2) * 4\n  end\n  d_age\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert dog_age(12)==61",
+      "generated_test": "result = dog_age(12)\nexpected = 61\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dog_age(15)==73",
+      "generated_test": "result = dog_age(15)\nexpected = 73\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dog_age(24)==109",
+      "generated_test": "result = dog_age(24)\nexpected = 109\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

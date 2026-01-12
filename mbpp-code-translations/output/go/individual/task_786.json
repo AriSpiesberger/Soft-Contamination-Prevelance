@@ -1,0 +1,37 @@
+{
+  "task_id": 786,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the right insertion point for a specified value in sorted order.",
+  "python_code": "import bisect\ndef right_insertion(a, x):\n    return bisect.bisect_right(a, x)",
+  "test_list": [
+    "assert right_insertion([1,2,4,5],6)==4",
+    "assert right_insertion([1,2,4,5],3)==2",
+    "assert right_insertion([1,2,4,5],7)==4"
+  ],
+  "code_go": "package main\n\nfunc right_insertion(a []int, x int) int {\n\tlo := 0\n\thi := len(a)\n\t\n\tfor lo < hi {\n\t\tmid := (lo + hi) / 2\n\t\tif x < a[mid] {\n\t\t\thi = mid\n\t\t} else {\n\t\t\tlo = mid + 1\n\t\t}\n\t}\n\t\n\treturn lo\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert right_insertion([1,2,4,5],6)==4",
+      "generated_test": "result := right_insertion([]int{1, 2, 4, 5}, 6)\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert right_insertion([1,2,4,5],3)==2",
+      "generated_test": "result := right_insertion([]int{1, 2, 4, 5}, 3)\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert right_insertion([1,2,4,5],7)==4",
+      "generated_test": "result := right_insertion([]int{1, 2, 4, 5}, 7)\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 801,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of equal numbers from three given integers.",
+  "code_python": "def test_three_equal(x,y,z):\n  result = set([x,y,z])\n  if len(result)==3:\n    return 0\n  else:\n    return 4-len(result)",
+  "test_list": [
+    "assert test_three_equal(1,1,1) == 3",
+    "assert test_three_equal(-1,-2,-3) == 0",
+    "assert test_three_equal(1,2,2) == 2"
+  ],
+  "python_1": "def test_three_equal(x,y,z):\n    # Initialize a counter to track how many pairs of numbers are equal\n    equal_count = 0\n    # Check if first and second numbers match\n    if x == y:\n        equal_count += 1\n    # Check if second and third numbers match\n    if y == z:\n        equal_count += 1\n    # Check if first and third numbers match\n    if x == z:\n        equal_count += 1\n    # When all three equal, we have 3 matching pairs, return 3\n    if equal_count == 3:\n        return 3\n    # When exactly one pair matches, return 2 (two numbers are equal)\n    elif equal_count == 1:\n        return 2\n    # When no pairs match, all numbers are different\n    else:\n        return 0",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def test_three_equal(x,y,z):\n    # Create a list to enable counting occurrences of each value\n    numbers = [x, y, z]\n    # Use list comprehension to count how many times each number appears\n    counts = [numbers.count(n) for n in numbers]\n    # Find the maximum frequency - this tells us the largest group of equal numbers\n    max_count = max(counts)\n    # If max frequency is 1, all numbers are distinct, return 0\n    if max_count == 1:\n        return 0\n    # Otherwise return the max count (either 2 for a pair, or 3 for all equal)\n    return max_count",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def test_three_equal(x,y,z):\n    # Use a dictionary to tally occurrences of each unique value\n    freq_dict = {}\n    # Iterate through all three input values as a tuple\n    for num in (x, y, z):\n        # Increment existing count or initialize to 1 using dict.get with default\n        freq_dict[num] = freq_dict.get(num, 0) + 1\n    # Extract all frequency values from the dictionary\n    frequencies = freq_dict.values()\n    # Find the highest frequency among all values\n    highest_freq = max(frequencies)\n    # Return 0 when all values appear exactly once (all different)\n    if highest_freq == 1:\n        return 0\n    # Return the highest frequency directly (handles both 2 and 3 equal cases)\n    return highest_freq",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def test_three_equal(x,y,z):\n    # Use Counter from collections to efficiently tally value frequencies\n    from collections import Counter\n    # Build a frequency mapping by passing all three values as a list\n    frequency_map = Counter([x, y, z])\n    # Extract the most common element and its count as a tuple\n    most_common_tuple = frequency_map.most_common(1)[0]\n    # Unpack the count value from the tuple (ignore the element itself)\n    top_frequency = most_common_tuple[1]\n    # Map frequency to result: 1 means all unique so return 0, otherwise return the frequency\n    return 0 if top_frequency == 1 else top_frequency",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def test_three_equal(x,y,z):\n    # Compute boolean equality checks and convert to integers (True=1, False=0)\n    xy_equal = int(x == y)\n    # Check if y and z share the same value\n    yz_equal = int(y == z)\n    # Check if x and z are identical\n    xz_equal = int(x == z)\n    # Sum all pairwise equality results to get total matching pairs\n    total_pairs = xy_equal + yz_equal + xz_equal\n    # Create a lookup table mapping pair count to answer: 0 pairs->0, 1 pair->2, 3 pairs->3\n    result_mapping = {0: 0, 1: 2, 3: 3}\n    # Return the mapped result directly from our precomputed dictionary\n    return result_mapping[total_pairs]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

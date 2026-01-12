@@ -1,0 +1,37 @@
+{
+  "task_id": 798,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of an array.",
+  "python_code": "def _sum(arr):  \n    sum=0\n    for i in arr: \n        sum = sum + i      \n    return(sum)  ",
+  "test_list": [
+    "assert _sum([1, 2, 3]) == 6",
+    "assert _sum([15, 12, 13, 10]) == 50",
+    "assert _sum([0, 1, 2]) == 3"
+  ],
+  "code_ruby": "def _sum(arr)\n  sum = 0\n  arr.each do |i|\n    sum = sum + i\n  end\n  sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert _sum([1, 2, 3]) == 6",
+      "generated_test": "result = _sum([1, 2, 3])\nexpected = 6\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert _sum([15, 12, 13, 10]) == 50",
+      "generated_test": "result = _sum([15, 12, 13, 10])\nexpected = 50\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert _sum([0, 1, 2]) == 3",
+      "generated_test": "result = _sum([0, 1, 2])\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

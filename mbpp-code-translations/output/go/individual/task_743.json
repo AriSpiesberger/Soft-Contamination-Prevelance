@@ -1,0 +1,37 @@
+{
+  "task_id": 743,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to rotate a given list by specified number of items to the right direction. https://www.geeksforgeeks.org/python-program-right-rotate-list-n/",
+  "python_code": "def rotate_right(list, m):\n  result =  list[-m:] + list[:-m]\n  return result",
+  "test_list": [
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+    "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]"
+  ],
+  "code_go": "package main\n\nfunc rotate_right(list []int, m int) []int {\n\tif len(list) == 0 {\n\t\treturn []int{}\n\t}\n\t\n\t// Handle cases where m is larger than list length\n\tm = m % len(list)\n\tif m == 0 {\n\t\treturn append([]int{}, list...)\n\t}\n\t\n\t// list[-m:] + list[:-m]\n\tresult := make([]int, len(list))\n\tcopy(result, list[len(list)-m:])\n\tcopy(result[m:], list[:len(list)-m])\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)==[8, 9, 10, 1, 2, 3, 4, 5, 6, 7]",
+      "generated_test": "input := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\nexpected := []int{8, 9, 10, 1, 2, 3, 4, 5, 6, 7}\nresult := rotate_right(input, 3)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2)==[9, 10, 1, 2, 3, 4, 5, 6, 7, 8]",
+      "generated_test": "input := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\nexpected := []int{9, 10, 1, 2, 3, 4, 5, 6, 7, 8}\nresult := rotate_right(input, 2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert rotate_right([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5)==[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]",
+      "generated_test": "input := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\nexpected := []int{6, 7, 8, 9, 10, 1, 2, 3, 4, 5}\nresult := rotate_right(input, 5)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

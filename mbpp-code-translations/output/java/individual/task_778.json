@@ -1,0 +1,37 @@
+{
+  "task_id": 778,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to pack consecutive duplicates of a given list elements into sublists.",
+  "python_code": "from itertools import groupby\ndef pack_consecutive_duplicates(list1):\n    return [list(group) for key, group in groupby(list1)]",
+  "test_list": [
+    "assert pack_consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4])==[[0, 0], [1], [2], [3], [4, 4], [5], [6, 6, 6], [7], [8], [9], [4, 4]]",
+    "assert pack_consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[[10, 10], [15], [19], [18, 18], [17], [26, 26], [17], [18], [10]]",
+    "assert pack_consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==[['a', 'a'], ['b'], ['c'], ['d', 'd']]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static <T> List<List<T>> pack_consecutive_duplicates(List<T> list1) {\n        List<List<T>> result = new ArrayList<>();\n        \n        if (list1 == null || list1.isEmpty()) {\n            return result;\n        }\n        \n        List<T> currentGroup = new ArrayList<>();\n        T currentKey = list1.get(0);\n        currentGroup.add(currentKey);\n        \n        for (int i = 1; i < list1.size(); i++) {\n            T element = list1.get(i);\n            if ((currentKey == null && element == null) || \n                (currentKey != null && currentKey.equals(element))) {\n                currentGroup.add(element);\n            } else {\n                result.add(currentGroup);\n                currentGroup = new ArrayList<>();\n                currentKey = element;\n                currentGroup.add(element);\n            }\n        }\n        \n        result.add(currentGroup);\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert pack_consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4])==[[0, 0], [1], [2], [3], [4, 4], [5], [6, 6, 6], [7], [8], [9], [4, 4]]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(0); input.add(0); input.add(1); input.add(2); input.add(3); input.add(4); input.add(4); input.add(5); input.add(6); input.add(6); input.add(6); input.add(7); input.add(8); input.add(9); input.add(4); input.add(4);\n\nList<List<Integer>> expected = new ArrayList<>();\nList<Integer> g0 = new ArrayList<>(); g0.add(0); g0.add(0); expected.add(g0);\nList<Integer> g1 = new ArrayList<>(); g1.add(1); expected.add(g1);\nList<Integer> g2 = new ArrayList<>(); g2.add(2); expected.add(g2);\nList<Integer> g3 = new ArrayList<>(); g3.add(3); expected.add(g3);\nList<Integer> g4 = new ArrayList<>(); g4.add(4); g4.add(4); expected.add(g4);\nList<Integer> g5 = new ArrayList<>(); g5.add(5); expected.add(g5);\nList<Integer> g6 = new ArrayList<>(); g6.add(6); g6.add(6); g6.add(6); expected.add(g6);\nList<Integer> g7 = new ArrayList<>(); g7.add(7); expected.add(g7);\nList<Integer> g8 = new ArrayList<>(); g8.add(8); expected.add(g8);\nList<Integer> g9 = new ArrayList<>(); g9.add(9); expected.add(g9);\nList<Integer> g10 = new ArrayList<>(); g10.add(4); g10.add(4); expected.add(g10);\n\nList<List<Integer>> result = pack_consecutive_duplicates(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pack_consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[[10, 10], [15], [19], [18, 18], [17], [26, 26], [17], [18], [10]]",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(10);\ninput.add(10);\ninput.add(15);\ninput.add(19);\ninput.add(18);\ninput.add(18);\ninput.add(17);\ninput.add(26);\ninput.add(26);\ninput.add(17);\ninput.add(18);\ninput.add(10);\n\nList<List<Integer>> expected = new ArrayList<>();\nList<Integer> g0 = new ArrayList<>(); g0.add(10); g0.add(10); expected.add(g0);\nList<Integer> g1 = new ArrayList<>(); g1.add(15); expected.add(g1);\nList<Integer> g2 = new ArrayList<>(); g2.add(19); expected.add(g2);\nList<Integer> g3 = new ArrayList<>(); g3.add(18); g3.add(18); expected.add(g3);\nList<Integer> g4 = new ArrayList<>(); g4.add(17); expected.add(g4);\nList<Integer> g5 = new ArrayList<>(); g5.add(26); g5.add(26); expected.add(g5);\nList<Integer> g6 = new ArrayList<>(); g6.add(17); expected.add(g6);\nList<Integer> g7 = new ArrayList<>(); g7.add(18); expected.add(g7);\nList<Integer> g8 = new ArrayList<>(); g8.add(10); expected.add(g8);\n\nList<List<Integer>> result = pack_consecutive_duplicates(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pack_consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==[['a', 'a'], ['b'], ['c'], ['d', 'd']]",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"a\");\ninput.add(\"a\");\ninput.add(\"b\");\ninput.add(\"c\");\ninput.add(\"d\");\ninput.add(\"d\");\n\nList<List<String>> expected = new ArrayList<>();\nList<String> group1 = new ArrayList<>();\ngroup1.add(\"a\");\ngroup1.add(\"a\");\nexpected.add(group1);\nList<String> group2 = new ArrayList<>();\ngroup2.add(\"b\");\nexpected.add(group2);\nList<String> group3 = new ArrayList<>();\ngroup3.add(\"c\");\nexpected.add(group3);\nList<String> group4 = new ArrayList<>();\ngroup4.add(\"d\");\ngroup4.add(\"d\");\nexpected.add(group4);\n\nList<List<String>> result = pack_consecutive_duplicates(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

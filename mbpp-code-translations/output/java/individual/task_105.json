@@ -1,0 +1,37 @@
+{
+  "task_id": 105,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count true booleans in the given list.",
+  "python_code": "def count(lst):   \n    return sum(lst) ",
+  "test_list": [
+    "assert count([True,False,True]) == 2",
+    "assert count([False,False]) == 0",
+    "assert count([True,True,True]) == 3"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int count(ArrayList<Boolean> lst) {\n        int sum = 0;\n        for (Boolean b : lst) {\n            if (b) {\n                sum++;\n            }\n        }\n        return sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count([True,False,True]) == 2",
+      "generated_test": "ArrayList<Boolean> testList = new ArrayList<>();\ntestList.add(true);\ntestList.add(false);\ntestList.add(true);\nint result = count(testList);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count([False,False]) == 0",
+      "generated_test": "ArrayList<Boolean> testList = new ArrayList<>();\ntestList.add(false);\ntestList.add(false);\nint result = count(testList);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count([True,True,True]) == 3",
+      "generated_test": "ArrayList<Boolean> testList = new ArrayList<Boolean>();\ntestList.add(true);\ntestList.add(true);\ntestList.add(true);\nint result = count(testList);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

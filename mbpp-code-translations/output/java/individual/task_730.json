@@ -1,0 +1,44 @@
+{
+  "task_id": 730,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove consecutive duplicates of a given list.",
+  "python_code": "from itertools import groupby\ndef consecutive_duplicates(nums):\n    return [key for key, group in groupby(nums)] ",
+  "test_list": [
+    "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+    "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+    "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static <T> List<T> consecutive_duplicates(List<T> nums) {\n        List<T> result = new ArrayList<>();\n        if (nums == null || nums.isEmpty()) {\n            return result;\n        }\n        \n        T prev = null;\n        boolean first = true;\n        \n        for (T item : nums) {\n            if (first) {\n                result.add(item);\n                prev = item;\n                first = false;\n            } else {\n                boolean different;\n                if (prev == null && item == null) {\n                    different = false;\n                } else if (prev == null || item == null) {\n                    different = true;\n                } else {\n                    different = !prev.equals(item);\n                }\n                \n                if (different) {\n                    result.add(item);\n                    prev = item;\n                }\n            }\n        }\n        \n        return result;\n    }\n    \n    public static List<Integer> consecutive_duplicates(int[] nums) {\n        List<Integer> list = new ArrayList<>();\n        if (nums != null) {\n            for (int num : nums) {\n                list.add(num);\n            }\n        }\n        return consecutive_duplicates(list);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert consecutive_duplicates([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4 ])==[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4]",
+      "generated_test": "int[] input = new int[]{0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4};\nList<Integer> result = consecutive_duplicates(input);\nList<Integer> expected = new ArrayList<>();\nexpected.add(0);\nexpected.add(1);\nexpected.add(2);\nexpected.add(3);\nexpected.add(4);\nexpected.add(5);\nexpected.add(6);\nexpected.add(7);\nexpected.add(8);\nexpected.add(9);\nexpected.add(4);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10])==[10, 15, 19, 18, 17, 26, 17, 18, 10]",
+      "generated_test": "int[] input = new int[]{10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10};\nList<Integer> result = consecutive_duplicates(input);\nList<Integer> expected = new ArrayList<>();\nexpected.add(10);\nexpected.add(15);\nexpected.add(19);\nexpected.add(18);\nexpected.add(17);\nexpected.add(26);\nexpected.add(17);\nexpected.add(18);\nexpected.add(10);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd'])==['a', 'b', 'c', 'd']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"a\");\ninput.add(\"a\");\ninput.add(\"b\");\ninput.add(\"c\");\ninput.add(\"d\");\ninput.add(\"d\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"a\");\nexpected.add(\"b\");\nexpected.add(\"c\");\nexpected.add(\"d\");\n\nList<String> result = consecutive_duplicates(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert consecutive_duplicates(['a', 'a', 'b', 'c', 'd', 'd', 'a', 'a'])==['a', 'b', 'c', 'd', 'a']",
+      "generated_test": "List<String> input = new ArrayList<>();\ninput.add(\"a\");\ninput.add(\"a\");\ninput.add(\"b\");\ninput.add(\"c\");\ninput.add(\"d\");\ninput.add(\"d\");\ninput.add(\"a\");\ninput.add(\"a\");\n\nList<String> expected = new ArrayList<>();\nexpected.add(\"a\");\nexpected.add(\"b\");\nexpected.add(\"c\");\nexpected.add(\"d\");\nexpected.add(\"a\");\n\nList<String> result = consecutive_duplicates(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

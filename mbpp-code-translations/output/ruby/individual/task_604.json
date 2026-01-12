@@ -1,0 +1,37 @@
+{
+  "task_id": 604,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse words seperated by spaces in a given string.",
+  "python_code": "def reverse_words(s):\n        return ' '.join(reversed(s.split()))",
+  "test_list": [
+    "assert reverse_words(\"python program\")==(\"program python\")",
+    "assert reverse_words(\"java language\")==(\"language java\")",
+    "assert reverse_words(\"indian man\")==(\"man indian\")"
+  ],
+  "code_ruby": "def reverse_words(s)\n  s.split.reverse.join(' ')\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert reverse_words(\"python program\")==(\"program python\")",
+      "generated_test": "result = reverse_words(\"python program\")\nexpected = \"program python\"\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_words(\"java language\")==(\"language java\")",
+      "generated_test": "result = reverse_words(\"java language\")\nexpected = \"language java\"\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_words(\"indian man\")==(\"man indian\")",
+      "generated_test": "result = reverse_words(\"indian man\")\nexpected = \"man indian\"\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 102,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a snake case string to camel case string.",
+  "python_code": "def snake_to_camel(word):\n        import re\n        return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('python_program')=='PythonProgram'",
+    "assert snake_to_camel('python_language')==('PythonLanguage')",
+    "assert snake_to_camel('programming_language')==('ProgrammingLanguage')"
+  ],
+  "code_rust": "pub fn snake_to_camel(word: &str) -> String {\n    word.split('_')\n        .map(|x| {\n            if x.is_empty() {\n                \"_\".to_string()\n            } else {\n                let mut chars = x.chars();\n                match chars.next() {\n                    None => String::new(),\n                    Some(first) => {\n                        first.to_uppercase().collect::<String>() + chars.as_str()\n                    }\n                }\n            }\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert snake_to_camel('python_program')=='PythonProgram'",
+      "generated_test": "let result = snake_to_camel(\"python_program\");\nlet expected = \"PythonProgram\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('python_language')==('PythonLanguage')",
+      "generated_test": "let result = snake_to_camel(\"python_language\");\nlet expected = \"PythonLanguage\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('programming_language')==('ProgrammingLanguage')",
+      "generated_test": "let result = snake_to_camel(\"programming_language\");\nlet expected = \"ProgrammingLanguage\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

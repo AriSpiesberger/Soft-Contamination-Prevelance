@@ -1,0 +1,27 @@
+{
+  "task_id": 781,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the count of divisors is even. https://www.w3resource.com/python-exercises/basic/python-basic-1-exercise-24.php",
+  "code_python": "import math \ndef count_divisors(n) : \n    count = 0\n    for i in range(1, (int)(math.sqrt(n)) + 2) : \n        if (n % i == 0) : \n            if( n // i == i) : \n                count = count + 1\n            else : \n                count = count + 2\n    return count % 2 == 0",
+  "test_list": [
+    "assert count_divisors(10)",
+    "assert not count_divisors(100)",
+    "assert count_divisors(125)"
+  ],
+  "python_1": "def count_divisors(n):\n    # A number has an odd count of divisors if and only if it's a perfect square\n    # Calculate the square root of n to check for perfect square property\n    sqrt_n = n ** 0.5\n    # Check if n is a perfect square by comparing sqrt to its integer form\n    is_perfect_square = int(sqrt_n) ** 2 == n\n    # Perfect squares have odd divisors, so return True (even) only when NOT a perfect square\n    return not is_perfect_square",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_divisors(n):\n    # Use integer square root to determine perfect square status\n    sqrt_val = int(n ** 0.5)\n    # Increment sqrt_val to handle edge cases in square root calculation\n    while sqrt_val * sqrt_val < n:\n        sqrt_val += 1\n    # Decrement if we overshot the actual integer square root\n    while sqrt_val * sqrt_val > n:\n        sqrt_val -= 1\n    # Multiply sqrt_val by itself to verify perfect square condition\n    squared = sqrt_val * sqrt_val\n    # Compare squared value with original to detect perfect squares\n    is_square = squared == n\n    # Return True when divisor count is even (non-perfect squares)\n    # Perfect squares have odd divisors due to repeated middle factor\n    return is_square == False",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_divisors(n):\n    # Use math.isqrt for precise integer square root computation\n    import math\n    # Compute the exact integer square root without floating point errors\n    integer_sqrt = math.isqrt(n)\n    # Check if squaring the integer sqrt reproduces the original number\n    is_perfect_square = integer_sqrt * integer_sqrt == n\n    # Exploit the mathematical property: only perfect squares have odd divisor counts\n    # This is because divisors pair up except for the square root in perfect squares\n    result = True if not is_perfect_square else False\n    # Return the boolean indicating whether divisor count is even\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_divisors(n):\n    # Use a generator expression to iterate through all potential divisors from 1 to n\n    divisor_generator = (i for i in range(1, n + 1) if n % i == 0)\n    # Convert the generator to a list to collect all divisors\n    all_divisors = list(divisor_generator)\n    # Calculate the total number of divisors using len function\n    total_count = len(all_divisors)\n    # Apply bitwise AND with 1 to check if count is odd (faster than modulo)\n    is_odd = total_count & 1\n    # Return True when the bit check shows even (is_odd equals 0)\n    return is_odd == 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_divisors(n):\n    # Leverage reduce to accumulate divisor count in functional style\n    from functools import reduce\n    # Generate range of potential divisors up to and including n\n    potential_divisors = range(1, n + 1)\n    # Use filter with lambda to extract only numbers that evenly divide n\n    actual_divisors = filter(lambda x: n % x == 0, potential_divisors)\n    # Apply reduce to count elements by adding 1 for each divisor found\n    divisor_count = reduce(lambda acc, _: acc + 1, actual_divisors, 0)\n    # Check evenness using modulo 2 and comparing result to zero\n    is_even_count = divisor_count % 2 == 0\n    # Return the boolean result indicating even divisor count\n    return is_even_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

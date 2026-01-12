@@ -1,0 +1,37 @@
+{
+  "task_id": 411,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given snake case string to camel case string.",
+  "python_code": "import re\ndef snake_to_camel(word):\n  return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('android_tv') == 'AndroidTv'",
+    "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+    "assert snake_to_camel('apple_watch') == 'AppleWatch'"
+  ],
+  "code_ruby": "def snake_to_camel(word)\n  word.split('_').map { |x| x.empty? ? '_' : x.capitalize }.join\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert snake_to_camel('android_tv') == 'AndroidTv'",
+      "generated_test": "result = snake_to_camel('android_tv')\nexpected = 'AndroidTv'\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+      "generated_test": "result = snake_to_camel('google_pixel')\nexpected = 'GooglePixel'\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('apple_watch') == 'AppleWatch'",
+      "generated_test": "result = snake_to_camel('apple_watch')\nexpected = 'AppleWatch'\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

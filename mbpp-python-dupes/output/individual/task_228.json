@@ -1,0 +1,27 @@
+{
+  "task_id": 228,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether all the bits are unset in the given range or not.",
+  "code_python": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    num = (((1 << r) - 1) ^ ((1 << (l - 1)) - 1)) \n    new_num = n & num\n    if (new_num == 0): \n        return True\n    return False",
+  "test_list": [
+    "assert all_Bits_Set_In_The_Given_Range(4,1,2) == True",
+    "assert all_Bits_Set_In_The_Given_Range(17,2,4) == True",
+    "assert all_Bits_Set_In_The_Given_Range(39,4,6) == False"
+  ],
+  "python_1": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    # Iterate through each bit position from l to r inclusive\n    for i in range(l, r + 1):\n        # Create a mask with only the i-th bit set (1-indexed position)\n        mask = 1 << (i - 1)\n        # Check if the bit at position i is set using bitwise AND\n        if n & mask:\n            # Return False immediately if any bit in range is set\n            return False\n    # All bits in the range were unset, so return True\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    # Right shift n to align bit position l to position 0\n    shifted = n >> (l - 1)\n    # Calculate how many bits we need to examine in the range\n    range_length = r - l + 1\n    # Create a mask with exactly range_length consecutive 1s starting from bit 0\n    mask = (1 << range_length) - 1\n    # Extract only the bits within our range of interest\n    extracted_bits = shifted & mask\n    # If extracted result is zero, all bits in range were unset\n    return extracted_bits == 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    # Convert the integer to its binary string representation, stripping '0b' prefix\n    binary_str = bin(n)[2:]\n    # Pad the binary string with leading zeros to ensure we have enough positions\n    total_bits = max(len(binary_str), r)\n    # Create a zero-padded binary string so position indexing works correctly\n    padded_binary = binary_str.zfill(total_bits)\n    # Calculate the total length for converting 1-indexed positions to string indices\n    str_len = len(padded_binary)\n    # Iterate through each bit position in the specified range (1-indexed from right)\n    for pos in range(l, r + 1):\n        # Convert 1-indexed right-to-left position to 0-indexed left-to-right string index\n        string_index = str_len - pos\n        # Check if this index is valid (non-negative) before accessing\n        if string_index >= 0:\n            # Retrieve the character at this position and check if it represents a set bit\n            if padded_binary[string_index] == '1':\n                # Found a set bit within the range, so condition fails\n                return False\n    # No set bits were found in the entire range, condition satisfied\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    # Use a recursive helper approach with bit position tracker\n    def check_bit_unset(num, current_pos, end_pos):\n        # Base case: we've checked all positions up to and including end_pos\n        if current_pos > end_pos:\n            return True\n        # Isolate the bit at current_pos using left shift and AND operation\n        bit_value = (num >> (current_pos - 1)) & 1\n        # If this bit is set (equals 1), the condition fails immediately\n        if bit_value == 1:\n            return False\n        # Recursively check the next bit position in the range\n        return check_bit_unset(num, current_pos + 1, end_pos)\n    # Invoke the recursive checker starting from position l going to r\n    return check_bit_unset(n, l, r)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def all_Bits_Set_In_The_Given_Range(n,l,r):  \n    # Use list comprehension to gather all bit values in the specified range\n    bit_values = [(n >> (pos - 1)) & 1 for pos in range(l, r + 1)]\n    # Sum all the extracted bits - if sum is zero, all bits were unset\n    total_set_bits = sum(bit_values)\n    # Compare against zero using equality to determine if range has no set bits\n    return total_set_bits == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

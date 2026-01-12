@@ -1,0 +1,37 @@
+{
+  "task_id": 398,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the sum of digits of each number of a given list.",
+  "python_code": "def sum_of_digits(nums):\n    return sum(int(el) for n in nums for el in str(n) if el.isdigit())",
+  "test_list": [
+    "assert sum_of_digits([10,2,56])==14",
+    "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+    "assert sum_of_digits([10,20,-4,5,-70])==19"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int sum_of_digits(List<?> nums) {\n        int sum = 0;\n        sum = processElement(nums, sum);\n        return sum;\n    }\n    \n    private static int processElement(Object obj, int sum) {\n        if (obj instanceof List) {\n            List<?> list = (List<?>) obj;\n            for (Object item : list) {\n                sum = processElement(item, sum);\n            }\n        } else {\n            String str = String.valueOf(obj);\n            for (char c : str.toCharArray()) {\n                if (Character.isDigit(c)) {\n                    sum += Character.getNumericValue(c);\n                }\n            }\n        }\n        return sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sum_of_digits([10,2,56])==14",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(10);\ninput.add(2);\ninput.add(56);\nint result = sum_of_digits(input);\nint expected = 14;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+      "generated_test": "List<Object> innerList = new ArrayList<>();\ninnerList.add(10);\ninnerList.add(20);\ninnerList.add(4);\ninnerList.add(5);\ninnerList.add(\"b\");\ninnerList.add(70);\ninnerList.add(\"a\");\n\nList<Object> outerList = new ArrayList<>();\nouterList.add(innerList);\n\nint result = sum_of_digits(outerList);\nint expected = 19;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_of_digits([10,20,-4,5,-70])==19",
+      "generated_test": "List<Integer> input = new ArrayList<>();\ninput.add(10);\ninput.add(20);\ninput.add(-4);\ninput.add(5);\ninput.add(-70);\n\nint result = sum_of_digits(input);\nint expected = 19;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

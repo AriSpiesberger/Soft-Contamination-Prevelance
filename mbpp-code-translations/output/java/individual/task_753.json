@@ -1,0 +1,37 @@
+{
+  "task_id": 753,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum k records from tuple list. https://www.geeksforgeeks.org/python-find-minimum-k-records-from-tuple-list/ - in this case a verbatim copy of test cases",
+  "python_code": "def min_k(test_list, K):\n  res = sorted(test_list, key = lambda x: x[1])[:K]\n  return (res) ",
+  "test_list": [
+    "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+    "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+    "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<List<Object>> min_k(List<List<Object>> test_list, int K) {\n        List<List<Object>> sortedList = new ArrayList<>(test_list);\n        Collections.sort(sortedList, (a, b) -> {\n            int val1 = ((Number)a.get(1)).intValue();\n            int val2 = ((Number)b.get(1)).intValue();\n            return Integer.compare(val1, val2);\n        });\n        List<List<Object>> res = new ArrayList<>();\n        for (int i = 0; i < K && i < sortedList.size(); i++) {\n            res.add(sortedList.get(i));\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 5,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> tuple1 = new ArrayList<>();\ntuple1.add(\"Manjeet\");\ntuple1.add(10);\ninput.add(tuple1);\nList<Object> tuple2 = new ArrayList<>();\ntuple2.add(\"Akshat\");\ntuple2.add(4);\ninput.add(tuple2);\nList<Object> tuple3 = new ArrayList<>();\ntuple3.add(\"Akash\");\ntuple3.add(2);\ninput.add(tuple3);\nList<Object> tuple4 = new ArrayList<>();\ntuple4.add(\"Nikhil\");\ntuple4.add(8);\ninput.add(tuple4);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> exp1 = new ArrayList<>();\nexp1.add(\"Akash\");\nexp1.add(2);\nexpected.add(exp1);\nList<Object> exp2 = new ArrayList<>();\nexp2.add(\"Akshat\");\nexp2.add(4);\nexpected.add(exp2);\n\nList<List<Object>> result = min_k(input, 2);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        if (!result.get(i).get(0).equals(expected.get(i).get(0)) ||\n            !result.get(i).get(1).equals(expected.get(i).get(1))) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\ninput.add(Arrays.asList(\"Sanjeev\", 11));\ninput.add(Arrays.asList(\"Angat\", 5));\ninput.add(Arrays.asList(\"Akash\", 3));\ninput.add(Arrays.asList(\"Nepin\", 9));\n\nList<List<Object>> expected = new ArrayList<>();\nexpected.add(Arrays.asList(\"Akash\", 3));\nexpected.add(Arrays.asList(\"Angat\", 5));\nexpected.add(Arrays.asList(\"Nepin\", 9));\n\nList<List<Object>> result = min_k(input, 3);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < expected.size(); i++) {\n        if (!result.get(i).get(0).equals(expected.get(i).get(0)) ||\n            !result.get(i).get(1).equals(expected.get(i).get(1))) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> tuple1 = new ArrayList<>();\ntuple1.add(\"tanmay\");\ntuple1.add(14);\ninput.add(tuple1);\nList<Object> tuple2 = new ArrayList<>();\ntuple2.add(\"Amer\");\ntuple2.add(11);\ninput.add(tuple2);\nList<Object> tuple3 = new ArrayList<>();\ntuple3.add(\"Ayesha\");\ntuple3.add(9);\ninput.add(tuple3);\nList<Object> tuple4 = new ArrayList<>();\ntuple4.add(\"SKD\");\ntuple4.add(16);\ninput.add(tuple4);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> expectedTuple = new ArrayList<>();\nexpectedTuple.add(\"Ayesha\");\nexpectedTuple.add(9);\nexpected.add(expectedTuple);\n\nList<List<Object>> result = min_k(input, 1);\n\nif (result.size() == expected.size() && \n    result.get(0).get(0).equals(expected.get(0).get(0)) && \n    result.get(0).get(1).equals(expected.get(0).get(1))) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

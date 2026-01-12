@@ -1,0 +1,17 @@
+{
+  "task_id": 90,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the longest word.",
+  "python_code": "def len_log(list1):\n    max=len(list1[0])\n    for i in list1:\n        if len(i)>max:\n            max=len(i)\n    return max",
+  "test_list": [
+    "assert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7",
+    "assert len_log([\"a\",\"ab\",\"abc\"]) == 3",
+    "assert len_log([\"small\",\"big\",\"tall\"]) == 5"
+  ],
+  "code_typescript": "function len_log(list1: string[]): number {\n    let max: number = list1[0].length;\n    for (const i of list1) {\n        if (i.length > max) {\n            max = i.length;\n        }\n    }\n    return max;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

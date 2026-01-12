@@ -1,0 +1,37 @@
+{
+  "task_id": 104,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "python_code": "def sort_sublists(input_list):\n    result = [sorted(x, key = lambda x:x[0]) for x in input_list] \n    return result\n",
+  "test_list": [
+    "assert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists(([\" red \",\"green\" ],[\"blue \",\" black\"],[\" orange\",\"brown\"]))==[[' red ', 'green'], [' black', 'blue '], [' orange', 'brown']]",
+    "assert sort_sublists(([\"zilver\",\"gold\"], [\"magnesium\",\"aluminium\"], [\"steel\", \"bronze\"]))==[['gold', 'zilver'],['aluminium', 'magnesium'], ['bronze', 'steel']]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\nfunc sort_sublists(input_list [][]string) [][]string {\n\tresult := make([][]string, len(input_list))\n\t\n\tfor i, sublist := range input_list {\n\t\t// Create a copy of the sublist to avoid modifying the original\n\t\tsorted_sublist := make([]string, len(sublist))\n\t\tcopy(sorted_sublist, sublist)\n\t\t\n\t\t// Sort by the first character of each string\n\t\tsort.Slice(sorted_sublist, func(a, b int) bool {\n\t\t\t// Get first character of each string\n\t\t\tvar charA, charB byte\n\t\t\tif len(sorted_sublist[a]) > 0 {\n\t\t\t\tcharA = sorted_sublist[a][0]\n\t\t\t}\n\t\t\tif len(sorted_sublist[b]) > 0 {\n\t\t\t\tcharB = sorted_sublist[b][0]\n\t\t\t}\n\t\t\treturn charA < charB\n\t\t})\n\t\t\n\t\tresult[i] = sorted_sublist\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+      "generated_test": "input := [][]string{{\"green\", \"orange\"}, {\"black\", \"white\"}, {\"white\", \"black\", \"orange\"}}\nexpected := [][]string{{\"green\", \"orange\"}, {\"black\", \"white\"}, {\"black\", \"orange\", \"white\"}}\nresult := sort_sublists(input)\n\npassed := true\nif len(result) != len(expected) {\n\tpassed = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpassed = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpassed = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !passed {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif passed {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists(([\" red \",\"green\" ],[\"blue \",\" black\"],[\" orange\",\"brown\"]))==[[' red ', 'green'], [' black', 'blue '], [' orange', 'brown']]",
+      "generated_test": "input := [][]string{{\" red \", \"green\"}, {\"blue \", \" black\"}, {\" orange\", \"brown\"}}\nexpected := [][]string{{\" red \", \"green\"}, {\" black\", \"blue \"}, {\" orange\", \"brown\"}}\nresult := sort_sublists(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists(([\"zilver\",\"gold\"], [\"magnesium\",\"aluminium\"], [\"steel\", \"bronze\"]))==[['gold', 'zilver'],['aluminium', 'magnesium'], ['bronze', 'steel']]",
+      "generated_test": "input := [][]string{{\"zilver\", \"gold\"}, {\"magnesium\", \"aluminium\"}, {\"steel\", \"bronze\"}}\nexpected := [][]string{{\"gold\", \"zilver\"}, {\"aluminium\", \"magnesium\"}, {\"bronze\", \"steel\"}}\nresult := sort_sublists(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

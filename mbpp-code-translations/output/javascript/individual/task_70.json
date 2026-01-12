@@ -1,0 +1,37 @@
+{
+  "task_id": 70,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "python_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1",
+  "test_list": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "code_javascript": "function find_equal_tuple(Input) {\n  let k = !Input || Input.length === 0 ? 0 : Input[0].length;\n  let flag = 1;\n  for (let tuple of Input) {\n    if (tuple.length !== k) {\n      flag = 0;\n      break;\n    }\n  }\n  return flag;\n}\n\nfunction get_equal(Input) {\n  return find_equal_tuple(Input) === 1;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+      "generated_test": "const input = [[11, 22, 33], [44, 55, 66]];\nconst expected = true;\nconst result = get_equal(input);\n\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+      "generated_test": "const result = get_equal([[1, 2, 3], [4, 5, 6, 7]]);\nconst expected = false;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_equal([(1, 2), (3, 4)]) == True",
+      "generated_test": "const result = get_equal([[1, 2], [3, 4]]);\nconst expected = true;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

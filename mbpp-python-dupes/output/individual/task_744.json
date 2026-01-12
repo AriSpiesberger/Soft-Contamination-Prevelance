@@ -1,0 +1,27 @@
+{
+  "task_id": 744,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuple has any none value or not.",
+  "code_python": "def check_none(test_tup):\n  res = any(map(lambda ele: ele is None, test_tup))\n  return res ",
+  "test_list": [
+    "assert check_none((10, 4, 5, 6, None)) == True",
+    "assert check_none((7, 8, 9, 11, 14)) == False",
+    "assert check_none((1, 2, 3, 4, None)) == True"
+  ],
+  "python_1": "def check_none(test_tup):\n  # Use Python's membership test to directly check if None exists in tuple\n  result = None in test_tup\n  # Return boolean indicating presence of None value\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_none(test_tup):\n  # Iterate through each element in the tuple using a for loop\n  for element in test_tup:\n    # Check if current element is exactly None using identity comparison\n    if element is None:\n      # Return True immediately upon finding first None value\n      return True\n  # Return False only after exhausting all elements without finding None\n  return False",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_none(test_tup):\n  # Use list comprehension to filter only None values from the tuple\n  none_values = [x for x in test_tup if x is None]\n  # Check if the filtered list has any elements (non-empty means None exists)\n  has_none = len(none_values) > 0\n  # Return the boolean result indicating None presence\n  return has_none",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_none(test_tup):\n  # Convert tuple to a set and check if None is present via set intersection\n  tuple_as_set = set(test_tup)\n  # Create a singleton set containing only None for comparison\n  none_set = {None}\n  # Check if the intersection of both sets is non-empty (truthy if None exists)\n  intersection_result = tuple_as_set & none_set\n  # Convert the intersection set to boolean - non-empty set is True\n  return bool(intersection_result)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_none(test_tup):\n  # Use filter function with None check to extract None elements as an iterator\n  none_filter = filter(lambda x: x is None, test_tup)\n  # Convert filtered iterator to list to enable length checking\n  filtered_list = list(none_filter)\n  # Return True if any None values were captured by the filter\n  return len(filtered_list) != 0",
+  "python_5_status": "success",
+  "python_5_attempts": 2
+}

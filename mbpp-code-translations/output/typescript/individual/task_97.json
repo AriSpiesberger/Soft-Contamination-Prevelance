@@ -1,0 +1,17 @@
+{
+  "task_id": 97,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find frequency of each element in a flattened list of lists, returned in a dictionary.",
+  "python_code": "def frequency_lists(list1):\n    list1 = [item for sublist in list1 for item in sublist]\n    dic_data = {}\n    for num in list1:\n        if num in dic_data.keys():\n            dic_data[num] += 1\n        else:\n            key = num\n            value = 1\n            dic_data[key] = value\n    return dic_data\n",
+  "test_list": [
+    "assert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}",
+    "assert frequency_lists([[1,2,3,4],[5,6,7,8],[9,10,11,12]])=={1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1,10:1,11:1,12:1}",
+    "assert frequency_lists([[20,30,40,17],[18,16,14,13],[10,20,30,40]])=={20:2,30:2,40:2,17: 1,18:1, 16: 1,14: 1,13: 1, 10: 1}"
+  ],
+  "code_typescript": "function frequency_lists(list1: number[][]): Record<number, number> {\n    const flattened: number[] = list1.flat();\n    const dic_data: Record<number, number> = {};\n    for (const num of flattened) {\n        if (num in dic_data) {\n            dic_data[num] += 1;\n        } else {\n            const key = num;\n            const value = 1;\n            dic_data[key] = value;\n        }\n    }\n    return dic_data;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 165,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive).",
+  "python_code": "def count_char_position(str1): \n    count_chars = 0\n    for i in range(len(str1)):\n        if ((i == ord(str1[i]) - ord('A')) or \n            (i == ord(str1[i]) - ord('a'))): \n            count_chars += 1\n    return count_chars ",
+  "test_list": [
+    "assert count_char_position(\"xbcefg\") == 2",
+    "assert count_char_position(\"ABcED\") == 3",
+    "assert count_char_position(\"AbgdeF\") == 5"
+  ],
+  "code_ruby": "def count_char_position(str1)\n  count_chars = 0\n  str1.each_char.with_index do |char, i|\n    if i == char.ord - 'A'.ord || i == char.ord - 'a'.ord\n      count_chars += 1\n    end\n  end\n  count_chars\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert count_char_position(\"xbcefg\") == 2",
+      "generated_test": "result = count_char_position(\"xbcefg\")\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_char_position(\"ABcED\") == 3",
+      "generated_test": "result = count_char_position(\"ABcED\")\nexpected = 3\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_char_position(\"AbgdeF\") == 5",
+      "generated_test": "result = count_char_position(\"AbgdeF\")\nexpected = 5\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 643,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that checks if a strings contains 'z', except at the start and end of the word.",
+  "python_code": "import re\ndef text_match_wordz_middle(text):\n        return bool(re.search(r'\\Bz\\B',  text))",
+  "test_list": [
+    "assert text_match_wordz_middle(\"pythonzabc.\")==True",
+    "assert text_match_wordz_middle(\"zxyabc.\")==False",
+    "assert text_match_wordz_middle(\"  lang  .\")==False"
+  ],
+  "code_rust": "pub fn text_match_wordz_middle(text: &str) -> bool {\n    let chars: Vec<char> = text.chars().collect();\n    let len = chars.len();\n    \n    for (i, &c) in chars.iter().enumerate() {\n        if c == 'z' {\n            // Check if 'z' is not at a word boundary\n            // \\B means not at word boundary - so there must be word characters on both sides\n            let has_word_char_before = i > 0 && is_word_char(chars[i - 1]);\n            let has_word_char_after = i + 1 < len && is_word_char(chars[i + 1]);\n            \n            if has_word_char_before && has_word_char_after {\n                return true;\n            }\n        }\n    }\n    \n    false\n}\n\nfn is_word_char(c: char) -> bool {\n    c.is_alphanumeric() || c == '_'\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert text_match_wordz_middle(\"pythonzabc.\")==True",
+      "generated_test": "let result = text_match_wordz_middle(\"pythonzabc.\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_wordz_middle(\"zxyabc.\")==False",
+      "generated_test": "let result = text_match_wordz_middle(\"zxyabc.\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_wordz_middle(\"  lang  .\")==False",
+      "generated_test": "let result = text_match_wordz_middle(\"  lang  .\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

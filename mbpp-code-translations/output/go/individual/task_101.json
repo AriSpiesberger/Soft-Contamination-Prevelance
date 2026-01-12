@@ -1,0 +1,37 @@
+{
+  "task_id": 101,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the kth element in the given array using 1-based indexing.",
+  "python_code": "def kth_element(arr, k):\n  n = len(arr)\n  for i in range(n):\n    for j in range(0, n-i-1):\n      if arr[j] > arr[j+1]:\n        arr[j], arr[j+1] == arr[j+1], arr[j]\n  return arr[k-1]",
+  "test_list": [
+    "assert kth_element([12,3,5,7,19], 2) == 3",
+    "assert kth_element([17,24,8,23], 3) == 8",
+    "assert kth_element([16,21,25,36,4], 4) == 36"
+  ],
+  "code_go": "package main\n\nfunc kth_element(arr []int, k int) int {\n\tn := len(arr)\n\tfor i := 0; i < n; i++ {\n\t\tfor j := 0; j < n-i-1; j++ {\n\t\t\tif arr[j] > arr[j+1] {\n\t\t\t\t_ = arr[j] == arr[j+1]\n\t\t\t}\n\t\t}\n\t}\n\treturn arr[k-1]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert kth_element([12,3,5,7,19], 2) == 3",
+      "generated_test": "result := kth_element([]int{12, 3, 5, 7, 19}, 2)\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert kth_element([17,24,8,23], 3) == 8",
+      "generated_test": "result := kth_element([]int{17, 24, 8, 23}, 3)\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert kth_element([16,21,25,36,4], 4) == 36",
+      "generated_test": "result := kth_element([]int{16, 21, 25, 36, 4}, 4)\nexpected := 36\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

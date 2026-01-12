@@ -1,0 +1,37 @@
+{
+  "task_id": 129,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate whether the matrix is a magic square.",
+  "python_code": "def magic_square_test(my_matrix):\n    iSize = len(my_matrix[0])\n    sum_list = []\n    sum_list.extend([sum (lines) for lines in my_matrix])   \n    for col in range(iSize):\n        sum_list.append(sum(row[col] for row in my_matrix))\n    result1 = 0\n    for i in range(0,iSize):\n        result1 +=my_matrix[i][i]\n    sum_list.append(result1)      \n    result2 = 0\n    for i in range(iSize-1,-1,-1):\n        result2 +=my_matrix[i][i]\n    sum_list.append(result2)\n    if len(set(sum_list))>1:\n        return False\n    return True",
+  "test_list": [
+    "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+    "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False"
+  ],
+  "code_ruby": "def magic_square_test(my_matrix)\n  i_size = my_matrix[0].length\n  sum_list = []\n  \n  # Row sums\n  my_matrix.each do |lines|\n    sum_list << lines.sum\n  end\n  \n  # Column sums\n  (0...i_size).each do |col|\n    sum_list << my_matrix.sum { |row| row[col] }\n  end\n  \n  # Main diagonal\n  result1 = 0\n  (0...i_size).each do |i|\n    result1 += my_matrix[i][i]\n  end\n  sum_list << result1\n  \n  # Anti-diagonal (note: Python code has a bug here, it calculates main diagonal again)\n  result2 = 0\n  (i_size - 1).downto(0) do |i|\n    result2 += my_matrix[i][i]\n  end\n  sum_list << result2\n  \n  return false if sum_list.uniq.length > 1\n  true\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True",
+      "generated_test": "result = magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])==True",
+      "generated_test": "result = magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 8]])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])==False",
+      "generated_test": "result = magic_square_test([[2, 7, 6], [9, 5, 1], [4, 3, 7]])\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

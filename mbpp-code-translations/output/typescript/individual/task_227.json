@@ -1,0 +1,17 @@
+{
+  "task_id": 227,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find minimum of three numbers.",
+  "python_code": "def min_of_three(a,b,c): \n      if (a <= b) and (a <= c): \n        smallest = a \n      elif (b <= a) and (b <= c): \n        smallest = b \n      else: \n        smallest = c \n      return smallest ",
+  "test_list": [
+    "assert min_of_three(10,20,0)==0",
+    "assert min_of_three(19,15,18)==15",
+    "assert min_of_three(-10,-20,-30)==-30"
+  ],
+  "code_typescript": "function min_of_three(a: number, b: number, c: number): number {\n    let smallest: number;\n    if ((a <= b) && (a <= c)) {\n        smallest = a;\n    } else if ((b <= a) && (b <= c)) {\n        smallest = b;\n    } else {\n        smallest = c;\n    }\n    return smallest;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

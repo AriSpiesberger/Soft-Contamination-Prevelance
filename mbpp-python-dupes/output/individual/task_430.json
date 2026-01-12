@@ -1,0 +1,27 @@
+{
+  "task_id": 430,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the directrix of a parabola.",
+  "code_python": "def parabola_directrix(a, b, c): \n  directrix=((int)(c - ((b * b) + 1) * 4 * a ))\n  return directrix",
+  "test_list": [
+    "assert parabola_directrix(5,3,2)==-198",
+    "assert parabola_directrix(9,8,4)==-2336",
+    "assert parabola_directrix(2,4,6)==-130"
+  ],
+  "python_1": "def parabola_directrix(a, b, c): \n  # Calculate b squared as a separate variable for clarity\n  b_squared = b ** 2\n  # Add 1 to b squared as per the directrix formula\n  term_with_b = b_squared + 1\n  # Multiply by 4 times the coefficient a\n  multiplied_term = term_with_b * 4 * a\n  # Subtract from c to get the directrix value\n  result = c - multiplied_term\n  # Convert to integer using int() function call syntax\n  directrix = int(result)\n  # Return the computed directrix value\n  return directrix",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def parabola_directrix(a, b, c): \n  # Use lambda function to encapsulate the directrix calculation logic\n  compute_directrix = lambda coef_a, coef_b, coef_c: coef_c - (coef_b * coef_b + 1) * 4 * coef_a\n  # Apply the lambda function with the input parameters\n  raw_result = compute_directrix(a, b, c)\n  # Truncate to integer using floor division trick for negative numbers handled by int()\n  directrix = int(raw_result)\n  # Return the integer directrix value\n  return directrix",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def parabola_directrix(a, b, c): \n  # Use reduce from functools to chain the arithmetic operations\n  from functools import reduce\n  # Store the coefficients in a list for functional-style processing\n  coefficients = [a, b, c]\n  # Extract individual coefficients using unpacking for cleaner access\n  coef_a, coef_b, coef_c = coefficients\n  # Build the inner term (b^2 + 1) using pow() function instead of ** operator\n  inner_sum = pow(coef_b, 2) + 1\n  # Create a list of factors to multiply together: [4, a, (b^2 + 1)]\n  factors_to_multiply = [4, coef_a, inner_sum]\n  # Use reduce with multiplication operator to compute the product of all factors\n  product = reduce(lambda x, y: x * y, factors_to_multiply)\n  # Compute the final directrix by subtracting the product from c\n  directrix = coef_c - product\n  # Ensure integer output using the __int__ magic method directly\n  return directrix.__int__()",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def parabola_directrix(a, b, c): \n  # Import operator module to use mathematical operators as callable functions\n  import operator\n  # Define a dictionary mapping operation names to their corresponding operator functions\n  ops = {'mul': operator.mul, 'sub': operator.sub, 'add': operator.add}\n  # Square b using multiplication operator function instead of exponentiation\n  b_squared = ops['mul'](b, b)\n  # Add 1 to the squared value using the addition operator function\n  b_term = ops['add'](b_squared, 1)\n  # Multiply 4 and a together as the first part of the scaling factor\n  four_times_a = ops['mul'](4, a)\n  # Multiply the b_term with four_times_a to complete the subtrahend\n  subtrahend = ops['mul'](b_term, four_times_a)\n  # Subtract the computed subtrahend from c to derive the directrix\n  raw_directrix = ops['sub'](c, subtrahend)\n  # Use bitwise OR with 0 as an alternative integer conversion for non-negative floor behavior\n  directrix = raw_directrix | 0 if raw_directrix >= 0 else -(-raw_directrix | 0) if -raw_directrix == int(-raw_directrix) else int(raw_directrix)\n  # Return the final integer directrix value\n  return int(raw_directrix)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def parabola_directrix(a, b, c): \n  # Use eval() to dynamically construct and execute the formula as a string expression\n  formula = f\"{c} - ({b} * {b} + 1) * 4 * {a}\"\n  # Evaluate the string formula to compute the raw directrix value\n  raw_result = eval(formula)\n  # Apply integer truncation using math.trunc for explicit truncation semantics\n  import math\n  # Truncate toward zero to get the integer portion of the result\n  directrix = math.trunc(raw_result)\n  # Return the computed integer directrix\n  return directrix",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

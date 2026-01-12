@@ -1,0 +1,37 @@
+{
+  "task_id": 137,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ratio of zeroes to non-zeroes in an array of integers.",
+  "python_code": "from array import array\ndef zero_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x == 0:\n            n1 += 1\n        else:\n          None\n    return n1/(n-n1)",
+  "test_list": [
+    "assert math.isclose(zero_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]), 0.181818, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]), 0.00, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 4, -6, -9, 11, -12, 14, -5, 17]), 0.00, rel_tol=0.001)"
+  ],
+  "code_go": "package main\n\nfunc zero_count(nums []int) float64 {\n\tn := len(nums)\n\tn1 := 0\n\tfor _, x := range nums {\n\t\tif x == 0 {\n\t\t\tn1++\n\t\t}\n\t}\n\tnonZeros := n - n1\n\tif nonZeros == 0 {\n\t\treturn 0.0\n\t}\n\treturn float64(n1) / float64(nonZeros)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 4,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert math.isclose(zero_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]), 0.181818, rel_tol=0.001)",
+      "generated_test": "result := zero_count([]int{0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8})\nexpected := 0.181818\nrelTol := 0.001\n\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\ntolerance := expected * relTol\nif tolerance < 0 {\n\ttolerance = -tolerance\n}\n\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(zero_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]), 0.00, rel_tol=0.001)",
+      "generated_test": "result := zero_count([]int{2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8})\nexpected := 0.00\ntolerance := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nif diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(zero_count([2, 4, -6, -9, 11, -12, 14, -5, 17]), 0.00, rel_tol=0.001)",
+      "generated_test": "result := zero_count([]int{2, 4, -6, -9, 11, -12, 14, -5, 17})\nexpected := 0.00\ntolerance := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nif diff <= tolerance*expected || diff <= tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

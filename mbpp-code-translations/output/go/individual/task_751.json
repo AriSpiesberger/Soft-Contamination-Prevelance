@@ -1,0 +1,37 @@
+{
+  "task_id": 751,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given array represents min heap or not. https://www.geeksforgeeks.org/how-to-check-if-a-given-array-represents-a-binary-heap/",
+  "python_code": "def check_min_heap_helper(arr, i):\n    if 2 * i + 2 > len(arr):\n        return True\n    left_child = (arr[i] <= arr[2 * i + 1]) and check_min_heap_helper(arr, 2 * i + 1)\n    right_child = (2 * i + 2 == len(arr)) or (arr[i] <= arr[2 * i + 2] \n                                      and check_min_heap_helper(arr, 2 * i + 2))\n    return left_child and right_child\n\ndef check_min_heap(arr):\n  return check_min_heap_helper(arr, 0)",
+  "test_list": [
+    "assert check_min_heap([1, 2, 3, 4, 5, 6]) == True",
+    "assert check_min_heap([2, 3, 4, 5, 10, 15]) == True",
+    "assert check_min_heap([2, 10, 4, 5, 3, 15]) == False"
+  ],
+  "code_go": "package main\n\nfunc check_min_heap_helper(arr []int, i int) bool {\n\tif 2*i+2 > len(arr) {\n\t\treturn true\n\t}\n\tleft_child := (arr[i] <= arr[2*i+1]) && check_min_heap_helper(arr, 2*i+1)\n\tright_child := (2*i+2 == len(arr)) || (arr[i] <= arr[2*i+2] && check_min_heap_helper(arr, 2*i+2))\n\treturn left_child && right_child\n}\n\nfunc check_min_heap(arr []int) bool {\n\treturn check_min_heap_helper(arr, 0)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_min_heap([1, 2, 3, 4, 5, 6]) == True",
+      "generated_test": "result := check_min_heap([]int{1, 2, 3, 4, 5, 6})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_min_heap([2, 3, 4, 5, 10, 15]) == True",
+      "generated_test": "result := check_min_heap([]int{2, 3, 4, 5, 10, 15})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_min_heap([2, 10, 4, 5, 3, 15]) == False",
+      "generated_test": "result := check_min_heap([]int{2, 10, 4, 5, 3, 15})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

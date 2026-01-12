@@ -1,0 +1,37 @@
+{
+  "task_id": 394,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if given tuple contains no duplicates.",
+  "python_code": "def check_distinct(test_tup):\n  res = True\n  temp = set()\n  for ele in test_tup:\n    if ele in temp:\n      res = False\n      break\n    temp.add(ele)\n  return res ",
+  "test_list": [
+    "assert check_distinct((1, 4, 5, 6, 1, 4)) == False",
+    "assert check_distinct((1, 4, 5, 6)) == True",
+    "assert check_distinct((2, 3, 4, 5, 6)) == True"
+  ],
+  "code_ruby": "def check_distinct(test_tup)\n  res = true\n  temp = Set.new\n  test_tup.each do |ele|\n    if temp.include?(ele)\n      res = false\n      break\n    end\n    temp.add(ele)\n  end\n  res\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert check_distinct((1, 4, 5, 6, 1, 4)) == False",
+      "generated_test": "require 'set'\n\ndef check_distinct(test_tup)\n  res = true\n  temp = Set.new\n  test_tup.each do |ele|\n    if temp.include?(ele)\n      res = false\n      break\n    end\n    temp.add(ele)\n  end\n  res\nend\n\nresult = check_distinct([1, 4, 5, 6, 1, 4])\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_distinct((1, 4, 5, 6)) == True",
+      "generated_test": "require 'set'\n\ndef check_distinct(test_tup)\n  res = true\n  temp = Set.new\n  test_tup.each do |ele|\n    if temp.include?(ele)\n      res = false\n      break\n    end\n    temp.add(ele)\n  end\n  res\nend\n\nresult = check_distinct([1, 4, 5, 6])\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_distinct((2, 3, 4, 5, 6)) == True",
+      "generated_test": "require 'set'\n\ndef check_distinct(test_tup)\n  res = true\n  temp = Set.new\n  test_tup.each do |ele|\n    if temp.include?(ele)\n      res = false\n      break\n    end\n    temp.add(ele)\n  end\n  res\nend\n\nresult = check_distinct([2, 3, 4, 5, 6])\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

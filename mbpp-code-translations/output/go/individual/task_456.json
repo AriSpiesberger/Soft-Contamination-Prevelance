@@ -1,0 +1,37 @@
+{
+  "task_id": 456,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to reverse each string in a given list of string values.",
+  "python_code": "def reverse_string_list(stringlist):\n    result = [x[::-1] for x in stringlist]\n    return result",
+  "test_list": [
+    "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+    "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+    "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']"
+  ],
+  "code_go": "package main\n\nfunc reverse_string_list(stringlist []string) []string {\n    result := make([]string, len(stringlist))\n    for i, s := range stringlist {\n        runes := []rune(s)\n        for left, right := 0, len(runes)-1; left < right; left, right = left+1, right-1 {\n            runes[left], runes[right] = runes[right], runes[left]\n        }\n        result[i] = string(runes)\n    }\n    return result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert reverse_string_list(['Red', 'Green', 'Blue', 'White', 'Black'])==['deR', 'neerG', 'eulB', 'etihW', 'kcalB']",
+      "generated_test": "input := []string{\"Red\", \"Green\", \"Blue\", \"White\", \"Black\"}\nexpected := []string{\"deR\", \"neerG\", \"eulB\", \"etihW\", \"kcalB\"}\nresult := reverse_string_list(input)\n\npass := true\nif len(result) != len(expected) {\n    pass = false\n} else {\n    for i := range expected {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['john','amal','joel','george'])==['nhoj','lama','leoj','egroeg']",
+      "generated_test": "input := []string{\"john\", \"amal\", \"joel\", \"george\"}\nexpected := []string{\"nhoj\", \"lama\", \"leoj\", \"egroeg\"}\nresult := reverse_string_list(input)\n\npass := len(result) == len(expected)\nif pass {\n    for i := range expected {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_string_list(['jack','john','mary'])==['kcaj','nhoj','yram']",
+      "generated_test": "input := []string{\"jack\", \"john\", \"mary\"}\nexpected := []string{\"kcaj\", \"nhoj\", \"yram\"}\nresult := reverse_string_list(input)\n\npass := true\nif len(result) != len(expected) {\n    pass = false\n} else {\n    for i := range expected {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

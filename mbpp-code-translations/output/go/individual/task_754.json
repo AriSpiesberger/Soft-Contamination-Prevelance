@@ -1,0 +1,44 @@
+{
+  "task_id": 754,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "We say that an element is common for lists l1, l2, l3 if it appears in all three lists under the same index. Write a function to find common elements from three lists. The function should return a list.",
+  "python_code": "def extract_index_list(l1, l2, l3):\n    result = []\n    for m, n, o in zip(l1, l2, l3):\n        if (m == n == o):\n            result.append(m)\n    return result",
+  "test_list": [
+    "assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 7]",
+    "assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 6, 5],[0, 1, 2, 3, 4, 6, 7])==[1, 6]",
+    "assert extract_index_list([1, 1, 3, 4, 6, 5, 6],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 5]",
+    "assert extract_index_list([1, 2, 3, 4, 6, 6, 6],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[]"
+  ],
+  "code_go": "package main\n\nfunc extract_index_list(l1, l2, l3 []int) []int {\n    result := []int{}\n    \n    minLen := len(l1)\n    if len(l2) < minLen {\n        minLen = len(l2)\n    }\n    if len(l3) < minLen {\n        minLen = len(l3)\n    }\n    \n    for i := 0; i < minLen; i++ {\n        if l1[i] == l2[i] && l2[i] == l3[i] {\n            result = append(result, l1[i])\n        }\n    }\n    \n    return result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 7]",
+      "generated_test": "result := extract_index_list([]int{1, 1, 3, 4, 5, 6, 7}, []int{0, 1, 2, 3, 4, 5, 7}, []int{0, 1, 2, 3, 4, 5, 7})\nexpected := []int{1, 7}\n\npass := len(result) == len(expected)\nif pass {\n    for i := range result {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 6, 5],[0, 1, 2, 3, 4, 6, 7])==[1, 6]",
+      "generated_test": "result := extract_index_list([]int{1, 1, 3, 4, 5, 6, 7}, []int{0, 1, 2, 3, 4, 6, 5}, []int{0, 1, 2, 3, 4, 6, 7})\nexpected := []int{1, 6}\n\npass := len(result) == len(expected)\nif pass {\n    for i := range result {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_index_list([1, 1, 3, 4, 6, 5, 6],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 5]",
+      "generated_test": "result := extract_index_list([]int{1, 1, 3, 4, 6, 5, 6}, []int{0, 1, 2, 3, 4, 5, 7}, []int{0, 1, 2, 3, 4, 5, 7})\nexpected := []int{1, 5}\n\npass := len(result) == len(expected)\nif pass {\n    for i := range result {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\n\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_index_list([1, 2, 3, 4, 6, 6, 6],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[]",
+      "generated_test": "result := extract_index_list([]int{1, 2, 3, 4, 6, 6, 6}, []int{0, 1, 2, 3, 4, 5, 7}, []int{0, 1, 2, 3, 4, 5, 7})\nexpected := []int{}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

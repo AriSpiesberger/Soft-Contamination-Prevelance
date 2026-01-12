@@ -1,0 +1,44 @@
+{
+  "task_id": 787,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by three 'b'.",
+  "python_code": "import re\ndef text_match_three(text):\n        patterns = 'ab{3}?'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert not text_match_three(\"ac\")",
+    "assert not text_match_three(\"dc\")",
+    "assert text_match_three(\"abbbba\")",
+    "assert text_match_three(\"caacabbbba\")"
+  ],
+  "code_javascript": "function text_match_three(text) {\n    const pattern = /ab{3}/;\n    const match = text.match(pattern);\n    return match ? match : null;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert not text_match_three(\"ac\")",
+      "generated_test": "const result = text_match_three(\"ac\");\nconst expected = null;\n\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_match_three(\"dc\")",
+      "generated_test": "const result = text_match_three(\"dc\");\nconst expected = null;\n\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"abbbba\")",
+      "generated_test": "const result = text_match_three(\"abbbba\");\nconst expected = [\"abbb\"];\n\nif (result !== null && Array.isArray(result) && result.length === expected.length && result[0] === expected[0]) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected:\", expected);\n    console.log(\"  Got:\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"caacabbbba\")",
+      "generated_test": "const result = text_match_three(\"caacabbbba\");\nif (result !== null) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: truthy (match found)\");\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

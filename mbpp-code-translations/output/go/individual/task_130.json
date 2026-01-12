@@ -1,0 +1,37 @@
+{
+  "task_id": 130,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the item with maximum frequency in a given list.",
+  "python_code": "from collections import defaultdict\ndef max_occurrences(nums):\n    dict = defaultdict(int)\n    for i in nums:\n        dict[i] += 1\n    result = max(dict.items(), key=lambda x: x[1]) \n    return result[0]",
+  "test_list": [
+    "assert max_occurrences([2,3,8,4,7,9,8,2,6,5,1,6,1,2,3,2,4,6,9,1,2])==2",
+    "assert max_occurrences([2,3,8,4,7,9,8,7,9,15,14,10,12,13,16,18])==8",
+    "assert max_occurrences([10,20,20,30,40,90,80,50,30,20,50,10])==20"
+  ],
+  "code_go": "package main\n\nfunc max_occurrences(nums []int) int {\n\tif len(nums) == 0 {\n\t\treturn 0\n\t}\n\t\n\tdict := make(map[int]int)\n\tfor _, i := range nums {\n\t\tdict[i]++\n\t}\n\t\n\tvar result int\n\tmaxCount := 0\n\tfirst := true\n\t\n\tfor key, count := range dict {\n\t\tif first || count > maxCount {\n\t\t\tmaxCount = count\n\t\t\tresult = key\n\t\t\tfirst = false\n\t\t}\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert max_occurrences([2,3,8,4,7,9,8,2,6,5,1,6,1,2,3,2,4,6,9,1,2])==2",
+      "generated_test": "input := []int{2, 3, 8, 4, 7, 9, 8, 2, 6, 5, 1, 6, 1, 2, 3, 2, 4, 6, 9, 1, 2}\nexpected := 2\ngot := max_occurrences(input)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_occurrences([2,3,8,4,7,9,8,7,9,15,14,10,12,13,16,18])==8",
+      "generated_test": "result := max_occurrences([]int{2, 3, 8, 4, 7, 9, 8, 7, 9, 15, 14, 10, 12, 13, 16, 18})\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_occurrences([10,20,20,30,40,90,80,50,30,20,50,10])==20",
+      "generated_test": "nums := []int{10, 20, 20, 30, 40, 90, 80, 50, 30, 20, 50, 10}\nexpected := 20\ngot := max_occurrences(nums)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

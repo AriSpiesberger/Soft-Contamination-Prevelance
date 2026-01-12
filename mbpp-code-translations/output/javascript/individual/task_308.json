@@ -1,0 +1,37 @@
+{
+  "task_id": 308,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the specified number of largest products from two given lists, selecting one factor from each list.",
+  "python_code": "def large_product(nums1, nums2, N):\n    result = sorted([x*y for x in nums1 for y in nums2], reverse=True)[:N]\n    return result",
+  "test_list": [
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]"
+  ],
+  "code_javascript": "function large_product(nums1, nums2, N) {\n    const products = [];\n    for (const x of nums1) {\n        for (const y of nums2) {\n            products.push(x * y);\n        }\n    }\n    products.sort((a, b) => b - a);\n    return products.slice(0, N);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+      "generated_test": "const result = large_product([1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 3);\nconst expected = [60, 54, 50];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+      "generated_test": "const result = large_product([1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 4);\nconst expected = [60, 54, 50, 48];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]",
+      "generated_test": "const result = large_product([1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 5);\nconst expected = [60, 54, 50, 48, 45];\nconst pass = JSON.stringify(result) === JSON.stringify(expected);\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

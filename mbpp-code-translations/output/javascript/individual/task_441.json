@@ -1,0 +1,37 @@
+{
+  "task_id": 441,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the surface area of a cube of a given size.",
+  "python_code": "def surfacearea_cube(l):\n  surfacearea= 6*l*l\n  return surfacearea",
+  "test_list": [
+    "assert surfacearea_cube(5)==150",
+    "assert surfacearea_cube(3)==54",
+    "assert surfacearea_cube(10)==600"
+  ],
+  "code_javascript": "function surfacearea_cube(l) {\n  const surfacearea = 6 * l * l;\n  return surfacearea;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert surfacearea_cube(5)==150",
+      "generated_test": "const result = surfacearea_cube(5);\nconst expected = 150;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cube(3)==54",
+      "generated_test": "const result = surfacearea_cube(3);\nconst expected = 54;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert surfacearea_cube(10)==600",
+      "generated_test": "const result = surfacearea_cube(10);\nconst expected = 600;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": 725,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks \" \" of the given string.",
+  "python_code": "import re\ndef extract_quotation(text1):\n  return (re.findall(r'\"(.*?)\"', text1))",
+  "test_list": [
+    "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+    "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+    "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+    "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []"
+  ],
+  "code_javascript": "function extract_quotation(text1) {\n  const regex = /\"(.*?)\"/g;\n  const matches = [];\n  let match;\n  while ((match = regex.exec(text1)) !== null) {\n    matches.push(match[1]);\n  }\n  return matches;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 4,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+      "generated_test": "const result = extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"');\nconst expected = ['A53', 'multi', 'Processor'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+      "generated_test": "const result = extract_quotation('Cast your \"favorite\" entertainment \"apps\"');\nconst expected = ['favorite', 'apps'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+      "generated_test": "const result = extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support');\nconst expected = ['4k Ultra HD', 'HDR 10'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []",
+      "generated_test": "const result = extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\");\nconst expected = [];\n\nconst arraysEqual = (a, b) => {\n  if (a.length !== b.length) return false;\n  for (let i = 0; i < a.length; i++) {\n    if (a[i] !== b[i]) return false;\n  }\n  return true;\n};\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

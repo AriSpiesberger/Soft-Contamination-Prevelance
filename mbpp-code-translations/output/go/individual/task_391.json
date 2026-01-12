@@ -1,0 +1,37 @@
+{
+  "task_id": 391,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert more than one list to nested dictionary.",
+  "python_code": "def convert_list_dictionary(l1, l2, l3):\n     result = [{x: {y: z}} for (x, y, z) in zip(l1, l2, l3)]\n     return result",
+  "test_list": [
+    "assert convert_list_dictionary([\"S001\", \"S002\", \"S003\", \"S004\"],[\"Adina Park\", \"Leyton Marsh\", \"Duncan Boyle\", \"Saim Richards\"] ,[85, 98, 89, 92])==[{'S001': {'Adina Park': 85}}, {'S002': {'Leyton Marsh': 98}}, {'S003': {'Duncan Boyle': 89}}, {'S004': {'Saim Richards': 92}}]",
+    "assert convert_list_dictionary([\"abc\",\"def\",\"ghi\",\"jkl\"],[\"python\",\"program\",\"language\",\"programs\"],[100,200,300,400])==[{'abc':{'python':100}},{'def':{'program':200}},{'ghi':{'language':300}},{'jkl':{'programs':400}}]",
+    "assert convert_list_dictionary([\"A1\",\"A2\",\"A3\",\"A4\"],[\"java\",\"C\",\"C++\",\"DBMS\"],[10,20,30,40])==[{'A1':{'java':10}},{'A2':{'C':20}},{'A3':{'C++':30}},{'A4':{'DBMS':40}}]"
+  ],
+  "code_go": "package main\n\nimport \"reflect\"\n\nfunc convert_list_dictionary(l1 []string, l2 []string, l3 []int) []map[string]map[string]int {\n\tresult := make([]map[string]map[string]int, 0)\n\t\n\tminLen := len(l1)\n\tif len(l2) < minLen {\n\t\tminLen = len(l2)\n\t}\n\tif len(l3) < minLen {\n\t\tminLen = len(l3)\n\t}\n\t\n\tfor i := 0; i < minLen; i++ {\n\t\tinnerMap := make(map[string]int)\n\t\tinnerMap[l2[i]] = l3[i]\n\t\touterMap := make(map[string]map[string]int)\n\t\touterMap[l1[i]] = innerMap\n\t\tresult = append(result, outerMap)\n\t}\n\t\n\treturn result\n}\n\nfunc compareResults(result, expected []map[string]map[string]int) bool {\n\treturn reflect.DeepEqual(result, expected)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 4,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert convert_list_dictionary([\"S001\", \"S002\", \"S003\", \"S004\"],[\"Adina Park\", \"Leyton Marsh\", \"Duncan Boyle\", \"Saim Richards\"] ,[85, 98, 89, 92])==[{'S001': {'Adina Park': 85}}, {'S002': {'Leyton Marsh': 98}}, {'S003': {'Duncan Boyle': 89}}, {'S004': {'Saim Richards': 92}}]",
+      "generated_test": "l1 := []string{\"S001\", \"S002\", \"S003\", \"S004\"}\nl2 := []string{\"Adina Park\", \"Leyton Marsh\", \"Duncan Boyle\", \"Saim Richards\"}\nl3 := []int{85, 98, 89, 92}\n\nresult := convert_list_dictionary(l1, l2, l3)\n\nexpected := []map[string]map[string]int{\n\t{\"S001\": {\"Adina Park\": 85}},\n\t{\"S002\": {\"Leyton Marsh\": 98}},\n\t{\"S003\": {\"Duncan Boyle\": 89}},\n\t{\"S004\": {\"Saim Richards\": 92}},\n}\n\nif compareResults(result, expected) {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert_list_dictionary([\"abc\",\"def\",\"ghi\",\"jkl\"],[\"python\",\"program\",\"language\",\"programs\"],[100,200,300,400])==[{'abc':{'python':100}},{'def':{'program':200}},{'ghi':{'language':300}},{'jkl':{'programs':400}}]",
+      "generated_test": "result := convert_list_dictionary([]string{\"abc\", \"def\", \"ghi\", \"jkl\"}, []string{\"python\", \"program\", \"language\", \"programs\"}, []int{100, 200, 300, 400})\nexpected := []map[string]map[string]int{\n\t{\"abc\": {\"python\": 100}},\n\t{\"def\": {\"program\": 200}},\n\t{\"ghi\": {\"language\": 300}},\n\t{\"jkl\": {\"programs\": 400}},\n}\nif compareResults(result, expected) {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert_list_dictionary([\"A1\",\"A2\",\"A3\",\"A4\"],[\"java\",\"C\",\"C++\",\"DBMS\"],[10,20,30,40])==[{'A1':{'java':10}},{'A2':{'C':20}},{'A3':{'C++':30}},{'A4':{'DBMS':40}}]",
+      "generated_test": "l1 := []string{\"A1\", \"A2\", \"A3\", \"A4\"}\nl2 := []string{\"java\", \"C\", \"C++\", \"DBMS\"}\nl3 := []int{10, 20, 30, 40}\n\nresult := convert_list_dictionary(l1, l2, l3)\n\nexpected := []map[string]map[string]int{\n\t{\"A1\": {\"java\": 10}},\n\t{\"A2\": {\"C\": 20}},\n\t{\"A3\": {\"C++\": 30}},\n\t{\"A4\": {\"DBMS\": 40}},\n}\n\nif compareResults(result, expected) {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

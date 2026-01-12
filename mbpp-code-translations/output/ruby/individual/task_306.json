@@ -1,0 +1,37 @@
+{
+  "task_id": 306,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum sum of increasing subsequence from prefix until ith index and also including a given kth element which is after i, i.e., k > i .",
+  "python_code": "def max_sum_increasing_subseq(a, n, index, k):\n\tdp = [[0 for i in range(n)] \n\t\t\tfor i in range(n)]\n\tfor i in range(n):\n\t\tif a[i] > a[0]:\n\t\t\tdp[0][i] = a[i] + a[0]\n\t\telse:\n\t\t\tdp[0][i] = a[i]\n\tfor i in range(1, n):\n\t\tfor j in range(n):\n\t\t\tif a[j] > a[i] and j > i:\n\t\t\t\tif dp[i - 1][i] + a[j] > dp[i - 1][j]:\n\t\t\t\t\tdp[i][j] = dp[i - 1][i] + a[j]\n\t\t\t\telse:\n\t\t\t\t\tdp[i][j] = dp[i - 1][j]\n\t\t\telse:\n\t\t\t\tdp[i][j] = dp[i - 1][j]\n\treturn dp[index][k]",
+  "test_list": [
+    "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 4, 6) == 11",
+    "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 2, 5) == 7",
+    "assert max_sum_increasing_subseq([11, 15, 19, 21, 26, 28, 31], 7, 2, 4) == 71"
+  ],
+  "code_ruby": "def max_sum_increasing_subseq(a, n, index, k)\n  dp = Array.new(n) { Array.new(n, 0) }\n  \n  (0...n).each do |i|\n    if a[i] > a[0]\n      dp[0][i] = a[i] + a[0]\n    else\n      dp[0][i] = a[i]\n    end\n  end\n  \n  (1...n).each do |i|\n    (0...n).each do |j|\n      if a[j] > a[i] && j > i\n        if dp[i - 1][i] + a[j] > dp[i - 1][j]\n          dp[i][j] = dp[i - 1][i] + a[j]\n        else\n          dp[i][j] = dp[i - 1][j]\n        end\n      else\n        dp[i][j] = dp[i - 1][j]\n      end\n    end\n  end\n  \n  dp[index][k]\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 4, 6) == 11",
+      "generated_test": "result = max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5], 7, 4, 6)\nexpected = 11\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 2, 5) == 7",
+      "generated_test": "result = max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5], 7, 2, 5)\nexpected = 7\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sum_increasing_subseq([11, 15, 19, 21, 26, 28, 31], 7, 2, 4) == 71",
+      "generated_test": "result = max_sum_increasing_subseq([11, 15, 19, 21, 26, 28, 31], 7, 2, 4)\nexpected = 71\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 777,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of non-repeated elements in a given list.",
+  "code_python": "def find_sum(arr): \n    arr.sort() \n    sum = arr[0] \n    for i in range(len(arr)-1): \n        if (arr[i] != arr[i+1]): \n            sum = sum + arr[i+1]   \n    return sum",
+  "test_list": [
+    "assert find_sum([1,2,3,1,1,4,5,6]) == 21",
+    "assert find_sum([1,10,9,4,2,10,10,45,4]) == 71",
+    "assert find_sum([12,10,9,45,2,10,10,45,10]) == 78"
+  ],
+  "python_1": "def find_sum(arr): \n    # Convert list to set to eliminate all duplicate values automatically\n    unique_elements = set(arr)\n    # Use built-in sum function to add all unique elements together\n    total = sum(unique_elements)\n    # Return the computed sum of distinct elements\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_sum(arr): \n    # Use dictionary to track which elements have been seen\n    seen = {}\n    # Iterate through each element in the input array\n    for num in arr:\n        # Mark element as seen by adding to dictionary with True value\n        seen[num] = True\n    # Initialize accumulator variable for the running total\n    total = 0\n    # Loop through each unique key in our tracking dictionary\n    for key in seen:\n        # Add each unique element to our running total\n        total = total + key\n    # Return the accumulated sum of all distinct values\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_sum(arr): \n    # Use list comprehension with conditional to filter elements appearing exactly once in set membership\n    unique_vals = [x for x in arr if arr.count(x) >= 1]\n    # Remove duplicates by converting filtered list to set, capturing only distinct values\n    distinct_set = set(unique_vals)\n    # Apply reduce-style accumulation using functools to sum all unique elements\n    from functools import reduce\n    # Define lambda function that adds two numbers together for reduction operation\n    add_func = lambda a, b: a + b\n    # Execute reduction across all distinct elements starting from initial value of 0\n    result = reduce(add_func, distinct_set, 0)\n    # Return the reduced sum of all non-repeated (unique) elements\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_sum(arr): \n    # Leverage dictionary fromkeys method to extract unique elements as keys\n    unique_dict = dict.fromkeys(arr)\n    # Extract all unique keys as a view object for iteration\n    unique_keys = unique_dict.keys()\n    # Convert keys view to a list for explicit sequence processing\n    unique_list = list(unique_keys)\n    # Calculate sum using generator expression within sum() for memory efficiency\n    total = sum(element for element in unique_list)\n    # Return the computed total of all distinct array elements\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_sum(arr): \n    # Use collections Counter to build frequency map of all elements in one pass\n    from collections import Counter\n    # Create counter object that maps each value to its occurrence count\n    frequency_map = Counter(arr)\n    # Extract unique elements by accessing the keys of the counter directly\n    unique_elements = frequency_map.keys()\n    # Initialize sum variable using None to handle empty edge case differently\n    result_sum = None\n    # Process each unique element through explicit iteration over counter keys\n    for element in unique_elements:\n        # Handle first element case by direct assignment instead of addition\n        if result_sum is None:\n            # Set initial sum to first unique element encountered\n            result_sum = element\n        else:\n            # Accumulate subsequent unique elements into running total\n            result_sum += element\n    # Handle edge case where input array might be empty by returning 0\n    if result_sum is None:\n        return 0\n    # Return the accumulated sum of all distinct elements from counter keys\n    return result_sum",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

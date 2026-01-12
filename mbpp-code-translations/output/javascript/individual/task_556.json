@@ -1,0 +1,37 @@
+{
+  "task_id": 556,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose xor value is odd.",
+  "python_code": "def find_Odd_Pair(A,N) : \n    oddPair = 0\n    for i in range(0,N) :  \n        for j in range(i+1,N) :  \n            if ((A[i] ^ A[j]) % 2 != 0):  \n                oddPair+=1  \n    return oddPair  ",
+  "test_list": [
+    "assert find_Odd_Pair([5,4,7,2,1],5) == 6",
+    "assert find_Odd_Pair([7,2,8,1,0,5,11],7) == 12",
+    "assert find_Odd_Pair([1,2,3],3) == 2"
+  ],
+  "code_javascript": "function find_Odd_Pair(A, N) {\n    let oddPair = 0;\n    for (let i = 0; i < N; i++) {\n        for (let j = i + 1; j < N; j++) {\n            if ((A[i] ^ A[j]) % 2 !== 0) {\n                oddPair += 1;\n            }\n        }\n    }\n    return oddPair;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_Odd_Pair([5,4,7,2,1],5) == 6",
+      "generated_test": "const result = find_Odd_Pair([5, 4, 7, 2, 1], 5);\nconst expected = 6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Odd_Pair([7,2,8,1,0,5,11],7) == 12",
+      "generated_test": "const result = find_Odd_Pair([7,2,8,1,0,5,11], 7);\nconst expected = 12;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Odd_Pair([1,2,3],3) == 2",
+      "generated_test": "const result = find_Odd_Pair([1, 2, 3], 3);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

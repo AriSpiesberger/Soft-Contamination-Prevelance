@@ -1,0 +1,27 @@
+{
+  "task_id": 137,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ratio of zeroes to non-zeroes in an array of integers.",
+  "code_python": "from array import array\ndef zero_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x == 0:\n            n1 += 1\n        else:\n          None\n    return n1/(n-n1)",
+  "test_list": [
+    "assert math.isclose(zero_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]), 0.181818, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]), 0.00, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 4, -6, -9, 11, -12, 14, -5, 17]), 0.00, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef zero_count(nums):\n    # Use list comprehension to filter and count zeros in one pass\n    zero_count_val = sum(1 for x in nums if x == 0)\n    # Calculate non-zeros by subtracting zeros from total length\n    non_zero_count = len(nums) - zero_count_val\n    # Compute and return the ratio of zeros to non-zeros\n    return zero_count_val / non_zero_count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef zero_count(nums):\n    # Convert input to list to ensure we can iterate multiple times\n    num_list = list(nums)\n    # Use filter with lambda to extract only zero values from the array\n    zeros = list(filter(lambda x: x == 0, num_list))\n    # Use filter with lambda to extract only non-zero values from the array\n    non_zeros = list(filter(lambda x: x != 0, num_list))\n    # Count zeros by measuring length of filtered zeros list\n    num_zeros = len(zeros)\n    # Count non-zeros by measuring length of filtered non-zeros list\n    num_non_zeros = len(non_zeros)\n    # Divide zero count by non-zero count to get the ratio\n    ratio = num_zeros / num_non_zeros\n    # Return the computed ratio of zeros to non-zeros\n    return ratio",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef zero_count(nums):\n    # Use the count method to directly tally occurrences of zero\n    zero_total = nums.count(0)\n    # Compute non-zeros by subtracting zero count from total elements\n    non_zero_total = len(nums) - zero_total\n    # Return the division result representing zeros per non-zero element\n    return zero_total / non_zero_total",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef zero_count(nums):\n    # Use reduce-style accumulation via recursion helper to count zeros\n    def count_zeros_recursive(lst, idx=0, acc=0):\n        # Base case: when index reaches list length, return accumulated count\n        if idx >= len(lst):\n            return acc\n        # Add 1 to accumulator if current element is zero, else add 0\n        increment = 1 if lst[idx] == 0 else 0\n        # Recursively process next index with updated accumulator\n        return count_zeros_recursive(lst, idx + 1, acc + increment)\n    \n    # Convert to list to ensure indexing works for any iterable input\n    nums_list = list(nums)\n    # Invoke recursive helper starting at index 0 with accumulator 0\n    zeros = count_zeros_recursive(nums_list)\n    # Derive non-zero count by subtracting zeros from total array size\n    non_zeros = len(nums_list) - zeros\n    # Compute ratio by dividing zero occurrences by non-zero occurrences\n    result = zeros / non_zeros\n    # Return the calculated ratio of zeros to non-zeros\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef zero_count(nums):\n    # Transform each element to a boolean indicating if it equals zero\n    zero_mask = map(lambda x: x == 0, nums)\n    # Convert boolean mask to list for multiple iterations\n    mask_list = list(zero_mask)\n    # Sum True values (which equal 1) to get total zero count\n    num_zeros = sum(mask_list)\n    # Calculate total elements by getting mask length\n    total_elements = len(mask_list)\n    # Subtract zeros from total to find non-zero element count\n    num_non_zeros = total_elements - num_zeros\n    # Divide zeros by non-zeros to produce the requested ratio\n    return num_zeros / num_non_zeros",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

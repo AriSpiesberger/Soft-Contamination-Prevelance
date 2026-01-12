@@ -1,0 +1,17 @@
+{
+  "task_id": 478,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove lowercase substrings from a given string.",
+  "python_code": "import re\ndef remove_lowercase(str1):\n return re.sub('[a-z]', '', str1)",
+  "test_list": [
+    "assert remove_lowercase(\"PYTHon\")==('PYTH')",
+    "assert remove_lowercase(\"FInD\")==('FID')",
+    "assert remove_lowercase(\"STRinG\")==('STRG')"
+  ],
+  "code_typescript": "function remove_lowercase(str1: string): string {\n    return str1.replace(/[a-z]/g, '');\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

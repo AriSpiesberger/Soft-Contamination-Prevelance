@@ -1,0 +1,37 @@
+{
+  "task_id": 444,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to trim each tuple by k in the given tuple list.",
+  "python_code": "def trim_tuple(test_list, K):\n  res = []\n  for ele in test_list:\n    N = len(ele)\n    res.append(tuple(list(ele)[K: N - K]))\n  return (str(res)) ",
+  "test_list": [
+    "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1),(9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 2) == '[(2,), (9,), (2,), (2,)]'",
+    "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1), (9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 1) == '[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]'",
+    "assert trim_tuple([(7, 8, 4, 9), (11, 8, 12, 4),(4, 1, 7, 8), (3, 6, 9, 7)], 1) == '[(8, 4), (8, 12), (1, 7), (6, 9)]'"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc trim_tuple(test_list [][]int, K int) string {\n\tres := [][]int{}\n\tfor _, ele := range test_list {\n\t\tN := len(ele)\n\t\tstart := K\n\t\tend := N - K\n\t\tif start > end {\n\t\t\tstart = end\n\t\t}\n\t\tif start < 0 {\n\t\t\tstart = 0\n\t\t}\n\t\tif end < 0 {\n\t\t\tend = 0\n\t\t}\n\t\tif end > N {\n\t\t\tend = N\n\t\t}\n\t\ttrimmed := ele[start:end]\n\t\tres = append(res, trimmed)\n\t}\n\treturn formatResult(res)\n}\n\nfunc formatResult(res [][]int) string {\n\tvar parts []string\n\tfor _, tuple := range res {\n\t\tif len(tuple) == 1 {\n\t\t\tparts = append(parts, fmt.Sprintf(\"(%d,)\", tuple[0]))\n\t\t} else if len(tuple) == 0 {\n\t\t\tparts = append(parts, \"()\")\n\t\t} else {\n\t\t\tvar nums []string\n\t\t\tfor _, n := range tuple {\n\t\t\t\tnums = append(nums, fmt.Sprintf(\"%d\", n))\n\t\t\t}\n\t\t\tparts = append(parts, \"(\"+strings.Join(nums, \", \")+\")\")\n\t\t}\n\t}\n\treturn \"[\" + strings.Join(parts, \", \") + \"]\"\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1),(9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 2) == '[(2,), (9,), (2,), (2,)]'",
+      "generated_test": "input := [][]int{{5, 3, 2, 1, 4}, {3, 4, 9, 2, 1}, {9, 1, 2, 3, 5}, {4, 8, 2, 1, 7}}\nresult := trim_tuple(input, 2)\nexpected := \"[(2,), (9,), (2,), (2,)]\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert trim_tuple([(5, 3, 2, 1, 4), (3, 4, 9, 2, 1), (9, 1, 2, 3, 5), (4, 8, 2, 1, 7)], 1) == '[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]'",
+      "generated_test": "input := [][]int{{5, 3, 2, 1, 4}, {3, 4, 9, 2, 1}, {9, 1, 2, 3, 5}, {4, 8, 2, 1, 7}}\nexpected := \"[(3, 2, 1), (4, 9, 2), (1, 2, 3), (8, 2, 1)]\"\nresult := trim_tuple(input, 1)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert trim_tuple([(7, 8, 4, 9), (11, 8, 12, 4),(4, 1, 7, 8), (3, 6, 9, 7)], 1) == '[(8, 4), (8, 12), (1, 7), (6, 9)]'",
+      "generated_test": "input := [][]int{{7, 8, 4, 9}, {11, 8, 12, 4}, {4, 1, 7, 8}, {3, 6, 9, 7}}\nexpected := \"[(8, 4), (8, 12), (1, 7), (6, 9)]\"\nresult := trim_tuple(input, 1)\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

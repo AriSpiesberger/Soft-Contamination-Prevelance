@@ -1,0 +1,27 @@
+{
+  "task_id": 619,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to move all the numbers to the end of the given string.",
+  "code_python": "def move_num(test_str):\n  res = ''\n  dig = ''\n  for ele in test_str:\n    if ele.isdigit():\n      dig += ele\n    else:\n      res += ele\n  res += dig\n  return (res) ",
+  "test_list": [
+    "assert move_num('I1love143you55three3000thousand') == 'Iloveyouthreethousand1143553000'",
+    "assert move_num('Avengers124Assemble') == 'AvengersAssemble124'",
+    "assert move_num('Its11our12path13to14see15things16do17things') == 'Itsourpathtoseethingsdothings11121314151617'"
+  ],
+  "python_1": "def move_num(test_str):\n    # Use list comprehension to filter out all non-digit characters\n    non_digits = [char for char in test_str if not char.isdigit()]\n    # Use list comprehension to extract all digit characters separately\n    digits = [char for char in test_str if char.isdigit()]\n    # Combine the two lists: non-digits first, then digits\n    combined = non_digits + digits\n    # Join the list elements into a single string and return\n    return ''.join(combined)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def move_num(test_str):\n    # Use filter with lambda to extract characters that are not digits\n    letters = filter(lambda x: not x.isdigit(), test_str)\n    # Use filter with lambda to extract only digit characters\n    numbers = filter(lambda x: x.isdigit(), test_str)\n    # Convert the letters filter object to a string by joining\n    letters_str = ''.join(letters)\n    # Convert the numbers filter object to a string by joining\n    numbers_str = ''.join(numbers)\n    # Concatenate letters followed by numbers to form final result\n    return letters_str + numbers_str",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def move_num(test_str):\n    # Use regular expressions module for pattern-based string manipulation\n    import re\n    # Find all sequences of digits in the string using regex pattern matching\n    digits_found = re.findall(r'\\d', test_str)\n    # Use regex substitution to remove all digit characters from original string\n    letters_only = re.sub(r'\\d', '', test_str)\n    # Concatenate the digit-free string with all extracted digits joined together\n    result = letters_only + ''.join(digits_found)\n    # Return the rearranged string with numbers moved to the end\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def move_num(test_str):\n    # Use enumerate to get both index and character for potential ordering needs\n    indexed_chars = list(enumerate(test_str))\n    # Partition characters using a sorting key: digits get sorted to end with key=1, others key=0\n    sorted_chars = sorted(indexed_chars, key=lambda x: (x[1].isdigit(), x[0]))\n    # Extract just the characters from the sorted tuples, discarding indices\n    result_chars = [char for idx, char in sorted_chars]\n    # Combine all characters into final string using join method\n    final_result = ''.join(result_chars)\n    # Return the reorganized string with numbers at the end\n    return final_result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def move_num(test_str):\n    # Use reduce from functools to accumulate results in a single pass\n    from functools import reduce\n    # Define a reducer function that builds two accumulators simultaneously as a tuple\n    def partition_reducer(acc, char):\n        # Unpack the accumulated non-digits and digits from the tuple\n        non_digits, digits = acc\n        # Check if current character is a digit to decide which accumulator to update\n        if char.isdigit():\n            # Append digit to the digits accumulator, keep non_digits unchanged\n            return (non_digits, digits + char)\n        else:\n            # Append non-digit to non_digits accumulator, keep digits unchanged\n            return (non_digits + char, digits)\n    # Apply reduce with our custom function, starting with empty strings for both parts\n    letters_part, numbers_part = reduce(partition_reducer, test_str, ('', ''))\n    # Concatenate letters followed by numbers to produce the final output\n    return letters_part + numbers_part",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

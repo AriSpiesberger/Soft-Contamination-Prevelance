@@ -1,0 +1,37 @@
+{
+  "task_id": 438,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count bidirectional tuple pairs.",
+  "python_code": "def count_bidirectional(test_list):\n  res = 0\n  for idx in range(0, len(test_list)):\n    for iidx in range(idx + 1, len(test_list)):\n      if test_list[iidx][0] == test_list[idx][1] and test_list[idx][1] == test_list[iidx][0]:\n        res += 1\n  return res",
+  "test_list": [
+    "assert count_bidirectional([(5, 6), (1, 2), (6, 5), (9, 1), (6, 5), (2, 1)] ) == 3",
+    "assert count_bidirectional([(5, 6), (1, 3), (6, 5), (9, 1), (6, 5), (2, 1)] ) == 2",
+    "assert count_bidirectional([(5, 6), (1, 2), (6, 5), (9, 2), (6, 5), (2, 1)] ) == 4"
+  ],
+  "code_go": "package main\n\nfunc count_bidirectional(test_list [][2]int) int {\n\tres := 0\n\tfor idx := 0; idx < len(test_list); idx++ {\n\t\tfor iidx := idx + 1; iidx < len(test_list); iidx++ {\n\t\t\tif test_list[iidx][0] == test_list[idx][1] && test_list[idx][1] == test_list[iidx][0] {\n\t\t\t\tres++\n\t\t\t}\n\t\t}\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert count_bidirectional([(5, 6), (1, 2), (6, 5), (9, 1), (6, 5), (2, 1)] ) == 3",
+      "generated_test": "result := count_bidirectional([][2]int{{5, 6}, {1, 2}, {6, 5}, {9, 1}, {6, 5}, {2, 1}})\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_bidirectional([(5, 6), (1, 3), (6, 5), (9, 1), (6, 5), (2, 1)] ) == 2",
+      "generated_test": "result := count_bidirectional([][2]int{{5, 6}, {1, 3}, {6, 5}, {9, 1}, {6, 5}, {2, 1}})\nexpected := 2\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_bidirectional([(5, 6), (1, 2), (6, 5), (9, 2), (6, 5), (2, 1)] ) == 4",
+      "generated_test": "result := count_bidirectional([][2]int{{5, 6}, {1, 2}, {6, 5}, {9, 2}, {6, 5}, {2, 1}})\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

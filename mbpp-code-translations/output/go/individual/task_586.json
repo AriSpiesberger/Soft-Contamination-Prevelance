@@ -1,0 +1,37 @@
+{
+  "task_id": 586,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a list at the nth eelment and add the first part to the end.",
+  "python_code": "def split_Arr(l, n):\n  return l[n:] + l[:n]",
+  "test_list": [
+    "assert split_Arr([12,10,5,6,52,36],2) == [5,6,52,36,12,10]",
+    "assert split_Arr([1,2,3,4],1) == [2,3,4,1]",
+    "assert split_Arr([0,1,2,3,4,5,6,7],3) == [3,4,5,6,7,0,1,2]"
+  ],
+  "code_go": "package main\n\nfunc split_Arr(l []int, n int) []int {\n\tif len(l) == 0 {\n\t\treturn []int{}\n\t}\n\tresult := make([]int, len(l))\n\tcopy(result, l[n:])\n\tcopy(result[len(l)-n:], l[:n])\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert split_Arr([12,10,5,6,52,36],2) == [5,6,52,36,12,10]",
+      "generated_test": "result := split_Arr([]int{12, 10, 5, 6, 52, 36}, 2)\nexpected := []int{5, 6, 52, 36, 12, 10}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split_Arr([1,2,3,4],1) == [2,3,4,1]",
+      "generated_test": "result := split_Arr([]int{1, 2, 3, 4}, 1)\nexpected := []int{2, 3, 4, 1}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert split_Arr([0,1,2,3,4,5,6,7],3) == [3,4,5,6,7,0,1,2]",
+      "generated_test": "result := split_Arr([]int{0, 1, 2, 3, 4, 5, 6, 7}, 3)\nexpected := []int{3, 4, 5, 6, 7, 0, 1, 2}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

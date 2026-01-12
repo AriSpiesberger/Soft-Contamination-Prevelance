@@ -1,0 +1,27 @@
+{
+  "task_id": 230,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a string and character, replaces blank spaces in the string with the character, and returns the string.",
+  "code_python": "def replace_blank(str1,char):\n str2 = str1.replace(' ', char)\n return str2",
+  "test_list": [
+    "assert replace_blank(\"hello people\",'@')==(\"hello@people\")",
+    "assert replace_blank(\"python program language\",'$')==(\"python$program$language\")",
+    "assert replace_blank(\"blank space\",\"-\")==(\"blank-space\")"
+  ],
+  "python_1": "def replace_blank(str1,char):\n    # Initialize empty list to collect transformed characters\n    result = []\n    # Process each character in the input string individually\n    for c in str1:\n        # Check if current character is a space that needs replacement\n        if c == ' ':\n            # Append the replacement character instead of space\n            result.append(char)\n        else:\n            # Keep non-space characters unchanged\n            result.append(c)\n    # Concatenate all characters in list back into a single string\n    return ''.join(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def replace_blank(str1,char):\n    # Split the string on spaces to get a list of words\n    words = str1.split(' ')\n    # Join all words back together using the replacement character as separator\n    return char.join(words)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def replace_blank(str1,char):\n    # Use list comprehension with conditional expression for concise character transformation\n    transformed = [char if c == ' ' else c for c in str1]\n    # Merge the list of characters into a single output string\n    return ''.join(transformed)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def replace_blank(str1,char):\n    # Use map function to apply transformation to each character functionally\n    transformed_chars = map(lambda c: char if c == ' ' else c, str1)\n    # Convert the map iterator into a string by joining all characters\n    return ''.join(transformed_chars)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def replace_blank(str1,char):\n    # Use recursion base case: return empty string when input is exhausted\n    if len(str1) == 0:\n        return ''\n    # Extract the first character to process independently\n    first_char = str1[0]\n    # Determine replacement: use char if space, otherwise keep original\n    processed_char = char if first_char == ' ' else first_char\n    # Recursively process remaining string and concatenate with current result\n    return processed_char + replace_blank(str1[1:], char)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

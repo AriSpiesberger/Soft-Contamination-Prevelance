@@ -1,0 +1,27 @@
+{
+  "task_id": 625,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to interchange the first and last element in a given list.",
+  "code_python": "def swap_List(newList): \n    size = len(newList) \n    temp = newList[0] \n    newList[0] = newList[size - 1] \n    newList[size - 1] = temp   \n    return newList ",
+  "test_list": [
+    "assert swap_List([1,2,3]) == [3,2,1]",
+    "assert swap_List([1,2,3,4,4]) == [4,2,3,4,1]",
+    "assert swap_List([4,5,6]) == [6,5,4]"
+  ],
+  "python_1": "def swap_List(newList): \n    # Use Python's tuple unpacking to swap first and last elements in one line\n    newList[0], newList[-1] = newList[-1], newList[0]\n    # Return the modified list with swapped elements\n    return newList",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def swap_List(newList): \n    # Store the first element before any modifications occur\n    first_element = newList[0]\n    # Store the last element using negative indexing for clarity\n    last_element = newList[-1]\n    # Create a new list starting with what was the last element\n    result = [last_element]\n    # Slice out the middle portion of the list (excluding first and last)\n    middle_portion = newList[1:-1]\n    # Extend the result with all middle elements preserved in order\n    result.extend(middle_portion)\n    # Append the original first element to the end position\n    result.append(first_element)\n    # Clear the original list to prepare for in-place modification\n    newList.clear()\n    # Repopulate the original list with our swapped result\n    newList.extend(result)\n    # Return the modified original list reference\n    return newList",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def swap_List(newList): \n    # Use list comprehension with conditional indexing to rebuild the list\n    # Index 0 maps to -1, index -1 maps to 0, all others stay the same\n    swapped = [newList[-1] if i == 0 else newList[0] if i == len(newList) - 1 else newList[i] for i in range(len(newList))]\n    # Replace all elements in original list using slice assignment to maintain reference\n    newList[:] = swapped\n    # Return the mutated original list object\n    return newList",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def swap_List(newList): \n    # Concatenate slices: last element + middle section + first element\n    reconstructed = newList[-1:] + newList[1:-1] + newList[:1]\n    # Iterate through indices to overwrite original list elements one by one\n    for idx in range(len(newList)):\n        # Copy each element from reconstructed version back to original list\n        newList[idx] = reconstructed[idx]\n    # Return the in-place modified list with swapped endpoints\n    return newList",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def swap_List(newList): \n    # Extract the first element using pop at index 0, shifting all elements left\n    first = newList.pop(0)\n    # Extract what is now the last element (was originally at index -1)\n    last = newList.pop(-1)\n    # Insert the original last element at the beginning of the list\n    newList.insert(0, last)\n    # Append the original first element to the end position\n    newList.append(first)\n    # Return the list which has been modified through pop and insert operations\n    return newList",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 584,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb ending with ly and its positions in a given string.",
+  "python_code": "import re\ndef find_adverbs(text):\n  for m in re.finditer(r\"\\w+ly\", text):\n    return ('%d-%d: %s' % (m.start(), m.end(), m.group(0)))",
+  "test_list": [
+    "assert find_adverbs(\"Clearly, he has no excuse for such behavior.\") == '0-7: Clearly'",
+    "assert find_adverbs(\"Please handle the situation carefuly\") == '28-36: carefuly'",
+    "assert find_adverbs(\"Complete the task quickly\") == '18-25: quickly'"
+  ],
+  "code_rust": "pub fn find_adverbs(text: &str) -> String {\n    let mut i = 0;\n    let chars: Vec<char> = text.chars().collect();\n    let len = chars.len();\n    \n    while i < len {\n        // Find start of a word (word character)\n        if chars[i].is_alphanumeric() || chars[i] == '_' {\n            let start = i;\n            // Find end of word\n            while i < len && (chars[i].is_alphanumeric() || chars[i] == '_') {\n                i += 1;\n            }\n            let end = i;\n            \n            // Check if word ends with \"ly\"\n            if end - start >= 2 {\n                let word: String = chars[start..end].iter().collect();\n                if word.ends_with(\"ly\") || word.ends_with(\"Ly\") || word.ends_with(\"LY\") || word.ends_with(\"lY\") {\n                    // Calculate byte positions\n                    let byte_start: usize = chars[..start].iter().map(|c| c.len_utf8()).sum();\n                    let byte_end: usize = chars[..end].iter().map(|c| c.len_utf8()).sum();\n                    return format!(\"{}-{}: {}\", byte_start, byte_end, word);\n                }\n            }\n        } else {\n            i += 1;\n        }\n    }\n    \n    String::new()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 6,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_adverbs(\"Clearly, he has no excuse for such behavior.\") == '0-7: Clearly'",
+      "generated_test": "let result = find_adverbs(\"Clearly, he has no excuse for such behavior.\");\nlet expected = \"0-7: Clearly\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverbs(\"Please handle the situation carefuly\") == '28-36: carefuly'",
+      "generated_test": "let result = find_adverbs(\"Please handle the situation carefuly\");\nlet expected = \"28-36: carefuly\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverbs(\"Complete the task quickly\") == '18-25: quickly'",
+      "generated_test": "let result = find_adverbs(\"Complete the task quickly\");\nlet expected = \"18-25: quickly\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

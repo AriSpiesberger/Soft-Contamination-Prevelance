@@ -1,0 +1,17 @@
+{
+  "task_id": 584,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb ending with ly and its positions in a given string.",
+  "python_code": "import re\ndef find_adverbs(text):\n  for m in re.finditer(r\"\\w+ly\", text):\n    return ('%d-%d: %s' % (m.start(), m.end(), m.group(0)))",
+  "test_list": [
+    "assert find_adverbs(\"Clearly, he has no excuse for such behavior.\") == '0-7: Clearly'",
+    "assert find_adverbs(\"Please handle the situation carefuly\") == '28-36: carefuly'",
+    "assert find_adverbs(\"Complete the task quickly\") == '18-25: quickly'"
+  ],
+  "code_typescript": "function find_adverbs(text: string): string | undefined {\n  const regex = /\\w+ly/g;\n  const match = regex.exec(text);\n  if (match) {\n    const start = match.index;\n    const end = match.index + match[0].length;\n    return `${start}-${end}: ${match[0]}`;\n  }\n  return undefined;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

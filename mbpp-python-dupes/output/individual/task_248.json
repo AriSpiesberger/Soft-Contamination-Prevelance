@@ -1,0 +1,27 @@
+{
+  "task_id": 248,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in an integer n and calculates the harmonic sum of n-1.",
+  "code_python": "def harmonic_sum(n):\n  if n < 2:\n    return 1\n  else:\n    return 1 / n + (harmonic_sum(n - 1)) ",
+  "test_list": [
+    "assert math.isclose(harmonic_sum(7), 2.5928571428571425, rel_tol=0.001)",
+    "assert math.isclose(harmonic_sum(4), 2.083333333333333, rel_tol=0.001)",
+    "assert math.isclose(harmonic_sum(19), 3.547739657143682, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef harmonic_sum(n):\n    # Initialize accumulator to store the running total of the harmonic series\n    total = 0.0\n    # Use a for loop to iterate through all integers from 1 to n inclusive\n    for i in range(1, n + 1):\n        # Add the reciprocal of current integer to accumulate harmonic sum\n        total += 1 / i\n    # Return the computed harmonic sum H(n) = 1 + 1/2 + 1/3 + ... + 1/n\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "import math\n\ndef harmonic_sum(n):\n    # Handle edge case where n is less than 2 by returning base value\n    if n < 2:\n        return 1\n    # Generate sequence of denominators from 1 to n using range\n    denominators = range(1, n + 1)\n    # Apply reciprocal transformation to each denominator using map\n    reciprocals = map(lambda x: 1 / x, denominators)\n    # Aggregate all reciprocals using sum built-in function\n    result = sum(reciprocals)\n    # Return the computed harmonic series value\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef harmonic_sum(n):\n    # Use list comprehension to build array of all reciprocal terms at once\n    reciprocal_terms = [1 / k for k in range(1, n + 1)]\n    # Leverage built-in sum to efficiently aggregate the precomputed reciprocals\n    harmonic_value = sum(reciprocal_terms)\n    # Return accumulated harmonic series: H(n) = sum of 1/k for k=1 to n\n    return harmonic_value",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef harmonic_sum(n):\n    # Use while loop as alternative iteration construct instead of for or recursion\n    current_term = 1\n    # Initialize accumulator to track progressive harmonic sum\n    accumulated_sum = 0.0\n    # Continue adding terms while current denominator hasn't exceeded n\n    while current_term <= n:\n        # Compute and add reciprocal of current position to running total\n        accumulated_sum += 1.0 / current_term\n        # Advance to next term in the harmonic sequence\n        current_term += 1\n    # Deliver final harmonic sum after all terms processed\n    return accumulated_sum",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\nfrom functools import reduce\n\ndef harmonic_sum(n):\n    # Create generator expression yielding reciprocals to avoid materializing full list\n    reciprocal_generator = (1.0 / i for i in range(1, n + 1))\n    # Employ reduce with addition operator to fold sequence into single sum value\n    harmonic_result = reduce(lambda acc, x: acc + x, reciprocal_generator, 0.0)\n    # Return the folded result representing complete harmonic series\n    return harmonic_result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

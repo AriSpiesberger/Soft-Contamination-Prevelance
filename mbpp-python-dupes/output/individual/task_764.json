@@ -1,0 +1,28 @@
+{
+  "task_id": 764,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count number of digits in a given string.",
+  "code_python": "def number_ctr(str):\n      number_ctr= 0\n      for i in range(len(str)):\n          if str[i] >= '0' and str[i] <= '9': number_ctr += 1     \n      return  number_ctr",
+  "test_list": [
+    "assert number_ctr('program2bedone') == 1",
+    "assert number_ctr('3wonders') == 1",
+    "assert number_ctr('123') == 3",
+    "assert number_ctr('3wond-1ers2') == 3"
+  ],
+  "python_1": "def number_ctr(str):\n    # Use a generator expression with sum to count digits in one line\n    # The isdigit() method provides a cleaner way to check for numeric characters\n    return sum(1 for char in str if char.isdigit())",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def number_ctr(str):\n    # Filter the input string to retain only digit characters using filter() and lambda\n    digits_only = filter(lambda char: char.isdigit(), str)\n    # Convert the filter object to a list to enable length measurement\n    digits_list = list(digits_only)\n    # Return the count of digits by measuring the length of the filtered list\n    return len(digits_list)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def number_ctr(str):\n    # Import the re module for regular expression pattern matching\n    import re\n    # Use regex findall to extract all digit characters from the string\n    # The pattern '\\d' matches any single digit (0-9)\n    digit_matches = re.findall(r'\\d', str)\n    # Return the count by measuring how many matches were found\n    return len(digit_matches)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def number_ctr(str):\n    # Define a string constant containing all digit characters for membership testing\n    digit_chars = '0123456789'\n    # Use list comprehension to build a list of only characters found in digit_chars\n    matched_digits = [char for char in str if char in digit_chars]\n    # Return the size of the filtered list as the digit count\n    return len(matched_digits)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def number_ctr(str):\n    # Use recursive approach: base case returns 0 when string is empty\n    if len(str) == 0:\n        # No characters left to process, so return zero digits found\n        return 0\n    # Extract the first character to examine in this recursive call\n    first_char = str[0]\n    # Recursively process the remaining substring (all chars except first)\n    remaining_count = number_ctr(str[1:])\n    # Check if the current character is a digit using ASCII value comparison\n    if '0' <= first_char <= '9':\n        # Current char is a digit, so add 1 to the count from remaining chars\n        return 1 + remaining_count\n    else:\n        # Current char is not a digit, just return count from remaining chars\n        return remaining_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

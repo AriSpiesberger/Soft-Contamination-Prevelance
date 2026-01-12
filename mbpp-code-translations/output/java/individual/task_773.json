@@ -1,0 +1,44 @@
+{
+  "task_id": 773,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the occurrence and position of the substrings within a string. Return None if there is no match.",
+  "python_code": "import re\ndef occurance_substring(text,pattern):\n for match in re.finditer(pattern, text):\n    s = match.start()\n    e = match.end()\n    return (text[s:e], s, e)",
+  "test_list": [
+    "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+    "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+    "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+    "assert occurance_substring('c++ programming, c++ language','python')==None"
+  ],
+  "code_java": "import java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\npublic class Solution {\n    public static String[] occurance_substring(String text, String pattern) {\n        Pattern p = Pattern.compile(pattern);\n        Matcher m = p.matcher(text);\n        if (m.find()) {\n            int s = m.start();\n            int e = m.end();\n            return new String[]{text.substring(s, e), String.valueOf(s), String.valueOf(e)};\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert occurance_substring('python programming, python language','python')==('python', 0, 6)",
+      "generated_test": "String[] result = occurance_substring(\"python programming, python language\", \"python\");\nString[] expected = new String[]{\"python\", \"0\", \"6\"};\nboolean pass = true;\nif (result == null || result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [python, 0, 6]\");\n    String got = result == null ? \"null\" : \"[\" + result[0] + \", \" + result[1] + \", \" + result[2] + \"]\";\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','programming')==('programming', 7, 18)",
+      "generated_test": "String[] result = occurance_substring(\"python programming,programming language\", \"programming\");\nString[] expected = new String[]{\"programming\", \"7\", \"18\"};\nboolean pass = result != null && result.length == expected.length;\nif (pass) {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [programming, 7, 18]\");\n    System.out.print(\"  Got: \");\n    if (result == null) {\n        System.out.println(\"null\");\n    } else {\n        System.out.print(\"[\");\n        for (int i = 0; i < result.length; i++) {\n            System.out.print(result[i]);\n            if (i < result.length - 1) System.out.print(\", \");\n        }\n        System.out.println(\"]\");\n    }\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('python programming,programming language','language')==('language', 31, 39)",
+      "generated_test": "String[] result = occurance_substring(\"python programming,programming language\", \"language\");\nString[] expected = new String[]{\"language\", \"31\", \"39\"};\nboolean pass = true;\nif (result == null || result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: [language, 31, 39]\");\n    String got = result == null ? \"null\" : \"[\" + result[0] + \", \" + result[1] + \", \" + result[2] + \"]\";\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert occurance_substring('c++ programming, c++ language','python')==None",
+      "generated_test": "String[] result = occurance_substring(\"c++ programming, c++ language\", \"python\");\nString[] expected = null;\n\nif (result == null && expected == null) {\n    System.out.println(\"PASS\");\n} else if (result == null || expected == null) {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + (expected == null ? \"null\" : java.util.Arrays.toString(expected)));\n    System.out.println(\"  Got: \" + (result == null ? \"null\" : java.util.Arrays.toString(result)));\n} else if (java.util.Arrays.equals(result, expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + java.util.Arrays.toString(expected));\n    System.out.println(\"  Got: \" + java.util.Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

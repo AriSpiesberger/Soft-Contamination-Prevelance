@@ -1,0 +1,37 @@
+{
+  "task_id": 440,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb and their positions in a given sentence.",
+  "python_code": "import re\ndef find_adverb_position(text):\n for m in re.finditer(r\"\\w+ly\", text):\n    return (m.start(), m.end(), m.group(0))",
+  "test_list": [
+    "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+    "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+    "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')"
+  ],
+  "code_javascript": "function find_adverb_position(text) {\n    const regex = /\\w+ly/g;\n    const match = regex.exec(text);\n    if (match) {\n        return [match.index, match.index + match[0].length, match[0]];\n    }\n    return undefined;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+      "generated_test": "const result = find_adverb_position(\"clearly!! we can see the sky\");\nconst expected = [0, 7, 'clearly'];\n\nlet pass = false;\nif (Array.isArray(result) && result.length === expected.length) {\n    pass = result[0] === expected[0] && result[1] === expected[1] && result[2] === expected[2];\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+      "generated_test": "const result = find_adverb_position(\"seriously!! there are many roses\");\nconst expected = [0, 9, 'seriously'];\n\nlet pass = true;\nif (!Array.isArray(result) || result.length !== expected.length) {\n    pass = false;\n} else {\n    for (let i = 0; i < expected.length; i++) {\n        if (result[i] !== expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')",
+      "generated_test": "const result = find_adverb_position(\"unfortunately!! sita is going to home\");\nconst expected = [0, 13, 'unfortunately'];\n\nlet pass = true;\nif (!Array.isArray(result) || result.length !== expected.length) {\n    pass = false;\n} else {\n    for (let i = 0; i < expected.length; i++) {\n        if (result[i] !== expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

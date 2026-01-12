@@ -1,0 +1,37 @@
+{
+  "task_id": 431,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes two lists and returns true if they have at least one common element.",
+  "python_code": "def common_element(list1, list2):\n     result = False\n     for x in list1:\n         for y in list2:\n             if x == y:\n                 result = True\n                 return result",
+  "test_list": [
+    "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+    "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+    "assert common_element(['a','b','c'], ['d','b','e'])==True"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static Boolean common_element(ArrayList<?> list1, ArrayList<?> list2) {\n        Boolean result = false;\n        for (Object x : list1) {\n            for (Object y : list2) {\n                if (x.equals(y)) {\n                    result = true;\n                    return result;\n                }\n            }\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(2);\nlist1.add(3);\nlist1.add(4);\nlist1.add(5);\n\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(5);\nlist2.add(6);\nlist2.add(7);\nlist2.add(8);\nlist2.add(9);\n\nBoolean result = common_element(list1, list2);\nBoolean expected = true;\n\nif (expected.equals(result)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<>();\nlist1.add(1);\nlist1.add(2);\nlist1.add(3);\nlist1.add(4);\nlist1.add(5);\n\nArrayList<Integer> list2 = new ArrayList<>();\nlist2.add(6);\nlist2.add(7);\nlist2.add(8);\nlist2.add(9);\n\nBoolean result = common_element(list1, list2);\nBoolean expected = null;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element(['a','b','c'], ['d','b','e'])==True",
+      "generated_test": "ArrayList<String> list1 = new ArrayList<>();\nlist1.add(\"a\");\nlist1.add(\"b\");\nlist1.add(\"c\");\n\nArrayList<String> list2 = new ArrayList<>();\nlist2.add(\"d\");\nlist2.add(\"b\");\nlist2.add(\"e\");\n\nBoolean result = common_element(list1, list2);\nBoolean expected = true;\n\nif (expected.equals(result)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

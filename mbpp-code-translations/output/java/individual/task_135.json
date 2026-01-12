@@ -1,0 +1,37 @@
+{
+  "task_id": 135,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth hexagonal number.",
+  "python_code": "def hexagonal_num(n): \n\treturn n*(2*n - 1) ",
+  "test_list": [
+    "assert hexagonal_num(10) == 190",
+    "assert hexagonal_num(5) == 45",
+    "assert hexagonal_num(7) == 91"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int hexagonal_num(int n) {\n        return n * (2 * n - 1);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert hexagonal_num(10) == 190",
+      "generated_test": "int result = hexagonal_num(10);\nint expected = 190;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert hexagonal_num(5) == 45",
+      "generated_test": "int result = hexagonal_num(5);\nint expected = 45;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert hexagonal_num(7) == 91",
+      "generated_test": "int result = hexagonal_num(7);\nint expected = 91;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

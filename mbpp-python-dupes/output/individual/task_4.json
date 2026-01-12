@@ -1,0 +1,27 @@
+{
+  "task_id": 4,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n largest integers from a given list of numbers, returned in descending order.",
+  "code_python": "import heapq as hq\ndef heap_queue_largest(nums,n):\n  largest_nums = hq.nlargest(n, nums)\n  return largest_nums",
+  "test_list": [
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]",
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]",
+    "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]"
+  ],
+  "python_1": "def heap_queue_largest(nums, n):\n    # Create a copy of the list to avoid modifying the original input\n    nums_copy = nums.copy()\n    # Sort the copied list in descending order using reverse parameter\n    nums_copy.sort(reverse=True)\n    # Slice the first n elements which are the largest after sorting\n    largest_nums = nums_copy[:n]\n    # Return the n largest numbers already in descending order\n    return largest_nums",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def heap_queue_largest(nums, n):\n    # Use built-in sorted() function which returns a new list, leaving original unchanged\n    sorted_descending = sorted(nums, reverse=True)\n    # Extract exactly n elements from the front of the sorted result\n    result = sorted_descending[:n]\n    # Return the n largest values already arranged from biggest to smallest\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def heap_queue_largest(nums, n):\n    # Build a min-heap of size n to track the n largest elements seen so far\n    import heapq\n    # Initialize an empty min-heap to store our candidates\n    min_heap = []\n    # Process each number in the input list one at a time\n    for num in nums:\n        # When heap has fewer than n elements, simply add the current number\n        if len(min_heap) < n:\n            # Push onto heap which maintains min-heap property automatically\n            heapq.heappush(min_heap, num)\n        # When heap is full, only replace if current number is larger than smallest\n        elif num > min_heap[0]:\n            # Replace the root (smallest in heap) with current larger number\n            heapq.heapreplace(min_heap, num)\n    # Convert min-heap to a sorted list by repeatedly extracting minimum\n    result = []\n    # Extract all elements from heap to get them in ascending order\n    while min_heap:\n        # Pop smallest element and prepend to result for descending order\n        result.insert(0, heapq.heappop(min_heap))\n    # Return the n largest numbers arranged from biggest to smallest\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def heap_queue_largest(nums, n):\n    # Repeatedly find and collect the maximum value n times\n    result = []\n    # Create a working copy to allow element removal without affecting input\n    remaining = nums.copy()\n    # Loop exactly n times to collect n largest elements\n    for _ in range(n):\n        # Locate the maximum value among remaining candidates\n        current_max = max(remaining)\n        # Append this maximum to our result collection\n        result.append(current_max)\n        # Remove one instance of the max to find next largest in subsequent iteration\n        remaining.remove(current_max)\n    # Result naturally ends up in descending order since we found max each time\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def heap_queue_largest(nums, n):\n    # Use selection approach: maintain indices of elements we've already picked\n    picked_indices = set()\n    # Accumulate the n largest values in order from biggest to smallest\n    result = []\n    # Repeat the selection process exactly n times\n    for _ in range(n):\n        # Track the best candidate value found in current pass\n        max_val = None\n        # Track the index of the best candidate to avoid picking it again\n        max_idx = None\n        # Scan through every index in the original list\n        for i in range(len(nums)):\n            # Skip indices we've already selected in previous iterations\n            if i in picked_indices:\n                continue\n            # Update our best candidate if this is first valid element or larger than current best\n            if max_val is None or nums[i] > max_val:\n                # Record the new maximum value discovered\n                max_val = nums[i]\n                # Remember its position for later exclusion\n                max_idx = i\n        # Mark this index as used so we don't select the same element twice\n        picked_indices.add(max_idx)\n        # Add the largest unpicked value to our results\n        result.append(max_val)\n    # Results are naturally in descending order due to iterative max selection\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

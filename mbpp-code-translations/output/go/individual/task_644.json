@@ -1,0 +1,37 @@
+{
+  "task_id": 644,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to reverse an array upto a given position.",
+  "python_code": "def reverse_Array_Upto_K(input, k): \n  return (input[k-1::-1] + input[k:]) ",
+  "test_list": [
+    "assert reverse_Array_Upto_K([1, 2, 3, 4, 5, 6],4) == [4, 3, 2, 1, 5, 6]",
+    "assert reverse_Array_Upto_K([4, 5, 6, 7], 2) == [5, 4, 6, 7]",
+    "assert reverse_Array_Upto_K([9, 8, 7, 6, 5],3) == [7, 8, 9, 6, 5]"
+  ],
+  "code_go": "package main\n\nfunc reverse_Array_Upto_K(input []int, k int) []int {\n\tresult := make([]int, 0, len(input))\n\t\n\t// Reverse first k elements\n\tfor i := k - 1; i >= 0; i-- {\n\t\tresult = append(result, input[i])\n\t}\n\t\n\t// Append remaining elements\n\tresult = append(result, input[k:]...)\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert reverse_Array_Upto_K([1, 2, 3, 4, 5, 6],4) == [4, 3, 2, 1, 5, 6]",
+      "generated_test": "result := reverse_Array_Upto_K([]int{1, 2, 3, 4, 5, 6}, 4)\nexpected := []int{4, 3, 2, 1, 5, 6}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_Array_Upto_K([4, 5, 6, 7], 2) == [5, 4, 6, 7]",
+      "generated_test": "result := reverse_Array_Upto_K([]int{4, 5, 6, 7}, 2)\nexpected := []int{5, 4, 6, 7}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert reverse_Array_Upto_K([9, 8, 7, 6, 5],3) == [7, 8, 9, 6, 5]",
+      "generated_test": "input := []int{9, 8, 7, 6, 5}\nexpected := []int{7, 8, 9, 6, 5}\nresult := reverse_Array_Upto_K(input, 3)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

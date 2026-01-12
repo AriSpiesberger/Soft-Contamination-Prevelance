@@ -1,0 +1,37 @@
+{
+  "task_id": 560,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the union of the elements of two given tuples and output them in sorted order.",
+  "python_code": "def union_elements(test_tup1, test_tup2):\n  res = tuple(set(test_tup1 + test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert union_elements((3, 4, 5, 6),(5, 7, 4, 10) ) == (3, 4, 5, 6, 7, 10)",
+    "assert union_elements((1, 2, 3, 4),(3, 4, 5, 6) ) == (1, 2, 3, 4, 5, 6)",
+    "assert union_elements((11, 12, 13, 14),(13, 15, 16, 17) ) == (11, 12, 13, 14, 15, 16, 17)"
+  ],
+  "code_javascript": "function union_elements(test_tup1, test_tup2) {\n  const combined = [...test_tup1, ...test_tup2];\n  const uniqueSet = new Set(combined);\n  const res = Array.from(uniqueSet).sort((a, b) => a - b);\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert union_elements((3, 4, 5, 6),(5, 7, 4, 10) ) == (3, 4, 5, 6, 7, 10)",
+      "generated_test": "const result = union_elements([3, 4, 5, 6], [5, 7, 4, 10]);\nconst expected = [3, 4, 5, 6, 7, 10];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert union_elements((1, 2, 3, 4),(3, 4, 5, 6) ) == (1, 2, 3, 4, 5, 6)",
+      "generated_test": "const result = union_elements([1, 2, 3, 4], [3, 4, 5, 6]);\nconst expected = [1, 2, 3, 4, 5, 6];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert union_elements((11, 12, 13, 14),(13, 15, 16, 17) ) == (11, 12, 13, 14, 15, 16, 17)",
+      "generated_test": "const result = union_elements([11, 12, 13, 14], [13, 15, 16, 17]);\nconst expected = [11, 12, 13, 14, 15, 16, 17];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

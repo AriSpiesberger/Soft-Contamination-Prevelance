@@ -1,0 +1,17 @@
+{
+  "task_id": 162,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum (n - 2*i) from i=0 to n // 2, for instance n + (n-2) + (n-4)... (until n-x =< 0).",
+  "python_code": "def sum_series(n):\n  if n < 1:\n    return 0\n  else:\n    return n + sum_series(n - 2)",
+  "test_list": [
+    "assert sum_series(6) == 12",
+    "assert sum_series(10) == 30",
+    "assert sum_series(9) == 25"
+  ],
+  "code_typescript": "function sum_series(n: number): number {\n  if (n < 1) {\n    return 0;\n  } else {\n    return n + sum_series(n - 2);\n  }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

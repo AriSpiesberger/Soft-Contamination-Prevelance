@@ -1,0 +1,27 @@
+{
+  "task_id": 118,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a string to a list of strings split on the space character.",
+  "code_python": "def string_to_list(string): \n    lst = list(string.split(\" \")) \n    return lst",
+  "test_list": [
+    "assert string_to_list(\"python programming\")==['python','programming']",
+    "assert string_to_list(\"lists tuples strings\")==['lists','tuples','strings']",
+    "assert string_to_list(\"write a program\")==['write','a','program']"
+  ],
+  "python_1": "def string_to_list(string): \n    # Initialize an empty list to accumulate the words\n    result = []\n    # Track the starting position of the current word\n    word_start = 0\n    # Iterate through each character index in the string\n    for i in range(len(string)):\n        # Check if current character is a space delimiter\n        if string[i] == ' ':\n            # Extract the word from start position to current index\n            result.append(string[word_start:i])\n            # Update start position to character after the space\n            word_start = i + 1\n    # Capture the final word after the last space (or entire string if no spaces)\n    result.append(string[word_start:])\n    # Return the constructed list of words\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def string_to_list(string): \n    # Use re module for regex-based splitting on space character\n    import re\n    # Apply regex split using space as the pattern delimiter\n    words = re.split(' ', string)\n    # Return the resulting list of substrings directly\n    return words",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def string_to_list(string): \n    # Use reduce pattern to build list by processing characters one at a time\n    from functools import reduce\n    # Define reducer that accumulates words by detecting space boundaries\n    def accumulator(acc, char):\n        # When space encountered, finalize current word and start fresh buffer\n        if char == ' ':\n            # Append completed word to result list, reset working buffer to empty\n            return (acc[0] + [acc[1]], '')\n        # Otherwise concatenate character to current word buffer\n        return (acc[0], acc[1] + char)\n    # Apply reduce with tuple holding (completed words list, current word buffer)\n    result_tuple = reduce(accumulator, string, ([], ''))\n    # Combine accumulated words with the final word remaining in buffer\n    final_list = result_tuple[0] + [result_tuple[1]]\n    # Return the complete list of space-separated words\n    return final_list",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def string_to_list(string): \n    # Utilize enumerate to get both index and character simultaneously\n    indices = [-1]\n    # Scan through string collecting positions where spaces occur\n    for idx, char in enumerate(string):\n        # Record each space location to mark word boundaries\n        if char == ' ':\n            indices.append(idx)\n    # Add string length as final boundary marker for last word extraction\n    indices.append(len(string))\n    # Build result using list comprehension with consecutive boundary pairs\n    words = []\n    # Process adjacent pairs of boundary indices to slice out words\n    for i in range(len(indices) - 1):\n        # Extract substring between current boundary+1 and next boundary\n        word = string[indices[i] + 1 : indices[i + 1]]\n        # Append each extracted word segment to our result collection\n        words.append(word)\n    # Deliver the assembled list of space-delimited words\n    return words",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def string_to_list(string): \n    # Replace space with a unique delimiter to enable splitting via partition approach\n    result = []\n    # Keep track of remaining unprocessed portion of the string\n    remaining = string\n    # Continue loop while there are still spaces to process\n    while ' ' in remaining:\n        # Use partition to split at first space occurrence into 3 parts\n        before, sep, after = remaining.partition(' ')\n        # Capture the word found before the space delimiter\n        result.append(before)\n        # Update remaining to be everything after the space for next iteration\n        remaining = after\n    # Append whatever text remains after processing all spaces\n    result.append(remaining)\n    # Return assembled list containing all space-separated segments\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

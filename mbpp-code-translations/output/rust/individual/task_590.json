@@ -1,0 +1,37 @@
+{
+  "task_id": 590,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert polar coordinates to rectangular coordinates.",
+  "python_code": "import cmath\ndef polar_rect(x,y):\n cn = complex(x,y)\n cn=cmath.polar(cn)\n cn1 = cmath.rect(2, cmath.pi)\n return (cn,cn1)",
+  "test_list": [
+    "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+    "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))"
+  ],
+  "code_rust": "pub fn polar_rect(x: f64, y: f64) -> ((f64, f64), (f64, f64)) {\n    // Convert complex number to polar coordinates\n    let r = (x * x + y * y).sqrt();\n    let theta = y.atan2(x);\n    \n    // Convert polar to rectangular with r=2, theta=pi\n    let rect_real = 2.0 * std::f64::consts::PI.cos();\n    let rect_imag = 2.0 * std::f64::consts::PI.sin();\n    \n    ((r, theta), (rect_real, rect_imag))\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert polar_rect(3,4)==((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))",
+      "generated_test": "let result = polar_rect(3.0, 4.0);\nlet expected = ((5.0, 0.9272952180016122), (-2.0, 2.4492935982947064e-16));\n\nlet epsilon = 1e-10;\nlet pass = (result.0.0 - expected.0.0).abs() < epsilon\n    && (result.0.1 - expected.0.1).abs() < epsilon\n    && (result.1.0 - expected.1.0).abs() < epsilon\n    && (result.1.1 - expected.1.1).abs() < epsilon;\n\nif pass {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(4,7)==((8.06225774829855, 1.0516502125483738), (-2+2.4492935982947064e-16j))",
+      "generated_test": "let result = polar_rect(4.0, 7.0);\nlet expected = ((8.06225774829855, 1.0516502125483738), (-2.0, 2.4492935982947064e-16));\n\nlet epsilon = 1e-10;\nlet pass = (result.0.0 - expected.0.0).abs() < epsilon\n    && (result.0.1 - expected.0.1).abs() < epsilon\n    && (result.1.0 - expected.1.0).abs() < epsilon\n    && (result.1.1 - expected.1.1).abs() < epsilon;\n\nif pass {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert polar_rect(15,17)==((22.67156809750927, 0.8478169733934057), (-2+2.4492935982947064e-16j))",
+      "generated_test": "let result = polar_rect(15.0, 17.0);\nlet expected = ((22.67156809750927, 0.8478169733934057), (-2.0, 2.4492935982947064e-16));\n\nlet epsilon = 1e-10;\nlet pass = (result.0.0 - expected.0.0).abs() < epsilon\n    && (result.0.1 - expected.0.1).abs() < epsilon\n    && (result.1.0 - expected.1.0).abs() < epsilon\n    && (result.1.1 - expected.1.1).abs() < epsilon;\n\nif pass {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 576,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether a list is sublist of another or not.",
+  "python_code": "def is_Sub_Array(A,B): \n    n = len(A)\n    m = len(B)\n    i = 0; j = 0; \n    while (i < n and j < m):  \n        if (A[i] == B[j]): \n            i += 1; \n            j += 1; \n            if (j == m): \n                return True;  \n        else: \n            i = i - j + 1; \n            j = 0;       \n    return False; ",
+  "test_list": [
+    "assert is_Sub_Array([1,4,3,5],[1,2]) == False",
+    "assert is_Sub_Array([1,2,1],[1,2,1]) == True",
+    "assert is_Sub_Array([1,0,2,2],[2,2,0]) ==False"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static boolean is_Sub_Array(ArrayList<Integer> A, ArrayList<Integer> B) {\n        int n = A.size();\n        int m = B.size();\n        int i = 0;\n        int j = 0;\n        while (i < n && j < m) {\n            if (A.get(i).equals(B.get(j))) {\n                i += 1;\n                j += 1;\n                if (j == m) {\n                    return true;\n                }\n            } else {\n                i = i - j + 1;\n                j = 0;\n            }\n        }\n        return false;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert is_Sub_Array([1,4,3,5],[1,2]) == False",
+      "generated_test": "ArrayList<Integer> A = new ArrayList<>();\nA.add(1);\nA.add(4);\nA.add(3);\nA.add(5);\nArrayList<Integer> B = new ArrayList<>();\nB.add(1);\nB.add(2);\nboolean result = is_Sub_Array(A, B);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Sub_Array([1,2,1],[1,2,1]) == True",
+      "generated_test": "ArrayList<Integer> A = new ArrayList<>();\nA.add(1);\nA.add(2);\nA.add(1);\nArrayList<Integer> B = new ArrayList<>();\nB.add(1);\nB.add(2);\nB.add(1);\nboolean result = is_Sub_Array(A, B);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Sub_Array([1,0,2,2],[2,2,0]) ==False",
+      "generated_test": "ArrayList<Integer> A = new ArrayList<>();\nA.add(1);\nA.add(0);\nA.add(2);\nA.add(2);\n\nArrayList<Integer> B = new ArrayList<>();\nB.add(2);\nB.add(2);\nB.add(0);\n\nboolean result = is_Sub_Array(A, B);\nboolean expected = false;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

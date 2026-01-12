@@ -1,0 +1,17 @@
+{
+  "task_id": 74,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether it follows the sequence given in the patterns array.",
+  "python_code": "def is_samepatterns(colors, patterns):    \n    if len(colors) != len(patterns):\n        return False    \n    sdict = {}\n    pset = set()\n    sset = set()    \n    for i in range(len(patterns)):\n        pset.add(patterns[i])\n        sset.add(colors[i])\n        if patterns[i] not in sdict.keys():\n            sdict[patterns[i]] = []\n\n        keys = sdict[patterns[i]]\n        keys.append(colors[i])\n        sdict[patterns[i]] = keys\n\n    if len(pset) != len(sset):\n        return False   \n\n    for values in sdict.values():\n\n        for i in range(len(values) - 1):\n            if values[i] != values[i+1]:\n                return False\n\n    return True",
+  "test_list": [
+    "assert is_samepatterns([\"red\",\"green\",\"green\"], [\"a\", \"b\", \"b\"])==True",
+    "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\",\"b\"])==False",
+    "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\"])==False"
+  ],
+  "code_typescript": "function is_samepatterns(colors: string[], patterns: string[]): boolean {\n    if (colors.length !== patterns.length) {\n        return false;\n    }\n    \n    const sdict: Map<string, string[]> = new Map();\n    const pset: Set<string> = new Set();\n    const sset: Set<string> = new Set();\n    \n    for (let i = 0; i < patterns.length; i++) {\n        pset.add(patterns[i]);\n        sset.add(colors[i]);\n        \n        if (!sdict.has(patterns[i])) {\n            sdict.set(patterns[i], []);\n        }\n        \n        const keys = sdict.get(patterns[i])!;\n        keys.push(colors[i]);\n        sdict.set(patterns[i], keys);\n    }\n    \n    if (pset.size !== sset.size) {\n        return false;\n    }\n    \n    for (const values of sdict.values()) {\n        for (let i = 0; i < values.length - 1; i++) {\n            if (values[i] !== values[i + 1]) {\n                return false;\n            }\n        }\n    }\n    \n    return true;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

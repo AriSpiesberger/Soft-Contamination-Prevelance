@@ -1,0 +1,27 @@
+{
+  "task_id": 589,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find perfect squares between two given numbers.",
+  "code_python": "def perfect_squares(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists",
+  "test_list": [
+    "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+    "assert perfect_squares(50,100)==[64, 81, 100]",
+    "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]"
+  ],
+  "python_1": "def perfect_squares(a, b):\n    # Import math module to use square root function\n    import math\n    # Create empty list to store perfect square results\n    result = []\n    # Find the smallest integer whose square is >= a\n    start = math.ceil(math.sqrt(a))\n    # Find the largest integer whose square is <= b\n    end = math.floor(math.sqrt(b))\n    # Iterate through consecutive integers from start to end inclusive\n    for n in range(start, end + 1):\n        # Square each integer and add to result list\n        result.append(n * n)\n    # Return the list of all perfect squares in the range\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def perfect_squares(a, b):\n    # Use list comprehension to filter numbers in range that are perfect squares\n    # Check if a number is a perfect square by testing if its integer square root squared equals itself\n    return [num for num in range(a, b + 1) if int(num ** 0.5) ** 2 == num]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def perfect_squares(a, b):\n    # Import sqrt function for efficient square root calculation\n    from math import sqrt\n    # Use filter with lambda to select only perfect squares from the range\n    # The lambda checks if sqrt of number is a whole number (no decimal part)\n    is_perfect_square = lambda x: sqrt(x) == int(sqrt(x))\n    # Apply filter to range and convert resulting iterator to list\n    filtered_squares = filter(is_perfect_square, range(a, b + 1))\n    # Convert filter object to list for return value\n    return list(filtered_squares)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def perfect_squares(a, b):\n    # Import isqrt for integer square root without floating point errors\n    from math import isqrt\n    # Initialize empty list to collect perfect squares found\n    squares = []\n    # Calculate starting point: smallest integer whose square could be >= a\n    n = isqrt(a - 1) + 1 if a > 0 else 1\n    # Generate squares by incrementing n until n*n exceeds upper bound\n    while True:\n        # Compute the square of current integer n\n        square = n * n\n        # Break loop when square exceeds the upper boundary b\n        if square > b:\n            break\n        # Only append if square meets the lower boundary requirement\n        if square >= a:\n            squares.append(square)\n        # Move to next consecutive integer for next potential square\n        n += 1\n    # Return collected list of all perfect squares in range [a, b]\n    return squares",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def perfect_squares(a, b):\n    # Use a set-based approach to build perfect squares via generator expression\n    from math import isqrt\n    # Determine the floor of square root of upper bound to know max base number\n    max_root = isqrt(b)\n    # Create a set of all perfect squares up to b for O(1) membership testing\n    square_set = {i * i for i in range(1, max_root + 1)}\n    # Build result by checking each number in range against our precomputed set\n    result = []\n    # Traverse the input range from lower to upper boundary inclusive\n    num = a\n    # Use while loop with manual increment for different control flow structure\n    while num <= b:\n        # Check membership in precomputed set rather than computing sqrt each time\n        if num in square_set:\n            # Append matching perfect square to our accumulator list\n            result.append(num)\n        # Advance to examine the next candidate number\n        num += 1\n    # Return the accumulated list of perfect squares found in range\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

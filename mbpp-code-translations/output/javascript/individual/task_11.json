@@ -1,0 +1,37 @@
+{
+  "task_id": 11,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove first and last occurrence of a given character from the string.",
+  "python_code": "def remove_Occ(s,ch): \n    for i in range(len(s)): \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    for i in range(len(s) - 1,-1,-1):  \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    return s ",
+  "test_list": [
+    "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+    "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+    "assert remove_Occ(\"PHP\",\"P\") == \"H\""
+  ],
+  "code_javascript": "function remove_Occ(s, ch) {\n    for (let i = 0; i < s.length; i++) {\n        if (s[i] === ch) {\n            s = s.slice(0, i) + s.slice(i + 1);\n            break;\n        }\n    }\n    for (let i = s.length - 1; i >= 0; i--) {\n        if (s[i] === ch) {\n            s = s.slice(0, i) + s.slice(i + 1);\n            break;\n        }\n    }\n    return s;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+      "generated_test": "const result = remove_Occ(\"hello\", \"l\");\nconst expected = \"heo\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+      "generated_test": "const result = remove_Occ(\"abcda\", \"a\");\nconst expected = \"bcd\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_Occ(\"PHP\",\"P\") == \"H\"",
+      "generated_test": "const result = remove_Occ(\"PHP\", \"P\");\nconst expected = \"H\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

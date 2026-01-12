@@ -1,0 +1,27 @@
+{
+  "task_id": 431,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes two lists and returns true if they have at least one common element.",
+  "code_python": "def common_element(list1, list2):\n     result = False\n     for x in list1:\n         for y in list2:\n             if x == y:\n                 result = True\n                 return result",
+  "test_list": [
+    "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+    "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+    "assert common_element(['a','b','c'], ['d','b','e'])==True"
+  ],
+  "python_1": "def common_element(list1, list2):\n    # Convert the second list to a set for O(1) lookup time\n    set2 = set(list2)\n    # Check if any element from list1 exists in the set\n    for element in list1:\n        # Use set membership test which is much faster than nested loops\n        if element in set2:\n            # Return True immediately when first common element is found\n            return True\n    # Implicitly return None if no common elements exist (matches expected behavior)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def common_element(list1, list2):\n    # Convert both lists to sets to leverage mathematical set operations\n    set1 = set(list1)\n    # Create second set from list2 for intersection computation\n    set2 = set(list2)\n    # Compute the intersection which contains elements present in both sets\n    common = set1 & set2\n    # Check if the intersection is non-empty using truthiness of sets\n    if common:\n        # Return True when at least one shared element exists\n        return True\n    # Return None implicitly by not returning anything when no common elements",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def common_element(list1, list2):\n    # Use Python's any() with generator expression for lazy evaluation\n    # This stops as soon as the first match is found without building intermediate structures\n    has_common = any(item in list2 for item in list1)\n    # Convert boolean result to match expected output: True stays True, False becomes None\n    if has_common:\n        # Explicitly return True when a common element was detected\n        return True\n    # Fall through to implicit None return when no common elements exist",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def common_element(list1, list2):\n    # Use filter() with a lambda to find elements that exist in both lists\n    # This creates an iterator that only yields matching elements\n    common_items = filter(lambda x: x in list2, list1)\n    # Attempt to extract the first matching element from the filtered iterator\n    # next() with default None avoids StopIteration exception when empty\n    first_match = next(common_items, None)\n    # Check if we actually found a matching element (not None from default)\n    # Need to handle case where None itself could be a valid common element\n    if first_match is not None:\n        # A common element was successfully found\n        return True\n    # Secondary check: verify if None is actually a shared element in both lists\n    # This handles edge case where None could be a legitimate common value\n    if None in list1 and None in list2:\n        # None is present in both lists so they share a common element\n        return True\n    # No common elements detected, implicit None return matches test expectations",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def common_element(list1, list2):\n    # Use recursion with list slicing to check elements one by one\n    # Base case: empty first list means no common elements possible\n    if not list1:\n        # Return None implicitly by returning nothing\n        return\n    # Extract the first element from list1 for comparison\n    head = list1[0]\n    # Get remaining elements as the tail for recursive calls\n    tail = list1[1:]\n    # Check if current head element exists anywhere in list2\n    if head in list2:\n        # Found a match, immediately return True\n        return True\n    # Recursively check the remaining elements in list1\n    return common_element(tail, list2)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

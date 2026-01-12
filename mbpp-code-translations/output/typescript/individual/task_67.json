@@ -1,0 +1,17 @@
+{
+  "task_id": 67,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the number of ways to partition a set of Bell numbers.",
+  "python_code": "def bell_number(n):   \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1): \n        bell[i][0] = bell[i-1][i-1]  \n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1]   \n    return bell[n][0] ",
+  "test_list": [
+    "assert bell_number(2)==2",
+    "assert bell_number(10)==115975",
+    "assert bell_number(56)==6775685320645824322581483068371419745979053216268760300"
+  ],
+  "code_typescript": "function bell_number(n: number): bigint {\n    const bell: bigint[][] = [];\n    for (let i = 0; i <= n; i++) {\n        bell.push([]);\n        for (let j = 0; j <= n; j++) {\n            bell[i].push(0n);\n        }\n    }\n    \n    bell[0][0] = 1n;\n    \n    for (let i = 1; i <= n; i++) {\n        bell[i][0] = bell[i - 1][i - 1];\n        for (let j = 1; j <= i; j++) {\n            bell[i][j] = bell[i - 1][j - 1] + bell[i][j - 1];\n        }\n    }\n    \n    return bell[n][0];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

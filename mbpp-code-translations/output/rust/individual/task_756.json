@@ -1,0 +1,58 @@
+{
+  "task_id": 756,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by one or more 'b's. https://www.w3resource.com/python-exercises/re/python-re-exercise-3.php",
+  "python_code": "import re\ndef text_match_zero_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_zero_one(\"ac\")==False",
+    "assert text_match_zero_one(\"dc\")==False",
+    "assert text_match_zero_one(\"abbbba\")==True",
+    "assert text_match_zero_one(\"dsabbbba\")==True",
+    "assert text_match_zero_one(\"asbbbba\")==False",
+    "assert text_match_zero_one(\"abaaa\")==True"
+  ],
+  "code_rust": "pub fn text_match_zero_one(text: &str) -> bool {\n    let mut chars = text.chars().peekable();\n    \n    while let Some(c) = chars.next() {\n        if c == 'a' {\n            if let Some(&next_c) = chars.peek() {\n                if next_c == 'b' {\n                    return true;\n                }\n            }\n        }\n    }\n    \n    false\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 6,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert text_match_zero_one(\"ac\")==False",
+      "generated_test": "let result = text_match_zero_one(\"ac\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"dc\")==False",
+      "generated_test": "let result = text_match_zero_one(\"dc\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"abbbba\")==True",
+      "generated_test": "let result = text_match_zero_one(\"abbbba\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"dsabbbba\")==True",
+      "generated_test": "let result = text_match_zero_one(\"dsabbbba\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"asbbbba\")==False",
+      "generated_test": "let result = text_match_zero_one(\"asbbbba\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"abaaa\")==True",
+      "generated_test": "let result = text_match_zero_one(\"abaaa\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

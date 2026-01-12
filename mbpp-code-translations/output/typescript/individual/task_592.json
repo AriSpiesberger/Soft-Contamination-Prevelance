@@ -1,0 +1,17 @@
+{
+  "task_id": 592,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the product of consecutive binomial co-efficients.",
+  "python_code": "def binomial_Coeff(n,k): \n    C = [0] * (k + 1); \n    C[0] = 1; # nC0 is 1 \n    for i in range(1,n + 1):  \n        for j in range(min(i, k),0,-1): \n            C[j] = C[j] + C[j - 1]; \n    return C[k]; \ndef sum_Of_product(n): \n    return binomial_Coeff(2 * n,n - 1); ",
+  "test_list": [
+    "assert sum_Of_product(3) == 15",
+    "assert sum_Of_product(4) == 56",
+    "assert sum_Of_product(1) == 1"
+  ],
+  "code_typescript": "function binomial_Coeff(n: number, k: number): number {\n    const C: number[] = new Array(k + 1).fill(0);\n    C[0] = 1; // nC0 is 1\n    for (let i = 1; i <= n; i++) {\n        for (let j = Math.min(i, k); j > 0; j--) {\n            C[j] = C[j] + C[j - 1];\n        }\n    }\n    return C[k];\n}\n\nfunction sum_Of_product(n: number): number {\n    return binomial_Coeff(2 * n, n - 1);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

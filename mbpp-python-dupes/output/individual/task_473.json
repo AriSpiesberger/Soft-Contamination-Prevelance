@@ -1,0 +1,27 @@
+{
+  "task_id": 473,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the tuple intersection of elements in the given tuple list irrespective of their order.",
+  "code_python": "def tuple_intersection(test_list1, test_list2):\n  res = set([tuple(sorted(ele)) for ele in test_list1]) & set([tuple(sorted(ele)) for ele in test_list2])\n  return (res)",
+  "test_list": [
+    "assert tuple_intersection([(3, 4), (5, 6), (9, 10), (4, 5)] , [(5, 4), (3, 4), (6, 5), (9, 11)]) == {(4, 5), (3, 4), (5, 6)}",
+    "assert tuple_intersection([(4, 1), (7, 4), (11, 13), (17, 14)] , [(1, 4), (7, 4), (16, 12), (10, 13)]) == {(4, 7), (1, 4)}",
+    "assert tuple_intersection([(2, 1), (3, 2), (1, 3), (1, 4)] , [(11, 2), (2, 3), (6, 2), (1, 3)]) == {(1, 3), (2, 3)}"
+  ],
+  "python_1": "def tuple_intersection(test_list1, test_list2):\n    # Create an empty set to accumulate matching tuples\n    result = set()\n    # Normalize all tuples in list2 by sorting and store in a set for O(1) lookup\n    normalized_list2 = {tuple(sorted(t)) for t in test_list2}\n    # Iterate through each tuple in the first list\n    for tup in test_list1:\n        # Sort the current tuple to create order-independent representation\n        sorted_tup = tuple(sorted(tup))\n        # Check if this normalized tuple exists in the second list's normalized set\n        if sorted_tup in normalized_list2:\n            # Add the matching normalized tuple to our result set\n            result.add(sorted_tup)\n    # Return the set containing all common tuples regardless of element order\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def tuple_intersection(test_list1, test_list2):\n    # Use map to apply sorting transformation to all tuples in first list\n    normalized1 = map(lambda x: tuple(sorted(x)), test_list1)\n    # Similarly normalize second list using map with sorted transformation\n    normalized2 = map(lambda x: tuple(sorted(x)), test_list2)\n    # Convert first mapped iterator to a frozenset for immutable set operations\n    set1 = frozenset(normalized1)\n    # Convert second mapped iterator to a frozenset as well\n    set2 = frozenset(normalized2)\n    # Compute intersection using the intersection method instead of & operator\n    common = set1.intersection(set2)\n    # Convert frozenset back to regular set for expected return type\n    return set(common)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def tuple_intersection(test_list1, test_list2):\n    # Build a dictionary to track which normalized tuples appear in list1\n    seen_in_list1 = {}\n    # Process each tuple from the first list\n    for tup in test_list1:\n        # Convert tuple to a sorted version for order-independent comparison\n        normalized = tuple(sorted(tup))\n        # Mark this normalized tuple as present in list1\n        seen_in_list1[normalized] = True\n    # Initialize empty set to collect intersection results\n    intersection_result = set()\n    # Iterate over second list to find matches with first list\n    for tup in test_list2:\n        # Normalize current tuple by sorting its elements\n        normalized = tuple(sorted(tup))\n        # Use dict.get to safely check membership without KeyError risk\n        if seen_in_list1.get(normalized, False):\n            # Found a match - add normalized tuple to result set\n            intersection_result.add(normalized)\n    # Return the accumulated set of matching normalized tuples\n    return intersection_result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def tuple_intersection(test_list1, test_list2):\n    # Transform tuples using frozenset to capture unordered element identity\n    frozen1 = [frozenset(tup) for tup in test_list1]\n    # Apply same frozenset transformation to second list for comparison\n    frozen2 = [frozenset(tup) for tup in test_list2]\n    # Filter frozen sets from list1 that also appear somewhere in list2\n    common_frozen = filter(lambda fs: fs in frozen2, frozen1)\n    # Convert each matching frozenset back to sorted tuple format\n    as_sorted_tuples = map(lambda fs: tuple(sorted(fs)), common_frozen)\n    # Eliminate duplicate results by converting to set\n    unique_results = set(as_sorted_tuples)\n    # Deliver the final intersection set\n    return unique_results",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def tuple_intersection(test_list1, test_list2):\n    # Use reduce-style accumulation with set.union to build normalized set from list2\n    from functools import reduce\n    # Create a helper that normalizes a single tuple by sorting its elements\n    normalize = lambda t: tuple(sorted(t))\n    # Build set2 using reduce, starting empty and adding each normalized tuple\n    set2 = reduce(lambda acc, t: acc | {normalize(t)}, test_list2, set())\n    # Use a generator expression with conditional to filter matching tuples\n    matches = (normalize(t) for t in test_list1 if normalize(t) in set2)\n    # Consume generator into a set, automatically handling duplicates\n    result = set(matches)\n    # Return the intersection set containing order-independent tuple matches\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

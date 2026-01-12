@@ -1,0 +1,27 @@
+{
+  "task_id": 79,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the length of the word is odd or not.",
+  "code_python": "def word_len(s): \n    s = s.split(' ')   \n    for word in s:    \n        if len(word)%2!=0: \n            return True  \n        else:\n          return False",
+  "test_list": [
+    "assert word_len(\"Hadoop\") == False",
+    "assert word_len(\"great\") == True",
+    "assert word_len(\"structure\") == True"
+  ],
+  "python_1": "def word_len(s): \n    # Extract the first word by splitting on space and taking index 0\n    first_word = s.split(' ')[0]\n    # Use bitwise AND with 1 to check if length is odd (returns 1 if odd, 0 if even)\n    is_odd = len(first_word) & 1\n    # Convert the bitwise result to boolean and return\n    return bool(is_odd)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def word_len(s): \n    # Use modulo division on the length of the raw string (assuming single word input)\n    remainder = len(s) % 2\n    # Directly compare remainder to 1 to produce boolean result\n    result = remainder == 1\n    # Return the boolean indicating if word length is odd\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def word_len(s): \n    # Calculate length and use divmod to get quotient and remainder simultaneously\n    quotient, remainder = divmod(len(s), 2)\n    # Remainder of 1 means odd length, 0 means even - convert to boolean via truthiness\n    return remainder != 0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def word_len(s): \n    # Convert string length to binary representation as a string\n    binary_repr = bin(len(s))\n    # The last character of binary number determines odd/even (1=odd, 0=even)\n    last_bit = binary_repr[-1]\n    # Compare last binary digit to '1' to determine if length is odd\n    return last_bit == '1'",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def word_len(s): \n    # Create a tuple of odd numbers from 1 to a reasonable max length\n    odd_numbers = tuple(range(1, 1000, 2))\n    # Check membership of string length in the odd numbers collection\n    is_odd_length = len(s) in odd_numbers\n    # Return True if length is found among odd numbers, False otherwise\n    return is_odd_length",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

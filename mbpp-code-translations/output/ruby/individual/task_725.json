@@ -1,0 +1,44 @@
+{
+  "task_id": 725,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks \" \" of the given string.",
+  "python_code": "import re\ndef extract_quotation(text1):\n  return (re.findall(r'\"(.*?)\"', text1))",
+  "test_list": [
+    "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+    "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+    "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+    "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []"
+  ],
+  "code_ruby": "def extract_quotation(text1)\n  text1.scan(/\"(.*?)\"/).flatten\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 4,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"') == ['A53', 'multi', 'Processor']",
+      "generated_test": "result = extract_quotation('Cortex \"A53\" Based \"multi\" tasking \"Processor\"')\nexpected = ['A53', 'multi', 'Processor']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Cast your \"favorite\" entertainment \"apps\"') == ['favorite', 'apps']",
+      "generated_test": "result = extract_quotation('Cast your \"favorite\" entertainment \"apps\"')\nexpected = ['favorite', 'apps']\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support') == ['4k Ultra HD', 'HDR 10']",
+      "generated_test": "result = extract_quotation('Watch content \"4k Ultra HD\" resolution with \"HDR 10\" Support')\nexpected = ['4k Ultra HD', 'HDR 10']\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\") == []",
+      "generated_test": "result = extract_quotation(\"Watch content '4k Ultra HD' resolution with 'HDR 10' Support\")\nexpected = []\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected.inspect}\"\n  puts \"  Got: #{result.inspect}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

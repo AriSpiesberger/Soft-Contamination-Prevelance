@@ -1,0 +1,37 @@
+{
+  "task_id": 612,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function which takes a list of lists, where each sublist has two elements, and returns a list of two lists where the first list has the first element of each sublist and the second one has the second.",
+  "python_code": "def merge(lst):  \n    return [list(ele) for ele in list(zip(*lst))] ",
+  "test_list": [
+    "assert merge([['x', 'y'], ['a', 'b'], ['m', 'n']]) == [['x', 'a', 'm'], ['y', 'b', 'n']]",
+    "assert merge([[1, 2], [3, 4], [5, 6], [7, 8]]) == [[1, 3, 5, 7], [2, 4, 6, 8]]",
+    "assert merge([['x', 'y','z' ], ['a', 'b','c'], ['m', 'n','o']]) == [['x', 'a', 'm'], ['y', 'b', 'n'],['z', 'c','o']]"
+  ],
+  "code_rust": "pub fn merge<T: Clone>(lst: &[Vec<T>]) -> Vec<Vec<T>> {\n    if lst.is_empty() {\n        return Vec::new();\n    }\n    \n    let num_cols = lst.iter().map(|v| v.len()).max().unwrap_or(0);\n    \n    let mut result: Vec<Vec<T>> = Vec::with_capacity(num_cols);\n    \n    for col_idx in 0..num_cols {\n        let mut column: Vec<T> = Vec::new();\n        for row in lst {\n            if col_idx < row.len() {\n                column.push(row[col_idx].clone());\n            }\n        }\n        result.push(column);\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert merge([['x', 'y'], ['a', 'b'], ['m', 'n']]) == [['x', 'a', 'm'], ['y', 'b', 'n']]",
+      "generated_test": "let input: Vec<Vec<&str>> = vec![vec![\"x\", \"y\"], vec![\"a\", \"b\"], vec![\"m\", \"n\"]];\nlet expected: Vec<Vec<&str>> = vec![vec![\"x\", \"a\", \"m\"], vec![\"y\", \"b\", \"n\"]];\nlet result = merge(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert merge([[1, 2], [3, 4], [5, 6], [7, 8]]) == [[1, 3, 5, 7], [2, 4, 6, 8]]",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1, 2], vec![3, 4], vec![5, 6], vec![7, 8]];\nlet expected: Vec<Vec<i32>> = vec![vec![1, 3, 5, 7], vec![2, 4, 6, 8]];\nlet result = merge(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert merge([['x', 'y','z' ], ['a', 'b','c'], ['m', 'n','o']]) == [['x', 'a', 'm'], ['y', 'b', 'n'],['z', 'c','o']]",
+      "generated_test": "let input: Vec<Vec<&str>> = vec![\n    vec![\"x\", \"y\", \"z\"],\n    vec![\"a\", \"b\", \"c\"],\n    vec![\"m\", \"n\", \"o\"],\n];\nlet expected: Vec<Vec<&str>> = vec![\n    vec![\"x\", \"a\", \"m\"],\n    vec![\"y\", \"b\", \"n\"],\n    vec![\"z\", \"c\", \"o\"],\n];\nlet result = merge(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

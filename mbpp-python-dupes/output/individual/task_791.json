@@ -1,0 +1,28 @@
+{
+  "task_id": 791,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove tuples from the given tuple.",
+  "code_python": "def remove_nested(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res) ",
+  "test_list": [
+    "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+    "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+    "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+    "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)"
+  ],
+  "python_1": "def remove_nested(test_tup):\n  # Use filter with lambda to select only non-tuple elements\n  filtered = filter(lambda x: not isinstance(x, tuple), test_tup)\n  # Convert the filter iterator back to a tuple for the return value\n  return tuple(filtered)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_nested(test_tup):\n  # Use list comprehension to filter out tuple elements, collecting non-tuples\n  non_tuple_list = [item for item in test_tup if type(item) != tuple]\n  # Convert the filtered list directly to a tuple using unpacking\n  return tuple(non_tuple_list)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_nested(test_tup):\n  # Use generator expression inside tuple constructor for memory-efficient filtering\n  # This creates elements on-demand rather than building an intermediate list\n  return tuple(ele for ele in test_tup if not isinstance(ele, tuple))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_nested(test_tup):\n  # Use recursive helper approach with index tracking to build result\n  def helper(tup, idx, acc):\n    # Base case: when index reaches tuple length, return accumulated result as tuple\n    if idx >= len(tup):\n      return tuple(acc)\n    # Extract current element at the given index position\n    current = tup[idx]\n    # Check if current element is not a tuple type using type() comparison\n    if type(current) is not tuple:\n      # Append non-tuple element to our accumulator list\n      acc.append(current)\n    # Recursively process next index with updated accumulator\n    return helper(tup, idx + 1, acc)\n  # Start recursion from index 0 with empty list accumulator\n  return helper(test_tup, 0, [])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_nested(test_tup):\n  # Use reduce from functools to accumulate non-tuple elements functionally\n  from functools import reduce\n  # Define a reducer function that conditionally extends the accumulator tuple\n  def reducer(acc, element):\n    # Check if element is a tuple instance to decide whether to include it\n    if isinstance(element, tuple):\n      # Skip tuple elements by returning accumulator unchanged\n      return acc\n    # Concatenate non-tuple element as single-item tuple to accumulator\n    return acc + (element,)\n  # Apply reduce across all elements starting with empty tuple as initial value\n  result = reduce(reducer, test_tup, ())\n  # Return the fully accumulated tuple containing only non-tuple elements\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

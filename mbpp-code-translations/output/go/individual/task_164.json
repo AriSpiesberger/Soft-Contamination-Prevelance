@@ -1,0 +1,37 @@
+{
+  "task_id": 164,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to determine if the sum of the divisors of two integers are the same.",
+  "python_code": "import math \ndef div_sum(n): \n  total = 1\n  i = 2\n\n  while i * i <= n:\n    if (n % i == 0):\n      total = (total + i + math.floor(n / i))\n    i += 1\n\n  return total\n\ndef are_equivalent(num1, num2): \n    return div_sum(num1) == div_sum(num2); ",
+  "test_list": [
+    "assert are_equivalent(36, 57) == False",
+    "assert are_equivalent(2, 4) == False",
+    "assert are_equivalent(23, 47) == True"
+  ],
+  "code_go": "package main\n\nfunc div_sum(n int) int {\n\ttotal := 1\n\ti := 2\n\n\tfor i*i <= n {\n\t\tif n%i == 0 {\n\t\t\ttotal = total + i + n/i\n\t\t}\n\t\ti++\n\t}\n\n\treturn total\n}\n\nfunc are_equivalent(num1, num2 int) bool {\n\treturn div_sum(num1) == div_sum(num2)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert are_equivalent(36, 57) == False",
+      "generated_test": "expected := false\ngot := are_equivalent(36, 57)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert are_equivalent(2, 4) == False",
+      "generated_test": "expected := false\ngot := are_equivalent(2, 4)\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert are_equivalent(23, 47) == True",
+      "generated_test": "result := are_equivalent(23, 47)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

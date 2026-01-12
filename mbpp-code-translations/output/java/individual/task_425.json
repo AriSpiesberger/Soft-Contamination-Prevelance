@@ -1,0 +1,37 @@
+{
+  "task_id": 425,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of sublists containing a particular element.",
+  "python_code": "def count_element_in_list(list1, x): \n    ctr = 0\n    for i in range(len(list1)): \n        if x in list1[i]: \n            ctr+= 1          \n    return ctr",
+  "test_list": [
+    "assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3",
+    "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'A')==3",
+    "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'E')==1"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static <T> int count_element_in_list(ArrayList<ArrayList<T>> list1, T x) {\n        int ctr = 0;\n        for (int i = 0; i < list1.size(); i++) {\n            if (list1.get(i).contains(x)) {\n                ctr += 1;\n            }\n        }\n        return ctr;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3",
+      "generated_test": "ArrayList<ArrayList<Integer>> list1 = new ArrayList<>();\nArrayList<Integer> sublist1 = new ArrayList<>();\nsublist1.add(1);\nsublist1.add(3);\nlist1.add(sublist1);\nArrayList<Integer> sublist2 = new ArrayList<>();\nsublist2.add(5);\nsublist2.add(7);\nlist1.add(sublist2);\nArrayList<Integer> sublist3 = new ArrayList<>();\nsublist3.add(1);\nsublist3.add(11);\nlist1.add(sublist3);\nArrayList<Integer> sublist4 = new ArrayList<>();\nsublist4.add(1);\nsublist4.add(15);\nsublist4.add(7);\nlist1.add(sublist4);\n\nint result = count_element_in_list(list1, 1);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'A')==3",
+      "generated_test": "ArrayList<ArrayList<String>> list1 = new ArrayList<>();\nArrayList<String> sublist1 = new ArrayList<>();\nsublist1.add(\"A\");\nsublist1.add(\"B\");\nlist1.add(sublist1);\nArrayList<String> sublist2 = new ArrayList<>();\nsublist2.add(\"A\");\nsublist2.add(\"C\");\nlist1.add(sublist2);\nArrayList<String> sublist3 = new ArrayList<>();\nsublist3.add(\"A\");\nsublist3.add(\"D\");\nsublist3.add(\"E\");\nlist1.add(sublist3);\nArrayList<String> sublist4 = new ArrayList<>();\nsublist4.add(\"B\");\nsublist4.add(\"C\");\nsublist4.add(\"D\");\nlist1.add(sublist4);\n\nint result = count_element_in_list(list1, \"A\");\nint expected = 3;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_element_in_list([['A', 'B'], ['A', 'C'], ['A', 'D', 'E'], ['B', 'C', 'D']],'E')==1",
+      "generated_test": "ArrayList<ArrayList<String>> list1 = new ArrayList<>();\nArrayList<String> sublist1 = new ArrayList<>();\nsublist1.add(\"A\");\nsublist1.add(\"B\");\nlist1.add(sublist1);\nArrayList<String> sublist2 = new ArrayList<>();\nsublist2.add(\"A\");\nsublist2.add(\"C\");\nlist1.add(sublist2);\nArrayList<String> sublist3 = new ArrayList<>();\nsublist3.add(\"A\");\nsublist3.add(\"D\");\nsublist3.add(\"E\");\nlist1.add(sublist3);\nArrayList<String> sublist4 = new ArrayList<>();\nsublist4.add(\"B\");\nsublist4.add(\"C\");\nsublist4.add(\"D\");\nlist1.add(sublist4);\n\nint result = count_element_in_list(list1, \"E\");\nint expected = 1;\n\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

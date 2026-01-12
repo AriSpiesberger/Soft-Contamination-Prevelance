@@ -1,0 +1,37 @@
+{
+  "task_id": 580,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove uneven elements in the nested mixed tuple.",
+  "python_code": "def even_ele(test_tuple, even_fnc): \n\tres = tuple() \n\tfor ele in test_tuple: \n\t\tif isinstance(ele, tuple): \n\t\t\tres += (even_ele(ele, even_fnc), ) \n\t\telif even_fnc(ele): \n\t\t\tres += (ele, ) \n\treturn res \ndef extract_even(test_tuple):\n  res = even_ele(test_tuple, lambda x: x % 2 == 0)\n  return (res) ",
+  "test_list": [
+    "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+    "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+    "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)"
+  ],
+  "code_go": "package main\n\nfunc even_ele(testTuple []interface{}, evenFnc func(int) bool) []interface{} {\n\tres := []interface{}{}\n\tfor _, ele := range testTuple {\n\t\tswitch v := ele.(type) {\n\t\tcase []interface{}:\n\t\t\tres = append(res, even_ele(v, evenFnc))\n\t\tcase int:\n\t\t\tif evenFnc(v) {\n\t\t\t\tres = append(res, v)\n\t\t\t}\n\t\t}\n\t}\n\treturn res\n}\n\nfunc extract_even(testTuple []interface{}) []interface{} {\n\tres := even_ele(testTuple, func(x int) bool {\n\t\treturn x%2 == 0\n\t})\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+      "generated_test": "input := []interface{}{4, 5, []interface{}{7, 6, []interface{}{2, 4}}, 6, 8}\nexpected := []interface{}{4, []interface{}{6, []interface{}{2, 4}}, 6, 8}\nresult := extract_even(input)\n\nvar deepEqual func(a, b []interface{}) bool\ndeepEqual = func(a, b []interface{}) bool {\n\tif len(a) != len(b) {\n\t\treturn false\n\t}\n\tfor i := range a {\n\t\tswitch va := a[i].(type) {\n\t\tcase int:\n\t\t\tvb, ok := b[i].(int)\n\t\t\tif !ok || va != vb {\n\t\t\t\treturn false\n\t\t\t}\n\t\tcase []interface{}:\n\t\t\tvb, ok := b[i].([]interface{})\n\t\t\tif !ok || !deepEqual(va, vb) {\n\t\t\t\treturn false\n\t\t\t}\n\t\tdefault:\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nvar formatSlice func(s []interface{}) string\nformatSlice = func(s []interface{}) string {\n\tstr := \"[\"\n\tfor i, ele := range s {\n\t\tif i > 0 {\n\t\t\tstr += \", \"\n\t\t}\n\t\tswitch v := ele.(type) {\n\t\tcase int:\n\t\t\tstr += fmt.Sprintf(\"%d\", v)\n\t\tcase []interface{}:\n\t\t\tstr += formatSlice(v)\n\t\t}\n\t}\n\tstr += \"]\"\n\treturn str\n}\n\nif deepEqual(result, expected) {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", formatSlice(expected))\n\tfmt.Println(\"  Got:\", formatSlice(result))\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+      "generated_test": "input := []interface{}{5, 6, []interface{}{8, 7, []interface{}{4, 8}}, 7, 9}\nexpected := []interface{}{6, []interface{}{8, []interface{}{4, 8}}}\nresult := extract_even(input)\n\nvar deepEqual func(a, b []interface{}) bool\ndeepEqual = func(a, b []interface{}) bool {\n\tif len(a) != len(b) {\n\t\treturn false\n\t}\n\tfor i := range a {\n\t\tswitch va := a[i].(type) {\n\t\tcase int:\n\t\t\tvb, ok := b[i].(int)\n\t\t\tif !ok || va != vb {\n\t\t\t\treturn false\n\t\t\t}\n\t\tcase []interface{}:\n\t\t\tvb, ok := b[i].([]interface{})\n\t\t\tif !ok || !deepEqual(va, vb) {\n\t\t\t\treturn false\n\t\t\t}\n\t\tdefault:\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nif deepEqual(result, expected) {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)",
+      "generated_test": "input := []interface{}{5, 6, []interface{}{9, 8, []interface{}{4, 6}}, 8, 10}\nexpected := []interface{}{6, []interface{}{8, []interface{}{4, 6}}, 8, 10}\nresult := extract_even(input)\n\n// Helper function to compare nested slices\nvar deepEqual func(a, b []interface{}) bool\ndeepEqual = func(a, b []interface{}) bool {\n\tif len(a) != len(b) {\n\t\treturn false\n\t}\n\tfor i := range a {\n\t\tswitch va := a[i].(type) {\n\t\tcase int:\n\t\t\tif vb, ok := b[i].(int); !ok || va != vb {\n\t\t\t\treturn false\n\t\t\t}\n\t\tcase []interface{}:\n\t\t\tif vb, ok := b[i].([]interface{}); !ok || !deepEqual(va, vb) {\n\t\t\t\treturn false\n\t\t\t}\n\t\tdefault:\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nif deepEqual(result, expected) {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

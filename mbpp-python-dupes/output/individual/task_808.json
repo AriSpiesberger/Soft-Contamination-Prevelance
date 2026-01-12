@@ -1,0 +1,27 @@
+{
+  "task_id": 808,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given tuples contain the k or not.",
+  "code_python": "def check_K(test_tup, K):\n  res = False\n  for ele in test_tup:\n    if ele == K:\n      res = True\n      break\n  return res ",
+  "test_list": [
+    "assert check_K((10, 4, 5, 6, 8), 6) == True",
+    "assert check_K((1, 2, 3, 4, 5, 6), 7) == False",
+    "assert check_K((7, 8, 9, 44, 11, 12), 11) == True"
+  ],
+  "python_1": "def check_K(test_tup, K):\n  # Leverage Python's built-in membership operator for tuple containment check\n  return K in test_tup",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_K(test_tup, K):\n  # Use generator expression with any() for short-circuit evaluation\n  # This checks if any element matches K without creating intermediate lists\n  return any(ele == K for ele in test_tup)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_K(test_tup, K):\n  # Convert tuple to list to use list's index method with exception handling\n  try:\n    # Attempt to find K's position - raises ValueError if not found\n    list(test_tup).index(K)\n    # If we reach here, K was found in the tuple\n    return True\n  except ValueError:\n    # index() throws ValueError when element doesn't exist\n    return False",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_K(test_tup, K):\n  # Use filter with lambda to create iterator of matching elements\n  matches = filter(lambda x: x == K, test_tup)\n  # Convert filtered result to tuple to check if any matches exist\n  matched_tuple = tuple(matches)\n  # Return True if matched tuple has at least one element, False otherwise\n  return len(matched_tuple) > 0",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_K(test_tup, K):\n  # Use recursion by checking if K equals the first element or exists in the rest\n  # Base case: empty tuple means K was not found anywhere\n  if len(test_tup) == 0:\n    # Return False since we've exhausted all elements without finding K\n    return False\n  # Check if the first element of the tuple matches K\n  if test_tup[0] == K:\n    # Found K at the current position, return True immediately\n    return True\n  # Recursively search the remaining elements by slicing off the first element\n  return check_K(test_tup[1:], K)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

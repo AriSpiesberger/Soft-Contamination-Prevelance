@@ -1,0 +1,37 @@
+{
+  "task_id": 762,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given month number contains 30 days or not. Months are given as number from 1 to 12.",
+  "python_code": "def check_monthnumber_number(monthnum3):\n  return monthnum3==4 or monthnum3==6 or monthnum3==9 or monthnum3==11",
+  "test_list": [
+    "assert check_monthnumber_number(6)==True",
+    "assert check_monthnumber_number(2)==False",
+    "assert check_monthnumber_number(12)==False"
+  ],
+  "code_ruby": "def check_monthnumber_number(monthnum3)\n  [4, 6, 9, 11].include?(monthnum3)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert check_monthnumber_number(6)==True",
+      "generated_test": "result = check_monthnumber_number(6)\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_monthnumber_number(2)==False",
+      "generated_test": "result = check_monthnumber_number(2)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_monthnumber_number(12)==False",
+      "generated_test": "result = check_monthnumber_number(12)\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

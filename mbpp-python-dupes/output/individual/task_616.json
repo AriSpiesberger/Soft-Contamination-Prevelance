@@ -1,0 +1,27 @@
+{
+  "task_id": 616,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which takes two tuples of the same length and performs the element wise modulo.",
+  "code_python": "def tuple_modulo(test_tup1, test_tup2):\n  res = tuple(ele1 % ele2 for ele1, ele2 in zip(test_tup1, test_tup2)) \n  return (res) ",
+  "test_list": [
+    "assert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)",
+    "assert tuple_modulo((11, 5, 6, 7), (6, 7, 8, 6)) == (5, 5, 6, 1)",
+    "assert tuple_modulo((12, 6, 7, 8), (7, 8, 9, 7)) == (5, 6, 7, 1)"
+  ],
+  "python_1": "def tuple_modulo(test_tup1, test_tup2):\n  # Initialize empty list to accumulate modulo results\n  result_list = []\n  # Determine the length of tuples for index-based iteration\n  length = len(test_tup1)\n  # Use index-based loop instead of zip for explicit position control\n  for i in range(length):\n    # Access elements by index from first tuple\n    first_element = test_tup1[i]\n    # Access corresponding element by index from second tuple\n    second_element = test_tup2[i]\n    # Compute modulo and append to result list\n    result_list.append(first_element % second_element)\n  # Convert accumulated list to tuple for final output\n  return tuple(result_list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def tuple_modulo(test_tup1, test_tup2):\n  # Use map function to apply modulo operation across paired elements\n  from operator import mod\n  # Apply the built-in modulo operator function to each pair from both tuples\n  mapped_result = map(mod, test_tup1, test_tup2)\n  # Convert the map iterator object into an immutable tuple\n  return tuple(mapped_result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def tuple_modulo(test_tup1, test_tup2):\n  # Use lambda function to define inline modulo operation for flexibility\n  modulo_func = lambda x, y: x % y\n  # Create paired elements using zip and process with list comprehension\n  paired_elements = zip(test_tup1, test_tup2)\n  # Apply lambda to each unpacked pair and collect into list\n  result = [modulo_func(a, b) for a, b in paired_elements]\n  # Transform mutable list into immutable tuple for return value\n  return tuple(result)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def tuple_modulo(test_tup1, test_tup2):\n  # Employ recursive approach with helper function to process tuples\n  def recursive_modulo(idx, tup1, tup2, accumulator):\n    # Base case: when index reaches tuple length, return accumulated results as tuple\n    if idx >= len(tup1):\n      return tuple(accumulator)\n    # Extract current elements at position idx from both input tuples\n    current_mod = tup1[idx] % tup2[idx]\n    # Append computed modulo to accumulator and recurse with incremented index\n    return recursive_modulo(idx + 1, tup1, tup2, accumulator + [current_mod])\n  # Initiate recursion starting from index 0 with empty accumulator list\n  return recursive_modulo(0, test_tup1, test_tup2, [])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def tuple_modulo(test_tup1, test_tup2):\n  # Use reduce from functools to build result through successive accumulation\n  from functools import reduce\n  # Create enumerated pairs to track position while iterating through zipped tuples\n  indexed_pairs = enumerate(zip(test_tup1, test_tup2))\n  # Convert enumerated zip iterator to list for reduce processing\n  pairs_list = list(indexed_pairs)\n  # Define reducer function that accumulates modulo results into a dictionary by index\n  def accumulator_func(acc_dict, indexed_pair):\n    # Unpack the index and the pair of values from both tuples\n    idx, (val1, val2) = indexed_pair\n    # Store modulo result in dictionary with index as key for ordered reconstruction\n    acc_dict[idx] = val1 % val2\n    # Return updated dictionary for next iteration\n    return acc_dict\n  # Apply reduce to transform list of pairs into dictionary of modulo results\n  result_dict = reduce(accumulator_func, pairs_list, {})\n  # Extract values from dictionary in sorted key order to maintain tuple sequence\n  ordered_values = [result_dict[k] for k in sorted(result_dict.keys())]\n  # Convert ordered list of modulo results to immutable tuple for return\n  return tuple(ordered_values)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

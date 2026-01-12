@@ -1,0 +1,17 @@
+{
+  "task_id": 124,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the angle of a complex number.",
+  "python_code": "import cmath\ndef angle_complex(a,b):\n  cn=complex(a,b)\n  angle=cmath.phase(a+b)\n  return angle",
+  "test_list": [
+    "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)"
+  ],
+  "code_typescript": "function angle_complex(a: number, b: number): number {\n  return Math.atan2(b, a);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 2,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 566,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the sum of the digits of a non-negative integer.",
+  "python_code": "def sum_digits(n):\n  if n == 0:\n    return 0\n  else:\n    return n % 10 + sum_digits(int(n / 10))",
+  "test_list": [
+    "assert sum_digits(345)==12",
+    "assert sum_digits(12)==3",
+    "assert sum_digits(97)==16"
+  ],
+  "code_ruby": "def sum_digits(n)\n  if n == 0\n    0\n  else\n    n % 10 + sum_digits(n / 10)\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sum_digits(345)==12",
+      "generated_test": "result = sum_digits(345)\nexpected = 12\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_digits(12)==3",
+      "generated_test": "result = sum_digits(12)\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_digits(97)==16",
+      "generated_test": "result = sum_digits(97)\nexpected = 16\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

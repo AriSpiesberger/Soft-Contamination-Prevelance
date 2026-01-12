@@ -1,0 +1,37 @@
+{
+  "task_id": 90,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the longest word.",
+  "python_code": "def len_log(list1):\n    max=len(list1[0])\n    for i in list1:\n        if len(i)>max:\n            max=len(i)\n    return max",
+  "test_list": [
+    "assert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7",
+    "assert len_log([\"a\",\"ab\",\"abc\"]) == 3",
+    "assert len_log([\"small\",\"big\",\"tall\"]) == 5"
+  ],
+  "code_rust": "pub fn len_log(list1: Vec<&str>) -> usize {\n    let mut max = list1[0].len();\n    for i in list1 {\n        if i.len() > max {\n            max = i.len();\n        }\n    }\n    max\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7",
+      "generated_test": "let result = len_log(vec![\"python\", \"PHP\", \"bigdata\"]);\nlet expected = 7;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert len_log([\"a\",\"ab\",\"abc\"]) == 3",
+      "generated_test": "let result = len_log(vec![\"a\", \"ab\", \"abc\"]);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert len_log([\"small\",\"big\",\"tall\"]) == 5",
+      "generated_test": "let result = len_log(vec![\"small\", \"big\", \"tall\"]);\nlet expected = 5;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

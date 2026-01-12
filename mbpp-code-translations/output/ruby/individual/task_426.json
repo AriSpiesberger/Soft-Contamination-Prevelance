@@ -1,0 +1,37 @@
+{
+  "task_id": 426,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to filter odd numbers.",
+  "python_code": "def filter_oddnumbers(nums):\n odd_nums = list(filter(lambda x: x%2 != 0, nums))\n return odd_nums",
+  "test_list": [
+    "assert filter_oddnumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1,3,5,7,9]",
+    "assert filter_oddnumbers([10,20,45,67,84,93])==[45,67,93]",
+    "assert filter_oddnumbers([5,7,9,8,6,4,3])==[5,7,9,3]"
+  ],
+  "code_ruby": "def filter_oddnumbers(nums)\n  nums.select { |x| x % 2 != 0 }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert filter_oddnumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1,3,5,7,9]",
+      "generated_test": "result = filter_oddnumbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])\nexpected = [1, 3, 5, 7, 9]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert filter_oddnumbers([10,20,45,67,84,93])==[45,67,93]",
+      "generated_test": "result = filter_oddnumbers([10, 20, 45, 67, 84, 93])\nexpected = [45, 67, 93]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert filter_oddnumbers([5,7,9,8,6,4,3])==[5,7,9,3]",
+      "generated_test": "result = filter_oddnumbers([5,7,9,8,6,4,3])\nexpected = [5,7,9,3]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

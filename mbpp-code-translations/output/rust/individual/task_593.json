@@ -1,0 +1,37 @@
+{
+  "task_id": 593,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove leading zeroes from an ip address.",
+  "python_code": "import re\ndef removezero_ip(ip):\n string = re.sub('\\.[0]*', '.', ip)\n return string\n",
+  "test_list": [
+    "assert removezero_ip(\"216.08.094.196\")==('216.8.94.196')",
+    "assert removezero_ip(\"12.01.024\")==('12.1.24')",
+    "assert removezero_ip(\"216.08.094.0196\")==('216.8.94.196')"
+  ],
+  "code_rust": "pub fn removezero_ip(ip: &str) -> String {\n    let mut result = String::new();\n    let mut chars = ip.chars().peekable();\n    \n    while let Some(c) = chars.next() {\n        if c == '.' {\n            result.push('.');\n            // Skip leading zeros after the dot\n            while chars.peek() == Some(&'0') {\n                let mut temp_chars = chars.clone();\n                temp_chars.next(); // skip the '0'\n                // Check if the next char is a digit (not '.' and not end)\n                if let Some(&next) = temp_chars.peek() {\n                    if next.is_ascii_digit() {\n                        chars.next(); // consume the leading zero\n                    } else {\n                        break;\n                    }\n                } else {\n                    break;\n                }\n            }\n        } else {\n            result.push(c);\n        }\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert removezero_ip(\"216.08.094.196\")==('216.8.94.196')",
+      "generated_test": "let result = removezero_ip(\"216.08.094.196\");\nlet expected = \"216.8.94.196\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert removezero_ip(\"12.01.024\")==('12.1.24')",
+      "generated_test": "let result = removezero_ip(\"12.01.024\");\nlet expected = \"12.1.24\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert removezero_ip(\"216.08.094.0196\")==('216.8.94.196')",
+      "generated_test": "let result = removezero_ip(\"216.08.094.0196\");\nlet expected = \"216.8.94.196\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

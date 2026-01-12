@@ -1,0 +1,37 @@
+{
+  "task_id": 91,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a string is present as a substring in a given list of string values.",
+  "python_code": "def find_substring(str1, sub_str):\n   if any(sub_str in s for s in str1):\n       return True\n   return False",
+  "test_list": [
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ack\")==True",
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"abc\")==False",
+    "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ange\")==True"
+  ],
+  "code_javascript": "function find_substring(str1, sub_str) {\n    if (str1.some(s => s.includes(sub_str))) {\n        return true;\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ack\")==True",
+      "generated_test": "const result = find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"], \"ack\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"abc\")==False",
+      "generated_test": "const result = find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"], \"abc\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"],\"ange\")==True",
+      "generated_test": "const result = find_substring([\"red\", \"black\", \"white\", \"green\", \"orange\"], \"ange\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

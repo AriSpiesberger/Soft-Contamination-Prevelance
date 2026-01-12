@@ -1,0 +1,37 @@
+{
+  "task_id": 797,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of all odd natural numbers within the range l and r.",
+  "python_code": "def sum_odd(n): \n    terms = (n + 1)//2\n    sum1 = terms * terms \n    return sum1  \ndef sum_in_range(l,r): \n    return sum_odd(r) - sum_odd(l - 1)",
+  "test_list": [
+    "assert sum_in_range(2,5) == 8",
+    "assert sum_in_range(5,7) == 12",
+    "assert sum_in_range(7,13) == 40"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    \n    public static int sum_odd(int n) {\n        int terms = (n + 1) / 2;\n        int sum1 = terms * terms;\n        return sum1;\n    }\n    \n    public static int sum_in_range(int l, int r) {\n        return sum_odd(r) - sum_odd(l - 1);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert sum_in_range(2,5) == 8",
+      "generated_test": "int result = sum_in_range(2, 5);\nint expected = 8;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_in_range(5,7) == 12",
+      "generated_test": "int result = sum_in_range(5, 7);\nint expected = 12;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_in_range(7,13) == 40",
+      "generated_test": "int result = sum_in_range(7, 13);\nint expected = 40;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

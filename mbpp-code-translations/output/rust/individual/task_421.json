@@ -1,0 +1,37 @@
+{
+  "task_id": 421,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to concatenate each element of tuple by the delimiter.",
+  "python_code": "def concatenate_tuple(test_tup):\n    delim = \"-\"\n    res = ''.join([str(ele) + delim for ele in test_tup])\n    res = res[ : len(res) - len(delim)]\n    return (str(res)) ",
+  "test_list": [
+    "assert concatenate_tuple((\"ID\", \"is\", 4, \"UTS\") ) == 'ID-is-4-UTS'",
+    "assert concatenate_tuple((\"QWE\", \"is\", 4, \"RTY\") ) == 'QWE-is-4-RTY'",
+    "assert concatenate_tuple((\"ZEN\", \"is\", 4, \"OP\") ) == 'ZEN-is-4-OP'"
+  ],
+  "code_rust": "use std::fmt::Display;\n\npub fn concatenate_tuple<T: Display>(test_tup: &[T]) -> String {\n    let delim = \"-\";\n    let res: String = test_tup\n        .iter()\n        .map(|ele| ele.to_string())\n        .collect::<Vec<String>>()\n        .join(delim);\n    res\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert concatenate_tuple((\"ID\", \"is\", 4, \"UTS\") ) == 'ID-is-4-UTS'",
+      "generated_test": "let result = concatenate_tuple(&[\"ID\", \"is\", \"4\", \"UTS\"]);\nlet expected = \"ID-is-4-UTS\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert concatenate_tuple((\"QWE\", \"is\", 4, \"RTY\") ) == 'QWE-is-4-RTY'",
+      "generated_test": "let result = concatenate_tuple(&[\"QWE\", \"is\", \"4\", \"RTY\"]);\nlet expected = \"QWE-is-4-RTY\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert concatenate_tuple((\"ZEN\", \"is\", 4, \"OP\") ) == 'ZEN-is-4-OP'",
+      "generated_test": "let result = concatenate_tuple(&[\"ZEN\", \"is\", \"4\", \"OP\"]);\nlet expected = \"ZEN-is-4-OP\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

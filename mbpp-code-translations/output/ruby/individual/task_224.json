@@ -1,0 +1,37 @@
+{
+  "task_id": 224,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of set bits (binary digits with value 1) in a given number.",
+  "python_code": "def count_Set_Bits(n): \n    count = 0\n    while (n): \n        count += n & 1\n        n >>= 1\n    return count ",
+  "test_list": [
+    "assert count_Set_Bits(2) == 1",
+    "assert count_Set_Bits(4) == 1",
+    "assert count_Set_Bits(6) == 2"
+  ],
+  "code_ruby": "def count_Set_Bits(n)\n  count = 0\n  while n > 0\n    count += n & 1\n    n >>= 1\n  end\n  count\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert count_Set_Bits(2) == 1",
+      "generated_test": "result = count_Set_Bits(2)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Set_Bits(4) == 1",
+      "generated_test": "result = count_Set_Bits(4)\nexpected = 1\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Set_Bits(6) == 2",
+      "generated_test": "result = count_Set_Bits(6)\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

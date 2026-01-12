@@ -1,0 +1,37 @@
+{
+  "task_id": 577,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit in factorial of a given number.",
+  "python_code": "def last_Digit_Factorial(n): \n    if (n == 0): return 1\n    elif (n <= 2): return n  \n    elif (n == 3): return 6\n    elif (n == 4): return 4 \n    else: \n      return 0",
+  "test_list": [
+    "assert last_Digit_Factorial(4) == 4",
+    "assert last_Digit_Factorial(21) == 0",
+    "assert last_Digit_Factorial(30) == 0"
+  ],
+  "code_go": "package main\n\nfunc last_Digit_Factorial(n int) int {\n\tif n == 0 {\n\t\treturn 1\n\t} else if n <= 2 {\n\t\treturn n\n\t} else if n == 3 {\n\t\treturn 6\n\t} else if n == 4 {\n\t\treturn 4\n\t} else {\n\t\treturn 0\n\t}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert last_Digit_Factorial(4) == 4",
+      "generated_test": "result := last_Digit_Factorial(4)\nexpected := 4\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit_Factorial(21) == 0",
+      "generated_test": "result := last_Digit_Factorial(21)\nexpected := 0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit_Factorial(30) == 0",
+      "generated_test": "result := last_Digit_Factorial(30)\nexpected := 0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

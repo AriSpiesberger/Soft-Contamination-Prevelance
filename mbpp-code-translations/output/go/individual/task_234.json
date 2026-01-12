@@ -1,0 +1,37 @@
+{
+  "task_id": 234,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cube given its side length.",
+  "python_code": "def volume_cube(l):\n  volume = l * l * l\n  return volume",
+  "test_list": [
+    "assert volume_cube(3)==27",
+    "assert volume_cube(2)==8",
+    "assert volume_cube(5)==125"
+  ],
+  "code_go": "package main\n\nfunc volume_cube(l int) int {\n\tvolume := l * l * l\n\treturn volume\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert volume_cube(3)==27",
+      "generated_test": "result := volume_cube(3)\nexpected := 27\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert volume_cube(2)==8",
+      "generated_test": "result := volume_cube(2)\nexpected := 8\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert volume_cube(5)==125",
+      "generated_test": "result := volume_cube(5)\nexpected := 125\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

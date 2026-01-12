@@ -1,0 +1,17 @@
+{
+  "task_id": 451,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove all whitespaces from the given string.",
+  "python_code": "import re\ndef remove_whitespaces(text1):\n  return (re.sub(r'\\s+', '',text1))",
+  "test_list": [
+    "assert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'",
+    "assert remove_whitespaces(' Google    Dart ') == 'GoogleDart'",
+    "assert remove_whitespaces(' iOS    Swift ') == 'iOSSwift'"
+  ],
+  "code_typescript": "function remove_whitespaces(text1: string): string {\n  return text1.replace(/\\s+/g, '');\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

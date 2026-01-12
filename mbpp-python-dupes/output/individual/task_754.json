@@ -1,0 +1,28 @@
+{
+  "task_id": 754,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "We say that an element is common for lists l1, l2, l3 if it appears in all three lists under the same index. Write a function to find common elements from three lists. The function should return a list.",
+  "code_python": "def extract_index_list(l1, l2, l3):\n    result = []\n    for m, n, o in zip(l1, l2, l3):\n        if (m == n == o):\n            result.append(m)\n    return result",
+  "test_list": [
+    "assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 7]",
+    "assert extract_index_list([1, 1, 3, 4, 5, 6, 7],[0, 1, 2, 3, 4, 6, 5],[0, 1, 2, 3, 4, 6, 7])==[1, 6]",
+    "assert extract_index_list([1, 1, 3, 4, 6, 5, 6],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[1, 5]",
+    "assert extract_index_list([1, 2, 3, 4, 6, 6, 6],[0, 1, 2, 3, 4, 5, 7],[0, 1, 2, 3, 4, 5, 7])==[]"
+  ],
+  "python_1": "def extract_index_list(l1, l2, l3):\n    # Use list comprehension with enumerate to get index-based iteration\n    # Determine the minimum length to avoid index out of bounds\n    min_len = min(len(l1), len(l2), len(l3))\n    # Build result using list comprehension with index-based access\n    # Check equality at each index position across all three lists\n    return [l1[i] for i in range(min_len) if l1[i] == l2[i] == l3[i]]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def extract_index_list(l1, l2, l3):\n    # Use filter function with lambda to select matching indices\n    # Calculate the shortest length among all three input lists\n    min_length = min(len(l1), len(l2), len(l3))\n    # Generate index range as an iterable for filtering\n    indices = range(min_length)\n    # Filter keeps only indices where all three lists have equal values\n    matching_indices = filter(lambda i: l1[i] == l2[i] == l3[i], indices)\n    # Map each valid index to its corresponding value from first list\n    result = map(lambda i: l1[i], matching_indices)\n    # Convert the map object to a concrete list for return\n    return list(result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def extract_index_list(l1, l2, l3):\n    # Combine all three lists into tuples using zip for parallel iteration\n    combined = zip(l1, l2, l3)\n    # Use enumerate to track position while iterating through zipped tuples\n    enumerated_tuples = enumerate(combined)\n    # Build result list to store elements that appear at same index in all lists\n    result = []\n    # Process each tuple with its index from the enumerated iterator\n    for idx, triple in enumerated_tuples:\n        # Unpack the tuple into individual values from each list\n        val1, val2, val3 = triple\n        # Create a set from the three values to check uniqueness\n        unique_values = {val1, val2, val3}\n        # If set has exactly one element, all three values are identical\n        if len(unique_values) == 1:\n            # Extract the single common value using set pop operation\n            common_element = unique_values.pop()\n            # Append the common element to our result collection\n            result.append(common_element)\n    # Return the accumulated list of common indexed elements\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def extract_index_list(l1, l2, l3):\n    # Use reduce-style approach with recursive helper function\n    def helper(idx, acc):\n        # Base case: check if we've exceeded any list's bounds\n        if idx >= len(l1) or idx >= len(l2) or idx >= len(l3):\n            # Return accumulated results when any list is exhausted\n            return acc\n        # Retrieve current element from first list at this index\n        elem1 = l1[idx]\n        # Retrieve current element from second list at this index\n        elem2 = l2[idx]\n        # Retrieve current element from third list at this index\n        elem3 = l3[idx]\n        # Check if all three elements are identical using chained comparison\n        all_match = elem1 == elem2 and elem2 == elem3\n        # Conditionally extend accumulator with matching element or empty list\n        new_acc = acc + ([elem1] if all_match else [])\n        # Recurse to process next index position with updated accumulator\n        return helper(idx + 1, new_acc)\n    # Kick off recursion starting from index 0 with empty accumulator\n    return helper(0, [])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def extract_index_list(l1, l2, l3):\n    # Import itertools to leverage its powerful iteration utilities\n    from itertools import starmap, compress\n    # Create tuples of corresponding elements from all three input lists\n    zipped_elements = zip(l1, l2, l3)\n    # Convert to list to allow multiple iterations over the same data\n    zipped_list = list(zipped_elements)\n    # Define a selector function that checks if all tuple elements are equal\n    def all_equal(a, b, c):\n        # Return True only when all three arguments have the same value\n        return a == b == c\n    # Apply the equality checker to each triple using starmap for unpacking\n    equality_mask = starmap(all_equal, zipped_list)\n    # Extract just the first element from each triple for potential output\n    first_elements = [triple[0] for triple in zipped_list]\n    # Use compress to select only elements where the mask is True\n    filtered_elements = compress(first_elements, equality_mask)\n    # Materialize the lazy iterator into a concrete list for return\n    return list(filtered_elements)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

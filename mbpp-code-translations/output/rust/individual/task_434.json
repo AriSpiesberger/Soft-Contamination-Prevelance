@@ -1,0 +1,37 @@
+{
+  "task_id": 434,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by one or more b's.",
+  "python_code": "import re\ndef text_match_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False\n",
+  "test_list": [
+    "assert text_match_one(\"ac\")==False",
+    "assert text_match_one(\"dc\")==False",
+    "assert text_match_one(\"abba\")==True"
+  ],
+  "code_rust": "pub fn text_match_one(text: &str) -> bool {\n    let chars: Vec<char> = text.chars().collect();\n    let len = chars.len();\n    \n    for i in 0..len {\n        if chars[i] == 'a' {\n            // Check if there's at least one 'b' following the 'a'\n            if i + 1 < len && chars[i + 1] == 'b' {\n                return true;\n            }\n        }\n    }\n    false\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 7,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert text_match_one(\"ac\")==False",
+      "generated_test": "let result = text_match_one(\"ac\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_one(\"dc\")==False",
+      "generated_test": "let result = text_match_one(\"dc\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_one(\"abba\")==True",
+      "generated_test": "let result = text_match_one(\"abba\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 62,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find smallest number in a list.",
+  "code_python": "def smallest_num(xs):\n  return min(xs)\n",
+  "test_list": [
+    "assert smallest_num([10, 20, 1, 45, 99]) == 1",
+    "assert smallest_num([1, 2, 3]) == 1",
+    "assert smallest_num([45, 46, 50, 60]) == 45"
+  ],
+  "python_1": "def smallest_num(xs):\n    # Start by assuming the first element is the smallest\n    smallest = xs[0]\n    # Loop through remaining elements starting from index 1\n    for i in range(1, len(xs)):\n        # Compare current element against our tracked minimum\n        if xs[i] < smallest:\n            # Update smallest when we find a smaller value\n            smallest = xs[i]\n    # Return the minimum value found after checking all elements\n    return smallest",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def smallest_num(xs):\n    # Create a sorted copy of the list in ascending order\n    sorted_list = sorted(xs)\n    # The smallest element will be at the front after sorting\n    return sorted_list[0]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def smallest_num(xs):\n    # Use recursion: base case when list has single element\n    if len(xs) == 1:\n        # A single element is trivially the smallest\n        return xs[0]\n    # Recursively find the smallest in the rest of the list\n    rest_smallest = smallest_num(xs[1:])\n    # Compare first element with smallest of remaining elements\n    if xs[0] < rest_smallest:\n        # First element wins the comparison\n        return xs[0]\n    else:\n        # The recursive result is smaller or equal\n        return rest_smallest",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def smallest_num(xs):\n    # Use reduce to fold the list down to a single minimum value\n    from functools import reduce\n    # Apply a lambda that keeps the smaller of two values at each step\n    return reduce(lambda a, b: a if a < b else b, xs)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def smallest_num(xs):\n    # Use a while loop with index tracking instead of for loop\n    index = 0\n    # Initialize result with first element as candidate minimum\n    result = xs[index]\n    # Continue until we've examined every element in the list\n    while index < len(xs):\n        # Extract current element for comparison\n        current = xs[index]\n        # Ternary expression to update result if current is smaller\n        result = current if current < result else result\n        # Move to next position in the list\n        index += 1\n    # Return the smallest value discovered during traversal\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

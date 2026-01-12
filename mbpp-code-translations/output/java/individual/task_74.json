@@ -1,0 +1,37 @@
+{
+  "task_id": 74,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether it follows the sequence given in the patterns array.",
+  "python_code": "def is_samepatterns(colors, patterns):    \n    if len(colors) != len(patterns):\n        return False    \n    sdict = {}\n    pset = set()\n    sset = set()    \n    for i in range(len(patterns)):\n        pset.add(patterns[i])\n        sset.add(colors[i])\n        if patterns[i] not in sdict.keys():\n            sdict[patterns[i]] = []\n\n        keys = sdict[patterns[i]]\n        keys.append(colors[i])\n        sdict[patterns[i]] = keys\n\n    if len(pset) != len(sset):\n        return False   \n\n    for values in sdict.values():\n\n        for i in range(len(values) - 1):\n            if values[i] != values[i+1]:\n                return False\n\n    return True",
+  "test_list": [
+    "assert is_samepatterns([\"red\",\"green\",\"green\"], [\"a\", \"b\", \"b\"])==True",
+    "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\",\"b\"])==False",
+    "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\"])==False"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean is_samepatterns(String[] colors, String[] patterns) {\n        if (colors.length != patterns.length) {\n            return false;\n        }\n        \n        HashMap<String, ArrayList<String>> sdict = new HashMap<>();\n        HashSet<String> pset = new HashSet<>();\n        HashSet<String> sset = new HashSet<>();\n        \n        for (int i = 0; i < patterns.length; i++) {\n            pset.add(patterns[i]);\n            sset.add(colors[i]);\n            \n            if (!sdict.containsKey(patterns[i])) {\n                sdict.put(patterns[i], new ArrayList<>());\n            }\n            \n            ArrayList<String> keys = sdict.get(patterns[i]);\n            keys.add(colors[i]);\n            sdict.put(patterns[i], keys);\n        }\n        \n        if (pset.size() != sset.size()) {\n            return false;\n        }\n        \n        for (ArrayList<String> values : sdict.values()) {\n            for (int i = 0; i < values.size() - 1; i++) {\n                if (!values.get(i).equals(values.get(i + 1))) {\n                    return false;\n                }\n            }\n        }\n        \n        return true;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert is_samepatterns([\"red\",\"green\",\"green\"], [\"a\", \"b\", \"b\"])==True",
+      "generated_test": "String[] colors = new String[]{\"red\", \"green\", \"green\"};\nString[] patterns = new String[]{\"a\", \"b\", \"b\"};\nboolean result = is_samepatterns(colors, patterns);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\",\"b\"])==False",
+      "generated_test": "boolean result = is_samepatterns(new String[]{\"red\",\"green\",\"greenn\"}, new String[]{\"a\",\"b\",\"b\"});\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\"])==False",
+      "generated_test": "boolean result = is_samepatterns(new String[]{\"red\",\"green\",\"greenn\"}, new String[]{\"a\",\"b\"});\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

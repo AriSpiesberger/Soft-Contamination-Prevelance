@@ -1,0 +1,37 @@
+{
+  "task_id": 276,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in the radius and height of a cylinder and returns the the volume.",
+  "python_code": "def volume_cylinder(r,h):\n  volume=3.1415*r*r*h\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_cylinder(10,5), 1570.7500000000002, rel_tol=0.001)",
+    "assert math.isclose(volume_cylinder(4,5), 251.32000000000002, rel_tol=0.001)",
+    "assert math.isclose(volume_cylinder(4,10), 502.64000000000004, rel_tol=0.001)"
+  ],
+  "code_rust": "pub fn volume_cylinder(r: f64, h: f64) -> f64 {\n    let volume = 3.1415 * r * r * h;\n    volume\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert math.isclose(volume_cylinder(10,5), 1570.7500000000002, rel_tol=0.001)",
+      "generated_test": "let result = volume_cylinder(10.0, 5.0);\nlet expected = 1570.7500000000002;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_cylinder(4,5), 251.32000000000002, rel_tol=0.001)",
+      "generated_test": "let result = volume_cylinder(4.0, 5.0);\nlet expected = 251.32000000000002;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_cylinder(4,10), 502.64000000000004, rel_tol=0.001)",
+      "generated_test": "let result = volume_cylinder(4.0, 10.0);\nlet expected = 502.64000000000004;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

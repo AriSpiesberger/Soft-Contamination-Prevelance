@@ -1,0 +1,27 @@
+{
+  "task_id": 455,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given month number contains 31 days or not.",
+  "code_python": "def check_monthnumb_number(monthnum2):\n  if(monthnum2==1 or monthnum2==3 or monthnum2==5 or monthnum2==7 or monthnum2==8 or monthnum2==10 or monthnum2==12):\n    return True\n  else:\n    return False",
+  "test_list": [
+    "assert check_monthnumb_number(5)==True",
+    "assert check_monthnumb_number(2)==False",
+    "assert check_monthnumb_number(6)==False"
+  ],
+  "python_1": "# Define function to check if month has 31 days\ndef check_monthnumb_number(monthnum2):\n    # Create a tuple containing all month numbers that have 31 days\n    months_with_31_days = (1, 3, 5, 7, 8, 10, 12)\n    # Use membership operator to check if input month is in the tuple\n    return monthnum2 in months_with_31_days",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_monthnumb_number(monthnum2):\n    # Create a dictionary mapping each month number to its day count\n    days_in_month = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}\n    # Look up the month in dictionary and compare its day count to 31\n    return days_in_month.get(monthnum2, 0) == 31",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_monthnumb_number(monthnum2):\n    # Leverage the pattern: months 1-7 alternate odd=31, then 8-12 alternate even=31\n    # First handle edge case where month is outside valid range\n    if monthnum2 < 1 or monthnum2 > 12:\n        return False\n    # For months 1-7, odd months have 31 days (Jan, Mar, May, Jul)\n    if monthnum2 <= 7:\n        # Use modulo to check if month number is odd\n        return monthnum2 % 2 == 1\n    # For months 8-12, even months have 31 days (Aug, Oct, Dec)\n    else:\n        # Use modulo to check if month number is even\n        return monthnum2 % 2 == 0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_monthnumb_number(monthnum2):\n    # Use a set for O(1) lookup performance on 31-day months\n    thirty_one_day_months = {1, 3, 5, 7, 8, 10, 12}\n    # Apply set membership test and return boolean result directly\n    return monthnum2 in thirty_one_day_months",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_monthnumb_number(monthnum2):\n    # Create a list where index represents month and value represents days in that month\n    days_per_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n    # Guard against invalid month numbers by checking bounds\n    if monthnum2 < 1 or monthnum2 > 12:\n        # Return False for any month outside the valid 1-12 range\n        return False\n    # Index into the list and compare retrieved day count against 31\n    return days_per_month[monthnum2] == 31",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

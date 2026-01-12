@@ -1,0 +1,37 @@
+{
+  "task_id": 239,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in positive integers m and n and finds the number of possible sequences of length n, such that each element is a positive integer and is greater than or equal to twice the previous element but less than or equal to m.",
+  "python_code": "def get_total_number_of_sequences(m,n): \n\tT=[[0 for i in range(n+1)] for i in range(m+1)] \n\tfor i in range(m+1): \n\t\tfor j in range(n+1): \n\t\t\tif i==0 or j==0: \n\t\t\t\tT[i][j]=0\n\t\t\telif i<j: \n\t\t\t\tT[i][j]=0\n\t\t\telif j==1: \n\t\t\t\tT[i][j]=i \n\t\t\telse: \n\t\t\t\tT[i][j]=T[i-1][j]+T[i//2][j-1] \n\treturn T[m][n]",
+  "test_list": [
+    "assert get_total_number_of_sequences(10, 4) == 4",
+    "assert get_total_number_of_sequences(5, 2) == 6",
+    "assert get_total_number_of_sequences(16, 3) == 84"
+  ],
+  "code_java": "import java.util.*;\n\nclass Solution {\n    public static int get_total_number_of_sequences(int m, int n) {\n        int[][] T = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) {\n            for (int j = 0; j <= n; j++) {\n                if (i == 0 || j == 0) {\n                    T[i][j] = 0;\n                } else if (i < j) {\n                    T[i][j] = 0;\n                } else if (j == 1) {\n                    T[i][j] = i;\n                } else {\n                    T[i][j] = T[i - 1][j] + T[i / 2][j - 1];\n                }\n            }\n        }\n        return T[m][n];\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert get_total_number_of_sequences(10, 4) == 4",
+      "generated_test": "int result = get_total_number_of_sequences(10, 4);\nint expected = 4;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_total_number_of_sequences(5, 2) == 6",
+      "generated_test": "int result = get_total_number_of_sequences(5, 2);\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_total_number_of_sequences(16, 3) == 84",
+      "generated_test": "int result = get_total_number_of_sequences(16, 3);\nint expected = 84;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 641,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth nonagonal number.",
+  "python_code": "def is_nonagonal(n): \n\treturn int(n * (7 * n - 5) / 2) ",
+  "test_list": [
+    "assert is_nonagonal(10) == 325",
+    "assert is_nonagonal(15) == 750",
+    "assert is_nonagonal(18) == 1089"
+  ],
+  "code_typescript": "function is_nonagonal(n: number): number {\n    return Math.floor(n * (7 * n - 5) / 2);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

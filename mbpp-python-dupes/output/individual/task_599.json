@@ -1,0 +1,27 @@
+{
+  "task_id": 599,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find sum and average of first n natural numbers.",
+  "code_python": "def sum_average(number):\n total = 0\n for value in range(1, number + 1):\n    total = total + value\n average = total / number\n return (total,average)",
+  "test_list": [
+    "assert sum_average(10)==(55, 5.5)",
+    "assert sum_average(15)==(120, 8.0)",
+    "assert sum_average(20)==(210, 10.5)"
+  ],
+  "python_1": "def sum_average(number):\n # Use the mathematical formula n*(n+1)/2 for sum of first n natural numbers\n total = number * (number + 1) // 2\n # Calculate average by dividing total sum by count of numbers\n average = total / number\n # Return both values as a tuple\n return (total, average)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_average(number):\n # Generate a list containing all natural numbers from 1 to n using list comprehension\n natural_numbers = [i for i in range(1, number + 1)]\n # Leverage Python's built-in sum() function to compute the total of list elements\n total = sum(natural_numbers)\n # Compute average by using len() to get count, making code more flexible\n average = total / len(natural_numbers)\n # Pack both computed values into a tuple for return\n return (total, average)",
+  "python_2_status": "success",
+  "python_2_attempts": 2,
+  "python_3": "def sum_average(number):\n # Use recursive helper to accumulate sum starting from 1\n def recursive_sum(current, limit):\n     # Base case: when current exceeds limit, return 0 to stop recursion\n     if current > limit:\n         return 0\n     # Recursive case: add current value to sum of remaining numbers\n     return current + recursive_sum(current + 1, limit)\n # Invoke recursive function starting at 1 to compute total\n total = recursive_sum(1, number)\n # Divide accumulated sum by count to get arithmetic mean\n average = total / number\n # Bundle both calculated metrics into a tuple result\n return (total, average)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_average(number):\n # Employ reduce from functools to perform functional-style accumulation\n from functools import reduce\n # Create a range object as an iterator for lazy evaluation of numbers 1 to n\n numbers_range = range(1, number + 1)\n # Apply reduce with lambda to fold all values into a single sum via binary addition\n total = reduce(lambda accumulator, x: accumulator + x, numbers_range)\n # Compute arithmetic mean by dividing accumulated total by the count of elements\n average = total / number\n # Construct and return tuple containing both statistical measures\n return (total, average)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_average(number):\n # Utilize a while loop with decrementing counter for alternative iteration pattern\n total = 0\n # Start counter at the maximum value and work backwards to 1\n counter = number\n # Continue accumulating while counter remains positive\n while counter > 0:\n     # Add current counter value to running total\n     total = total + counter\n     # Decrement counter to move towards termination condition\n     counter = counter - 1\n # Derive average using floating-point division of accumulated sum\n average = total / number\n # Package both computed statistics as an immutable tuple pair\n return (total, average)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

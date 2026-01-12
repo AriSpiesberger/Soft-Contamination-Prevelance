@@ -1,0 +1,44 @@
+{
+  "task_id": 724,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes base and power as arguments and calculate the sum of all digits of the base to the specified power.",
+  "python_code": "def power_base_sum(base, power):\n    return sum([int(i) for i in str(pow(base, power))])",
+  "test_list": [
+    "assert power_base_sum(2,100)==115",
+    "assert power_base_sum(8,10)==37",
+    "assert power_base_sum(8,15)==62",
+    "assert power_base_sum(3,3)==9"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math/big\"\n)\n\nfunc power_base_sum(base, power int) int {\n\tb := big.NewInt(int64(base))\n\tresult := new(big.Int).Exp(b, big.NewInt(int64(power)), nil)\n\t\n\tstr := result.String()\n\tsum := 0\n\tfor _, ch := range str {\n\t\tsum += int(ch - '0')\n\t}\n\treturn sum\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert power_base_sum(2,100)==115",
+      "generated_test": "result := power_base_sum(2, 100)\nexpected := 115\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(8,10)==37",
+      "generated_test": "result := power_base_sum(8, 10)\nexpected := 37\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(8,15)==62",
+      "generated_test": "result := power_base_sum(8, 15)\nexpected := 62\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert power_base_sum(3,3)==9",
+      "generated_test": "result := power_base_sum(3, 3)\nexpected := 9\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

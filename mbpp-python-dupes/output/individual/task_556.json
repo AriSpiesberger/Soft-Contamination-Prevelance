@@ -1,0 +1,27 @@
+{
+  "task_id": 556,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose xor value is odd.",
+  "code_python": "def find_Odd_Pair(A,N) : \n    oddPair = 0\n    for i in range(0,N) :  \n        for j in range(i+1,N) :  \n            if ((A[i] ^ A[j]) % 2 != 0):  \n                oddPair+=1  \n    return oddPair  ",
+  "test_list": [
+    "assert find_Odd_Pair([5,4,7,2,1],5) == 6",
+    "assert find_Odd_Pair([7,2,8,1,0,5,11],7) == 12",
+    "assert find_Odd_Pair([1,2,3],3) == 2"
+  ],
+  "python_1": "def find_Odd_Pair(A,N) : \n    # Count how many odd numbers exist in the array\n    odd_count = 0\n    # Count how many even numbers exist in the array\n    even_count = 0\n    # Iterate through each element to classify as odd or even\n    for num in A:\n        # Check if current number is odd by examining least significant bit\n        if num % 2 == 1:\n            # Increment odd counter when number is odd\n            odd_count += 1\n        else:\n            # Increment even counter when number is even\n            even_count += 1\n    # XOR is odd only when one operand is odd and other is even\n    # The number of such pairs is the product of odd and even counts\n    return odd_count * even_count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_Odd_Pair(A,N) : \n    # Use list comprehension to extract all odd numbers from input array\n    odd_nums = [x for x in A if x & 1]\n    # Use list comprehension to extract all even numbers from input array\n    even_nums = [x for x in A if not (x & 1)]\n    # Store the count of odd numbers for multiplication\n    num_odds = len(odd_nums)\n    # Store the count of even numbers for multiplication\n    num_evens = len(even_nums)\n    # XOR produces odd result only when pairing odd with even number\n    # Multiply counts since each odd can pair with each even exactly once\n    result = num_odds * num_evens\n    # Return the total count of pairs with odd XOR value\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_Odd_Pair(A,N) : \n    # Import reduce function for functional programming approach\n    from functools import reduce\n    # Use sum with generator to count elements where last bit is 1 (odd numbers)\n    odd_count = sum(1 for element in A if element & 1 == 1)\n    # Calculate even count by subtracting odd count from total length\n    even_count = N - odd_count\n    # Pairs with odd XOR only occur between odd and even numbers, compute their product\n    return odd_count * even_count",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_Odd_Pair(A,N) : \n    # Apply map to transform each element to its parity (0 for even, 1 for odd)\n    parities = list(map(lambda x: x % 2, A))\n    # Use filter to isolate indices of odd elements, then count with len\n    odd_count = len(list(filter(lambda x: x == 1, parities)))\n    # Determine even count by filtering for zero parity values\n    even_count = len(list(filter(lambda x: x == 0, parities)))\n    # XOR of two numbers is odd iff exactly one is odd; multiply the two disjoint counts\n    odd_pairs = odd_count * even_count\n    # Return computed pair count as final answer\n    return odd_pairs",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_Odd_Pair(A,N) : \n    # Use bitwise AND with 1 to extract last bit, then sum to get odd count\n    odd_count = sum(num & 1 for num in A)\n    # Even numbers are simply total elements minus the odd ones\n    even_count = N - odd_count\n    # Pairs with odd XOR require exactly one odd operand; cross-multiply counts\n    return odd_count * even_count",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

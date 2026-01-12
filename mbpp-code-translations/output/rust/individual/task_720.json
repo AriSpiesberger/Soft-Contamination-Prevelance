@@ -1,0 +1,37 @@
+{
+  "task_id": 720,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add a dictionary to the tuple. The output should be a tuple.",
+  "python_code": "def add_dict_to_tuple(test_tup, test_dict):\n  test_tup = list(test_tup)\n  test_tup.append(test_dict)\n  test_tup = tuple(test_tup)\n  return (test_tup) ",
+  "test_list": [
+    "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+    "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+    "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\n#[derive(Debug, Clone, PartialEq)]\npub enum TupleElement {\n    Int(i32),\n    Dict(HashMap<String, i32>),\n}\n\npub fn add_dict_to_tuple(test_tup: Vec<i32>, test_dict: HashMap<String, i32>) -> Vec<TupleElement> {\n    let mut result: Vec<TupleElement> = test_tup.into_iter().map(TupleElement::Int).collect();\n    result.push(TupleElement::Dict(test_dict));\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+      "generated_test": "let test_tup = vec![4, 5, 6];\nlet mut test_dict = HashMap::new();\ntest_dict.insert(\"MSAM\".to_string(), 1);\ntest_dict.insert(\"is\".to_string(), 2);\ntest_dict.insert(\"best\".to_string(), 3);\n\nlet result = add_dict_to_tuple(test_tup, test_dict.clone());\n\nlet mut expected_dict = HashMap::new();\nexpected_dict.insert(\"MSAM\".to_string(), 1);\nexpected_dict.insert(\"is\".to_string(), 2);\nexpected_dict.insert(\"best\".to_string(), 3);\n\nlet expected: Vec<TupleElement> = vec![\n    TupleElement::Int(4),\n    TupleElement::Int(5),\n    TupleElement::Int(6),\n    TupleElement::Dict(expected_dict),\n];\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+      "generated_test": "let test_tup = vec![1, 2, 3];\nlet mut test_dict = HashMap::new();\ntest_dict.insert(\"UTS\".to_string(), 2);\ntest_dict.insert(\"is\".to_string(), 3);\ntest_dict.insert(\"Worst\".to_string(), 4);\n\nlet result = add_dict_to_tuple(test_tup, test_dict.clone());\n\nlet mut expected: Vec<TupleElement> = vec![\n    TupleElement::Int(1),\n    TupleElement::Int(2),\n    TupleElement::Int(3),\n    TupleElement::Dict(test_dict),\n];\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})",
+      "generated_test": "let test_tup = vec![8, 9, 10];\nlet mut test_dict = HashMap::new();\ntest_dict.insert(\"POS\".to_string(), 3);\ntest_dict.insert(\"is\".to_string(), 4);\ntest_dict.insert(\"Okay\".to_string(), 5);\n\nlet result = add_dict_to_tuple(test_tup, test_dict.clone());\n\nlet mut expected_dict = HashMap::new();\nexpected_dict.insert(\"POS\".to_string(), 3);\nexpected_dict.insert(\"is\".to_string(), 4);\nexpected_dict.insert(\"Okay\".to_string(), 5);\n\nlet expected: Vec<TupleElement> = vec![\n    TupleElement::Int(8),\n    TupleElement::Int(9),\n    TupleElement::Int(10),\n    TupleElement::Dict(expected_dict),\n];\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

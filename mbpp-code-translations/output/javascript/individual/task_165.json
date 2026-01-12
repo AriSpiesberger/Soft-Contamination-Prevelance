@@ -1,0 +1,37 @@
+{
+  "task_id": 165,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive).",
+  "python_code": "def count_char_position(str1): \n    count_chars = 0\n    for i in range(len(str1)):\n        if ((i == ord(str1[i]) - ord('A')) or \n            (i == ord(str1[i]) - ord('a'))): \n            count_chars += 1\n    return count_chars ",
+  "test_list": [
+    "assert count_char_position(\"xbcefg\") == 2",
+    "assert count_char_position(\"ABcED\") == 3",
+    "assert count_char_position(\"AbgdeF\") == 5"
+  ],
+  "code_javascript": "function count_char_position(str1) {\n    let count_chars = 0;\n    for (let i = 0; i < str1.length; i++) {\n        if ((i === str1.charCodeAt(i) - 'A'.charCodeAt(0)) || \n            (i === str1.charCodeAt(i) - 'a'.charCodeAt(0))) {\n            count_chars += 1;\n        }\n    }\n    return count_chars;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert count_char_position(\"xbcefg\") == 2",
+      "generated_test": "const result = count_char_position(\"xbcefg\");\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_char_position(\"ABcED\") == 3",
+      "generated_test": "const result = count_char_position(\"ABcED\");\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_char_position(\"AbgdeF\") == 5",
+      "generated_test": "const result = count_char_position(\"AbgdeF\");\nconst expected = 5;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

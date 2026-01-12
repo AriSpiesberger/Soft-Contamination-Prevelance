@@ -1,0 +1,37 @@
+{
+  "task_id": 593,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove leading zeroes from an ip address.",
+  "python_code": "import re\ndef removezero_ip(ip):\n string = re.sub('\\.[0]*', '.', ip)\n return string\n",
+  "test_list": [
+    "assert removezero_ip(\"216.08.094.196\")==('216.8.94.196')",
+    "assert removezero_ip(\"12.01.024\")==('12.1.24')",
+    "assert removezero_ip(\"216.08.094.0196\")==('216.8.94.196')"
+  ],
+  "code_javascript": "function removezero_ip(ip) {\n    return ip.replace(/\\.0*/g, '.');\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert removezero_ip(\"216.08.094.196\")==('216.8.94.196')",
+      "generated_test": "const result = removezero_ip(\"216.08.094.196\");\nconst expected = \"216.8.94.196\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert removezero_ip(\"12.01.024\")==('12.1.24')",
+      "generated_test": "const result = removezero_ip(\"12.01.024\");\nconst expected = \"12.1.24\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert removezero_ip(\"216.08.094.0196\")==('216.8.94.196')",
+      "generated_test": "const result = removezero_ip(\"216.08.094.0196\");\nconst expected = \"216.8.94.196\";\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

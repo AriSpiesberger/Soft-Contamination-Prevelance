@@ -1,0 +1,27 @@
+{
+  "task_id": 793,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last position of an element in a sorted array.",
+  "code_python": "def last(arr,x):\n    n = len(arr)\n    low = 0\n    high = n - 1\n    res = -1  \n    while (low <= high):\n        mid = (low + high) // 2 \n        if arr[mid] > x:\n            high = mid - 1\n        elif arr[mid] < x:\n            low = mid + 1\n        else:\n            res = mid\n            low = mid + 1\n    return res",
+  "test_list": [
+    "assert last([1,2,3],1) == 0",
+    "assert last([1,1,1,2,3,4],1) == 2",
+    "assert last([2,3,2,3,6,8,9],3) == 3"
+  ],
+  "python_1": "def last(arr, x):\n    # Handle edge case of empty array immediately\n    if not arr:\n        return -1\n    # Use Python's built-in bisect module for efficient binary search\n    import bisect\n    # Find insertion point where x would go to maintain sorted order (rightmost position)\n    right_pos = bisect.bisect_right(arr, x)\n    # Check if element exists at position before the insertion point\n    if right_pos > 0 and arr[right_pos - 1] == x:\n        # Return the index of the last occurrence (one before insertion point)\n        return right_pos - 1\n    # Element not found in array, return sentinel value\n    return -1",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def last(arr, x):\n    # Return sentinel value for empty input arrays\n    if not arr:\n        return -1\n    # Store the array length for bounds checking\n    n = len(arr)\n    # Initialize result to -1 indicating element not found yet\n    result = -1\n    # Use recursive helper with closure to capture result\n    def binary_search_recursive(left, right):\n        # Allow modification of outer result variable\n        nonlocal result\n        # Base case: search space exhausted\n        if left > right:\n            return\n        # Calculate midpoint avoiding integer overflow\n        mid = left + (right - left) // 2\n        # Target is smaller than mid element, search left half\n        if arr[mid] > x:\n            binary_search_recursive(left, mid - 1)\n        # Target is larger than mid element, search right half\n        elif arr[mid] < x:\n            binary_search_recursive(mid + 1, right)\n        # Found a match, record it and continue searching right for later occurrences\n        else:\n            # Update result with current match position\n            result = mid\n            # Continue searching right portion for potential later occurrence\n            binary_search_recursive(mid + 1, right)\n    # Initiate recursive search across entire array\n    binary_search_recursive(0, n - 1)\n    # Return the last found position or -1 if not found\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def last(arr, x):\n    # Early exit for empty array case\n    if not arr:\n        return -1\n    # Scan array from end to beginning for last occurrence\n    for i in range(len(arr) - 1, -1, -1):\n        # Found the element, return immediately since we're searching backwards\n        if arr[i] == x:\n            return i\n        # Optimization: stop early if current element is less than target\n        # Since array is sorted, x cannot appear before this point\n        if arr[i] < x:\n            break\n    # Element was not found in the array\n    return -1",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def last(arr, x):\n    # Guard clause: return -1 for empty arrays\n    if not arr:\n        return -1\n    # Determine array length once to avoid repeated calls\n    n = len(arr)\n    # Forward linear scan to find all occurrences and track the last one\n    last_index = -1\n    # Iterate through array indices sequentially\n    for i in range(n):\n        # Check if current element matches our target value\n        if arr[i] == x:\n            # Update last_index each time we find a match (overwrites previous)\n            last_index = i\n        # Early termination: if current element exceeds target, no more matches possible\n        elif arr[i] > x:\n            # Exit loop since sorted array guarantees no more x values ahead\n            break\n    # Return the index of last occurrence, or -1 if never found\n    return last_index",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def last(arr, x):\n    # Handle edge case where input array is empty\n    if not arr:\n        return -1\n    # Use list comprehension to gather indices where element equals target\n    matching_indices = [i for i, val in enumerate(arr) if val == x]\n    # If no matches found, return sentinel value indicating absence\n    if not matching_indices:\n        return -1\n    # Return maximum index from matches, which is the last occurrence\n    return max(matching_indices)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

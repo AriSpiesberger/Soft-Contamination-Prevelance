@@ -1,0 +1,44 @@
+{
+  "task_id": 785,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert tuple string to integer tuple.",
+  "python_code": "def tuple_str_int(test_str):\n  res = tuple(int(num) for num in test_str.replace('(', '').replace(')', '').replace('...', '').split(', '))\n  return (res) ",
+  "test_list": [
+    "assert tuple_str_int(\"(7, 8, 9)\") == (7, 8, 9)",
+    "assert tuple_str_int(\"(1, 2, 3)\") == (1, 2, 3)",
+    "assert tuple_str_int(\"(4, 5, 6)\") == (4, 5, 6)",
+    "assert tuple_str_int(\"(7, 81, 19)\") == (7, 81, 19)"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int[] tuple_str_int(String test_str) {\n        String cleaned = test_str.replace(\"(\", \"\").replace(\")\", \"\").replace(\"...\", \"\");\n        String[] parts = cleaned.split(\", \");\n        \n        ArrayList<Integer> resultList = new ArrayList<>();\n        for (String part : parts) {\n            String trimmed = part.trim();\n            if (!trimmed.isEmpty()) {\n                resultList.add(Integer.parseInt(trimmed));\n            }\n        }\n        \n        int[] res = new int[resultList.size()];\n        for (int i = 0; i < resultList.size(); i++) {\n            res[i] = resultList.get(i);\n        }\n        \n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert tuple_str_int(\"(7, 8, 9)\") == (7, 8, 9)",
+      "generated_test": "int[] result = tuple_str_int(\"(7, 8, 9)\");\nint[] expected = new int[]{7, 8, 9};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.print(\"  Expected: [\");\n    for (int i = 0; i < expected.length; i++) {\n        System.out.print(expected[i]);\n        if (i < expected.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n    System.out.print(\"  Got: [\");\n    for (int i = 0; i < result.length; i++) {\n        System.out.print(result[i]);\n        if (i < result.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(1, 2, 3)\") == (1, 2, 3)",
+      "generated_test": "int[] result = tuple_str_int(\"(1, 2, 3)\");\nint[] expected = new int[]{1, 2, 3};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.print(\"  Expected: [\");\n    for (int i = 0; i < expected.length; i++) {\n        System.out.print(expected[i]);\n        if (i < expected.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n    System.out.print(\"  Got: [\");\n    for (int i = 0; i < result.length; i++) {\n        System.out.print(result[i]);\n        if (i < result.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(4, 5, 6)\") == (4, 5, 6)",
+      "generated_test": "int[] result = tuple_str_int(\"(4, 5, 6)\");\nint[] expected = new int[]{4, 5, 6};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.print(\"  Expected: [\");\n    for (int i = 0; i < expected.length; i++) {\n        System.out.print(expected[i]);\n        if (i < expected.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n    System.out.print(\"  Got: [\");\n    for (int i = 0; i < result.length; i++) {\n        System.out.print(result[i]);\n        if (i < result.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(7, 81, 19)\") == (7, 81, 19)",
+      "generated_test": "int[] result = tuple_str_int(\"(7, 81, 19)\");\nint[] expected = new int[]{7, 81, 19};\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < expected.length; i++) {\n        if (result[i] != expected[i]) {\n            pass = false;\n            break;\n        }\n    }\n}\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.print(\"  Expected: [\");\n    for (int i = 0; i < expected.length; i++) {\n        System.out.print(expected[i]);\n        if (i < expected.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n    System.out.print(\"  Got: [\");\n    for (int i = 0; i < result.length; i++) {\n        System.out.print(result[i]);\n        if (i < result.length - 1) System.out.print(\", \");\n    }\n    System.out.println(\"]\");\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

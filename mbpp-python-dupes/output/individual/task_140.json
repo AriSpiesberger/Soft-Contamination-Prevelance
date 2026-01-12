@@ -1,0 +1,27 @@
+{
+  "task_id": 140,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten the list of lists into a single set of numbers.",
+  "code_python": "def extract_singly(test_list):\n  res = []\n  temp = set()\n  for inner in test_list:\n    for ele in inner:\n      if not ele in temp:\n        temp.add(ele)\n        res.append(ele)\n  return (res) ",
+  "test_list": [
+    "assert set(extract_singly([(3, 4, 5), (4, 5, 7), (1, 4)])) == set([3, 4, 5, 7, 1])",
+    "assert set(extract_singly([(1, 2, 3), (4, 2, 3), (7, 8)])) == set([1, 2, 3, 4, 7, 8])",
+    "assert set(extract_singly([(7, 8, 9), (10, 11, 12), (10, 11)])) == set([7, 8, 9, 10, 11, 12])"
+  ],
+  "python_1": "def extract_singly(test_list):\n  # Use itertools.chain to flatten nested iterables into a single stream\n  from itertools import chain\n  # Chain all inner tuples together and convert directly to set for unique elements\n  flattened_set = set(chain.from_iterable(test_list))\n  # Convert set back to list to match expected return type\n  return list(flattened_set)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def extract_singly(test_list):\n  # Use set union operation to accumulate unique elements across all tuples\n  result_set = set()\n  # Iterate through each inner tuple/list in the main list\n  for inner in test_list:\n    # Perform in-place union to merge current tuple's elements into result set\n    result_set |= set(inner)\n  # Convert the accumulated set to a list for return value compatibility\n  return list(result_set)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def extract_singly(test_list):\n  # Use list comprehension to flatten all nested elements into a single list\n  flattened = [ele for inner in test_list for ele in inner]\n  # Convert flattened list to set to eliminate duplicates, then back to list\n  unique_elements = list(set(flattened))\n  # Return the list containing only unique values from all nested structures\n  return unique_elements",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def extract_singly(test_list):\n  # Use reduce to progressively combine sets from each inner tuple\n  from functools import reduce\n  # Define lambda that converts inner tuple to set and unions with accumulator\n  combine_sets = lambda acc, inner: acc.union(set(inner))\n  # Apply reduce starting with empty set, merging all tuples into one unified set\n  unified_set = reduce(combine_sets, test_list, set())\n  # Transform the resulting set into a list for return compatibility\n  return list(unified_set)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def extract_singly(test_list):\n  # Initialize empty dictionary to track seen elements while preserving insertion order\n  seen_dict = {}\n  # Process each nested tuple/list within the outer list structure\n  for inner in test_list:\n    # Process each individual element within the current inner collection\n    for ele in inner:\n      # Use dictionary key assignment to mark element as seen (value is irrelevant)\n      seen_dict[ele] = None\n  # Extract dictionary keys which maintain insertion order in Python 3.7+\n  return list(seen_dict.keys())",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

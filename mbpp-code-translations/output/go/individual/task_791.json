@@ -1,0 +1,44 @@
+{
+  "task_id": 791,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove tuples from the given tuple.",
+  "python_code": "def remove_nested(test_tup):\n  res = tuple()\n  for count, ele in enumerate(test_tup):\n    if not isinstance(ele, tuple):\n      res = res + (ele, )\n  return (res) ",
+  "test_list": [
+    "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+    "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+    "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+    "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)"
+  ],
+  "code_go": "package main\n\nimport \"reflect\"\n\nfunc remove_nested(test_tup []interface{}) []interface{} {\n\tres := []interface{}{}\n\tfor _, ele := range test_tup {\n\t\tif ele == nil {\n\t\t\tres = append(res, ele)\n\t\t\tcontinue\n\t\t}\n\t\tkind := reflect.TypeOf(ele).Kind()\n\t\tif kind == reflect.Slice || kind == reflect.Array {\n\t\t\tcontinue\n\t\t}\n\t\tres = append(res, ele)\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert remove_nested((1, 5, 7, (4, 6), 10)) == (1, 5, 7, 10)",
+      "generated_test": "input := []interface{}{1, 5, 7, []interface{}{4, 6}, 10}\nexpected := []interface{}{1, 5, 7, 10}\nresult := remove_nested(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((2, 6, 8, (5, 7), 11)) == (2, 6, 8, 11)",
+      "generated_test": "input := []interface{}{2, 6, 8, []interface{}{5, 7}, 11}\nexpected := []interface{}{2, 6, 8, 11}\nresult := remove_nested(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), 12)) == (3, 7, 9, 12)",
+      "generated_test": "input := []interface{}{3, 7, 9, []interface{}{6, 8}, 12}\nexpected := []interface{}{3, 7, 9, 12}\nresult := remove_nested(input)\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_nested((3, 7, 9, (6, 8), (5,12), 12)) == (3, 7, 9, 12)",
+      "generated_test": "input := []interface{}{3, 7, 9, []interface{}{6, 8}, []interface{}{5, 12}, 12}\nexpected := []interface{}{3, 7, 9, 12}\nresult := remove_nested(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

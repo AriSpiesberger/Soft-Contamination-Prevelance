@@ -1,0 +1,27 @@
+{
+  "task_id": 281,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check if the elements of a given list are unique or not.",
+  "code_python": "def all_unique(test_list):\n    if len(test_list) > len(set(test_list)):\n        return False\n    return True",
+  "test_list": [
+    "assert all_unique([1,2,3]) == True",
+    "assert all_unique([1,2,1,2]) == False",
+    "assert all_unique([1,2,3,4,5]) == True"
+  ],
+  "python_1": "def all_unique(test_list):\n    # Create an empty set to track elements we've already encountered\n    seen = set()\n    # Iterate through each element in the input list one by one\n    for element in test_list:\n        # Check if current element was already added to our tracking set\n        if element in seen:\n            # Duplicate found - immediately return False without checking rest\n            return False\n        # Element is new, so add it to our set of seen elements\n        seen.add(element)\n    # Loop completed without finding duplicates - all elements are unique\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def all_unique(test_list):\n    # Use sorting approach - duplicates will be adjacent after sorting\n    sorted_list = sorted(test_list)\n    # Iterate through consecutive pairs using index-based loop\n    for i in range(len(sorted_list) - 1):\n        # Compare current element with next element in sorted sequence\n        if sorted_list[i] == sorted_list[i + 1]:\n            # Adjacent elements match means duplicate exists\n            return False\n    # No adjacent matches found after full traversal - all unique\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def all_unique(test_list):\n    # Use dictionary to count occurrences of each element\n    count_dict = {}\n    # Process each element in the input list\n    for element in test_list:\n        # Retrieve current count for element, defaulting to 0 if not present\n        current_count = count_dict.get(element, 0)\n        # Increment the count by 1 for this occurrence\n        count_dict[element] = current_count + 1\n    # Extract all frequency values from our counting dictionary\n    all_counts = count_dict.values()\n    # Check if any element appeared more than once using max frequency\n    for count in all_counts:\n        # Any count greater than 1 indicates a duplicate element\n        if count > 1:\n            # Duplicate detected, elements are not all unique\n            return False\n    # All counts were 1, meaning every element is unique\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def all_unique(test_list):\n    # Leverage Python's Counter class for frequency analysis\n    from collections import Counter\n    # Build a frequency map of all elements in single pass\n    frequency_map = Counter(test_list)\n    # Extract the highest occurrence count using most_common method\n    most_frequent = frequency_map.most_common(1)\n    # Handle edge case of empty list - empty list has all unique elements\n    if not most_frequent:\n        return True\n    # Unpack the tuple containing (element, count) of most frequent item\n    top_element, top_count = most_frequent[0]\n    # If even the most common element appears only once, all are unique\n    return top_count == 1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def all_unique(test_list):\n    # Use nested loop comparison - brute force O(n^2) approach\n    n = len(test_list)\n    # Outer loop picks each element as reference point\n    for i in range(n):\n        # Inner loop compares reference with all subsequent elements\n        for j in range(i + 1, n):\n            # Direct equality check between two different positions\n            if test_list[i] == test_list[j]:\n                # Found matching pair at different indices - duplicate exists\n                return False\n    # Exhausted all pairwise comparisons without matches - all unique\n    return True",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

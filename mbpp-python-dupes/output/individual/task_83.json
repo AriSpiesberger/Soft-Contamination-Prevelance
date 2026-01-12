@@ -1,0 +1,27 @@
+{
+  "task_id": 83,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the character made by adding the ASCII value of all the characters of the given string modulo 26.",
+  "code_python": "def get_Char(strr):  \n    summ = 0\n    for i in range(len(strr)): \n        summ += (ord(strr[i]) - ord('a') + 1)  \n    if (summ % 26 == 0): \n        return ord('z') \n    else: \n        summ = summ % 26\n        return chr(ord('a') + summ - 1)",
+  "test_list": [
+    "assert get_Char(\"abc\") == \"f\"",
+    "assert get_Char(\"gfg\") == \"t\"",
+    "assert get_Char(\"ab\") == \"c\""
+  ],
+  "python_1": "def get_Char(strr):  \n    # Use sum() with generator expression for functional approach to calculate total\n    total = sum(ord(char) - ord('a') + 1 for char in strr)\n    # Calculate remainder when dividing by 26 to get position in alphabet\n    remainder = total % 26\n    # Use conditional expression: 'z' when divisible by 26, otherwise map to letter\n    result_char = 'z' if remainder == 0 else chr(ord('a') + remainder - 1)\n    # Return the computed character directly\n    return result_char",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def get_Char(strr):  \n    # Import reduce for functional-style accumulation across the string\n    from functools import reduce\n    # Use reduce with lambda to accumulate ASCII position values, starting from 0\n    total = reduce(lambda acc, char: acc + ord(char) - 96, strr, 0)\n    # Apply modulo 26 to wrap around the alphabet, handling edge case with or operator\n    position = total % 26 or 26\n    # Convert position directly to character using ASCII math with 96 offset\n    return chr(96 + position)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def get_Char(strr):  \n    # Build a mapping dictionary from each letter to its 1-based position in alphabet\n    letter_positions = {chr(97 + i): i + 1 for i in range(26)}\n    # Use map to transform each character to its position value using the dictionary\n    position_values = map(lambda c: letter_positions[c], strr)\n    # Convert to list and compute total by calling sum on the mapped values\n    total = sum(list(position_values))\n    # Subtract 1 to convert to 0-based indexing, then apply modulo 26 for cycling\n    zero_based_index = (total - 1) % 26\n    # Build reverse mapping from 0-based index back to lowercase letter\n    index_to_letter = {i: chr(97 + i) for i in range(26)}\n    # Look up the final character using our reverse mapping dictionary\n    return index_to_letter[zero_based_index]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def get_Char(strr):  \n    # Create alphabet string to use index-based lookup instead of ASCII arithmetic\n    alphabet = \"abcdefghijklmnopqrstuvwxyz\"\n    # Initialize accumulator using list to enable modification in nested function\n    running_total = [0]\n    # Define helper function that adds character position and returns None (side effect)\n    def add_position(c):\n        running_total[0] += alphabet.index(c) + 1\n    # Apply side-effect function to each character using any() to force evaluation\n    any(add_position(c) or False for c in strr)\n    # Extract the accumulated sum from our mutable container\n    total = running_total[0]\n    # Compute 1-based position using modulo, converting 0 result to 26 for 'z'\n    final_position = (total % 26) if (total % 26 != 0) else 26\n    # Slice alphabet string at computed position minus 1 to get single character\n    return alphabet[final_position - 1:final_position]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def get_Char(strr):  \n    # Use recursion base case: empty string contributes zero to sum\n    def recursive_sum(s, idx=0):\n        # When index reaches string length, recursion terminates with zero\n        if idx >= len(s):\n            return 0\n        # Compute current character's position (a=1, b=2, etc.) using ASCII difference\n        current_value = ord(s[idx]) - ord('a') + 1\n        # Recursively add current value to sum of remaining characters\n        return current_value + recursive_sum(s, idx + 1)\n    # Invoke recursive helper to compute total positional sum of all characters\n    total = recursive_sum(strr)\n    # Create tuple of all lowercase letters for direct indexing access\n    letters = tuple('abcdefghijklmnopqrstuvwxyz')\n    # Compute zero-based index by subtracting 1 before modulo to handle wrap-around correctly\n    adjusted_index = (total - 1) % 26\n    # Retrieve character from tuple using computed zero-based index\n    result = letters[adjusted_index]\n    # Return the single character result\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

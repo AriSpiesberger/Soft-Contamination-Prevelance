@@ -1,0 +1,37 @@
+{
+  "task_id": 309,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the maximum of two numbers.",
+  "python_code": "def maximum(a,b):   \n    if a >= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert maximum(5,10) == 10",
+    "assert maximum(-1,-2) == -1",
+    "assert maximum(9,7) == 9"
+  ],
+  "code_rust": "pub fn maximum(a: i32, b: i32) -> i32 {\n    if a >= b {\n        a\n    } else {\n        b\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert maximum(5,10) == 10",
+      "generated_test": "let result = maximum(5, 10);\nlet expected = 10;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert maximum(-1,-2) == -1",
+      "generated_test": "let result = maximum(-1, -2);\nlet expected = -1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert maximum(9,7) == 9",
+      "generated_test": "let result = maximum(9, 7);\nlet expected = 9;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

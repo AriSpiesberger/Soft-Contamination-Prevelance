@@ -1,0 +1,37 @@
+{
+  "task_id": 238,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of non-empty substrings of a given string.",
+  "python_code": "def number_of_substrings(str): \n\tstr_len = len(str); \n\treturn int(str_len * (str_len + 1) / 2); ",
+  "test_list": [
+    "assert number_of_substrings(\"abc\") == 6",
+    "assert number_of_substrings(\"abcd\") == 10",
+    "assert number_of_substrings(\"abcde\") == 15"
+  ],
+  "code_go": "package main\n\nfunc number_of_substrings(str string) int {\n\tstr_len := len(str)\n\treturn str_len * (str_len + 1) / 2\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert number_of_substrings(\"abc\") == 6",
+      "generated_test": "result := number_of_substrings(\"abc\")\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_of_substrings(\"abcd\") == 10",
+      "generated_test": "result := number_of_substrings(\"abcd\")\nexpected := 10\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert number_of_substrings(\"abcde\") == 15",
+      "generated_test": "result := number_of_substrings(\"abcde\")\nexpected := 15\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

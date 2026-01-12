@@ -1,0 +1,58 @@
+{
+  "task_id": 756,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an 'a' followed by one or more 'b's. https://www.w3resource.com/python-exercises/re/python-re-exercise-3.php",
+  "python_code": "import re\ndef text_match_zero_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_zero_one(\"ac\")==False",
+    "assert text_match_zero_one(\"dc\")==False",
+    "assert text_match_zero_one(\"abbbba\")==True",
+    "assert text_match_zero_one(\"dsabbbba\")==True",
+    "assert text_match_zero_one(\"asbbbba\")==False",
+    "assert text_match_zero_one(\"abaaa\")==True"
+  ],
+  "code_javascript": "function text_match_zero_one(text) {\n    const patterns = /ab+?/;\n    if (patterns.test(text)) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 6,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert text_match_zero_one(\"ac\")==False",
+      "generated_test": "const result = text_match_zero_one(\"ac\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"dc\")==False",
+      "generated_test": "const result = text_match_zero_one(\"dc\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"abbbba\")==True",
+      "generated_test": "const result = text_match_zero_one(\"abbbba\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"dsabbbba\")==True",
+      "generated_test": "const result = text_match_zero_one(\"dsabbbba\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"asbbbba\")==False",
+      "generated_test": "const result = text_match_zero_one(\"asbbbba\");\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_zero_one(\"abaaa\")==True",
+      "generated_test": "const result = text_match_zero_one(\"abaaa\");\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

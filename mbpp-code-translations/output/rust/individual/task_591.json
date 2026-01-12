@@ -1,0 +1,37 @@
+{
+  "task_id": 591,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to interchange the first and last elements in a list.",
+  "python_code": "def swap_List(newList): \n    size = len(newList) \n    temp = newList[0] \n    newList[0] = newList[size - 1] \n    newList[size - 1] = temp  \n    return newList ",
+  "test_list": [
+    "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+    "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+    "assert swap_List([4, 5, 6]) == [6, 5, 4]"
+  ],
+  "code_rust": "pub fn swap_List<T>(new_list: &mut Vec<T>) -> &mut Vec<T> {\n    let size = new_list.len();\n    if size > 1 {\n        new_list.swap(0, size - 1);\n    }\n    new_list\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert swap_List([12, 35, 9, 56, 24]) == [24, 35, 9, 56, 12]",
+      "generated_test": "let mut input = vec![12, 35, 9, 56, 24];\nlet expected = vec![24, 35, 9, 56, 12];\nswap_List(&mut input);\nif input == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", input);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_List([1, 2, 3]) == [3, 2, 1]",
+      "generated_test": "let mut input = vec![1, 2, 3];\nlet result = swap_List(&mut input);\nlet expected = vec![3, 2, 1];\nif *result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert swap_List([4, 5, 6]) == [6, 5, 4]",
+      "generated_test": "let mut input = vec![4, 5, 6];\nswap_List(&mut input);\nlet expected = vec![6, 5, 4];\nif input == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", input);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

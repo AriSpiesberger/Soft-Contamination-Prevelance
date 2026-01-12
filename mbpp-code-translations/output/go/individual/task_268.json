@@ -1,0 +1,37 @@
+{
+  "task_id": 268,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n'th star number.",
+  "python_code": "def find_star_num(n): \n\treturn (6 * n * (n - 1) + 1) ",
+  "test_list": [
+    "assert find_star_num(3) == 37",
+    "assert find_star_num(4) == 73",
+    "assert find_star_num(5) == 121"
+  ],
+  "code_go": "package main\n\nfunc find_star_num(n int) int {\n\treturn 6*n*(n-1) + 1\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert find_star_num(3) == 37",
+      "generated_test": "result := find_star_num(3)\nexpected := 37\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_star_num(4) == 73",
+      "generated_test": "result := find_star_num(4)\nexpected := 73\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_star_num(5) == 121",
+      "generated_test": "result := find_star_num(5)\nexpected := 121\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

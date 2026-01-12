@@ -1,0 +1,37 @@
+{
+  "task_id": 583,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function which returns nth catalan number.",
+  "python_code": "def catalan_number(num):\n    if num <=1:\n         return 1   \n    res_num = 0\n    for i in range(num):\n        res_num += catalan_number(i) * catalan_number(num-i-1)\n    return res_num",
+  "test_list": [
+    "assert catalan_number(10)==16796",
+    "assert catalan_number(9)==4862",
+    "assert catalan_number(7)==429"
+  ],
+  "code_go": "package main\n\nfunc catalan_number(num int) int {\n    if num <= 1 {\n        return 1\n    }\n    res_num := 0\n    for i := 0; i < num; i++ {\n        res_num += catalan_number(i) * catalan_number(num-i-1)\n    }\n    return res_num\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert catalan_number(10)==16796",
+      "generated_test": "result := catalan_number(10)\nexpected := 16796\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert catalan_number(9)==4862",
+      "generated_test": "result := catalan_number(9)\nexpected := 4862\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert catalan_number(7)==429",
+      "generated_test": "result := catalan_number(7)\nexpected := 429\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

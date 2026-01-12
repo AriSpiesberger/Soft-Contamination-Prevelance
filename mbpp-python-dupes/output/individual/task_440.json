@@ -1,0 +1,27 @@
+{
+  "task_id": 440,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the first adverb and their positions in a given sentence.",
+  "code_python": "import re\ndef find_adverb_position(text):\n for m in re.finditer(r\"\\w+ly\", text):\n    return (m.start(), m.end(), m.group(0))",
+  "test_list": [
+    "assert find_adverb_position(\"clearly!! we can see the sky\")==(0, 7, 'clearly')",
+    "assert find_adverb_position(\"seriously!! there are many roses\")==(0, 9, 'seriously')",
+    "assert find_adverb_position(\"unfortunately!! sita is going to home\")==(0, 13, 'unfortunately')"
+  ],
+  "python_1": "import re\ndef find_adverb_position(text):\n    # Use re.search to find only the first match instead of iterating\n    match = re.search(r\"\\w+ly\", text)\n    # Check if a match was found before accessing its properties\n    if match:\n        # Extract start position where the adverb begins in the string\n        start = match.start()\n        # Extract end position which is one past the last character\n        end = match.end()\n        # Get the actual matched adverb string using group()\n        adverb = match.group(0)\n        # Return tuple containing position info and the matched word\n        return (start, end, adverb)\n    # Return None implicitly if no adverb ending in 'ly' is found\n    return None",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef find_adverb_position(text):\n    # Compile the regex pattern for words ending in 'ly' for potential reuse\n    adverb_pattern = re.compile(r\"\\w+ly\")\n    # Apply the compiled pattern to search the input text\n    result = adverb_pattern.match(text) if text else None\n    # If match at start failed, search anywhere in the text\n    if result is None:\n        result = adverb_pattern.search(text)\n    # Guard clause to handle case where no adverb exists in text\n    if result is None:\n        return None\n    # Unpack match object attributes into separate variables for clarity\n    start_pos, end_pos, matched_word = result.start(), result.end(), result.group()\n    # Construct and return the required tuple format\n    return (start_pos, end_pos, matched_word)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef find_adverb_position(text):\n    # Use findall with capturing groups to get all adverb matches\n    all_matches = re.findall(r\"\\w+ly\", text)\n    # Early return None if no adverbs ending in 'ly' were found\n    if not all_matches:\n        return None\n    # Extract just the first adverb from the list of matches\n    first_adverb = all_matches[0]\n    # Locate where this adverb appears in the original text string\n    start_index = text.find(first_adverb)\n    # Calculate end position by adding the length of the matched adverb\n    end_index = start_index + len(first_adverb)\n    # Bundle the positions and word into the expected tuple format\n    return (start_index, end_index, first_adverb)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\ndef find_adverb_position(text):\n    # Split text into potential word tokens including adjacent punctuation\n    words_with_positions = list(re.finditer(r\"\\S+\", text))\n    # Iterate through each word-like token found in the text\n    for token_match in words_with_positions:\n        # Extract the raw token which may contain punctuation\n        raw_token = token_match.group()\n        # Attempt to extract a word ending in 'ly' from this token\n        adverb_match = re.match(r\"(\\w+ly)\", raw_token)\n        # Check if we successfully found an adverb pattern in this token\n        if adverb_match:\n            # The adverb starts at the same position as the token itself\n            adverb_start = token_match.start()\n            # Calculate end by adding the adverb length to start position\n            adverb_end = adverb_start + len(adverb_match.group(1))\n            # Return tuple with positions and the clean adverb word\n            return (adverb_start, adverb_end, adverb_match.group(1))\n    # No adverb found in any token, return None\n    return None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\ndef find_adverb_position(text):\n    # Define pattern to match word characters followed by 'ly'\n    pattern = r\"\\w+ly\"\n    # Use split with capturing group to get both matches and non-matches\n    parts = re.split(f\"({pattern})\", text, maxsplit=1)\n    # Check if split found any adverb (list will have 3+ elements if found)\n    if len(parts) < 2:\n        # No adverb pattern was found in the text\n        return None\n    # The text before the first adverb is at index 0\n    prefix = parts[0]\n    # The captured adverb itself is at index 1 after the split\n    adverb = parts[1]\n    # Start position equals the length of everything before the adverb\n    start = len(prefix)\n    # End position is start plus the adverb's character count\n    end = start + len(adverb)\n    # Package results as tuple matching expected output format\n    return (start, end, adverb)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

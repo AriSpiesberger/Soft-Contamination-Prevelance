@@ -1,0 +1,27 @@
+{
+  "task_id": 568,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to create a list of N empty dictionaries.",
+  "code_python": "def empty_list(length):\n empty_list = [{} for _ in range(length)]\n return empty_list",
+  "test_list": [
+    "assert empty_list(5)==[{},{},{},{},{}]",
+    "assert empty_list(6)==[{},{},{},{},{},{}]",
+    "assert empty_list(7)==[{},{},{},{},{},{},{}]"
+  ],
+  "python_1": "def empty_list(length):\n    # Initialize an empty result list to accumulate dictionaries\n    result = []\n    # Use a while loop with counter instead of list comprehension\n    counter = 0\n    # Continue adding dictionaries until we reach desired length\n    while counter < length:\n        # Create a fresh empty dictionary and append to result\n        result.append({})\n        # Increment counter to track how many dictionaries added\n        counter += 1\n    # Return the list containing N independent empty dictionaries\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def empty_list(length):\n    # Use map to apply dict constructor across a range of indices\n    # dict() creates a new empty dictionary for each element\n    result = list(map(lambda x: dict(), range(length)))\n    # Return the mapped result as a list of independent dictionaries\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def empty_list(length):\n    # Leverage generator expression with dict() to create independent dictionaries\n    generator = (dict() for _ in range(length))\n    # Unpack generator into list using the list constructor\n    result = list(generator)\n    # Return the populated list of empty dictionaries\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def empty_list(length):\n    # Use recursion as base case: return empty list when length reaches zero\n    if length == 0:\n        # Base case returns an empty list to stop recursion\n        return []\n    # Recursive step: create one dict and concatenate with recursive call for remaining\n    else:\n        # Combine a single-element list containing fresh dict with recursively built list\n        return [{}] + empty_list(length - 1)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def empty_list(length):\n    # Use itertools.repeat to generate None placeholders length times\n    import itertools\n    # Create an iterator that repeats None exactly length times\n    placeholder_iter = itertools.repeat(None, length)\n    # Transform each placeholder into a fresh dictionary using starmap alternative\n    # Using a for loop with enumerate to track position while building result\n    result = []\n    # Iterate through placeholder iterator, using underscore to discard value\n    for _ in placeholder_iter:\n        # Instantiate new dict via type constructor called on dict class\n        fresh_dict = type({})()\n        # Extend result list with single-item list containing the new dict\n        result.extend([fresh_dict])\n    # Return the fully constructed list of independent empty dictionaries\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

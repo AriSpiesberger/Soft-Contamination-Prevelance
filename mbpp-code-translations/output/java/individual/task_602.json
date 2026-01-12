@@ -1,0 +1,37 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "python_code": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Character first_repeated_char(String str1) {\n        for (int index = 0; index < str1.length(); index++) {\n            char c = str1.charAt(index);\n            String substring = str1.substring(0, index + 1);\n            int count = 0;\n            for (int i = 0; i < substring.length(); i++) {\n                if (substring.charAt(i) == c) {\n                    count++;\n                }\n            }\n            if (count > 1) {\n                return c;\n            }\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert first_repeated_char(\"abcabc\") == \"a\"",
+      "generated_test": "Character result = first_repeated_char(\"abcabc\");\nCharacter expected = 'a';\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"abc\") == None",
+      "generated_test": "Character result = first_repeated_char(\"abc\");\nCharacter expected = null;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"123123\") == \"1\"",
+      "generated_test": "Character result = first_repeated_char(\"123123\");\nCharacter expected = '1';\nif (result != null && result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

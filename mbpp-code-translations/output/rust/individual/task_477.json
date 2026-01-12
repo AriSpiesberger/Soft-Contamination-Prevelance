@@ -1,0 +1,37 @@
+{
+  "task_id": 477,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert the given string to lower case.",
+  "python_code": "def is_lower(string):\n  return (string.lower())",
+  "test_list": [
+    "assert is_lower(\"InValid\") == \"invalid\"",
+    "assert is_lower(\"TruE\") == \"true\"",
+    "assert is_lower(\"SenTenCE\") == \"sentence\""
+  ],
+  "code_rust": "pub fn is_lower(string: &str) -> String {\n    string.to_lowercase()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert is_lower(\"InValid\") == \"invalid\"",
+      "generated_test": "let result = is_lower(\"InValid\");\nlet expected = \"invalid\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_lower(\"TruE\") == \"true\"",
+      "generated_test": "let result = is_lower(\"TruE\");\nlet expected = \"true\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_lower(\"SenTenCE\") == \"sentence\"",
+      "generated_test": "let result = is_lower(\"SenTenCE\");\nlet expected = \"sentence\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

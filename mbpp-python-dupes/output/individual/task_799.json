@@ -1,0 +1,31 @@
+{
+  "task_id": 799,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that rotate left bits by d bits a given number. We assume that the number is 32 bit.",
+  "code_python": "def left_rotate(n,d):   \n    INT_BITS = 32\n    return (n << d)|(n >> (INT_BITS - d))  ",
+  "test_list": [
+    "assert left_rotate(16,2) == 64",
+    "assert left_rotate(10,2) == 40",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(0b0001,3) == 0b1000",
+    "assert left_rotate(0b0101,3) == 0b101000",
+    "assert left_rotate(0b11101,3) == 0b11101000"
+  ],
+  "python_1": "def left_rotate(n,d):   \n    # Define the bit width for a 32-bit integer\n    INT_BITS = 32\n    # Normalize the rotation amount to avoid redundant full rotations\n    d = d % INT_BITS\n    # Create a bitmask of 32 ones to simulate 32-bit integer behavior\n    mask = (1 << INT_BITS) - 1\n    # Shift left by d positions, keeping only lower 32 bits\n    left_shifted = (n << d) & mask\n    # Calculate how many bits to shift right for the wrapped portion\n    right_shift_amount = INT_BITS - d\n    # Shift right to get the bits that wrap around from the left side\n    right_shifted = n >> right_shift_amount\n    # Combine both parts using bitwise OR to complete the rotation\n    result = left_shifted | right_shifted\n    # Return the final rotated value\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def left_rotate(n,d):   \n    # Set the fixed bit width for 32-bit integer operations\n    INT_BITS = 32\n    # Reduce rotation amount modulo 32 to handle rotations greater than bit width\n    effective_rotation = d % INT_BITS\n    # Convert the integer to a binary string, removing the '0b' prefix\n    binary_str = bin(n)[2:]\n    # Pad the binary string with leading zeros to ensure exactly 32 characters\n    padded_binary = binary_str.zfill(INT_BITS)\n    # Slice the string: take characters from position d to end, then prepend the first d characters\n    rotated_binary = padded_binary[effective_rotation:] + padded_binary[:effective_rotation]\n    # Convert the rotated binary string back to an integer using base 2\n    result = int(rotated_binary, 2)\n    # Return the resulting rotated value\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def left_rotate(n,d):   \n    # Define constant for 32-bit integer width\n    INT_BITS = 32\n    # Normalize rotation to avoid unnecessary full cycles\n    d = d % INT_BITS\n    # Early exit if no rotation needed\n    if d == 0:\n        return n\n    # Build the result bit by bit using a list to collect each bit position\n    result_bits = []\n    # Process each of the 32 bit positions in the rotated result\n    for i in range(INT_BITS):\n        # Calculate which source bit maps to current position after rotation\n        # For left rotation, bit at position i comes from position (i - d) mod 32\n        source_pos = (i - d) % INT_BITS\n        # Extract the source bit using right shift and masking with 1\n        bit_value = (n >> source_pos) & 1\n        # Store the bit value for later assembly\n        result_bits.append(bit_value)\n    # Reconstruct the integer from individual bits\n    result = 0\n    # Iterate through each bit position to build final number\n    for position, bit in enumerate(result_bits):\n        # If bit is set, add its contribution (2^position) to result\n        if bit:\n            # Use left shift to compute power of 2 and add to accumulator\n            result = result + (1 << position)\n    # Return the fully reconstructed rotated value\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def left_rotate(n,d):   \n    # Define the bit width constant for 32-bit operations\n    INT_BITS = 32\n    # Normalize rotation amount to stay within valid bit range\n    d = d % INT_BITS\n    # Handle edge case where no rotation is needed\n    if d == 0:\n        return n\n    # Create a mask with all 32 bits set to 1 for proper 32-bit arithmetic\n    full_mask = 0xFFFFFFFF\n    # Apply mask to ensure we're working with 32-bit representation\n    n_masked = n & full_mask\n    # Calculate the left portion: shift left and mask to keep only 32 bits\n    left_part = (n_masked << d) & full_mask\n    # Calculate how many positions to shift right for the overflow bits\n    right_amount = INT_BITS - d\n    # Extract the bits that overflow from the left side by shifting right\n    right_part = n_masked >> right_amount\n    # Combine both portions using bitwise OR to complete the circular rotation\n    rotated = left_part | right_part\n    # Return the final rotated 32-bit value\n    return rotated",
+  "python_4_status": "success",
+  "python_4_attempts": 2,
+  "python_5": "def left_rotate(n,d):   \n    # Use a fixed 32-bit width as specified in the problem\n    INT_BITS = 32\n    # Reduce rotation amount using modulo to handle rotations >= 32\n    d = d % INT_BITS\n    # Return original number when rotation has no effect\n    if d == 0:\n        return n\n    # Use functools.reduce for a functional programming approach\n    from functools import reduce\n    # Generate list of tuples containing (bit_index, original_position) mappings\n    bit_mappings = [(i, (i - d) % INT_BITS) for i in range(INT_BITS)]\n    # Define a lambda that extracts a specific bit from the input number\n    extract_bit = lambda num, pos: (num >> pos) & 1\n    # Use reduce to accumulate the result by setting each bit from its mapped source\n    result = reduce(\n        # Accumulator function: set bit at target_pos from source bit value\n        lambda acc, mapping: acc | (extract_bit(n, mapping[1]) << mapping[0]),\n        # Iterate over all position mappings\n        bit_mappings,\n        # Start with zero as the initial accumulated value\n        0\n    )\n    # Return the fully constructed rotated integer\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 801,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of equal numbers from three given integers.",
+  "python_code": "def test_three_equal(x,y,z):\n  result = set([x,y,z])\n  if len(result)==3:\n    return 0\n  else:\n    return 4-len(result)",
+  "test_list": [
+    "assert test_three_equal(1,1,1) == 3",
+    "assert test_three_equal(-1,-2,-3) == 0",
+    "assert test_three_equal(1,2,2) == 2"
+  ],
+  "code_javascript": "function test_three_equal(x, y, z) {\n  const result = new Set([x, y, z]);\n  if (result.size === 3) {\n    return 0;\n  } else {\n    return 4 - result.size;\n  }\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert test_three_equal(1,1,1) == 3",
+      "generated_test": "const result = test_three_equal(1, 1, 1);\nconst expected = 3;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_three_equal(-1,-2,-3) == 0",
+      "generated_test": "const result = test_three_equal(-1, -2, -3);\nconst expected = 0;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_three_equal(1,2,2) == 2",
+      "generated_test": "const result = test_three_equal(1, 2, 2);\nconst expected = 2;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

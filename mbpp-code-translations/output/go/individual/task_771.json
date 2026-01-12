@@ -1,0 +1,37 @@
+{
+  "task_id": 771,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given expression is balanced or not. https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/",
+  "python_code": "from collections import deque\ndef check_expression(exp):\n    if len(exp) & 1:\n        return False\n    stack = deque()\n    for ch in exp:\n        if ch == '(' or ch == '{' or ch == '[':\n            stack.append(ch)\n        if ch == ')' or ch == '}' or ch == ']':\n            if not stack:\n                return False\n            top = stack.pop()\n            if (top == '(' and ch != ')') or (top == '{' and ch != '}' or (top == '[' and ch != ']')):\n                return False\n    return not stack",
+  "test_list": [
+    "assert check_expression(\"{()}[{}]\") == True",
+    "assert check_expression(\"{()}[{]\") == False",
+    "assert check_expression(\"{()}[{}][]({})\") == True"
+  ],
+  "code_go": "package main\n\nfunc check_expression(exp string) bool {\n\tif len(exp)&1 == 1 {\n\t\treturn false\n\t}\n\tstack := []rune{}\n\tfor _, ch := range exp {\n\t\tif ch == '(' || ch == '{' || ch == '[' {\n\t\t\tstack = append(stack, ch)\n\t\t}\n\t\tif ch == ')' || ch == '}' || ch == ']' {\n\t\t\tif len(stack) == 0 {\n\t\t\t\treturn false\n\t\t\t}\n\t\t\ttop := stack[len(stack)-1]\n\t\t\tstack = stack[:len(stack)-1]\n\t\t\tif (top == '(' && ch != ')') || (top == '{' && ch != '}') || (top == '[' && ch != ']') {\n\t\t\t\treturn false\n\t\t\t}\n\t\t}\n\t}\n\treturn len(stack) == 0\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_expression(\"{()}[{}]\") == True",
+      "generated_test": "result := check_expression(\"{()}[{}]\")\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_expression(\"{()}[{]\") == False",
+      "generated_test": "result := check_expression(\"{()}[{]\")\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_expression(\"{()}[{}][]({})\") == True",
+      "generated_test": "result := check_expression(\"{()}[{}][]({})\") \nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

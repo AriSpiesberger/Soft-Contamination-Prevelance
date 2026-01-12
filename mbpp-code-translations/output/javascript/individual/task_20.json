@@ -1,0 +1,37 @@
+{
+  "task_id": 20,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given number is woodball or not.",
+  "python_code": "def is_woodall(x): \n\tif (x % 2 == 0): \n\t\treturn False\n\tif (x == 1): \n\t\treturn True\n\tx = x + 1 \n\tp = 0\n\twhile (x % 2 == 0): \n\t\tx = x/2\n\t\tp = p + 1\n\t\tif (p == x): \n\t\t\treturn True\n\treturn False",
+  "test_list": [
+    "assert is_woodall(383) == True",
+    "assert is_woodall(254) == False",
+    "assert is_woodall(200) == False"
+  ],
+  "code_javascript": "function is_woodall(x) {\n    if (x % 2 === 0) {\n        return false;\n    }\n    if (x === 1) {\n        return true;\n    }\n    x = x + 1;\n    let p = 0;\n    while (x % 2 === 0) {\n        x = x / 2;\n        p = p + 1;\n        if (p === x) {\n            return true;\n        }\n    }\n    return false;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert is_woodall(383) == True",
+      "generated_test": "const result = is_woodall(383);\nconst expected = true;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_woodall(254) == False",
+      "generated_test": "const result = is_woodall(254);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_woodall(200) == False",
+      "generated_test": "const result = is_woodall(200);\nconst expected = false;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

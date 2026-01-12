@@ -1,0 +1,37 @@
+{
+  "task_id": 80,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth tetrahedral number.",
+  "python_code": "def tetrahedral_number(n): \n\treturn (n * (n + 1) * (n + 2)) / 6",
+  "test_list": [
+    "assert tetrahedral_number(5) == 35",
+    "assert tetrahedral_number(6) == 56",
+    "assert tetrahedral_number(7) == 84"
+  ],
+  "code_javascript": "function tetrahedral_number(n) {\n    return (n * (n + 1) * (n + 2)) / 6;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert tetrahedral_number(5) == 35",
+      "generated_test": "const result = tetrahedral_number(5);\nconst expected = 35;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tetrahedral_number(6) == 56",
+      "generated_test": "const result = tetrahedral_number(6);\nconst expected = 56;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tetrahedral_number(7) == 84",
+      "generated_test": "const result = tetrahedral_number(7);\nconst expected = 84;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

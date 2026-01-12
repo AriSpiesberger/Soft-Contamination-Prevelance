@@ -1,0 +1,27 @@
+{
+  "task_id": 809,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if each element of second tuple is smaller than its corresponding element in the first tuple.",
+  "code_python": "def check_smaller(test_tup1, test_tup2):\n  return all(x > y for x, y in zip(test_tup1, test_tup2))",
+  "test_list": [
+    "assert check_smaller((1, 2, 3), (2, 3, 4)) == False",
+    "assert check_smaller((4, 5, 6), (3, 4, 5)) == True",
+    "assert check_smaller((11, 12, 13), (10, 11, 12)) == True"
+  ],
+  "python_1": "def check_smaller(test_tup1, test_tup2):\n  # Start with assumption that all elements satisfy the condition\n  result = True\n  # Iterate through indices of the tuples using range and len\n  for i in range(len(test_tup1)):\n    # Check if second tuple element is NOT smaller than first tuple element\n    if test_tup2[i] >= test_tup1[i]:\n      # Found a violation, set result to False\n      result = False\n      # Exit loop early since one failure means overall failure\n      break\n  # Return whether all comparisons passed\n  return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_smaller(test_tup1, test_tup2):\n  # Use map to apply comparison operator across paired elements\n  comparison_results = map(lambda pair: pair[0] > pair[1], zip(test_tup1, test_tup2))\n  # Convert map iterator to list to enable reduction\n  results_list = list(comparison_results)\n  # Use reduce-style logic by checking if sum equals length (all True)\n  true_count = sum(results_list)\n  # Return True only if every comparison yielded True\n  return true_count == len(test_tup1)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_smaller(test_tup1, test_tup2):\n  # Use recursive approach with helper function to process elements one by one\n  def helper(index):\n    # Base case: if we've checked all elements, all comparisons passed\n    if index >= len(test_tup1):\n      return True\n    # Check if current second tuple element is NOT smaller than first\n    if test_tup2[index] >= test_tup1[index]:\n      # Return False immediately when condition fails\n      return False\n    # Recursively check the next pair of elements\n    return helper(index + 1)\n  # Start recursive checking from the first index\n  return helper(0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_smaller(test_tup1, test_tup2):\n  # Create a list of boolean values by comparing corresponding elements\n  comparisons = [test_tup1[i] > test_tup2[i] for i in range(len(test_tup1))]\n  # Check if False exists in comparisons - if so, not all elements satisfy condition\n  if False in comparisons:\n    # At least one element in test_tup2 was not smaller\n    return False\n  # All comparisons were True, meaning every test_tup2 element is smaller\n  return True",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_smaller(test_tup1, test_tup2):\n  # Use filter to find elements where condition fails (second >= first)\n  failures = filter(lambda pair: pair[1] >= pair[0], zip(test_tup1, test_tup2))\n  # Convert filter result to tuple to check if any failures exist\n  failure_tuple = tuple(failures)\n  # Return True only when failure tuple is empty (length zero)\n  return len(failure_tuple) == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 115,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether all dictionaries in a list are empty or not.",
+  "code_python": "def empty_dit(list1):\n empty_dit=all(not d for d in list1)\n return empty_dit",
+  "test_list": [
+    "assert empty_dit([{},{},{}])==True",
+    "assert empty_dit([{1,2},{},{}])==False",
+    "assert empty_dit({})==True"
+  ],
+  "python_1": "def empty_dit(list1):\n    # Handle edge case where input is a single dict instead of a list\n    if isinstance(list1, dict):\n        # Check if the single dictionary has no keys\n        return len(list1) == 0\n    # Use a traditional loop approach instead of all() with generator\n    for d in list1:\n        # Check if current element has any content (truthy check)\n        if d:\n            # Found a non-empty element, return False immediately\n            return False\n    # All elements were empty, return True\n    return True",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def empty_dit(list1):\n    # Handle special case when a bare dict is passed instead of a list of dicts\n    if isinstance(list1, dict):\n        # A dict is empty when it has no key-value pairs\n        return list1 == {}\n    # Convert each element to its boolean length equivalent (0 for empty, >0 for non-empty)\n    lengths = [len(d) for d in list1]\n    # Sum all lengths - if total is 0, all containers were empty\n    total_elements = sum(lengths)\n    # Zero total means every dict/set in the list had no elements\n    return total_elements == 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def empty_dit(list1):\n    # Detect if input is a dictionary type and handle it as a special case\n    if type(list1) is dict:\n        # Use bool conversion - empty dict is falsy, so negate to get True for empty\n        return not bool(list1)\n    # Convert the iterable to a list to enable indexing and length operations\n    items = list(list1)\n    # Use a while loop with index tracking instead of for loop or all()\n    index = 0\n    # Continue examining elements until we exhaust the list\n    while index < len(items):\n        # Extract current element at this position\n        current = items[index]\n        # Apply len() > 0 check - if any element has content, list isn't all-empty\n        if len(current) > 0:\n            # Early termination when non-empty element discovered\n            return False\n        # Advance to next position in the list\n        index += 1\n    # Reached end without finding non-empty elements, so all are empty\n    return True",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def empty_dit(list1):\n    # Check if the input is a dict type directly (edge case from tests)\n    if isinstance(list1, dict):\n        # Empty dict has no keys, so checking keys count via iteration\n        return sum(1 for _ in list1) == 0\n    # Use map to transform each element into its truthiness value\n    truthiness_values = map(bool, list1)\n    # Convert mapped boolean values to a tuple for multiple operations\n    bool_tuple = tuple(truthiness_values)\n    # If tuple is empty, all (zero) elements are \"empty\" - vacuous truth\n    if len(bool_tuple) == 0:\n        return True\n    # Use filter to extract only the truthy (non-empty) elements\n    non_empty_filter = filter(lambda x: x, bool_tuple)\n    # Attempt to get first truthy value using next() with default None\n    first_non_empty = next(non_empty_filter, None)\n    # If no truthy value found (None), all elements were empty\n    return first_non_empty is None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def empty_dit(list1):\n    # Detect bare dictionary input which requires special handling per test case\n    if isinstance(list1, dict):\n        # Convert dict keys to list and verify length is zero for emptiness\n        return list(list1.keys()) == []\n    # Use reduce-style approach with recursive helper function\n    def check_remaining(items, idx):\n        # Base case: exhausted all items means everything was empty\n        if idx >= len(items):\n            return True\n        # Extract element at current index for inspection\n        element = items[idx]\n        # Convert element to list form to check if it contains anything\n        as_list = list(element)\n        # Non-empty list representation means this element has content\n        if len(as_list) != 0:\n            return False\n        # Recursively check the rest of the list starting from next index\n        return check_remaining(items, idx + 1)\n    # Materialize the input into a concrete list for indexed access\n    concrete_list = list(list1)\n    # Kick off recursive emptiness verification starting at index 0\n    return check_remaining(concrete_list, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

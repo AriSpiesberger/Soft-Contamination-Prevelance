@@ -1,0 +1,37 @@
+{
+  "task_id": 419,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to round every number of a given list of numbers and print the total sum multiplied by the length of the list.",
+  "python_code": "def round_and_sum(list1):\n  lenght=len(list1)\n  round_and_sum=sum(list(map(round,list1))* lenght)\n  return round_and_sum",
+  "test_list": [
+    "assert round_and_sum([22.4, 4.0, -16.22, -9.10, 11.00, -12.22, 14.20, -5.20, 17.50])==243",
+    "assert round_and_sum([5,2,9,24.3,29])==345",
+    "assert round_and_sum([25.0,56.7,89.2])==513"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc round_and_sum(list1 []float64) int {\n\tlength := len(list1)\n\tsum := 0\n\tfor _, num := range list1 {\n\t\tsum += int(math.Round(num))\n\t}\n\treturn sum * length\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert round_and_sum([22.4, 4.0, -16.22, -9.10, 11.00, -12.22, 14.20, -5.20, 17.50])==243",
+      "generated_test": "result := round_and_sum([]float64{22.4, 4.0, -16.22, -9.10, 11.00, -12.22, 14.20, -5.20, 17.50})\nexpected := 243\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert round_and_sum([5,2,9,24.3,29])==345",
+      "generated_test": "result := round_and_sum([]float64{5, 2, 9, 24.3, 29})\nexpected := 345\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert round_and_sum([25.0,56.7,89.2])==513",
+      "generated_test": "result := round_and_sum([]float64{25.0, 56.7, 89.2})\nexpected := 513\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

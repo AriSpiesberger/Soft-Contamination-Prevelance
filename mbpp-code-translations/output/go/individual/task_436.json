@@ -1,0 +1,37 @@
+{
+  "task_id": 436,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to return the negative numbers in a list.",
+  "python_code": "def neg_nos(list1):\n  out = []\n  for num in list1: \n    if num < 0: \n      out.append(num)\n  return out ",
+  "test_list": [
+    "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+    "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+    "assert neg_nos([-7,-6,8,9]) == [-7,-6]"
+  ],
+  "code_go": "package main\n\nfunc neg_nos(list1 []int) []int {\n\tout := []int{}\n\tfor _, num := range list1 {\n\t\tif num < 0 {\n\t\t\tout = append(out, num)\n\t\t}\n\t}\n\treturn out\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert neg_nos([-1,4,5,-6]) == [-1,-6]",
+      "generated_test": "result := neg_nos([]int{-1, 4, 5, -6})\nexpected := []int{-1, -6}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert neg_nos([-1,-2,3,4]) == [-1,-2]",
+      "generated_test": "expected := []int{-1, -2}\ngot := neg_nos([]int{-1, -2, 3, 4})\n\npass := len(got) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif got[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert neg_nos([-7,-6,8,9]) == [-7,-6]",
+      "generated_test": "result := neg_nos([]int{-7, -6, 8, 9})\nexpected := []int{-7, -6}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

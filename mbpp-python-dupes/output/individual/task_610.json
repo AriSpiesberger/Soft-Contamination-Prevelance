@@ -1,0 +1,27 @@
+{
+  "task_id": 610,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function which takes a list and returns a list with the same elements, but the k'th element removed.",
+  "code_python": "def remove_kth_element(list1, L):\n    return  list1[:L-1] + list1[L:]",
+  "test_list": [
+    "assert remove_kth_element([1,1,2,3,4,4,5,1],3)==[1, 1, 3, 4, 4, 5, 1]",
+    "assert remove_kth_element([0, 0, 1, 2, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4],4)==[0, 0, 1, 3, 4, 4, 5, 6, 6, 6, 7, 8, 9, 4, 4]",
+    "assert remove_kth_element([10, 10, 15, 19, 18, 18, 17, 26, 26, 17, 18, 10],5)==[10,10,15,19, 18, 17, 26, 26, 17, 18, 10]"
+  ],
+  "python_1": "def remove_kth_element(list1, L):\n    # Create an empty list to accumulate elements we want to keep\n    result = []\n    # Iterate through each index and element pair in the input list\n    for index, element in enumerate(list1):\n        # Check if current position (1-indexed) matches the element to skip\n        if index + 1 != L:\n            # Append element to result only if it's not at position L\n            result.append(element)\n    # Return the new list with the k'th element excluded\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_kth_element(list1, L):\n    # Convert list to mutable copy to avoid modifying original\n    new_list = list(list1)\n    # Use del statement to remove element at 0-indexed position L-1\n    del new_list[L-1]\n    # Return the modified list with k'th element removed\n    return new_list",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_kth_element(list1, L):\n    # Use list comprehension with index filtering to exclude the L-th element\n    # The condition checks if 1-indexed position differs from L\n    return [list1[i] for i in range(len(list1)) if i != L - 1]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_kth_element(list1, L):\n    # Use pop() method on a copy - pop removes and returns item at given index\n    result = list1.copy()\n    # Remove element at 0-indexed position (L-1) using pop method\n    result.pop(L - 1)\n    # Return the list with the k'th element now removed\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_kth_element(list1, L):\n    # Use filter with lambda to selectively include elements based on their position\n    # enumerate gives us (index, value) pairs starting from index 0\n    filtered = filter(lambda pair: pair[0] != L - 1, enumerate(list1))\n    # Extract only the values from the filtered (index, value) tuples using map\n    # This strips away the indices, keeping just the elements we want\n    return list(map(lambda pair: pair[1], filtered))",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

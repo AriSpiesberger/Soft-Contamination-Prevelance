@@ -1,0 +1,17 @@
+{
+  "task_id": 139,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the circumference of a circle.",
+  "python_code": "def circle_circumference(r):\n  perimeter=2*3.1415*r\n  return perimeter",
+  "test_list": [
+    "assert math.isclose(circle_circumference(10), 62.830000000000005, rel_tol=0.001)",
+    "assert math.isclose(circle_circumference(5), 31.415000000000003, rel_tol=0.001)",
+    "assert math.isclose(circle_circumference(4), 25.132, rel_tol=0.001)"
+  ],
+  "code_typescript": "function circle_circumference(r: number): number {\n  const perimeter = 2 * 3.1415 * r;\n  return perimeter;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

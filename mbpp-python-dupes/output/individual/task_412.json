@@ -1,0 +1,27 @@
+{
+  "task_id": 412,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove odd numbers from a given list.",
+  "code_python": "def remove_odd(l):\n    for i in l:\n        if i % 2 != 0:\n            l.remove(i)\n    return l",
+  "test_list": [
+    "assert remove_odd([1,2,3]) == [2]",
+    "assert remove_odd([2,4,6]) == [2,4,6]",
+    "assert remove_odd([10,20,3]) == [10,20]"
+  ],
+  "python_1": "def remove_odd(l):\n    # Use list comprehension to filter elements, keeping only even numbers\n    even_numbers = [x for x in l if x % 2 == 0]\n    # Clear the original list to modify it in place\n    l.clear()\n    # Extend the original list with the filtered even numbers\n    l.extend(even_numbers)\n    # Return the modified original list containing only even numbers\n    return l",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def remove_odd(l):\n    # Start index at end of list to iterate backwards safely\n    i = len(l) - 1\n    # Continue until we've checked all indices down to zero\n    while i >= 0:\n        # Check if current element is odd using modulo operator\n        if l[i] % 2 != 0:\n            # Delete the odd element at current position using del statement\n            del l[i]\n        # Move to previous index regardless of deletion\n        i -= 1\n    # Return the modified list with only even numbers remaining\n    return l",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def remove_odd(l):\n    # Use filter function with lambda to select only even numbers\n    even_only = filter(lambda x: x % 2 == 0, l)\n    # Convert filter object to list for indexed assignment\n    result = list(even_only)\n    # Slice assignment replaces all elements in original list while keeping same object\n    l[:] = result\n    # Return the in-place modified list reference\n    return l",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def remove_odd(l):\n    # Calculate how many elements to process (original length)\n    original_length = len(l)\n    # Track write position for in-place compaction of even numbers\n    write_pos = 0\n    # Read through each position in the original list bounds\n    for read_pos in range(original_length):\n        # Retrieve element at current read position for inspection\n        current = l[read_pos]\n        # Test if number is even using bitwise AND (faster than modulo)\n        if current & 1 == 0:\n            # Copy even number to the write position (compacting evens at front)\n            l[write_pos] = current\n            # Advance write position only when we keep an element\n            write_pos += 1\n    # Truncate list to remove leftover elements after the even numbers\n    del l[write_pos:]\n    # Return the same list object, now containing only even numbers\n    return l",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def remove_odd(l):\n    # Use recursion base case: empty list means nothing left to process\n    if len(l) == 0:\n        # Return empty list as-is since no elements to filter\n        return l\n    # Pop the last element to examine it separately from the rest\n    last_element = l.pop()\n    # Recursively process the remaining shorter list first\n    remove_odd(l)\n    # After recursion returns, check if popped element was even\n    if last_element % 2 == 0:\n        # Re-append even numbers back to the list we're building\n        l.append(last_element)\n    # Return the modified list with only even numbers preserved\n    return l",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

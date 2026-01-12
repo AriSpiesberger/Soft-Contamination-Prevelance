@@ -1,0 +1,37 @@
+{
+  "task_id": 297,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a given nested list structure.",
+  "python_code": "def flatten_list(list1):\n    result_list = []\n    if not list1: return result_list\n    stack = [list(list1)]\n    while stack:\n        c_num = stack.pop()\n        next = c_num.pop()\n        if c_num: stack.append(c_num)\n        if isinstance(next, list):\n            if next: stack.append(list(next))\n        else: result_list.append(next)\n    result_list.reverse()\n    return result_list ",
+  "test_list": [
+    "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+    "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+    "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]"
+  ],
+  "code_ruby": "def flatten_list(list1)\n  result_list = []\n  return result_list if list1.nil? || list1.empty?\n  \n  stack = [list1.dup]\n  while !stack.empty?\n    c_num = stack.pop\n    next_item = c_num.pop\n    stack.append(c_num) if !c_num.empty?\n    if next_item.is_a?(Array)\n      stack.append(next_item.dup) if !next_item.empty?\n    else\n      result_list.append(next_item)\n    end\n  end\n  result_list.reverse!\n  result_list\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+      "generated_test": "result = flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])\nexpected = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+      "generated_test": "result = flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])\nexpected = [10, 20, 40, 30, 56, 25, 10, 20, 33, 40]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]",
+      "generated_test": "result = flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])\nexpected = [1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

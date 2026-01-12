@@ -1,0 +1,37 @@
+{
+  "task_id": 411,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given snake case string to camel case string.",
+  "python_code": "import re\ndef snake_to_camel(word):\n  return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('android_tv') == 'AndroidTv'",
+    "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+    "assert snake_to_camel('apple_watch') == 'AppleWatch'"
+  ],
+  "code_javascript": "function snake_to_camel(word) {\n  return word.split('_').map(x => x ? x.charAt(0).toUpperCase() + x.slice(1).toLowerCase() : '_').join('');\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert snake_to_camel('android_tv') == 'AndroidTv'",
+      "generated_test": "const result = snake_to_camel('android_tv');\nconst expected = 'AndroidTv';\nif (result === expected) {\n  console.log('PASS');\n} else {\n  console.log('FAIL');\n  console.log('  Expected: ' + expected);\n  console.log('  Got: ' + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('google_pixel') == 'GooglePixel'",
+      "generated_test": "const result = snake_to_camel('google_pixel');\nconst expected = 'GooglePixel';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert snake_to_camel('apple_watch') == 'AppleWatch'",
+      "generated_test": "const result = snake_to_camel('apple_watch');\nconst expected = 'AppleWatch';\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

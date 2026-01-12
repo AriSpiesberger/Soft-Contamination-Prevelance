@@ -1,0 +1,428 @@
+task_id,source_split,source_config,text
+2,prompt,sanitized,Write a function to find the shared elements from the given two lists.
+3,prompt,sanitized,Write a python function to identify non-prime numbers.
+4,prompt,sanitized,"Write a function to find the n largest integers from a given list of numbers, returned in descending order."
+6,prompt,sanitized,Write a python function to check whether the two numbers differ at one bit position only or not.
+7,prompt,sanitized,Write a function to find all words which are at least 4 characters long in a string.
+8,prompt,sanitized,Write a function to find squares of individual elements in a list.
+9,prompt,sanitized,Write a python function to find the minimum number of rotations (greater than 0) required to get the same string.
+11,test,sanitized,Write a python function to remove first and last occurrence of a given character from the string.
+12,test,sanitized,Write a function to sort a given matrix in ascending order according to the sum of its rows.
+14,test,sanitized,Write a python function to find the volume of a triangular prism.
+16,test,sanitized,Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.
+17,test,sanitized,Write a function that returns the perimeter of a square given its side length as input.
+18,test,sanitized,Write a function to remove characters from the first string which are present in the second string.
+19,test,sanitized,Write a function to find whether a given array of integers contains any duplicate element.
+20,test,sanitized,Write a function to check if the given number is woodball or not.
+56,test,sanitized,Write a python function to check if a given number is one less than twice its reverse.
+57,test,sanitized,Write a python function to find the largest number that can be formed with the given list of digits.
+58,test,sanitized,Write a python function to check whether the given two integers have opposite sign or not.
+59,test,sanitized,Write a function to find the nth octagonal number.
+61,test,sanitized,Write a python function to count the number of substrings with the sum of digits equal to their length.
+62,test,sanitized,Write a python function to find smallest number in a list.
+63,test,sanitized,Write a function to find the maximum difference between available pairs in the given tuple list.
+64,test,sanitized,Write a function to sort a list of tuples using the second value of each tuple.
+65,test,sanitized,Write a function to flatten a list and sum all of its elements.
+66,test,sanitized,Write a python function to count the number of positive numbers in a list.
+67,test,sanitized,Write a function to find the number of ways to partition a set of Bell numbers.
+68,test,sanitized,Write a python function to check whether the given array is monotonic or not.
+69,test,sanitized,Write a function to check whether a list contains the given sublist or not.
+70,test,sanitized,Write a function to find whether all the given tuples have equal length or not.
+71,test,sanitized,Write a function to sort a list of elements.
+72,test,sanitized,Write a python function to check whether the given number can be represented as the difference of two squares or not.
+74,test,sanitized,Write a function to check whether it follows the sequence given in the patterns array.
+75,test,sanitized,Write a function to find tuples which have all elements divisible by k from the given list of tuples.
+77,test,sanitized,Write a python function to find whether a number is divisible by 11.
+79,test,sanitized,Write a python function to check whether the length of the word is odd or not.
+80,test,sanitized,Write a function to find the nth tetrahedral number.
+82,test,sanitized,Write a function to find the volume of a sphere.
+83,test,sanitized,Write a python function to find the character made by adding the ASCII value of all the characters of the given string modulo 26.
+84,test,sanitized,Write a function to find the nth number in the newman conway sequence.
+85,test,sanitized,Write a function to find the surface area of a sphere.
+86,test,sanitized,Write a function to find nth centered hexagonal number.
+87,test,sanitized,Write a function to merge three dictionaries into a single dictionary.
+88,test,sanitized,"Write a function to get the frequency of all the elements in a list, returned as a dictionary."
+89,test,sanitized,Write a function to find the closest smaller number than n.
+90,test,sanitized,Write a python function to find the length of the longest word.
+91,test,sanitized,Write a function to check if a string is present as a substring in a given list of string values.
+92,test,sanitized,Write a function to check whether the given number is undulating or not.
+93,test,sanitized,Write a function to calculate the value of 'a' to the power 'b'.
+94,test,sanitized,"Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value."
+95,test,sanitized,Write a python function to find the length of the smallest list in a list of lists.
+96,test,sanitized,Write a python function to find the number of divisors of a given integer.
+97,test,sanitized,"Write a function to find frequency of each element in a flattened list of lists, returned in a dictionary."
+98,test,sanitized,Write a function to multiply all the numbers in a list and divide with the length of the list.
+99,test,sanitized,"Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros."
+100,test,sanitized,"Write a function to find the next smallest palindrome of a specified integer, returned as an integer."
+101,test,sanitized,Write a function to find the kth element in the given array using 1-based indexing.
+102,test,sanitized,Write a function to convert a snake case string to camel case string.
+103,test,sanitized,"Write a function to find the Eulerian number a(n, m)."
+104,test,sanitized,Write a function to sort each sublist of strings in a given list of lists.
+105,test,sanitized,Write a python function to count true booleans in the given list.
+106,test,sanitized,Write a function to append the given list to the given tuples.
+108,test,sanitized,Write a function to merge three lists into a single sorted list.
+109,test,sanitized,Write a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.
+111,test,sanitized,Write a function to find the common elements in given nested lists.
+113,test,sanitized,Write a function to check if a string represents an integer or not.
+115,test,sanitized,Write a function to check whether all dictionaries in a list are empty or not.
+116,test,sanitized,Write a function to convert a given tuple of positive integers into a single integer.
+117,test,sanitized,Write a function to convert all possible convertible elements in a list of lists to floats.
+118,test,sanitized,Write a function to convert a string to a list of strings split on the space character.
+119,test,sanitized,Write a python function to find the element that appears only once in a sorted array.
+120,test,sanitized,Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.
+123,test,sanitized,Write a function to sum all amicable numbers from 1 to a specified number.
+124,test,sanitized,Write a function to get the angle of a complex number.
+125,test,sanitized,Write a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.
+126,test,sanitized,Write a python function to find the sum of common divisors of two given numbers.
+127,test,sanitized,Write a function to multiply two integers.
+128,test,sanitized,Write a function to find words that are longer than n characters from a given list of words.
+129,test,sanitized,Write a function to calculate whether the matrix is a magic square.
+130,test,sanitized,Write a function to find the item with maximum frequency in a given list.
+131,test,sanitized,Write a python function to reverse only the vowels of a given string (where y is not a vowel).
+132,test,sanitized,Write a function to convert a tuple to a string.
+133,test,sanitized,Write a function to calculate the sum of the negative numbers of a given list of numbers.
+135,test,sanitized,Write a function to find the nth hexagonal number.
+137,test,sanitized,Write a function to find the ratio of zeroes to non-zeroes in an array of integers.
+138,test,sanitized,Write a python function to check whether the given number can be represented as sum of non-zero powers of 2 or not.
+139,test,sanitized,Write a function to find the circumference of a circle.
+140,test,sanitized,Write a function to flatten the list of lists into a single set of numbers.
+141,test,sanitized,Write a function to sort a list of elements.
+142,test,sanitized,Write a function to count number items that are identical in the same position of three given lists.
+143,test,sanitized,Write a function to find number of lists present in the given tuple.
+145,test,sanitized,Write a python function to find the maximum difference between any two elements in a given array.
+160,test,sanitized,"Write a function that returns integers x and y that satisfy ax + by = n as a tuple, or return None if no solution exists."
+161,test,sanitized,Write a function to remove all elements from a given list present in another list.
+162,test,sanitized,"Write a function to calculate the sum (n - 2*i) from i=0 to n // 2, for instance n + (n-2) + (n-4)... (until n-x =< 0)."
+163,test,sanitized,Write a function to calculate the area of a regular polygon given the length and number of its sides.
+164,test,sanitized,Write a function to determine if the sum of the divisors of two integers are the same.
+165,test,sanitized,Write a function to count the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive).
+166,test,sanitized,Write a function that counts the number of pairs of integers in a list that xor to an even number.
+167,test,sanitized,Write a python function to find the smallest power of 2 greater than or equal to n.
+168,test,sanitized,Write a function to count the number of occurrences of a number in a given list.
+170,test,sanitized,Write a function to find the sum of numbers in a list within a range specified by two indices.
+171,test,sanitized,Write a function to find the perimeter of a regular pentagon from the length of its sides.
+172,test,sanitized,Write a function to count the number of occurence of the string 'std' in a given string.
+222,test,sanitized,Write a function to check if all the elements in tuple have same data type or not.
+223,test,sanitized,"Write a function that takes in a sorted array, its length (n), and an element and returns whether the element is the majority element in the given sorted array. (The majority element is the element that occurs more than n/2 times.)"
+224,test,sanitized,Write a python function to count the number of set bits (binary digits with value 1) in a given number.
+226,test,sanitized,Write a python function to remove the characters which have odd index values of a given string.
+227,test,sanitized,Write a function to find minimum of three numbers.
+228,test,sanitized,Write a python function to check whether all the bits are unset in the given range or not.
+229,test,sanitized,"Write a function that takes in an array and an integer n, and re-arranges the first n elements of the given array so that all negative elements appear before positive ones, and where the relative order among negative and positive elements is preserved."
+230,test,sanitized,"Write a function that takes in a string and character, replaces blank spaces in the string with the character, and returns the string."
+232,test,sanitized,Write a function that takes in a list and an integer n and returns a list containing the n largest items from the list.
+233,test,sanitized,Write a function to find the lateral surface area of a cylinder.
+234,test,sanitized,Write a function to find the volume of a cube given its side length.
+235,test,sanitized,Write a python function to set all even bits of a given number.
+237,test,sanitized,Write a function that takes in a list of tuples and returns a dictionary mapping each unique tuple to the number of times it occurs in the list.
+238,test,sanitized,Write a python function to count the number of non-empty substrings of a given string.
+239,test,sanitized,"Write a function that takes in positive integers m and n and finds the number of possible sequences of length n, such that each element is a positive integer and is greater than or equal to twice the previous element but less than or equal to m."
+240,test,sanitized,Write a function that takes in two lists and replaces the last element of the first list with the elements of the second list.
+242,test,sanitized,Write a function to count the total number of characters in a string.
+244,test,sanitized,Write a python function to find the next perfect square greater than a given number.
+245,test,sanitized,"Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing."
+246,test,sanitized,Write a function for computing square roots using the babylonian method.
+247,test,sanitized,Write a function to find the length of the longest palindromic subsequence in the given string.
+248,test,sanitized,Write a function that takes in an integer n and calculates the harmonic sum of n-1.
+249,test,sanitized,Write a function to find the intersection of two arrays.
+250,test,sanitized,Write a python function that takes in a tuple and an element and counts the occcurences of the element in the tuple.
+251,test,sanitized,"Write a function that takes in a list and an element and inserts the element before each element in the list, and returns the resulting list."
+252,test,sanitized,Write a python function to convert complex numbers to polar coordinates.
+253,test,sanitized,Write a python function that returns the number of integer elements in a given list.
+255,test,sanitized,"Write a function that takes in a list and length n, and generates all combinations (with repetition) of the elements of the list and returns a list with a tuple for each combination."
+256,test,sanitized,Write a python function that takes in a non-negative number and returns the number of prime numbers less than the given non-negative number.
+257,test,sanitized,Write a function that takes in two numbers and returns a tuple with the second number and then the first number.
+259,test,sanitized,Write a function to maximize the given two tuples.
+260,test,sanitized,Write a function to find the nth newman–shanks–williams prime number.
+261,test,sanitized,Write a function that takes in two tuples and performs mathematical division operation element-wise across the given tuples.
+262,test,sanitized,"Write a function that takes in a list and an integer L and splits the given list into two parts where the length of the first part of the list is L, and returns the resulting lists in a tuple."
+264,test,sanitized,Write a function to calculate a dog's age in dog's years.
+265,test,sanitized,"Write a function that takes in a list and an integer n and splits a list for every nth element, returning a list of the resulting lists."
+266,test,sanitized,Write a function to find the lateral surface area of a cube given its side length.
+267,test,sanitized,Write a python function that takes in an integer n and returns the sum of the squares of the first n odd natural numbers.
+268,test,sanitized,Write a function to find the n'th star number.
+269,test,sanitized,Write a function to find the ascii value of a character.
+270,test,sanitized,Write a python function to find the sum of even numbers at even positions of a list.
+271,test,sanitized,Write a python function that takes in an integer n and finds the sum of the first n even natural numbers that are raised to the fifth power.
+272,test,sanitized,Write a function that takes in a list of tuples and returns a list containing the rear element of each tuple.
+273,test,sanitized,Write a function that takes in two tuples and subtracts the elements of the first tuple by the elements of the second tuple with the same index.
+274,test,sanitized,Write a python function that takes in a positive integer n and finds the sum of even index binomial coefficients.
+276,test,sanitized,Write a function that takes in the radius and height of a cylinder and returns the the volume.
+277,test,sanitized,Write a function that takes in a dictionary and integer n and filters the dictionary to only include entries with values greater than or equal to n.
+278,test,sanitized,Write a function to find the number of elements that occurs before the tuple element in the given tuple.
+279,test,sanitized,Write a function to find the nth decagonal number.
+280,test,sanitized,Write a function that takes in an array and element and returns a tuple containing a boolean that indicates if the element is in the array and the index position of the element (or -1 if the element is not found).
+281,test,sanitized,Write a python function to check if the elements of a given list are unique or not.
+282,test,sanitized,Write a function to subtract two lists element-wise.
+283,test,sanitized,Write a python function takes in an integer and check whether the frequency of each digit in the integer is less than or equal to the digit itself.
+284,test,sanitized,Write a function that takes in a list and element and checks whether all items in the list are equal to the given element.
+285,test,sanitized,Write a function that checks whether a string contains the 'a' character followed by two or three 'b' characters.
+286,test,sanitized,Write a function to find the largest sum of a contiguous array in the modified array which is formed by repeating the given array k times.
+287,test,sanitized,Write a python function takes in an integer n and returns the sum of squares of first n even natural numbers.
+290,test,sanitized,Write a function to find the list of maximum length in a list of lists.
+291,test,sanitized,Write a function to find out the number of ways of painting the fence such that at most 2 adjacent posts have the same color for the given fence with n posts and k colors.
+292,test,sanitized,Write a python function to find quotient of two numbers (rounded down to the nearest integer).
+293,test,sanitized,Write a function to find the third side of a right angled triangle.
+294,test,sanitized,Write a function to find the maximum value in a given heterogeneous list.
+295,test,sanitized,Write a function to return the sum of all divisors of a number.
+296,test,sanitized,Write a python function to count inversions in an array.
+297,test,sanitized,Write a function to flatten a given nested list structure.
+299,test,sanitized,Write a function to calculate the maximum aggregate from the list of tuples.
+300,test,sanitized,Write a function to find the count of all binary sequences of length 2n such that sum of first n bits is same as sum of last n bits.
+301,test,sanitized,Write a function to find the depth of a dictionary.
+304,test,sanitized,Write a python function to find element at a given index after number of rotations.
+305,test,sanitized,Write a function to return two words from a list of words starting with letter 'p'.
+306,test,sanitized,"Write a function to find the maximum sum of increasing subsequence from prefix until ith index and also including a given kth element which is after i, i.e., k > i ."
+307,test,sanitized,Write a function to get a colon of a tuple.
+308,test,sanitized,"Write a function to find the specified number of largest products from two given lists, selecting one factor from each list."
+309,test,sanitized,Write a python function to find the maximum of two numbers.
+310,test,sanitized,Write a function to convert a given string to a tuple of characters.
+311,test,sanitized,Write a python function to set the left most unset bit.
+312,test,sanitized,Write a function to find the volume of a cone.
+388,test,sanitized,Write a python function to find the highest power of 2 that is less than or equal to n.
+389,test,sanitized,Write a function to find the n'th lucas number.
+390,test,sanitized,Write a function to apply a given format string to all of the elements in a list.
+391,test,sanitized,Write a function to convert more than one list to nested dictionary.
+392,test,sanitized,"Write a function to find the maximum sum possible by using the given equation f(n) = max( (f(n/2) + f(n/3) + f(n/4) + f(n/5)), n)."
+393,test,sanitized,Write a function to find the list with maximum length.
+394,test,sanitized,Write a function to check if given tuple contains no duplicates.
+395,test,sanitized,Write a python function to find the first non-repeated character in a given string.
+396,test,sanitized,Write a function to check whether the given string starts and ends with the same character or not.
+397,test,sanitized,Write a function to find the median of three numbers.
+398,test,sanitized,Write a function to compute the sum of digits of each number of a given list.
+399,test,sanitized,Write a function to perform the mathematical bitwise xor operation across the given tuples.
+400,test,sanitized,Write a function to extract the number of unique tuples in the given list.
+401,test,sanitized,Write a function to perform index wise addition of tuple elements in the given two nested tuples.
+404,test,sanitized,Write a python function to find the minimum of two numbers.
+405,test,sanitized,Write a function to check whether an element exists within a tuple.
+406,test,sanitized,Write a python function to find whether the parity of a given number is odd.
+407,test,sanitized,Write a function to create the next bigger number by rearranging the digits of a given number.
+408,test,sanitized,Write a function to find k number of smallest pairs which consist of one element from the first array and one element from the second array.
+409,test,sanitized,Write a function to find the minimum product from the pairs of tuples within a given list.
+410,test,sanitized,Write a function to find the minimum value in a given heterogeneous list.
+411,test,sanitized,Write a function to convert the given snake case string to camel case string.
+412,test,sanitized,Write a python function to remove odd numbers from a given list.
+413,test,sanitized,Write a function to extract the nth element from a given list of tuples.
+414,test,sanitized,Write a python function to check whether any value in a sequence exists in a sequence or not.
+415,test,sanitized,Write a python function to find a pair with highest product from a given array of integers.
+417,test,sanitized,Write a function to find common first element in given list of tuple.
+418,test,sanitized,Write a python function to find the element of a list having maximum length.
+419,test,sanitized,Write a function to round every number of a given list of numbers and print the total sum multiplied by the length of the list.
+420,test,sanitized,Write a python function to find the cube sum of first n even natural numbers.
+421,test,sanitized,Write a function to concatenate each element of tuple by the delimiter.
+422,test,sanitized,Write a python function to find the average of cubes of first n natural numbers.
+424,test,sanitized,Write a function to extract only the rear index element of each string in the given tuple.
+425,test,sanitized,Write a function to count the number of sublists containing a particular element.
+426,test,sanitized,Write a function to filter odd numbers.
+427,test,sanitized,Write a function to convert a date of yyyy-mm-dd format to dd-mm-yyyy format.
+428,test,sanitized,Write a function to sort the given array by using shell sort.
+429,test,sanitized,Write a function to extract the elementwise and tuples from the given two tuples.
+430,test,sanitized,Write a function to find the directrix of a parabola.
+431,test,sanitized,Write a function that takes two lists and returns true if they have at least one common element.
+432,test,sanitized,Write a function to find the median length of a trapezium.
+433,test,sanitized,Write a function to check whether the entered number is greater than the elements of the given array.
+434,test,sanitized,Write a function that matches a string that has an a followed by one or more b's.
+435,test,sanitized,Write a python function to find the last digit of a given number.
+436,test,sanitized,Write a python function to return the negative numbers in a list.
+437,test,sanitized,Write a function to remove odd characters in a string.
+438,test,sanitized,Write a function to count bidirectional tuple pairs.
+439,test,sanitized,Write a function to join a list of multiple integers into a single integer.
+440,test,sanitized,Write a function to find the first adverb and their positions in a given sentence.
+441,test,sanitized,Write a function to find the surface area of a cube of a given size.
+442,test,sanitized,Write a function to find the ration of positive numbers in an array of integers.
+443,test,sanitized,Write a python function to find the largest negative number from the given list.
+444,test,sanitized,Write a function to trim each tuple by k in the given tuple list.
+445,test,sanitized,Write a function to perform index wise multiplication of tuple elements in the given two tuples.
+446,test,sanitized,Write a python function to count the occurence of all elements of list in a tuple.
+447,test,sanitized,Write a function to find cubes of individual elements in a list.
+448,test,sanitized,Write a function to calculate the sum of perrin numbers.
+450,test,sanitized,Write a function to extract specified size of strings from a given list of string values.
+451,test,sanitized,Write a function to remove all whitespaces from the given string.
+452,test,sanitized,Write a function that gives loss amount on a sale if the given amount has loss else return 0.
+453,test,sanitized,Write a python function to find the sum of even factors of a number.
+454,test,sanitized,Write a function that matches a word containing 'z'.
+455,test,sanitized,Write a function to check whether the given month number contains 31 days or not.
+456,test,sanitized,Write a function to reverse each string in a given list of string values.
+457,test,sanitized,Write a python function to find the sublist having minimum length.
+458,test,sanitized,Write a function to find the area of a rectangle.
+459,test,sanitized,Write a function to remove uppercase substrings from a given string.
+460,test,sanitized,Write a python function to get the first element of each sublist.
+461,test,sanitized,Write a python function to count the upper case characters in a given string.
+462,test,sanitized,Write a function to find all possible combinations of the elements of a given list.
+463,test,sanitized,Write a function to find the maximum product subarray of the given array.
+464,test,sanitized,Write a function to check if all values are same in a dictionary.
+465,test,sanitized,Write a function to drop empty items from a given dictionary.
+468,test,sanitized,Write a function to find the maximum product formed by multiplying numbers of an increasing subsequence of that array.
+470,test,sanitized,Write a function to find the pairwise addition of the neighboring elements of the given tuple.
+471,test,sanitized,Write a python function to find the product of the array multiplication modulo n.
+472,test,sanitized,Write a python function to check whether the given list contains consecutive numbers or not.
+473,test,sanitized,Write a function to find the tuple intersection of elements in the given tuple list irrespective of their order.
+474,test,sanitized,Write a function to replace characters in a string.
+475,test,sanitized,Write a function to sort a dictionary by value.
+476,test,sanitized,Write a python function to find the sum of the largest and smallest value in a given array.
+477,test,sanitized,Write a python function to convert the given string to lower case.
+478,test,sanitized,Write a function to remove lowercase substrings from a given string.
+479,test,sanitized,Write a python function to find the first digit of a given number.
+554,validation,sanitized,Write a python function which takes a list of integers and only returns the odd ones.
+555,validation,sanitized,Write a python function to find the difference between the sum of cubes of the first n natural numbers and the sum of the first n natural numbers.
+556,validation,sanitized,Write a python function to count the number of pairs whose xor value is odd.
+557,validation,sanitized,Write a function to toggle the case of all characters in a string.
+558,validation,sanitized,Write a python function to find the sum of the per-digit difference between two integers.
+559,validation,sanitized,Write a function to find the sum of the largest contiguous sublist in the given list.
+560,validation,sanitized,Write a function to find the union of the elements of two given tuples and output them in sorted order.
+562,validation,sanitized,Write a python function to find the length of the longest sublists.
+563,validation,sanitized,Write a function to extract values between quotation marks from a string.
+564,validation,sanitized,Write a python function which takes a list of integers and counts the number of possible unordered pairs where both elements are unequal.
+565,validation,sanitized,Write a python function to split a string into characters.
+566,validation,sanitized,Write a function to get the sum of the digits of a non-negative integer.
+567,validation,sanitized,Write a function to check whether a specified list is sorted or not.
+568,validation,sanitized,Write a function to create a list of N empty dictionaries.
+569,validation,sanitized,Write a function to sort each sublist of strings in a given list of lists.
+572,validation,sanitized,Write a python function to remove duplicate numbers from a given number of lists.
+573,validation,sanitized,Write a python function to calculate the product of the unique numbers in a given list.
+574,validation,sanitized,Write a function to find the surface area of a cylinder.
+576,validation,sanitized,Write a python function to check whether a list is sublist of another or not.
+577,validation,sanitized,Write a python function to find the last digit in factorial of a given number.
+578,validation,sanitized,Write a function to interleave 3 lists of the same length into a single flat list.
+579,validation,sanitized,Write a function to find the dissimilar elements in the given two tuples.
+580,validation,sanitized,Write a function to remove uneven elements in the nested mixed tuple.
+581,validation,sanitized,Write a python function to find the surface area of a square pyramid with a given base edge and height.
+582,validation,sanitized,Write a function to check if a dictionary is empty
+583,validation,sanitized,Write a function which returns nth catalan number.
+584,validation,sanitized,Write a function to find the first adverb ending with ly and its positions in a given string.
+585,validation,sanitized,Write a function to find the n most expensive items in a given dataset.
+586,validation,sanitized,Write a python function to split a list at the nth eelment and add the first part to the end.
+587,validation,sanitized,Write a function to convert a list to a tuple.
+588,validation,sanitized,Write a python function to find the difference between largest and smallest value in a given list.
+589,validation,sanitized,Write a function to find perfect squares between two given numbers.
+590,validation,sanitized,Write a function to convert polar coordinates to rectangular coordinates.
+591,validation,sanitized,Write a python function to interchange the first and last elements in a list.
+592,validation,sanitized,Write a python function to find the sum of the product of consecutive binomial co-efficients.
+593,validation,sanitized,Write a function to remove leading zeroes from an ip address.
+594,validation,sanitized,Write a function to find the difference of the first even and first odd number of a given list.
+595,validation,sanitized,Write a python function to count minimum number of swaps required to convert one binary number represented as a string to another.
+596,validation,sanitized,Write a function to find the size in bytes of the given tuple.
+597,validation,sanitized,Write a function to find kth element from the given two sorted arrays.
+598,validation,sanitized,Write a function to check whether the given number is armstrong or not.
+599,validation,sanitized,Write a function to find sum and average of first n natural numbers.
+600,validation,sanitized,Write a python function to check whether the given number is even or not.
+602,train,sanitized,Write a python function to find the first repeated character in a given string.
+603,train,sanitized,Write a function to get all lucid numbers smaller than or equal to a given integer.
+604,train,sanitized,Write a function to reverse words seperated by spaces in a given string.
+605,train,sanitized,Write a function to check if the given integer is a prime number.
+606,train,sanitized,Write a function to convert degrees to radians.
+607,train,sanitized,"Write a function to search a string for a regex pattern. The function should return the matching subtring, a start index and an end index."
+608,train,sanitized,Write a python function to find nth bell number.
+610,train,sanitized,"Write a python function which takes a list and returns a list with the same elements, but the k'th element removed."
+611,train,sanitized,Write a function which given a matrix represented as a list of lists returns the max of the n'th column.
+612,train,sanitized,"Write a python function which takes a list of lists, where each sublist has two elements, and returns a list of two lists where the first list has the first element of each sublist and the second one has the second."
+614,train,sanitized,Write a function to find the cumulative sum of all the values that are present in the given tuple list.
+615,train,sanitized,Write a function which takes a tuple of tuples and returns the average value for each tuple as a list.
+616,train,sanitized,Write a function which takes two tuples of the same length and performs the element wise modulo.
+617,train,sanitized,"Write a function to check for the number of jumps required of given length to reach a point of form (d, 0) from origin in a 2d plane."
+618,train,sanitized,Write a function to divide two lists element wise.
+619,train,sanitized,Write a function to move all the numbers to the end of the given string.
+620,train,sanitized,Write a function to find the size of the largest subset of a list of numbers so that every pair is divisible.
+622,train,sanitized,Write a function to find the median of two sorted lists of same size.
+623,train,sanitized,Write a function to compute the n-th power of each number in a list.
+624,train,sanitized,Write a python function to convert a given string to uppercase.
+625,train,sanitized,Write a python function to interchange the first and last element in a given list.
+626,train,sanitized,Write a python function to find the area of the largest triangle that can be inscribed in a semicircle with a given radius.
+627,train,sanitized,Write a python function to find the smallest missing number from a sorted list of natural numbers.
+628,train,sanitized,Write a function to replace all spaces in the given string with '%20'.
+629,train,sanitized,Write a python function to find even numbers from a list of numbers.
+630,train,sanitized,Write a function to extract all the adjacent coordinates of the given coordinate tuple.
+631,train,sanitized,Write a function to replace whitespaces with an underscore and vice versa in a given string.
+632,train,sanitized,Write a python function to move all zeroes to the end of the given list.
+633,train,sanitized,Write a python function to find the sum of xor of all pairs of numbers in the given list.
+635,train,sanitized,Write a function to sort the given list.
+637,train,sanitized,Write a function to check whether the given amount has no profit and no loss
+638,train,sanitized,Write a function to calculate the wind chill index rounded to the next integer given the wind velocity in km/h and a temperature in celsius.
+639,train,sanitized,Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.
+640,train,sanitized,Write a function to remove the parenthesis and what is inbetween them from a string.
+641,train,sanitized,Write a function to find the nth nonagonal number.
+643,train,sanitized,"Write a function that checks if a strings contains 'z', except at the start and end of the word."
+644,train,sanitized,Write a python function to reverse an array upto a given position.
+720,train,sanitized,Write a function to add a dictionary to the tuple. The output should be a tuple.
+721,train,sanitized,"Given a square matrix of size N*N given as a list of lists, where each cell is associated with a specific cost. A path is defined as a specific sequence of cells that starts from the top-left cell move only right or down and ends on bottom right cell. We want to find a path with the maximum average over all existing paths. Average is computed as total cost divided by the number of cells visited in the path."
+722,train,sanitized,"The input is given as - a dictionary with a student name as a key and a tuple of float (student_height, student_weight) as a value, - minimal height, - minimal weight. Write a function to filter students that have height and weight above the minimum."
+723,train,sanitized,The input is defined as two lists of the same length. Write a function to count indices where the lists have the same values.
+724,train,sanitized,Write a function that takes base and power as arguments and calculate the sum of all digits of the base to the specified power.
+725,train,sanitized,"Write a function to extract values between quotation marks "" "" of the given string."
+726,train,sanitized,"Write a function that takes as input a tuple of numbers (t_1,...,t_{N+1}) and returns a tuple of length N where the i-th element of the tuple is equal to t_i * t_{i+1}."
+728,train,sanitized,"Write a function takes as input two lists [a_1,...,a_n], [b_1,...,b_n] and returns [a_1+b_1,...,a_n+b_n]."
+730,train,sanitized,Write a function to remove consecutive duplicates of a given list.
+731,train,sanitized,Write a function to find the lateral surface area of a cone given radius r and the height h.
+732,train,sanitized,"Write a function to replace all occurrences of spaces, commas, or dots with a colon."
+733,train,sanitized,Write a function to find the index of the first occurrence of a given number in a sorted array.
+734,train,sanitized,Write a python function to find sum of products of all possible sublists of a given list. https://www.geeksforgeeks.org/sum-of-products-of-all-possible-subarrays/
+735,train,sanitized,Write a python function to toggle bits of the number except the first and the last bit. https://www.geeksforgeeks.org/toggle-bits-number-expect-first-last-bits/
+736,train,sanitized,Write a function to locate the left insertion point for a specified value in sorted order. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-data-structure-exercise-24.php
+737,train,sanitized,Write a function to check whether the given string is starting with a vowel or not using regex.
+738,train,sanitized,Write a function to calculate the geometric sum of n-1. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-recursion-exercise-9.php
+739,train,sanitized,Write a python function to find the index of smallest triangular number with n digits. https://www.geeksforgeeks.org/index-of-smallest-triangular-number-with-n-digits/
+740,train,sanitized,Write a function to convert the given tuple to a key-value dictionary using adjacent elements. https://www.geeksforgeeks.org/python-convert-tuple-to-adjacent-pair-dictionary/
+741,train,sanitized,Write a python function to check whether all the characters are same or not.
+742,train,sanitized,Write a function to caluclate the area of a tetrahedron.
+743,train,sanitized,Write a function to rotate a given list by specified number of items to the right direction. https://www.geeksforgeeks.org/python-program-right-rotate-list-n/
+744,train,sanitized,Write a function to check if the given tuple has any none value or not.
+745,train,sanitized,Write a function to find numbers within a given range from startnum ti endnum where every number is divisible by every digit it contains. https://www.w3resource.com/python-exercises/lambda/python-lambda-exercise-24.php
+746,train,sanitized,Write a function to find area of a sector. The function takes the radius and angle as inputs. Function should return None if the angle is larger than 360 degrees.
+747,train,sanitized,Write a function to find the longest common subsequence for the given three string sequence. https://www.geeksforgeeks.org/lcs-longest-common-subsequence-three-strings/
+748,train,sanitized,Write a function to put spaces between words starting with capital letters in a given string.
+749,train,sanitized,Write a function to sort a given list of strings of numbers numerically. https://www.geeksforgeeks.org/python-sort-numeric-strings-in-a-list/
+750,train,sanitized,Write a function to add the given tuple to the given list.
+751,train,sanitized,Write a function to check if the given array represents min heap or not. https://www.geeksforgeeks.org/how-to-check-if-a-given-array-represents-a-binary-heap/
+752,train,sanitized,"Write a function to find the nth jacobsthal number. https://www.geeksforgeeks.org/jacobsthal-and-jacobsthal-lucas-numbers/ 0, 1, 1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, ..."
+753,train,sanitized,Write a function to find minimum k records from tuple list. https://www.geeksforgeeks.org/python-find-minimum-k-records-from-tuple-list/ - in this case a verbatim copy of test cases
+754,train,sanitized,"We say that an element is common for lists l1, l2, l3 if it appears in all three lists under the same index. Write a function to find common elements from three lists. The function should return a list."
+755,train,sanitized,Write a function to find the second smallest number in a list.
+756,train,sanitized,Write a function that matches a string that has an 'a' followed by one or more 'b's. https://www.w3resource.com/python-exercises/re/python-re-exercise-3.php
+757,train,sanitized,Write a function to count the pairs of reverse strings in the given string list. https://www.geeksforgeeks.org/python-program-to-count-the-pairs-of-reverse-strings/
+758,train,sanitized,Write a function to count lists within a list. The function should return a dictionary where every list is converted to a tuple and the value of such tuple is the number of its occurencies in the original list.
+759,train,sanitized,Write a function to check whether a given string is a decimal number with a precision of 2.
+760,train,sanitized,Write a python function to check whether a list of numbers contains only one distinct element or not.
+762,train,sanitized,Write a function to check whether the given month number contains 30 days or not. Months are given as number from 1 to 12.
+763,train,sanitized,Write a python function to find the minimum difference between any two elements in a given array. https://www.geeksforgeeks.org/find-minimum-difference-pair/
+764,train,sanitized,Write a python function to count number of digits in a given string.
+765,train,sanitized,Write a function to find nth polite number. geeksforgeeks.org/n-th-polite-number/
+766,train,sanitized,Write a function to return a list of all pairs of consecutive items in a given list.
+767,train,sanitized,"Write a python function to count the number of pairs whose sum is equal to ‘sum’. The funtion gets as input a list of numbers and the sum,"
+769,train,sanitized,Write a python function to get the difference between two lists.
+770,train,sanitized,Write a python function to find the sum of fourth power of first n odd natural numbers.
+771,train,sanitized,Write a function to check if the given expression is balanced or not. https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/
+772,train,sanitized,Write a function to remove all the words with k length in the given string.
+773,train,sanitized,Write a function to find the occurrence and position of the substrings within a string. Return None if there is no match.
+775,train,sanitized,Write a python function to check whether every odd index contains odd numbers of a given list.
+776,train,sanitized,Write a function to count those characters which have vowels as their neighbors in the given string.
+777,train,sanitized,Write a python function to find the sum of non-repeated elements in a given list.
+778,train,sanitized,Write a function to pack consecutive duplicates of a given list elements into sublists.
+779,train,sanitized,"Write a function to count the number of lists within a list. The function should return a dictionary, where every list is turned to a tuple, and the value of the tuple is the number of its occurrences."
+780,train,sanitized,Write a function to find the combinations of sums with tuples in the given tuple list. https://www.geeksforgeeks.org/python-combinations-of-sum-with-tuples-in-tuple-list/
+781,train,sanitized,Write a python function to check whether the count of divisors is even. https://www.w3resource.com/python-exercises/basic/python-basic-1-exercise-24.php
+782,train,sanitized,Write a python function to find the sum of all odd length subarrays. https://www.geeksforgeeks.org/sum-of-all-odd-length-subarrays/
+783,train,sanitized,Write a function to convert rgb color to hsv color. https://www.geeksforgeeks.org/program-change-rgb-color-model-hsv-color-model/
+784,train,sanitized,Write a function to find the product of first even and odd number of a given list.
+785,train,sanitized,Write a function to convert tuple string to integer tuple.
+786,train,sanitized,Write a function to locate the right insertion point for a specified value in sorted order.
+787,train,sanitized,Write a function that matches a string that has an a followed by three 'b'.
+788,train,sanitized,Write a function to create a new tuple from the given string and list.
+790,train,sanitized,Write a python function to check whether every even index contains even numbers of a given list.
+791,train,sanitized,Write a function to remove tuples from the given tuple.
+792,train,sanitized,Write a python function to count the number of lists in a given number of lists.
+793,train,sanitized,Write a python function to find the last position of an element in a sorted array.
+794,train,sanitized,"Write a function that matches a string that has an 'a' followed by anything, ending in 'b'."
+796,train,sanitized,Write function to find the sum of all items in the given dictionary.
+797,train,sanitized,Write a python function to find the sum of all odd natural numbers within the range l and r.
+798,train,sanitized,Write a python function to find the sum of an array.
+799,train,sanitized,Write a function to that rotate left bits by d bits a given number. We assume that the number is 32 bit.
+800,train,sanitized,Write a function to remove all whitespaces from a string.
+801,train,sanitized,Write a python function to count the number of equal numbers from three given integers.
+802,train,sanitized,Write a python function to count the number of rotations required to generate a sorted array. https://www.geeksforgeeks.org/count-of-rotations-required-to-generate-a-sorted-array/
+803,train,sanitized,Write a function to check whether the given number is a perfect square or not. https://www.geeksforgeeks.org/check-if-given-number-is-perfect-square-in-cpp/
+804,train,sanitized,Write a function to check whether the product of numbers in a list is even or not.
+805,train,sanitized,Write a function that returns the list in a list of lists whose sum of elements is the highest.
+806,train,sanitized,Write a function to find maximum run of uppercase characters in the given string.
+807,train,sanitized,Write a python function to find the first odd number in a given list of numbers.
+808,train,sanitized,Write a function to check if the given tuples contain the k or not.
+809,train,sanitized,Write a function to check if each element of second tuple is smaller than its corresponding element in the first tuple.

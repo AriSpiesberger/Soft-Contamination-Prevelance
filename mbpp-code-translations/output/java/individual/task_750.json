@@ -1,0 +1,37 @@
+{
+  "task_id": 750,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add the given tuple to the given list.",
+  "python_code": "def add_tuple(test_list, test_tup):\n  test_list += test_tup\n  return test_list",
+  "test_list": [
+    "assert add_tuple([5, 6, 7], (9, 10)) == [5, 6, 7, 9, 10]",
+    "assert add_tuple([6, 7, 8], (10, 11)) == [6, 7, 8, 10, 11]",
+    "assert add_tuple([7, 8, 9], (11, 12)) == [7, 8, 9, 11, 12]"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static ArrayList<Integer> add_tuple(ArrayList<Integer> test_list, int[] test_tup) {\n        for (int element : test_tup) {\n            test_list.add(element);\n        }\n        return test_list;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert add_tuple([5, 6, 7], (9, 10)) == [5, 6, 7, 9, 10]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(5);\ninput.add(6);\ninput.add(7);\nint[] tuple = new int[]{9, 10};\nArrayList<Integer> result = add_tuple(input, tuple);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(5);\nexpected.add(6);\nexpected.add(7);\nexpected.add(9);\nexpected.add(10);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_tuple([6, 7, 8], (10, 11)) == [6, 7, 8, 10, 11]",
+      "generated_test": "ArrayList<Integer> input1 = new ArrayList<>();\ninput1.add(6);\ninput1.add(7);\ninput1.add(8);\nint[] input2 = new int[]{10, 11};\nArrayList<Integer> result = add_tuple(input1, input2);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(6);\nexpected.add(7);\nexpected.add(8);\nexpected.add(10);\nexpected.add(11);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_tuple([7, 8, 9], (11, 12)) == [7, 8, 9, 11, 12]",
+      "generated_test": "ArrayList<Integer> input = new ArrayList<>();\ninput.add(7);\ninput.add(8);\ninput.add(9);\nint[] testTup = new int[]{11, 12};\nArrayList<Integer> result = add_tuple(input, testTup);\nArrayList<Integer> expected = new ArrayList<>();\nexpected.add(7);\nexpected.add(8);\nexpected.add(9);\nexpected.add(11);\nexpected.add(12);\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

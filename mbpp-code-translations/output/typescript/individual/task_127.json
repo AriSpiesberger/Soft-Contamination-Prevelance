@@ -1,0 +1,17 @@
+{
+  "task_id": 127,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to multiply two integers.",
+  "python_code": "def multiply_int(x, y):\n    if y < 0:\n        return -multiply_int(x, -y)\n    elif y == 0:\n        return 0\n    elif y == 1:\n        return x\n    else:\n        return x + multiply_int(x, y - 1)",
+  "test_list": [
+    "assert multiply_int(10,20)==200",
+    "assert multiply_int(5,10)==50",
+    "assert multiply_int(4,8)==32"
+  ],
+  "code_typescript": "function multiply_int(x: number, y: number): number {\n    if (y < 0) {\n        return -multiply_int(x, -y);\n    } else if (y === 0) {\n        return 0;\n    } else if (y === 1) {\n        return x;\n    } else {\n        return x + multiply_int(x, y - 1);\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

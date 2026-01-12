@@ -1,0 +1,27 @@
+{
+  "task_id": 142,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count number items that are identical in the same position of three given lists.",
+  "code_python": "def count_samepair(list1,list2,list3):\n    result = sum(m == n == o for m, n, o in zip(list1,list2,list3))\n    return result",
+  "test_list": [
+    "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,9],[2,1,3,1,2,6,7,9])==3",
+    "assert count_samepair([1,2,3,4,5,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==4",
+    "assert count_samepair([1,2,3,4,2,6,7,8],[2,2,3,1,2,6,7,8],[2,1,3,1,2,6,7,8])==5"
+  ],
+  "python_1": "def count_samepair(list1,list2,list3):\n    # Initialize a counter to track positions where all three lists match\n    count = 0\n    # Determine the minimum length to avoid index out of bounds errors\n    min_length = min(len(list1), len(list2), len(list3))\n    # Use index-based iteration to compare elements at each position\n    for i in range(min_length):\n        # Check if element at position i is identical across all three lists\n        if list1[i] == list2[i] and list2[i] == list3[i]:\n            # Increment counter when a three-way match is found\n            count += 1\n    # Return the total number of positions with matching elements\n    return count",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_samepair(list1,list2,list3):\n    # Use map to apply a lambda that checks equality at each position tuple\n    equality_checks = map(lambda t: t[0] == t[1] == t[2], zip(list1, list2, list3))\n    # Convert boolean results to integers (True=1, False=0) using list comprehension\n    integer_matches = [1 if match else 0 for match in equality_checks]\n    # Reduce the list of integers to a single sum using built-in sum\n    result = sum(integer_matches)\n    # Return the count of positions where all three elements are identical\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_samepair(list1,list2,list3):\n    # Import reduce function for functional-style accumulation\n    from functools import reduce\n    # Create an iterator that pairs indices with zipped elements from all three lists\n    indexed_triples = enumerate(zip(list1, list2, list3))\n    # Use filter to retain only the tuples where all three elements match\n    matching_positions = filter(lambda x: x[1][0] == x[1][1] == x[1][2], indexed_triples)\n    # Convert filtered iterator to a list to enable length calculation\n    matching_list = list(matching_positions)\n    # Return the count by measuring the length of the filtered matches\n    return len(matching_list)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_samepair(list1,list2,list3):\n    # Use recursion with a helper that processes one position at a time\n    def helper(idx, l1, l2, l3):\n        # Base case: when index reaches end of shortest list, return 0\n        if idx >= len(l1) or idx >= len(l2) or idx >= len(l3):\n            return 0\n        # Check if current position has matching elements in all three lists\n        current_match = 1 if l1[idx] == l2[idx] == l3[idx] else 0\n        # Recursively process remaining positions and add current result\n        return current_match + helper(idx + 1, l1, l2, l3)\n    # Start recursive counting from index 0\n    return helper(0, list1, list2, list3)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_samepair(list1,list2,list3):\n    # Use numpy-style approach without numpy: create boolean array via list comprehension\n    matches = [list1[i] == list2[i] == list3[i] for i in range(min(len(list1), len(list2), len(list3)))]\n    # Count True values by exploiting that True behaves as 1 in arithmetic with count method alternative\n    result = matches.count(True)\n    # Return the total count of positions where all three lists have identical values\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

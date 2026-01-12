@@ -1,0 +1,27 @@
+{
+  "task_id": 737,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string is starting with a vowel or not using regex.",
+  "code_python": "import re \nregex = '^[aeiouAEIOU][A-Za-z0-9_]*'\ndef check_str(string): \n\treturn re.search(regex, string)",
+  "test_list": [
+    "assert check_str(\"annie\")",
+    "assert not check_str(\"dawood\")",
+    "assert check_str(\"Else\")"
+  ],
+  "python_1": "import re\n\ndef check_str(string):\n    # Define pattern that matches only if first character is a vowel (case insensitive)\n    vowel_start_pattern = r'^[aeiou]'\n    # Use re.match with IGNORECASE flag instead of listing both cases in character class\n    match_result = re.match(vowel_start_pattern, string, re.IGNORECASE)\n    # Return truthy match object if vowel found at start, None otherwise\n    return match_result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\n\ndef check_str(string):\n    # Compile regex pattern into a reusable pattern object for efficiency\n    vowel_pattern = re.compile(r'^[aeiouAEIOU]')\n    # Use fullmatch-like approach by checking if pattern exists at position 0\n    result = vowel_pattern.match(string)\n    # Convert match object to boolean explicitly for cleaner return semantics\n    return bool(result) if result else None",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\n\ndef check_str(string):\n    # Use re.findall to get list of matches at string start for vowels\n    vowel_matches = re.findall(r'^[aeiouAEIOU]', string)\n    # Return the list itself - non-empty list is truthy, empty list is falsy\n    return vowel_matches if vowel_matches else None",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\n\ndef check_str(string):\n    # Use re.split to break string at first vowel if it starts with one\n    parts = re.split(r'^([aeiouAEIOU])', string, maxsplit=1)\n    # If split occurred, parts will have 3 elements: empty string, vowel, rest\n    # If no split (doesn't start with vowel), parts will have 1 element: original string\n    has_vowel_start = len(parts) > 1\n    # Return a truthy value (the captured vowel) if starts with vowel, else None\n    return parts[1] if has_vowel_start else None",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\n\ndef check_str(string):\n    # Use re.sub to attempt replacing a starting vowel with a marker string\n    replacement_marker = \"VOWEL_FOUND\"\n    # Substitute first character only if it's a vowel, using count=1 for single replacement\n    modified = re.sub(r'^[aeiouAEIOU]', replacement_marker, string, count=1)\n    # Check if substitution occurred by comparing if string now starts with our marker\n    substitution_happened = modified.startswith(replacement_marker)\n    # Return truthy string (first char) if vowel was found, else return None for falsy\n    return string[0] if substitution_happened else None",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

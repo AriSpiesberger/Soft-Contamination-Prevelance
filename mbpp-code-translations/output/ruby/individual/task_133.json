@@ -1,0 +1,37 @@
+{
+  "task_id": 133,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the sum of the negative numbers of a given list of numbers.",
+  "python_code": "def sum_negativenum(nums):\n  sum_negativenum = list(filter(lambda nums:nums<0,nums))\n  return sum(sum_negativenum)",
+  "test_list": [
+    "assert sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17])==-32",
+    "assert sum_negativenum([10,15,-14,13,-18,12,-20])==-52",
+    "assert sum_negativenum([19, -65, 57, 39, 152,-639, 121, 44, 90, -190])==-894"
+  ],
+  "code_ruby": "def sum_negativenum(nums)\n  nums.select { |num| num < 0 }.sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17])==-32",
+      "generated_test": "result = sum_negativenum([2, 4, -6, -9, 11, -12, 14, -5, 17])\nexpected = -32\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_negativenum([10,15,-14,13,-18,12,-20])==-52",
+      "generated_test": "result = sum_negativenum([10, 15, -14, 13, -18, 12, -20])\nexpected = -52\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_negativenum([19, -65, 57, 39, 152,-639, 121, 44, 90, -190])==-894",
+      "generated_test": "result = sum_negativenum([19, -65, 57, 39, 152, -639, 121, 44, 90, -190])\nexpected = -894\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

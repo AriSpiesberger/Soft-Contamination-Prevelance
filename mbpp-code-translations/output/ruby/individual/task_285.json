@@ -1,0 +1,37 @@
+{
+  "task_id": 285,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that checks whether a string contains the 'a' character followed by two or three 'b' characters.",
+  "python_code": "import re\ndef text_match_two_three(text):\n        patterns = 'ab{2,3}'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False",
+  "test_list": [
+    "assert text_match_two_three(\"ac\")==(False)",
+    "assert text_match_two_three(\"dc\")==(False)",
+    "assert text_match_two_three(\"abbbba\")==(True)"
+  ],
+  "code_ruby": "def text_match_two_three(text)\n  pattern = /ab{2,3}/\n  if text.match?(pattern)\n    true\n  else\n    false\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert text_match_two_three(\"ac\")==(False)",
+      "generated_test": "result = text_match_two_three(\"ac\")\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_two_three(\"dc\")==(False)",
+      "generated_test": "result = text_match_two_three(\"dc\")\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_two_three(\"abbbba\")==(True)",
+      "generated_test": "result = text_match_two_three(\"abbbba\")\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

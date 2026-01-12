@@ -1,0 +1,27 @@
+{
+  "task_id": 160,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns integers x and y that satisfy ax + by = n as a tuple, or return None if no solution exists.",
+  "code_python": "def find_solution(a, b, n):\n\ti = 0\n\twhile i * a <= n:\n\t\tif (n - (i * a)) % b == 0: \n\t\t\treturn (i, (n - (i * a)) // b)\n\t\ti = i + 1\n\treturn None",
+  "test_list": [
+    "assert find_solution(2, 3, 7) == (2, 1)",
+    "assert find_solution(4, 2, 7) == None",
+    "assert find_solution(1, 13, 17) == (4, 1)"
+  ],
+  "python_1": "def find_solution(a, b, n):\n    # Calculate maximum possible value for y coefficient\n    max_y = n // b\n    # Iterate y from maximum down to zero (reverse search strategy)\n    for y in range(max_y, -1, -1):\n        # Compute the remaining value after subtracting b*y from n\n        remainder = n - b * y\n        # Check if remainder is non-negative and perfectly divisible by a\n        if remainder >= 0 and remainder % a == 0:\n            # Calculate corresponding x value using integer division\n            x = remainder // a\n            # Return the first valid (x, y) pair found\n            return (x, y)\n    # No valid integer solution exists for the given parameters\n    return None",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_solution(a, b, n):\n    # Generate all possible x values from 0 up to n//a inclusive\n    possible_x_values = range(n // a + 1)\n    # Use generator expression to find valid (x, y) pairs lazily\n    valid_pairs = ((x, (n - a * x) // b) for x in possible_x_values if (n - a * x) % b == 0)\n    # Attempt to retrieve the first valid solution from the generator\n    first_solution = next(valid_pairs, None)\n    # Return the found pair or None if generator was exhausted\n    return first_solution",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_solution(a, b, n):\n    # Use recursion with memoization approach via nested helper function\n    def try_x_value(x):\n        # Base case: x coefficient has exceeded the maximum possible value\n        if x * a > n:\n            # Signal that no solution was found in this search path\n            return None\n        # Compute what remains after allocating x units of coefficient a\n        leftover = n - x * a\n        # Test if the leftover amount can be evenly distributed by coefficient b\n        if leftover % b == 0:\n            # Construct and return the valid solution tuple\n            return (x, leftover // b)\n        # Recursive call: try the next higher x value\n        return try_x_value(x + 1)\n    # Kick off the recursive search starting from x = 0\n    result = try_x_value(0)\n    # Return whatever the recursive search yielded (tuple or None)\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_solution(a, b, n):\n    # Build a list of all candidate x values within valid range\n    x_candidates = list(range(n // a + 1))\n    # Initialize index to track position in candidate list\n    idx = 0\n    # Loop through candidates using index-based iteration\n    while idx < len(x_candidates):\n        # Extract current x value from candidate list\n        current_x = x_candidates[idx]\n        # Calculate the residual amount that must be covered by b*y\n        residual = n - a * current_x\n        # Verify residual is exactly divisible by b (y must be integer)\n        divisibility_check = residual % b == 0\n        # Confirm residual is non-negative (y cannot be negative)\n        non_negative_check = residual >= 0\n        # Both conditions must hold for a valid solution\n        if divisibility_check and non_negative_check:\n            # Derive the y value through integer division\n            y_value = residual // b\n            # Package x and y into the required tuple format\n            solution_tuple = (current_x, y_value)\n            # Return immediately upon finding first valid pair\n            return solution_tuple\n        # Advance to examine the next candidate x value\n        idx += 1\n    # Exhausted all candidates without finding valid solution\n    return None",
+  "python_4_status": "success",
+  "python_4_attempts": 2,
+  "python_5": "def find_solution(a, b, n):\n    # Use filter function to identify x values that produce valid solutions\n    valid_x_filter = filter(lambda x: (n - a * x) % b == 0, range(n // a + 1))\n    # Convert filter object to list to enable indexing and length checks\n    valid_x_list = list(valid_x_filter)\n    # Check if any valid x values were found by the filter\n    if len(valid_x_list) == 0:\n        # No x value satisfies the divisibility requirement\n        return None\n    # Select the smallest valid x (first element since range starts at 0)\n    chosen_x = valid_x_list[0]\n    # Compute corresponding y by solving the linear equation for y\n    computed_y = (n - a * chosen_x) // b\n    # Assemble the solution as a tuple of the two coefficients\n    answer = (chosen_x, computed_y)\n    # Deliver the computed solution tuple\n    return answer",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

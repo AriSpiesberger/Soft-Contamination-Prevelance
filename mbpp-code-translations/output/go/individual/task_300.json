@@ -1,0 +1,37 @@
+{
+  "task_id": 300,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the count of all binary sequences of length 2n such that sum of first n bits is same as sum of last n bits.",
+  "python_code": "def count_binary_seq(n): \n\tnCr = 1\n\tres = 1\n\tfor r in range(1, n + 1): \n\t\tnCr = (nCr * (n + 1 - r)) / r \n\t\tres += nCr * nCr \n\treturn res ",
+  "test_list": [
+    "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)"
+  ],
+  "code_go": "package main\n\nfunc count_binary_seq(n int) float64 {\n\tnCr := 1.0\n\tres := 1.0\n\tfor r := 1; r <= n; r++ {\n\t\tnCr = (nCr * float64(n+1-r)) / float64(r)\n\t\tres = res + nCr*nCr\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 6,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+      "generated_test": "result := count_binary_seq(1)\nexpected := 2.0\nrelTol := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nmaxVal := expected\nif maxVal < 0 {\n\tmaxVal = -maxVal\n}\nif diff <= relTol*maxVal {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+      "generated_test": "result := count_binary_seq(2)\nexpected := 6.0\nrelTol := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nabsExpected := expected\nif absExpected < 0 {\n\tabsExpected = -absExpected\n}\nif diff <= relTol*absExpected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)",
+      "generated_test": "result := count_binary_seq(3)\nexpected := 20.0\nrelTol := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nabsExpected := expected\nif absExpected < 0 {\n\tabsExpected = -absExpected\n}\nif diff <= relTol*absExpected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

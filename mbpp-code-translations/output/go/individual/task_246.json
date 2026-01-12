@@ -1,0 +1,37 @@
+{
+  "task_id": 246,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function for computing square roots using the babylonian method.",
+  "python_code": "def babylonian_squareroot(number):\n    if(number == 0):\n        return 0;\n    g = number/2.0;\n    g2 = g + 1;\n    while(g != g2):\n        n = number/ g;\n        g2 = g;\n        g = (g + n)/2;\n    return g;",
+  "test_list": [
+    "assert math.isclose(babylonian_squareroot(10), 3.162277660168379, rel_tol=0.001)",
+    "assert math.isclose(babylonian_squareroot(2), 1.414213562373095, rel_tol=0.001)",
+    "assert math.isclose(babylonian_squareroot(9), 3.0, rel_tol=0.001)"
+  ],
+  "code_go": "package main\n\nfunc babylonian_squareroot(number float64) float64 {\n\tif number == 0 {\n\t\treturn 0\n\t}\n\tg := number / 2.0\n\tg2 := g + 1\n\tfor g != g2 {\n\t\tn := number / g\n\t\tg2 = g\n\t\tg = (g + n) / 2\n\t}\n\treturn g\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert math.isclose(babylonian_squareroot(10), 3.162277660168379, rel_tol=0.001)",
+      "generated_test": "result := babylonian_squareroot(10)\nexpected := 3.162277660168379\nrelTol := 0.001\n\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nabsExpected := expected\nif absExpected < 0 {\n\tabsExpected = -absExpected\n}\n\nif diff <= relTol*absExpected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(babylonian_squareroot(2), 1.414213562373095, rel_tol=0.001)",
+      "generated_test": "result := babylonian_squareroot(2)\nexpected := 1.414213562373095\nrelTol := 0.001\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nabsExpected := expected\nif absExpected < 0 {\n\tabsExpected = -absExpected\n}\nif diff <= relTol*absExpected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(babylonian_squareroot(9), 3.0, rel_tol=0.001)",
+      "generated_test": "result := babylonian_squareroot(9)\nexpected := 3.0\nrelTol := 0.001\n\ndiff := result - expected\nif diff < 0 {\n\tdiff = -diff\n}\nexpAbs := expected\nif expAbs < 0 {\n\texpAbs = -expAbs\n}\n\nif diff <= relTol*expAbs {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

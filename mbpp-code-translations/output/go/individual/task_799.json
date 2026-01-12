@@ -1,0 +1,65 @@
+{
+  "task_id": 799,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to that rotate left bits by d bits a given number. We assume that the number is 32 bit.",
+  "python_code": "def left_rotate(n,d):   \n    INT_BITS = 32\n    return (n << d)|(n >> (INT_BITS - d))  ",
+  "test_list": [
+    "assert left_rotate(16,2) == 64",
+    "assert left_rotate(10,2) == 40",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(99,3) == 792",
+    "assert left_rotate(0b0001,3) == 0b1000",
+    "assert left_rotate(0b0101,3) == 0b101000",
+    "assert left_rotate(0b11101,3) == 0b11101000"
+  ],
+  "code_go": "package main\n\nfunc left_rotate(n, d int) int {\n\tINT_BITS := 32\n\t// Mask to ensure we're working with 32 bits\n\tmask := int(0xFFFFFFFF)\n\tn = n & mask\n\td = d % INT_BITS\n\treturn ((n << d) | (n >> (INT_BITS - d))) & mask\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 7,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert left_rotate(16,2) == 64",
+      "generated_test": "result := left_rotate(16, 2)\nexpected := 64\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(10,2) == 40",
+      "generated_test": "result := left_rotate(10, 2)\nexpected := 40\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(99,3) == 792",
+      "generated_test": "result := left_rotate(99, 3)\nexpected := 792\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(99,3) == 792",
+      "generated_test": "result := left_rotate(99, 3)\nexpected := 792\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(0b0001,3) == 0b1000",
+      "generated_test": "result := left_rotate(0b0001, 3)\nexpected := 0b1000\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(0b0101,3) == 0b101000",
+      "generated_test": "result := left_rotate(0b0101, 3)\nexpected := 0b101000\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert left_rotate(0b11101,3) == 0b11101000",
+      "generated_test": "result := left_rotate(0b11101, 3)\nexpected := 0b11101000\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

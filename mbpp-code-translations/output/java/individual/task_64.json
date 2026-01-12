@@ -1,0 +1,37 @@
+{
+  "task_id": 64,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of tuples using the second value of each tuple.",
+  "python_code": "def subject_marks(subjectmarks):\n#subject_marks = [('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])\n subjectmarks.sort(key = lambda x: x[1])\n return subjectmarks",
+  "test_list": [
+    "assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]",
+    "assert subject_marks([('Telugu',49),('Hindhi',54),('Social',33)])==([('Social',33),('Telugu',49),('Hindhi',54)])",
+    "assert subject_marks([('Physics',96),('Chemistry',97),('Biology',45)])==([('Biology',45),('Physics',96),('Chemistry',97)])"
+  ],
+  "code_java": "import java.util.*;\n\nclass Solution {\n    public static List<List<Object>> subject_marks(List<List<Object>> subjectmarks) {\n        subjectmarks.sort((a, b) -> {\n            Integer val1 = (Integer) a.get(1);\n            Integer val2 = (Integer) b.get(1);\n            return val1.compareTo(val2);\n        });\n        return subjectmarks;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 2,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> tuple1 = new ArrayList<>();\ntuple1.add(\"English\");\ntuple1.add(88);\ninput.add(tuple1);\nList<Object> tuple2 = new ArrayList<>();\ntuple2.add(\"Science\");\ntuple2.add(90);\ninput.add(tuple2);\nList<Object> tuple3 = new ArrayList<>();\ntuple3.add(\"Maths\");\ntuple3.add(97);\ninput.add(tuple3);\nList<Object> tuple4 = new ArrayList<>();\ntuple4.add(\"Social sciences\");\ntuple4.add(82);\ninput.add(tuple4);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> exp1 = new ArrayList<>();\nexp1.add(\"Social sciences\");\nexp1.add(82);\nexpected.add(exp1);\nList<Object> exp2 = new ArrayList<>();\nexp2.add(\"English\");\nexp2.add(88);\nexpected.add(exp2);\nList<Object> exp3 = new ArrayList<>();\nexp3.add(\"Science\");\nexp3.add(90);\nexpected.add(exp3);\nList<Object> exp4 = new ArrayList<>();\nexp4.add(\"Maths\");\nexp4.add(97);\nexpected.add(exp4);\n\nList<List<Object>> result = subject_marks(input);\n\nboolean pass = true;\nif (result.size() != expected.size()) {\n    pass = false;\n} else {\n    for (int i = 0; i < result.size(); i++) {\n        if (!result.get(i).get(0).equals(expected.get(i).get(0)) ||\n            !result.get(i).get(1).equals(expected.get(i).get(1))) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert subject_marks([('Telugu',49),('Hindhi',54),('Social',33)])==([('Social',33),('Telugu',49),('Hindhi',54)])",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> item1 = new ArrayList<>();\nitem1.add(\"Telugu\");\nitem1.add(49);\ninput.add(item1);\nList<Object> item2 = new ArrayList<>();\nitem2.add(\"Hindhi\");\nitem2.add(54);\ninput.add(item2);\nList<Object> item3 = new ArrayList<>();\nitem3.add(\"Social\");\nitem3.add(33);\ninput.add(item3);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> exp1 = new ArrayList<>();\nexp1.add(\"Social\");\nexp1.add(33);\nexpected.add(exp1);\nList<Object> exp2 = new ArrayList<>();\nexp2.add(\"Telugu\");\nexp2.add(49);\nexpected.add(exp2);\nList<Object> exp3 = new ArrayList<>();\nexp3.add(\"Hindhi\");\nexp3.add(54);\nexpected.add(exp3);\n\nList<List<Object>> result = subject_marks(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert subject_marks([('Physics',96),('Chemistry',97),('Biology',45)])==([('Biology',45),('Physics',96),('Chemistry',97)])",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> physics = new ArrayList<>();\nphysics.add(\"Physics\");\nphysics.add(96);\ninput.add(physics);\nList<Object> chemistry = new ArrayList<>();\nchemistry.add(\"Chemistry\");\nchemistry.add(97);\ninput.add(chemistry);\nList<Object> biology = new ArrayList<>();\nbiology.add(\"Biology\");\nbiology.add(45);\ninput.add(biology);\n\nList<List<Object>> expected = new ArrayList<>();\nList<Object> expBiology = new ArrayList<>();\nexpBiology.add(\"Biology\");\nexpBiology.add(45);\nexpected.add(expBiology);\nList<Object> expPhysics = new ArrayList<>();\nexpPhysics.add(\"Physics\");\nexpPhysics.add(96);\nexpected.add(expPhysics);\nList<Object> expChemistry = new ArrayList<>();\nexpChemistry.add(\"Chemistry\");\nexpChemistry.add(97);\nexpected.add(expChemistry);\n\nList<List<Object>> result = subject_marks(input);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        if (!result.get(i).get(0).equals(expected.get(i).get(0)) ||\n            !result.get(i).get(1).equals(expected.get(i).get(1))) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

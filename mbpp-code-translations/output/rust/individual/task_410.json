@@ -1,0 +1,37 @@
+{
+  "task_id": 410,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum value in a given heterogeneous list.",
+  "python_code": "def min_val(listval):\n     min_val = min(i for i in listval if isinstance(i, int))\n     return min_val",
+  "test_list": [
+    "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+    "assert min_val(['Python', 15, 20, 25])==15",
+    "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20"
+  ],
+  "code_rust": "use std::any::Any;\n\npub fn min_val(listval: &[Box<dyn Any>]) -> Option<i32> {\n    listval\n        .iter()\n        .filter_map(|item| item.downcast_ref::<i32>())\n        .copied()\n        .min()\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    fn create_list(items: Vec<Box<dyn Any>>) -> Vec<Box<dyn Any>> {\n        items\n    }\n\n    #[test]\n    fn test_min_val_1() {\n        let list: Vec<Box<dyn Any>> = vec![\n            Box::new(\"Python\".to_string()),\n            Box::new(3i32),\n            Box::new(2i32),\n            Box::new(4i32),\n            Box::new(5i32),\n            Box::new(\"version\".to_string()),\n        ];\n        assert_eq!(min_val(&list), Some(2));\n    }\n\n    #[test]\n    fn test_min_val_2() {\n        let list: Vec<Box<dyn Any>> = vec![\n            Box::new(\"Python\".to_string()),\n            Box::new(15i32),\n            Box::new(20i32),\n            Box::new(25i32),\n        ];\n        assert_eq!(min_val(&list), Some(15));\n    }\n\n    #[test]\n    fn test_min_val_3() {\n        let list: Vec<Box<dyn Any>> = vec![\n            Box::new(\"Python\".to_string()),\n            Box::new(30i32),\n            Box::new(20i32),\n            Box::new(40i32),\n            Box::new(50i32),\n            Box::new(\"version\".to_string()),\n        ];\n        assert_eq!(min_val(&list), Some(20));\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+      "generated_test": "let list: Vec<Box<dyn Any>> = vec![\n    Box::new(\"Python\".to_string()),\n    Box::new(3i32),\n    Box::new(2i32),\n    Box::new(4i32),\n    Box::new(5i32),\n    Box::new(\"version\".to_string()),\n];\nlet result = min_val(&list);\nlet expected = Some(2);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_val(['Python', 15, 20, 25])==15",
+      "generated_test": "let list: Vec<Box<dyn Any>> = vec![\n    Box::new(\"Python\".to_string()),\n    Box::new(15i32),\n    Box::new(20i32),\n    Box::new(25i32),\n];\nlet result = min_val(&list);\nlet expected = Some(15);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20",
+      "generated_test": "let list: Vec<Box<dyn Any>> = vec![\n    Box::new(\"Python\".to_string()),\n    Box::new(30i32),\n    Box::new(20i32),\n    Box::new(40i32),\n    Box::new(50i32),\n    Box::new(\"version\".to_string()),\n];\nlet result = min_val(&list);\nlet expected = Some(20);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

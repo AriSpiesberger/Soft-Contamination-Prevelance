@@ -1,0 +1,37 @@
+{
+  "task_id": 471,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the product of the array multiplication modulo n.",
+  "python_code": "def find_remainder(arr, n): \n    mul = 1\n    for i in range(len(arr)):  \n        mul = (mul * (arr[i] % n)) % n \n    return mul % n ",
+  "test_list": [
+    "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+    "assert find_remainder([1,1,1],1) == 0",
+    "assert find_remainder([1,2,1],2) == 0"
+  ],
+  "code_ruby": "def find_remainder(arr, n)\n  mul = 1\n  arr.each do |element|\n    mul = (mul * (element % n)) % n\n  end\n  mul % n\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+      "generated_test": "result = find_remainder([100, 10, 5, 25, 35, 14], 11)\nexpected = 9\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_remainder([1,1,1],1) == 0",
+      "generated_test": "result = find_remainder([1,1,1], 1)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_remainder([1,2,1],2) == 0",
+      "generated_test": "result = find_remainder([1, 2, 1], 2)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

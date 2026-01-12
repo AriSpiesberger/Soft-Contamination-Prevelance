@@ -1,0 +1,37 @@
+{
+  "task_id": 779,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of lists within a list. The function should return a dictionary, where every list is turned to a tuple, and the value of the tuple is the number of its occurrences.",
+  "python_code": "def unique_sublists(list1):\n    result ={}\n    for l in list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]])=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[1, 2], [3, 4], [4, 5], [6, 7]])=={(1, 2): 1, (3, 4): 1, (4, 5): 1, (6, 7): 1}"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Map<List<Object>, Integer> unique_sublists(List<List<Object>> list1) {\n        // Use LinkedHashMap to preserve insertion order\n        LinkedHashMap<List<Object>, Integer> result = new LinkedHashMap<>();\n        \n        for (List<Object> l : list1) {\n            // Create an immutable copy as key\n            List<Object> newKey = Collections.unmodifiableList(new ArrayList<>(l));\n            \n            // Find if an equivalent key already exists in the map\n            List<Object> existingKey = null;\n            for (List<Object> k : result.keySet()) {\n                if (k.equals(newKey)) {\n                    existingKey = k;\n                    break;\n                }\n            }\n            \n            if (existingKey != null) {\n                // Increment count for existing key\n                result.put(existingKey, result.get(existingKey) + 1);\n            } else {\n                // Add new key with count 1\n                result.put(newKey, 1);\n            }\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 9,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]])=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\ninput.add(Arrays.asList(1, 3));\ninput.add(Arrays.asList(5, 7));\ninput.add(Arrays.asList(1, 3));\ninput.add(Arrays.asList(13, 15, 17));\ninput.add(Arrays.asList(5, 7));\ninput.add(Arrays.asList(9, 11));\n\nMap<List<Object>, Integer> result = unique_sublists(input);\n\nMap<List<Object>, Integer> expected = new LinkedHashMap<>();\nexpected.put(Arrays.asList(1, 3), 2);\nexpected.put(Arrays.asList(5, 7), 2);\nexpected.put(Arrays.asList(13, 15, 17), 1);\nexpected.put(Arrays.asList(9, 11), 1);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> list1 = new ArrayList<>();\nlist1.add(\"green\");\nlist1.add(\"orange\");\ninput.add(list1);\n\nList<Object> list2 = new ArrayList<>();\nlist2.add(\"black\");\ninput.add(list2);\n\nList<Object> list3 = new ArrayList<>();\nlist3.add(\"green\");\nlist3.add(\"orange\");\ninput.add(list3);\n\nList<Object> list4 = new ArrayList<>();\nlist4.add(\"white\");\ninput.add(list4);\n\nMap<List<Object>, Integer> result = unique_sublists(input);\n\n// Build expected map\nMap<List<Object>, Integer> expected = new LinkedHashMap<>();\nList<Object> key1 = new ArrayList<>();\nkey1.add(\"green\");\nkey1.add(\"orange\");\nexpected.put(key1, 2);\n\nList<Object> key2 = new ArrayList<>();\nkey2.add(\"black\");\nexpected.put(key2, 1);\n\nList<Object> key3 = new ArrayList<>();\nkey3.add(\"white\");\nexpected.put(key3, 1);\n\n// Compare results\nboolean pass = true;\nif (result.size() != expected.size()) {\n    pass = false;\n} else {\n    for (Map.Entry<List<Object>, Integer> entry : expected.entrySet()) {\n        boolean found = false;\n        for (Map.Entry<List<Object>, Integer> resEntry : result.entrySet()) {\n            if (resEntry.getKey().equals(entry.getKey()) && resEntry.getValue().equals(entry.getValue())) {\n                found = true;\n                break;\n            }\n        }\n        if (!found) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([[1, 2], [3, 4], [4, 5], [6, 7]])=={(1, 2): 1, (3, 4): 1, (4, 5): 1, (6, 7): 1}",
+      "generated_test": "List<List<Object>> input = new ArrayList<>();\nList<Object> sublist1 = new ArrayList<>();\nsublist1.add(1);\nsublist1.add(2);\ninput.add(sublist1);\n\nList<Object> sublist2 = new ArrayList<>();\nsublist2.add(3);\nsublist2.add(4);\ninput.add(sublist2);\n\nList<Object> sublist3 = new ArrayList<>();\nsublist3.add(4);\nsublist3.add(5);\ninput.add(sublist3);\n\nList<Object> sublist4 = new ArrayList<>();\nsublist4.add(6);\nsublist4.add(7);\ninput.add(sublist4);\n\nMap<List<Object>, Integer> result = unique_sublists(input);\n\n// Build expected map\nMap<List<Object>, Integer> expected = new LinkedHashMap<>();\nList<Object> key1 = new ArrayList<>();\nkey1.add(1);\nkey1.add(2);\nexpected.put(key1, 1);\n\nList<Object> key2 = new ArrayList<>();\nkey2.add(3);\nkey2.add(4);\nexpected.put(key2, 1);\n\nList<Object> key3 = new ArrayList<>();\nkey3.add(4);\nkey3.add(5);\nexpected.put(key3, 1);\n\nList<Object> key4 = new ArrayList<>();\nkey4.add(6);\nkey4.add(7);\nexpected.put(key4, 1);\n\n// Compare maps by checking all keys and values\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (List<Object> key : expected.keySet()) {\n        boolean foundKey = false;\n        for (List<Object> resKey : result.keySet()) {\n            if (resKey.equals(key)) {\n                foundKey = true;\n                if (!result.get(resKey).equals(expected.get(key))) {\n                    pass = false;\n                }\n                break;\n            }\n        }\n        if (!foundKey) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

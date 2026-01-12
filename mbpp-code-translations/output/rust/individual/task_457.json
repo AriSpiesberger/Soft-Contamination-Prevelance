@@ -1,0 +1,37 @@
+{
+  "task_id": 457,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sublist having minimum length.",
+  "python_code": "def Find_Min(lst): \n    return min(lst, key=len) ",
+  "test_list": [
+    "assert Find_Min([[1],[1,2],[1,2,3]]) == [1]",
+    "assert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]",
+    "assert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']"
+  ],
+  "code_rust": "pub fn Find_Min<T: Clone>(lst: &[Vec<T>]) -> Vec<T> {\n    lst.iter()\n        .min_by_key(|v| v.len())\n        .cloned()\n        .unwrap_or_else(Vec::new)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert Find_Min([[1],[1,2],[1,2,3]]) == [1]",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1], vec![1, 2], vec![1, 2, 3]];\nlet expected: Vec<i32> = vec![1];\nlet result = Find_Min(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![vec![1,1],vec![1,1,1],vec![1,2,7,8]];\nlet expected: Vec<i32> = vec![1,1];\nlet result = Find_Min(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']",
+      "generated_test": "let input: Vec<Vec<&str>> = vec![vec![\"x\"], vec![\"x\", \"y\"], vec![\"x\", \"y\", \"z\"]];\nlet expected: Vec<&str> = vec![\"x\"];\nlet result = Find_Min(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

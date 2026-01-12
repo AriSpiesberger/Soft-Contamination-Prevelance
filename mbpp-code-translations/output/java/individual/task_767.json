@@ -1,0 +1,44 @@
+{
+  "task_id": 767,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose sum is equal to \u2018sum\u2019. The funtion gets as input a list of numbers and the sum,",
+  "python_code": "def get_pairs_count(arr, sum):\n    count = 0  \n    for i in range(len(arr)):\n        for j in range(i + 1,len(arr)):\n            if arr[i] + arr[j] == sum:\n                count += 1\n    return count",
+  "test_list": [
+    "assert get_pairs_count([1,1,1,1],2) == 6",
+    "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+    "assert get_pairs_count([1,-2,3],1) == 1",
+    "assert get_pairs_count([-1,-2,3],-3) == 1"
+  ],
+  "code_java": "import java.util.ArrayList;\n\nclass Solution {\n    public static int get_pairs_count(ArrayList<Integer> arr, int sum) {\n        int count = 0;\n        for (int i = 0; i < arr.size(); i++) {\n            for (int j = i + 1; j < arr.size(); j++) {\n                if (arr.get(i) + arr.get(j) == sum) {\n                    count += 1;\n                }\n            }\n        }\n        return count;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert get_pairs_count([1,1,1,1],2) == 6",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<Integer>();\narr.add(1);\narr.add(1);\narr.add(1);\narr.add(1);\nint result = get_pairs_count(arr, 2);\nint expected = 6;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(1);\narr.add(5);\narr.add(7);\narr.add(-1);\narr.add(5);\nint result = get_pairs_count(arr, 6);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([1,-2,3],1) == 1",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(1);\narr.add(-2);\narr.add(3);\nint result = get_pairs_count(arr, 1);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([-1,-2,3],-3) == 1",
+      "generated_test": "ArrayList<Integer> arr = new ArrayList<>();\narr.add(-1);\narr.add(-2);\narr.add(3);\nint result = get_pairs_count(arr, -3);\nint expected = 1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

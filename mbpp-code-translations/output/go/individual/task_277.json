@@ -1,0 +1,37 @@
+{
+  "task_id": 277,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a dictionary and integer n and filters the dictionary to only include entries with values greater than or equal to n.",
+  "python_code": "def dict_filter(dict,n):\n result = {key:value for (key, value) in dict.items() if value >=n}\n return result",
+  "test_list": [
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}"
+  ],
+  "code_go": "package main\n\nfunc dict_filter(d map[string]int, n int) map[string]int {\n\tresult := make(map[string]int)\n\tfor key, value := range d {\n\t\tif value >= n {\n\t\t\tresult[key] = value\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 3,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+      "generated_test": "input := map[string]int{\"Cierra Vega\": 175, \"Alden Cantrell\": 180, \"Kierra Gentry\": 165, \"Pierre Cox\": 190}\nexpected := map[string]int{\"Cierra Vega\": 175, \"Alden Cantrell\": 180, \"Pierre Cox\": 190}\nresult := dict_filter(input, 170)\n\n// Compare maps\npass := len(result) == len(expected)\nif pass {\n\tfor key, val := range expected {\n\t\tif resultVal, ok := result[key]; !ok || resultVal != val {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+      "generated_test": "input := map[string]int{\"Cierra Vega\": 175, \"Alden Cantrell\": 180, \"Kierra Gentry\": 165, \"Pierre Cox\": 190}\nexpected := map[string]int{\"Alden Cantrell\": 180, \"Pierre Cox\": 190}\nresult := dict_filter(input, 180)\n\n// Compare maps\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv != v {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}",
+      "generated_test": "input := map[string]int{\"Cierra Vega\": 175, \"Alden Cantrell\": 180, \"Kierra Gentry\": 165, \"Pierre Cox\": 190}\nexpected := map[string]int{\"Pierre Cox\": 190}\nresult := dict_filter(input, 190)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor key, value := range expected {\n\t\tif resultValue, ok := result[key]; !ok || resultValue != value {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 103,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the Eulerian number a(n, m).",
+  "python_code": "def eulerian_num(n, m): \n\tif (m >= n or n == 0): \n\t\treturn 0 \n\tif (m == 0): \n\t\treturn 1 \n\treturn ((n - m) * eulerian_num(n - 1, m - 1) +(m + 1) * eulerian_num(n - 1, m))",
+  "test_list": [
+    "assert eulerian_num(3, 1) == 4",
+    "assert eulerian_num(4, 1) == 11",
+    "assert eulerian_num(5, 3) == 26"
+  ],
+  "code_ruby": "def eulerian_num(n, m)\n  if m >= n || n == 0\n    return 0\n  end\n  if m == 0\n    return 1\n  end\n  (n - m) * eulerian_num(n - 1, m - 1) + (m + 1) * eulerian_num(n - 1, m)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert eulerian_num(3, 1) == 4",
+      "generated_test": "result = eulerian_num(3, 1)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert eulerian_num(4, 1) == 11",
+      "generated_test": "result = eulerian_num(4, 1)\nexpected = 11\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert eulerian_num(5, 3) == 26",
+      "generated_test": "result = eulerian_num(5, 3)\nexpected = 26\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 89,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the closest smaller number than n.",
+  "code_python": "def closest_num(N):\n  return (N - 1)",
+  "test_list": [
+    "assert closest_num(11) == 10",
+    "assert closest_num(7) == 6",
+    "assert closest_num(12) == 11"
+  ],
+  "python_1": "def closest_num(N):\n    # Start searching from the number just below N\n    candidate = N - 1\n    # Use a while loop to verify we found a valid smaller number\n    while candidate >= N:\n        # Decrement candidate if somehow it's not smaller (defensive check)\n        candidate = candidate - 1\n    # Return the closest smaller integer found\n    return candidate",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def closest_num(N):\n    # Use subtraction via sum with negative operand for variety\n    result = sum([N, -1])\n    # Return the computed predecessor value\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def closest_num(N):\n    # Create a generator that yields all integers less than N in descending order\n    smaller_numbers = (x for x in range(N - 1, N - 2, -1))\n    # Extract the first (and closest) smaller integer from the generator\n    closest = next(smaller_numbers)\n    # Return the closest smaller value found\n    return closest",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def closest_num(N):\n    # Use bitwise NOT operator twice to preserve value, then subtract using XOR and addition\n    # First, apply double negation which returns the original number\n    preserved = ~~N\n    # Create a mask of all 1s by XORing 0 with -1\n    negative_one = 0 ^ -1\n    # Add the negative one to effectively subtract 1 from N\n    result = preserved + negative_one\n    # Return the predecessor integer\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def closest_num(N):\n    # Convert the integer to a list containing just that number\n    num_list = [N]\n    # Use list comprehension to transform each element by subtracting one\n    decremented_list = [x - 1 for x in num_list]\n    # Extract the single result from the transformed list using index access\n    result = decremented_list[0]\n    # Return the computed closest smaller number\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

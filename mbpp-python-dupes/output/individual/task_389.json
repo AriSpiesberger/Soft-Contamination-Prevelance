@@ -1,0 +1,27 @@
+{
+  "task_id": 389,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n'th lucas number.",
+  "code_python": "def find_lucas(n): \n\tif (n == 0): \n\t\treturn 2\n\tif (n == 1): \n\t\treturn 1\n\treturn find_lucas(n - 1) + find_lucas(n - 2) ",
+  "test_list": [
+    "assert find_lucas(9) == 76",
+    "assert find_lucas(4) == 7",
+    "assert find_lucas(3) == 4"
+  ],
+  "python_1": "# Define function to calculate n'th Lucas number using iterative approach\ndef find_lucas(n): \n    # Handle base case where n is 0, Lucas(0) = 2\n    if n == 0: \n        return 2\n    # Handle base case where n is 1, Lucas(1) = 1\n    if n == 1: \n        return 1\n    # Initialize first Lucas number L(0) = 2\n    prev_prev = 2\n    # Initialize second Lucas number L(1) = 1\n    prev = 1\n    # Iterate from index 2 up to and including n to build sequence\n    for i in range(2, n + 1):\n        # Calculate current Lucas number as sum of two predecessors\n        current = prev + prev_prev\n        # Shift the window: old prev becomes new prev_prev\n        prev_prev = prev\n        # Update prev to hold the newly computed value\n        prev = current\n    # Return the n'th Lucas number stored in prev\n    return prev",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_lucas(n): \n    # Build lookup table storing all Lucas numbers from 0 to n\n    lucas_table = [0] * (n + 1) if n > 0 else [0]\n    # Set the zeroth Lucas number which is always 2\n    lucas_table[0] = 2\n    # Early return if we only need the base case L(0)\n    if n == 0:\n        return lucas_table[0]\n    # Set the first Lucas number which is always 1\n    lucas_table[1] = 1\n    # Fill table bottom-up using dynamic programming tabulation\n    for idx in range(2, n + 1):\n        # Each entry is sum of two preceding entries in the table\n        lucas_table[idx] = lucas_table[idx - 1] + lucas_table[idx - 2]\n    # Directly access and return the n'th Lucas number from table\n    return lucas_table[n]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_lucas(n): \n    # Use memoization dictionary to cache computed Lucas values\n    memo = {}\n    \n    # Define inner recursive helper that uses the cache\n    def lucas_helper(num):\n        # Check if this Lucas number was already computed\n        if num in memo:\n            # Return cached result to avoid redundant computation\n            return memo[num]\n        # Base case: L(0) is defined as 2 in Lucas sequence\n        if num == 0:\n            # Store base case in cache before returning\n            memo[num] = 2\n            return 2\n        # Base case: L(1) is defined as 1 in Lucas sequence\n        if num == 1:\n            # Cache this fundamental value\n            memo[num] = 1\n            return 1\n        # Recursive case: Lucas(n) = Lucas(n-1) + Lucas(n-2)\n        result = lucas_helper(num - 1) + lucas_helper(num - 2)\n        # Store computed result to prevent exponential recalculation\n        memo[num] = result\n        # Return the memoized Lucas number\n        return result\n    \n    # Invoke helper function with the requested index\n    return lucas_helper(n)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_lucas(n): \n    # Use closed-form formula based on golden ratio (Binet-like formula for Lucas)\n    import math\n    # Golden ratio phi = (1 + sqrt(5)) / 2, fundamental constant in Lucas/Fibonacci\n    phi = (1 + math.sqrt(5)) / 2\n    # Conjugate of golden ratio psi = (1 - sqrt(5)) / 2, needed for exact formula\n    psi = (1 - math.sqrt(5)) / 2\n    # Lucas numbers satisfy L(n) = phi^n + psi^n (exact for integers)\n    lucas_value = phi ** n + psi ** n\n    # Round to nearest integer to handle floating point precision errors\n    return round(lucas_value)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_lucas(n): \n    # Use a generator function to produce Lucas numbers lazily\n    def lucas_generator():\n        # Start with the two seed values of Lucas sequence\n        a, b = 2, 1\n        # Yield infinitely, letting caller control how many to consume\n        while True:\n            # Produce current Lucas number to the caller\n            yield a\n            # Simultaneously update both values using tuple unpacking\n            a, b = b, a + b\n    \n    # Create an instance of the Lucas number generator\n    gen = lucas_generator()\n    # Track how many numbers we've consumed from the generator\n    consumed = 0\n    # Advance generator n+1 times to reach the n'th Lucas number (0-indexed)\n    while consumed <= n:\n        # Retrieve next Lucas number from the generator stream\n        result = next(gen)\n        # Increment counter after each successful retrieval\n        consumed += 1\n    # The last value retrieved is exactly L(n)\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 311,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to set the left most unset bit.",
+  "python_code": "def set_left_most_unset_bit(n): \n    if not (n & (n + 1)): \n        return n \n    pos, temp, count = 0, n, 0 \n    while temp: \n        if not (temp & 1): \n            pos = count      \n        count += 1; temp>>=1\n    return (n | (1 << (pos))) ",
+  "test_list": [
+    "assert set_left_most_unset_bit(10) == 14",
+    "assert set_left_most_unset_bit(12) == 14",
+    "assert set_left_most_unset_bit(15) == 15"
+  ],
+  "code_rust": "pub fn set_left_most_unset_bit(n: i32) -> i32 {\n    if n & (n + 1) == 0 {\n        return n;\n    }\n    \n    let mut pos = 0;\n    let mut temp = n;\n    let mut count = 0;\n    \n    while temp != 0 {\n        if temp & 1 == 0 {\n            pos = count;\n        }\n        count += 1;\n        temp >>= 1;\n    }\n    \n    n | (1 << pos)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert set_left_most_unset_bit(10) == 14",
+      "generated_test": "let result = set_left_most_unset_bit(10);\nlet expected = 14;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(12) == 14",
+      "generated_test": "let result = set_left_most_unset_bit(12);\nlet expected = 14;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set_left_most_unset_bit(15) == 15",
+      "generated_test": "let result = set_left_most_unset_bit(15);\nlet expected = 15;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

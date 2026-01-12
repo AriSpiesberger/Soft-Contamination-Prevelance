@@ -1,0 +1,37 @@
+{
+  "task_id": 641,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth nonagonal number.",
+  "python_code": "def is_nonagonal(n): \n\treturn int(n * (7 * n - 5) / 2) ",
+  "test_list": [
+    "assert is_nonagonal(10) == 325",
+    "assert is_nonagonal(15) == 750",
+    "assert is_nonagonal(18) == 1089"
+  ],
+  "code_go": "package main\n\nfunc is_nonagonal(n int) int {\n\treturn n * (7*n - 5) / 2\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert is_nonagonal(10) == 325",
+      "generated_test": "result := is_nonagonal(10)\nexpected := 325\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_nonagonal(15) == 750",
+      "generated_test": "result := is_nonagonal(15)\nexpected := 750\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_nonagonal(18) == 1089",
+      "generated_test": "result := is_nonagonal(18)\nexpected := 1089\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

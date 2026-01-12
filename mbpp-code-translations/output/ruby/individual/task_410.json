@@ -1,0 +1,37 @@
+{
+  "task_id": 410,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum value in a given heterogeneous list.",
+  "python_code": "def min_val(listval):\n     min_val = min(i for i in listval if isinstance(i, int))\n     return min_val",
+  "test_list": [
+    "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+    "assert min_val(['Python', 15, 20, 25])==15",
+    "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20"
+  ],
+  "code_ruby": "def min_val(listval)\n  listval.select { |i| i.is_a?(Integer) }.min\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+      "generated_test": "result = min_val(['Python', 3, 2, 4, 5, 'version'])\nexpected = 2\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_val(['Python', 15, 20, 25])==15",
+      "generated_test": "result = min_val(['Python', 15, 20, 25])\nexpected = 15\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20",
+      "generated_test": "result = min_val(['Python', 30, 20, 40, 50, 'version'])\nexpected = 20\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

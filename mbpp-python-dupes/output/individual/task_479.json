@@ -1,0 +1,27 @@
+{
+  "task_id": 479,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first digit of a given number.",
+  "code_python": "def first_Digit(n) :  \n    while n >= 10:  \n        n = n / 10 \n    return int(n) ",
+  "test_list": [
+    "assert first_Digit(123) == 1",
+    "assert first_Digit(456) == 4",
+    "assert first_Digit(12) == 1"
+  ],
+  "python_1": "def first_Digit(n) :  \n    # Convert the number to its absolute value to handle negatives\n    n = abs(n)\n    # Transform number to string to access individual digits as characters\n    str_n = str(n)\n    # Extract the first character which represents the leading digit\n    first_char = str_n[0]\n    # Convert the character back to an integer for the return value\n    return int(first_char)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def first_Digit(n) :  \n    # Ensure we work with positive numbers by taking absolute value\n    n = abs(n)\n    # Use logarithm base 10 to determine the number of digits minus one\n    import math\n    # Handle edge case where n is zero to avoid log(0) error\n    if n == 0:\n        return 0\n    # Calculate the power of 10 that represents the magnitude of the number\n    power = int(math.log10(n))\n    # Divide the number by 10 raised to that power to isolate the first digit\n    first = n // (10 ** power)\n    # Return the isolated first digit as an integer\n    return int(first)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def first_Digit(n) :  \n    # Handle potential negative numbers by converting to positive\n    n = abs(n)\n    # Special case: if input is zero, return zero immediately\n    if n == 0:\n        return 0\n    # Recursively divide by 10 until we reach a single digit\n    if n < 10:\n        # Base case: number is already a single digit, return it\n        return n\n    else:\n        # Recursive case: strip the last digit and continue searching\n        return first_Digit(n // 10)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def first_Digit(n) :  \n    # Normalize the input by removing any negative sign\n    n = abs(n)\n    # Edge case handling for zero which has no leading digit other than itself\n    if n == 0:\n        return 0\n    # Create a list of all digit characters for lookup purposes\n    digit_list = list(str(n))\n    # Use list indexing to grab the leftmost element representing highest place value\n    leading_digit = digit_list[0]\n    # Cast the string digit back to integer type for proper return value\n    return int(leading_digit)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def first_Digit(n) :  \n    # Convert to absolute value to handle negative inputs uniformly\n    n = abs(n)\n    # Handle the special edge case where input is zero\n    if n == 0:\n        return 0\n    # Find the divisor by starting at 1 and scaling up by factors of 10\n    divisor = 1\n    # Keep multiplying divisor by 10 until it would exceed the number\n    while divisor * 10 <= n:\n        # Scale up the divisor to match the magnitude of the input number\n        divisor = divisor * 10\n    # Integer division by the calculated divisor isolates the first digit\n    result = n // divisor\n    # Return the extracted leading digit\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

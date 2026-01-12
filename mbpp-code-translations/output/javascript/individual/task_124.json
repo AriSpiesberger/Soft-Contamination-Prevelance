@@ -1,0 +1,37 @@
+{
+  "task_id": 124,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get the angle of a complex number.",
+  "python_code": "import cmath\ndef angle_complex(a,b):\n  cn=complex(a,b)\n  angle=cmath.phase(a+b)\n  return angle",
+  "test_list": [
+    "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+    "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)"
+  ],
+  "code_javascript": "function angle_complex(a, b) {\n  const result = a + b;\n  let real, imag;\n  \n  if (typeof result === 'object' && result !== null && 'real' in result && 'imag' in result) {\n    real = result.real;\n    imag = result.imag;\n  } else if (typeof result === 'number') {\n    real = result;\n    imag = 0;\n  } else {\n    // Handle complex number addition\n    // In Python, when adding a number and a complex (like 0 + 1j), we get a complex\n    // JavaScript doesn't have native complex numbers, so we need to handle this\n    \n    // Check if a or b are complex-like objects\n    let aReal = typeof a === 'number' ? a : (a.real || 0);\n    let aImag = typeof a === 'number' ? 0 : (a.imag || 0);\n    let bReal = typeof b === 'number' ? b : (b.real || 0);\n    let bImag = typeof b === 'number' ? 0 : (b.imag || 0);\n    \n    real = aReal + bReal;\n    imag = aImag + bImag;\n  }\n  \n  return Math.atan2(imag, real);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "const expected = 1.5707963267948966;\nconst result = angle_complex(0, {real: 0, imag: 1});\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\n\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(2,1j), 0.4636476090008061, rel_tol=0.001)",
+      "generated_test": "const expected = 0.4636476090008061;\nconst result = angle_complex(2, {real: 0, imag: 1});\nconst relTol = 0.001;\nconst diff = Math.abs(result - expected);\nconst tolerance = relTol * Math.abs(expected);\n\nif (diff <= tolerance) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(angle_complex(0,2j), 1.5707963267948966, rel_tol=0.001)",
+      "generated_test": "const expected = 1.5707963267948966;\nconst result = angle_complex(0, {real: 0, imag: 2});\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\n\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

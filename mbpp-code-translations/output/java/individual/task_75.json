@@ -1,0 +1,37 @@
+{
+  "task_id": 75,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find tuples which have all elements divisible by k from the given list of tuples.",
+  "python_code": "def find_tuples(test_list, K):\n  res = [sub for sub in test_list if all(ele % K == 0 for ele in sub)]\n  return res",
+  "test_list": [
+    "assert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]",
+    "assert find_tuples([(5, 25, 30), (4, 2, 3), (7, 8, 9)], 5) == [(5, 25, 30)]",
+    "assert find_tuples([(7, 9, 16), (8, 16, 4), (19, 17, 18)], 4) == [(8, 16, 4)]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<int[]> find_tuples(List<int[]> test_list, int K) {\n        List<int[]> res = new ArrayList<>();\n        for (int[] sub : test_list) {\n            boolean allDivisible = true;\n            for (int ele : sub) {\n                if (ele % K != 0) {\n                    allDivisible = false;\n                    break;\n                }\n            }\n            if (allDivisible) {\n                res.add(sub);\n            }\n        }\n        return res;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]",
+      "generated_test": "List<int[]> input = new ArrayList<>();\ninput.add(new int[]{6, 24, 12});\ninput.add(new int[]{7, 9, 6});\ninput.add(new int[]{12, 18, 21});\n\nList<int[]> result = find_tuples(input, 6);\n\nList<int[]> expected = new ArrayList<>();\nexpected.add(new int[]{6, 24, 12});\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        int[] r = result.get(i);\n        int[] e = expected.get(i);\n        if (r.length != e.length) {\n            pass = false;\n            break;\n        }\n        for (int j = 0; j < r.length; j++) {\n            if (r[j] != e[j]) {\n                pass = false;\n                break;\n            }\n        }\n        if (!pass) break;\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    StringBuilder expectedStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.size(); i++) {\n        if (i > 0) expectedStr.append(\", \");\n        expectedStr.append(\"[\");\n        for (int j = 0; j < expected.get(i).length; j++) {\n            if (j > 0) expectedStr.append(\", \");\n            expectedStr.append(expected.get(i)[j]);\n        }\n        expectedStr.append(\"]\");\n    }\n    expectedStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(\"[\");\n        for (int j = 0; j < result.get(i).length; j++) {\n            if (j > 0) gotStr.append(\", \");\n            gotStr.append(result.get(i)[j]);\n        }\n        gotStr.append(\"]\");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedStr);\n    System.out.println(\"  Got: \" + gotStr);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_tuples([(5, 25, 30), (4, 2, 3), (7, 8, 9)], 5) == [(5, 25, 30)]",
+      "generated_test": "List<int[]> testList = new ArrayList<>();\ntestList.add(new int[]{5, 25, 30});\ntestList.add(new int[]{4, 2, 3});\ntestList.add(new int[]{7, 8, 9});\n\nList<int[]> result = find_tuples(testList, 5);\n\nList<int[]> expected = new ArrayList<>();\nexpected.add(new int[]{5, 25, 30});\n\nboolean pass = true;\nif (result.size() != expected.size()) {\n    pass = false;\n} else {\n    for (int i = 0; i < result.size(); i++) {\n        int[] resArr = result.get(i);\n        int[] expArr = expected.get(i);\n        if (resArr.length != expArr.length) {\n            pass = false;\n            break;\n        }\n        for (int j = 0; j < resArr.length; j++) {\n            if (resArr[j] != expArr[j]) {\n                pass = false;\n                break;\n            }\n        }\n        if (!pass) break;\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.size(); i++) {\n        if (i > 0) expStr.append(\", \");\n        expStr.append(\"[\");\n        int[] arr = expected.get(i);\n        for (int j = 0; j < arr.length; j++) {\n            if (j > 0) expStr.append(\", \");\n            expStr.append(arr[j]);\n        }\n        expStr.append(\"]\");\n    }\n    expStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(\"[\");\n        int[] arr = result.get(i);\n        for (int j = 0; j < arr.length; j++) {\n            if (j > 0) gotStr.append(\", \");\n            gotStr.append(arr[j]);\n        }\n        gotStr.append(\"]\");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"  Expected: \" + expStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_tuples([(7, 9, 16), (8, 16, 4), (19, 17, 18)], 4) == [(8, 16, 4)]",
+      "generated_test": "List<int[]> testList = new ArrayList<>();\ntestList.add(new int[]{7, 9, 16});\ntestList.add(new int[]{8, 16, 4});\ntestList.add(new int[]{19, 17, 18});\n\nList<int[]> result = find_tuples(testList, 4);\n\nList<int[]> expected = new ArrayList<>();\nexpected.add(new int[]{8, 16, 4});\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        int[] resArr = result.get(i);\n        int[] expArr = expected.get(i);\n        if (resArr.length != expArr.length) {\n            pass = false;\n            break;\n        }\n        for (int j = 0; j < resArr.length; j++) {\n            if (resArr[j] != expArr[j]) {\n                pass = false;\n                break;\n            }\n        }\n        if (!pass) break;\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    StringBuilder expStr = new StringBuilder(\"[\");\n    for (int i = 0; i < expected.size(); i++) {\n        if (i > 0) expStr.append(\", \");\n        expStr.append(\"[\");\n        for (int j = 0; j < expected.get(i).length; j++) {\n            if (j > 0) expStr.append(\", \");\n            expStr.append(expected.get(i)[j]);\n        }\n        expStr.append(\"]\");\n    }\n    expStr.append(\"]\");\n    \n    StringBuilder gotStr = new StringBuilder(\"[\");\n    for (int i = 0; i < result.size(); i++) {\n        if (i > 0) gotStr.append(\", \");\n        gotStr.append(\"[\");\n        for (int j = 0; j < result.get(i).length; j++) {\n            if (j > 0) gotStr.append(\", \");\n            gotStr.append(result.get(i)[j]);\n        }\n        gotStr.append(\"]\");\n    }\n    gotStr.append(\"]\");\n    \n    System.out.println(\"  Expected: \" + expStr.toString());\n    System.out.println(\"  Got: \" + gotStr.toString());\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

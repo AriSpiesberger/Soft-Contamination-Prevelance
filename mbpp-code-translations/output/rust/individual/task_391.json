@@ -1,0 +1,37 @@
+{
+  "task_id": 391,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert more than one list to nested dictionary.",
+  "python_code": "def convert_list_dictionary(l1, l2, l3):\n     result = [{x: {y: z}} for (x, y, z) in zip(l1, l2, l3)]\n     return result",
+  "test_list": [
+    "assert convert_list_dictionary([\"S001\", \"S002\", \"S003\", \"S004\"],[\"Adina Park\", \"Leyton Marsh\", \"Duncan Boyle\", \"Saim Richards\"] ,[85, 98, 89, 92])==[{'S001': {'Adina Park': 85}}, {'S002': {'Leyton Marsh': 98}}, {'S003': {'Duncan Boyle': 89}}, {'S004': {'Saim Richards': 92}}]",
+    "assert convert_list_dictionary([\"abc\",\"def\",\"ghi\",\"jkl\"],[\"python\",\"program\",\"language\",\"programs\"],[100,200,300,400])==[{'abc':{'python':100}},{'def':{'program':200}},{'ghi':{'language':300}},{'jkl':{'programs':400}}]",
+    "assert convert_list_dictionary([\"A1\",\"A2\",\"A3\",\"A4\"],[\"java\",\"C\",\"C++\",\"DBMS\"],[10,20,30,40])==[{'A1':{'java':10}},{'A2':{'C':20}},{'A3':{'C++':30}},{'A4':{'DBMS':40}}]"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn convert_list_dictionary(\n    l1: Vec<&str>,\n    l2: Vec<&str>,\n    l3: Vec<i32>,\n) -> Vec<HashMap<String, HashMap<String, i32>>> {\n    l1.iter()\n        .zip(l2.iter())\n        .zip(l3.iter())\n        .map(|((x, y), z)| {\n            let mut inner = HashMap::new();\n            inner.insert(y.to_string(), *z);\n            let mut outer = HashMap::new();\n            outer.insert(x.to_string(), inner);\n            outer\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert convert_list_dictionary([\"S001\", \"S002\", \"S003\", \"S004\"],[\"Adina Park\", \"Leyton Marsh\", \"Duncan Boyle\", \"Saim Richards\"] ,[85, 98, 89, 92])==[{'S001': {'Adina Park': 85}}, {'S002': {'Leyton Marsh': 98}}, {'S003': {'Duncan Boyle': 89}}, {'S004': {'Saim Richards': 92}}]",
+      "generated_test": "let result = convert_list_dictionary(\n    vec![\"S001\", \"S002\", \"S003\", \"S004\"],\n    vec![\"Adina Park\", \"Leyton Marsh\", \"Duncan Boyle\", \"Saim Richards\"],\n    vec![85, 98, 89, 92],\n);\n\nlet mut expected: Vec<HashMap<String, HashMap<String, i32>>> = Vec::new();\n\nlet mut inner1 = HashMap::new();\ninner1.insert(\"Adina Park\".to_string(), 85);\nlet mut outer1 = HashMap::new();\nouter1.insert(\"S001\".to_string(), inner1);\nexpected.push(outer1);\n\nlet mut inner2 = HashMap::new();\ninner2.insert(\"Leyton Marsh\".to_string(), 98);\nlet mut outer2 = HashMap::new();\nouter2.insert(\"S002\".to_string(), inner2);\nexpected.push(outer2);\n\nlet mut inner3 = HashMap::new();\ninner3.insert(\"Duncan Boyle\".to_string(), 89);\nlet mut outer3 = HashMap::new();\nouter3.insert(\"S003\".to_string(), inner3);\nexpected.push(outer3);\n\nlet mut inner4 = HashMap::new();\ninner4.insert(\"Saim Richards\".to_string(), 92);\nlet mut outer4 = HashMap::new();\nouter4.insert(\"S004\".to_string(), inner4);\nexpected.push(outer4);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert_list_dictionary([\"abc\",\"def\",\"ghi\",\"jkl\"],[\"python\",\"program\",\"language\",\"programs\"],[100,200,300,400])==[{'abc':{'python':100}},{'def':{'program':200}},{'ghi':{'language':300}},{'jkl':{'programs':400}}]",
+      "generated_test": "let result = convert_list_dictionary(\n    vec![\"abc\", \"def\", \"ghi\", \"jkl\"],\n    vec![\"python\", \"program\", \"language\", \"programs\"],\n    vec![100, 200, 300, 400],\n);\n\nlet mut expected: Vec<HashMap<String, HashMap<String, i32>>> = Vec::new();\n\nlet mut inner1 = HashMap::new();\ninner1.insert(\"python\".to_string(), 100);\nlet mut outer1 = HashMap::new();\nouter1.insert(\"abc\".to_string(), inner1);\nexpected.push(outer1);\n\nlet mut inner2 = HashMap::new();\ninner2.insert(\"program\".to_string(), 200);\nlet mut outer2 = HashMap::new();\nouter2.insert(\"def\".to_string(), inner2);\nexpected.push(outer2);\n\nlet mut inner3 = HashMap::new();\ninner3.insert(\"language\".to_string(), 300);\nlet mut outer3 = HashMap::new();\nouter3.insert(\"ghi\".to_string(), inner3);\nexpected.push(outer3);\n\nlet mut inner4 = HashMap::new();\ninner4.insert(\"programs\".to_string(), 400);\nlet mut outer4 = HashMap::new();\nouter4.insert(\"jkl\".to_string(), inner4);\nexpected.push(outer4);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert convert_list_dictionary([\"A1\",\"A2\",\"A3\",\"A4\"],[\"java\",\"C\",\"C++\",\"DBMS\"],[10,20,30,40])==[{'A1':{'java':10}},{'A2':{'C':20}},{'A3':{'C++':30}},{'A4':{'DBMS':40}}]",
+      "generated_test": "let result = convert_list_dictionary(\n    vec![\"A1\", \"A2\", \"A3\", \"A4\"],\n    vec![\"java\", \"C\", \"C++\", \"DBMS\"],\n    vec![10, 20, 30, 40],\n);\n\nlet mut expected: Vec<HashMap<String, HashMap<String, i32>>> = Vec::new();\n\nlet mut inner1 = HashMap::new();\ninner1.insert(\"java\".to_string(), 10);\nlet mut outer1 = HashMap::new();\nouter1.insert(\"A1\".to_string(), inner1);\nexpected.push(outer1);\n\nlet mut inner2 = HashMap::new();\ninner2.insert(\"C\".to_string(), 20);\nlet mut outer2 = HashMap::new();\nouter2.insert(\"A2\".to_string(), inner2);\nexpected.push(outer2);\n\nlet mut inner3 = HashMap::new();\ninner3.insert(\"C++\".to_string(), 30);\nlet mut outer3 = HashMap::new();\nouter3.insert(\"A3\".to_string(), inner3);\nexpected.push(outer3);\n\nlet mut inner4 = HashMap::new();\ninner4.insert(\"DBMS\".to_string(), 40);\nlet mut outer4 = HashMap::new();\nouter4.insert(\"A4\".to_string(), inner4);\nexpected.push(outer4);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

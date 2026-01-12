@@ -1,0 +1,27 @@
+{
+  "task_id": 287,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function takes in an integer n and returns the sum of squares of first n even natural numbers.",
+  "code_python": "def square_Sum(n):  \n    return int(2*n*(n+1)*(2*n+1)/3)",
+  "test_list": [
+    "assert square_Sum(2) == 20",
+    "assert square_Sum(3) == 56",
+    "assert square_Sum(4) == 120"
+  ],
+  "python_1": "def square_Sum(n):  \n    # Initialize accumulator to store running total of squared even numbers\n    total = 0\n    # Loop through first n positive integers to generate even numbers\n    for i in range(1, n + 1):\n        # Calculate the i-th even number by multiplying index by 2\n        even_num = 2 * i\n        # Add the square of current even number to running total\n        total += even_num ** 2\n    # Return the accumulated sum of all squared even numbers\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def square_Sum(n):  \n    # Generate sequence of first n even numbers starting from 2\n    even_numbers = range(2, 2*n + 1, 2)\n    # Use generator expression to compute square of each even number and sum them\n    result = sum(x * x for x in even_numbers)\n    # Return the computed sum of squared even numbers\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def square_Sum(n):  \n    # Use list comprehension to build array of squared even numbers\n    squared_evens = [(2 * i) ** 2 for i in range(1, n + 1)]\n    # Apply built-in sum function to aggregate all squared values\n    return sum(squared_evens)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def square_Sum(n):  \n    # Base case: when n is zero, sum of no elements is zero\n    if n == 0:\n        return 0\n    # Recursive case: compute square of n-th even number (2*n)^2 and add to recursive call\n    current_even_squared = (2 * n) ** 2\n    # Recursively calculate sum for remaining (n-1) even numbers and combine\n    return current_even_squared + square_Sum(n - 1)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def square_Sum(n):  \n    # Use reduce from functools to accumulate sum without explicit loop variable\n    from functools import reduce\n    # Create tuple of indices representing positions 1 through n\n    indices = tuple(range(1, n + 1))\n    # Apply reduce with lambda that adds square of next even number to accumulator\n    result = reduce(lambda acc, i: acc + 4 * i * i, indices, 0)\n    # Return final accumulated value from reduction operation\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

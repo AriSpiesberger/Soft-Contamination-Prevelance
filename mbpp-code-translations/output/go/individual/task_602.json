@@ -1,0 +1,37 @@
+{
+  "task_id": 602,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first repeated character in a given string.",
+  "python_code": "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c",
+  "test_list": [
+    "assert first_repeated_char(\"abcabc\") == \"a\"",
+    "assert first_repeated_char(\"abc\") == None",
+    "assert first_repeated_char(\"123123\") == \"1\""
+  ],
+  "code_go": "package main\n\nfunc first_repeated_char(str1 string) *string {\n\tfor index, c := range str1 {\n\t\tcount := 0\n\t\tfor _, ch := range str1[:index+1] {\n\t\t\tif ch == c {\n\t\t\t\tcount++\n\t\t\t}\n\t\t}\n\t\tif count > 1 {\n\t\t\tresult := string(c)\n\t\t\treturn &result\n\t\t}\n\t}\n\treturn nil\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert first_repeated_char(\"abcabc\") == \"a\"",
+      "generated_test": "expected := \"a\"\nresult := first_repeated_char(\"abcabc\")\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"abc\") == None",
+      "generated_test": "result := first_repeated_char(\"abc\")\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected: nil\")\n\tfmt.Printf(\"  Got: %v\\n\", *result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_repeated_char(\"123123\") == \"1\"",
+      "generated_test": "expected := \"1\"\nresult := first_repeated_char(\"123123\")\nif result != nil && *result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result == nil {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t} else {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

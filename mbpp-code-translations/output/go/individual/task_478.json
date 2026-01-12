@@ -1,0 +1,37 @@
+{
+  "task_id": 478,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove lowercase substrings from a given string.",
+  "python_code": "import re\ndef remove_lowercase(str1):\n return re.sub('[a-z]', '', str1)",
+  "test_list": [
+    "assert remove_lowercase(\"PYTHon\")==('PYTH')",
+    "assert remove_lowercase(\"FInD\")==('FID')",
+    "assert remove_lowercase(\"STRinG\")==('STRG')"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"strings\"\n)\n\nfunc remove_lowercase(str1 string) string {\n\tvar result strings.Builder\n\tfor _, ch := range str1 {\n\t\tif ch < 'a' || ch > 'z' {\n\t\t\tresult.WriteRune(ch)\n\t\t}\n\t}\n\treturn result.String()\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert remove_lowercase(\"PYTHon\")==('PYTH')",
+      "generated_test": "result := remove_lowercase(\"PYTHon\")\nexpected := \"PYTH\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_lowercase(\"FInD\")==('FID')",
+      "generated_test": "result := remove_lowercase(\"FInD\")\nexpected := \"FID\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_lowercase(\"STRinG\")==('STRG')",
+      "generated_test": "result := remove_lowercase(\"STRinG\")\nexpected := \"STRG\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

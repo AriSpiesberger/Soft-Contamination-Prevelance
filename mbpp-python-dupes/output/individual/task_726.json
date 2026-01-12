@@ -1,0 +1,28 @@
+{
+  "task_id": 726,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes as input a tuple of numbers (t_1,...,t_{N+1}) and returns a tuple of length N where the i-th element of the tuple is equal to t_i * t_{i+1}.",
+  "code_python": "def multiply_elements(test_tup):\n  res = tuple(i * j for i, j in zip(test_tup, test_tup[1:]))\n  return (res) ",
+  "test_list": [
+    "assert multiply_elements((1, 5, 7, 8, 10)) == (5, 35, 56, 80)",
+    "assert multiply_elements((2, 4, 5, 6, 7)) == (8, 20, 30, 42)",
+    "assert multiply_elements((12, 13, 14, 9, 15)) == (156, 182, 126, 135)",
+    "assert multiply_elements((12,)) == ()"
+  ],
+  "python_1": "def multiply_elements(test_tup):\n    # Create empty list to accumulate products using explicit indexing\n    result_list = []\n    # Iterate through valid indices where we can access both current and next element\n    for idx in range(len(test_tup) - 1):\n        # Compute product of adjacent elements using index arithmetic\n        product = test_tup[idx] * test_tup[idx + 1]\n        # Append each computed product to our result accumulator\n        result_list.append(product)\n    # Convert the list of products into an immutable tuple for return\n    return tuple(result_list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def multiply_elements(test_tup):\n    # Use map with a lambda that multiplies pairs from two offset iterators\n    from itertools import islice\n    # Create an iterator starting from the second element\n    shifted_iter = islice(test_tup, 1, None)\n    # Apply multiplication across original and shifted sequences using map\n    products = map(lambda pair: pair[0] * pair[1], zip(test_tup, shifted_iter))\n    # Materialize the lazy map iterator into a concrete tuple\n    return tuple(products)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def multiply_elements(test_tup):\n    # Import operator module to use mul function instead of lambda or * operator\n    from operator import mul\n    # Use map with operator.mul to apply multiplication to paired adjacent elements\n    # This avoids explicit loops and comprehensions by delegating to built-in operator\n    return tuple(map(mul, test_tup[:-1], test_tup[1:]))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def multiply_elements(test_tup):\n    # Use recursion to build result: base case when only one element remains\n    if len(test_tup) <= 1:\n        # Return empty tuple when no pairs left to multiply\n        return ()\n    # Compute the product of the first two adjacent elements\n    first_product = test_tup[0] * test_tup[1]\n    # Recursively process the rest of the tuple starting from index 1\n    remaining_products = multiply_elements(test_tup[1:])\n    # Concatenate current product with recursive results into single tuple\n    return (first_product,) + remaining_products",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def multiply_elements(test_tup):\n    # Use list comprehension with enumerate to access indices and values simultaneously\n    result = [val * test_tup[i + 1] for i, val in enumerate(test_tup[:-1])]\n    # Convert the resulting list of products into a tuple for immutable return\n    return tuple(result)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

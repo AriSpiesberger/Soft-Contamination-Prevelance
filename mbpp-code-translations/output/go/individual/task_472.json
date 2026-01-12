@@ -1,0 +1,37 @@
+{
+  "task_id": 472,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given list contains consecutive numbers or not.",
+  "python_code": "def check_Consecutive(l): \n    return sorted(l) == list(range(min(l),max(l)+1)) ",
+  "test_list": [
+    "assert check_Consecutive([1,2,3,4,5]) == True",
+    "assert check_Consecutive([1,2,3,5,6]) == False",
+    "assert check_Consecutive([1,2,1]) == False"
+  ],
+  "code_go": "package main\n\nimport \"sort\"\n\nfunc check_Consecutive(l []int) bool {\n\tif len(l) == 0 {\n\t\treturn true\n\t}\n\n\t// Find min and max\n\tminVal := l[0]\n\tmaxVal := l[0]\n\tfor _, v := range l {\n\t\tif v < minVal {\n\t\t\tminVal = v\n\t\t}\n\t\tif v > maxVal {\n\t\t\tmaxVal = v\n\t\t}\n\t}\n\n\t// Create a sorted copy\n\tsorted := make([]int, len(l))\n\tcopy(sorted, l)\n\tsort.Ints(sorted)\n\n\t// Create expected range\n\texpected := make([]int, maxVal-minVal+1)\n\tfor i := range expected {\n\t\texpected[i] = minVal + i\n\t}\n\n\t// Check if lengths match\n\tif len(sorted) != len(expected) {\n\t\treturn false\n\t}\n\n\t// Check if sorted slice matches expected range\n\tfor i := range sorted {\n\t\tif sorted[i] != expected[i] {\n\t\t\treturn false\n\t\t}\n\t}\n\n\treturn true\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert check_Consecutive([1,2,3,4,5]) == True",
+      "generated_test": "result := check_Consecutive([]int{1, 2, 3, 4, 5})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_Consecutive([1,2,3,5,6]) == False",
+      "generated_test": "result := check_Consecutive([]int{1, 2, 3, 5, 6})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_Consecutive([1,2,1]) == False",
+      "generated_test": "result := check_Consecutive([]int{1, 2, 1})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

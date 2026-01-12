@@ -1,0 +1,37 @@
+{
+  "task_id": 408,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find k number of smallest pairs which consist of one element from the first array and one element from the second array.",
+  "python_code": "import heapq\ndef k_smallest_pairs(nums1, nums2, k):\n   queue = []\n   def push(i, j):\n       if i < len(nums1) and j < len(nums2):\n           heapq.heappush(queue, [nums1[i] + nums2[j], i, j])\n   push(0, 0)\n   pairs = []\n   while queue and len(pairs) < k:\n       _, i, j = heapq.heappop(queue)\n       pairs.append([nums1[i], nums2[j]])\n       push(i, j + 1)\n       if j == 0:\n           push(i + 1, 0)\n   return pairs",
+  "test_list": [
+    "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+    "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]"
+  ],
+  "code_go": "package main\n\nimport \"container/heap\"\n\ntype PairHeap [][]int\n\nfunc (h PairHeap) Len() int           { return len(h) }\nfunc (h PairHeap) Less(i, j int) bool { return h[i][0] < h[j][0] }\nfunc (h PairHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\n\nfunc (h *PairHeap) Push(x interface{}) {\n\t*h = append(*h, x.([]int))\n}\n\nfunc (h *PairHeap) Pop() interface{} {\n\told := *h\n\tn := len(old)\n\tx := old[n-1]\n\t*h = old[0 : n-1]\n\treturn x\n}\n\nfunc k_smallest_pairs(nums1 []int, nums2 []int, k int) [][]int {\n\tqueue := &PairHeap{}\n\theap.Init(queue)\n\n\tpush := func(i, j int) {\n\t\tif i < len(nums1) && j < len(nums2) {\n\t\t\theap.Push(queue, []int{nums1[i] + nums2[j], i, j})\n\t\t}\n\t}\n\n\tpush(0, 0)\n\tpairs := [][]int{}\n\n\tfor queue.Len() > 0 && len(pairs) < k {\n\t\titem := heap.Pop(queue).([]int)\n\t\ti, j := item[1], item[2]\n\t\tpairs = append(pairs, []int{nums1[i], nums2[j]})\n\t\tpush(i, j+1)\n\t\tif j == 0 {\n\t\t\tpush(i+1, 0)\n\t\t}\n\t}\n\n\treturn pairs\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],2)==[[1, 2], [1, 4]]",
+      "generated_test": "nums1 := []int{1, 3, 7}\nnums2 := []int{2, 4, 6}\nk := 2\nexpected := [][]int{{1, 2}, {1, 4}}\nresult := k_smallest_pairs(nums1, nums2, k)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],1)==[[1, 2]]",
+      "generated_test": "result := k_smallest_pairs([]int{1, 3, 7}, []int{2, 4, 6}, 1)\nexpected := [][]int{{1, 2}}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert k_smallest_pairs([1,3,7],[2,4,6],7)==[[1, 2], [1, 4], [3, 2], [1, 6], [3, 4], [3, 6], [7, 2]]",
+      "generated_test": "result := k_smallest_pairs([]int{1, 3, 7}, []int{2, 4, 6}, 7)\nexpected := [][]int{{1, 2}, {1, 4}, {3, 2}, {1, 6}, {3, 4}, {3, 6}, {7, 2}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": false,
+      "llm_validated": true
+    }
+  ]
+}

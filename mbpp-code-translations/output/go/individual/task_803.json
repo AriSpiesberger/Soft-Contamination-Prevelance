@@ -1,0 +1,58 @@
+{
+  "task_id": 803,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is a perfect square or not. https://www.geeksforgeeks.org/check-if-given-number-is-perfect-square-in-cpp/",
+  "python_code": "def is_perfect_square(n) :\n    i = 1\n    while (i * i<= n):\n        if ((n % i == 0) and (n / i == i)):\n            return True     \n        i = i + 1\n    return False",
+  "test_list": [
+    "assert not is_perfect_square(10)",
+    "assert is_perfect_square(36)",
+    "assert not is_perfect_square(14)",
+    "assert is_perfect_square(14*14)",
+    "assert not is_perfect_square(125)",
+    "assert is_perfect_square(125*125)"
+  ],
+  "code_go": "package main\n\nfunc is_perfect_square(n int) bool {\n    i := 1\n    for i*i <= n {\n        if n%i == 0 && n/i == i {\n            return true\n        }\n        i = i + 1\n    }\n    return false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 6,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert not is_perfect_square(10)",
+      "generated_test": "result := is_perfect_square(10)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_perfect_square(36)",
+      "generated_test": "result := is_perfect_square(36)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not is_perfect_square(14)",
+      "generated_test": "result := is_perfect_square(14)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_perfect_square(14*14)",
+      "generated_test": "result := is_perfect_square(14 * 14)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not is_perfect_square(125)",
+      "generated_test": "result := is_perfect_square(125)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_perfect_square(125*125)",
+      "generated_test": "result := is_perfect_square(125 * 125)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

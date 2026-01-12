@@ -1,0 +1,27 @@
+{
+  "task_id": 280,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in an array and element and returns a tuple containing a boolean that indicates if the element is in the array and the index position of the element (or -1 if the element is not found).",
+  "code_python": "def sequential_search(dlist, item):\n    pos = 0\n    found = False\n    while pos < len(dlist) and not found:\n        if dlist[pos] == item:\n            found = True\n        else:\n            pos = pos + 1\n    return found, pos",
+  "test_list": [
+    "assert sequential_search([11,23,58,31,56,77,43,12,65,19],31) == (True, 3)",
+    "assert sequential_search([12, 32, 45, 62, 35, 47, 44, 61],61) == (True, 7)",
+    "assert sequential_search([9, 10, 17, 19, 22, 39, 48, 56],48) == (True, 6)"
+  ],
+  "python_1": "def sequential_search(dlist, item):\n    # Iterate through indices and values simultaneously using enumerate\n    for index, value in enumerate(dlist):\n        # Check if current element matches the target item\n        if value == item:\n            # Return success tuple with True flag and found position\n            return (True, index)\n    # Element not found after exhausting list, return failure tuple\n    return (False, -1)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sequential_search(dlist, item):\n    # Use Python's built-in index method wrapped in try-except for cleaner approach\n    try:\n        # Attempt to find the item's position using list's native index method\n        position = dlist.index(item)\n        # Item was found, return success tuple with discovered index\n        return (True, position)\n    # Catch ValueError which is raised when item doesn't exist in list\n    except ValueError:\n        # Item not present, return failure tuple with sentinel value -1\n        return (False, -1)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sequential_search(dlist, item):\n    # Check if the target item exists anywhere in the list using membership operator\n    found = item in dlist\n    # Use conditional expression to determine index: find position if found, else -1\n    pos = dlist.index(item) if found else -1\n    # Return the result as a tuple with found status and position\n    return (found, pos)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sequential_search(dlist, item):\n    # Generate list of indices where the item matches each element\n    matching_indices = [i for i in range(len(dlist)) if dlist[i] == item]\n    # Check if we found any matching positions by testing list truthiness\n    if matching_indices:\n        # Return True with the first matching index from our collected results\n        return (True, matching_indices[0])\n    # No matches were collected, return failure with -1 sentinel\n    return (False, -1)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sequential_search(dlist, item):\n    # Use recursive helper function to search through the list\n    def search_recursive(index):\n        # Base case: reached end of list without finding item\n        if index >= len(dlist):\n            # Signal not found by returning negative sentinel\n            return (False, -1)\n        # Check if current position holds the target item\n        if dlist[index] == item:\n            # Found the item, return success with current index\n            return (True, index)\n        # Recursively search the next position in the list\n        return search_recursive(index + 1)\n    # Kick off the recursive search starting from index 0\n    return search_recursive(0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

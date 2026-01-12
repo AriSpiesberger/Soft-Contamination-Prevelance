@@ -1,0 +1,37 @@
+{
+  "task_id": 417,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find common first element in given list of tuple.",
+  "python_code": "def group_tuples(Input): \n\tout = {} \n\tfor elem in Input: \n\t\ttry: \n\t\t\tout[elem[0]].extend(elem[1:]) \n\t\texcept KeyError: \n\t\t\tout[elem[0]] = list(elem) \n\treturn [tuple(values) for values in out.values()] ",
+  "test_list": [
+    "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+    "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+    "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<List<String>> group_tuples(List<List<String>> Input) {\n        Map<String, List<String>> out = new LinkedHashMap<>();\n        \n        for (List<String> elem : Input) {\n            String key = elem.get(0);\n            if (out.containsKey(key)) {\n                for (int i = 1; i < elem.size(); i++) {\n                    out.get(key).add(elem.get(i));\n                }\n            } else {\n                out.put(key, new ArrayList<>(elem));\n            }\n        }\n        \n        List<List<String>> result = new ArrayList<>();\n        for (List<String> values : out.values()) {\n            result.add(values);\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(\"x\", \"y\")));\ninput.add(new ArrayList<>(Arrays.asList(\"x\", \"z\")));\ninput.add(new ArrayList<>(Arrays.asList(\"w\", \"t\")));\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\"x\", \"y\", \"z\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"w\", \"t\")));\n\nList<List<String>> result = group_tuples(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(\"a\", \"b\")));\ninput.add(new ArrayList<>(Arrays.asList(\"a\", \"c\")));\ninput.add(new ArrayList<>(Arrays.asList(\"d\", \"e\")));\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\"a\", \"b\", \"c\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"d\", \"e\")));\n\nList<List<String>> result = group_tuples(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]",
+      "generated_test": "List<List<String>> input = new ArrayList<>();\ninput.add(new ArrayList<>(Arrays.asList(\"f\", \"g\")));\ninput.add(new ArrayList<>(Arrays.asList(\"f\", \"g\")));\ninput.add(new ArrayList<>(Arrays.asList(\"h\", \"i\")));\n\nList<List<String>> expected = new ArrayList<>();\nexpected.add(new ArrayList<>(Arrays.asList(\"f\", \"g\", \"g\")));\nexpected.add(new ArrayList<>(Arrays.asList(\"h\", \"i\")));\n\nList<List<String>> result = group_tuples(input);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

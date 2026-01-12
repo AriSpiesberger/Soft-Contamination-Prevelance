@@ -1,0 +1,44 @@
+{
+  "task_id": 785,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert tuple string to integer tuple.",
+  "python_code": "def tuple_str_int(test_str):\n  res = tuple(int(num) for num in test_str.replace('(', '').replace(')', '').replace('...', '').split(', '))\n  return (res) ",
+  "test_list": [
+    "assert tuple_str_int(\"(7, 8, 9)\") == (7, 8, 9)",
+    "assert tuple_str_int(\"(1, 2, 3)\") == (1, 2, 3)",
+    "assert tuple_str_int(\"(4, 5, 6)\") == (4, 5, 6)",
+    "assert tuple_str_int(\"(7, 81, 19)\") == (7, 81, 19)"
+  ],
+  "code_ruby": "def tuple_str_int(test_str)\n  test_str.gsub('(', '').gsub(')', '').gsub('...', '').split(', ').map(&:to_i)\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 4,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert tuple_str_int(\"(7, 8, 9)\") == (7, 8, 9)",
+      "generated_test": "result = tuple_str_int(\"(7, 8, 9)\")\nexpected = [7, 8, 9]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(1, 2, 3)\") == (1, 2, 3)",
+      "generated_test": "result = tuple_str_int(\"(1, 2, 3)\")\nexpected = [1, 2, 3]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(4, 5, 6)\") == (4, 5, 6)",
+      "generated_test": "result = tuple_str_int(\"(4, 5, 6)\")\nexpected = [4, 5, 6]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_str_int(\"(7, 81, 19)\") == (7, 81, 19)",
+      "generated_test": "result = tuple_str_int(\"(7, 81, 19)\")\nexpected = [7, 81, 19]\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

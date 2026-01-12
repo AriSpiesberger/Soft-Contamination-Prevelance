@@ -1,0 +1,17 @@
+{
+  "task_id": 312,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cone.",
+  "python_code": "import math\ndef volume_cone(r,h):\n  volume = (1.0/3) * math.pi * r * r * h\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_cone(5,12), 314.15926535897927, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(10,15), 1570.7963267948965, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(19,17), 6426.651371693521, rel_tol=0.001)"
+  ],
+  "code_typescript": "function volume_cone(r: number, h: number): number {\n  const volume = (1.0 / 3) * Math.PI * r * r * h;\n  return volume;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

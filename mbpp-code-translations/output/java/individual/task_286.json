@@ -1,0 +1,37 @@
+{
+  "task_id": 286,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the largest sum of a contiguous array in the modified array which is formed by repeating the given array k times.",
+  "python_code": "def max_sub_array_sum_repeated(a, n, k): \n\tmax_so_far = -2147483648\n\tmax_ending_here = 0\n\tfor i in range(n*k): \n\t\tmax_ending_here = max_ending_here + a[i%n] \n\t\tif (max_so_far < max_ending_here): \n\t\t\tmax_so_far = max_ending_here \n\t\tif (max_ending_here < 0): \n\t\t\tmax_ending_here = 0\n\treturn max_so_far",
+  "test_list": [
+    "assert max_sub_array_sum_repeated([10, 20, -30, -1], 4, 3) == 30",
+    "assert max_sub_array_sum_repeated([-1, 10, 20], 3, 2) == 59",
+    "assert max_sub_array_sum_repeated([-1, -2, -3], 3, 3) == -1"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int max_sub_array_sum_repeated(int[] a, int n, int k) {\n        int max_so_far = -2147483648;\n        int max_ending_here = 0;\n        for (int i = 0; i < n * k; i++) {\n            max_ending_here = max_ending_here + a[i % n];\n            if (max_so_far < max_ending_here) {\n                max_so_far = max_ending_here;\n            }\n            if (max_ending_here < 0) {\n                max_ending_here = 0;\n            }\n        }\n        return max_so_far;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert max_sub_array_sum_repeated([10, 20, -30, -1], 4, 3) == 30",
+      "generated_test": "int[] arr = new int[]{10, 20, -30, -1};\nint result = max_sub_array_sum_repeated(arr, 4, 3);\nint expected = 30;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sub_array_sum_repeated([-1, 10, 20], 3, 2) == 59",
+      "generated_test": "int[] arr = new int[]{-1, 10, 20};\nint result = max_sub_array_sum_repeated(arr, 3, 2);\nint expected = 59;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_sub_array_sum_repeated([-1, -2, -3], 3, 3) == -1",
+      "generated_test": "int[] arr = new int[]{-1, -2, -3};\nint result = max_sub_array_sum_repeated(arr, 3, 3);\nint expected = -1;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

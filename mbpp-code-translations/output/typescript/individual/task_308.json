@@ -1,0 +1,17 @@
+{
+  "task_id": 308,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the specified number of largest products from two given lists, selecting one factor from each list.",
+  "python_code": "def large_product(nums1, nums2, N):\n    result = sorted([x*y for x in nums1 for y in nums2], reverse=True)[:N]\n    return result",
+  "test_list": [
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]",
+    "assert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]"
+  ],
+  "code_typescript": "function large_product(nums1: number[], nums2: number[], N: number): number[] {\n    const products: number[] = [];\n    for (const x of nums1) {\n        for (const y of nums2) {\n            products.push(x * y);\n        }\n    }\n    products.sort((a, b) => b - a);\n    return products.slice(0, N);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

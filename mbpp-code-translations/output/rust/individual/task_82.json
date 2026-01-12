@@ -1,0 +1,37 @@
+{
+  "task_id": 82,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a sphere.",
+  "python_code": "import math\ndef volume_sphere(r):\n  volume=(4/3)*math.pi*r*r*r\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)",
+    "assert math.isclose(volume_sphere(25), 65449.84694978735, rel_tol=0.001)",
+    "assert math.isclose(volume_sphere(20), 33510.32163829113, rel_tol=0.001)"
+  ],
+  "code_rust": "use std::f64::consts::PI;\n\npub fn volume_sphere(r: f64) -> f64 {\n    (4.0 / 3.0) * PI * r * r * r\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)",
+      "generated_test": "let result = volume_sphere(10.0);\nlet expected = 4188.790204786391;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_sphere(25), 65449.84694978735, rel_tol=0.001)",
+      "generated_test": "let result = volume_sphere(25.0);\nlet expected = 65449.84694978735;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(volume_sphere(20), 33510.32163829113, rel_tol=0.001)",
+      "generated_test": "let result = volume_sphere(20.0);\nlet expected = 33510.32163829113;\nlet rel_tol = 0.001;\nlet diff = (result - expected).abs();\nlet tolerance = rel_tol * expected.abs();\nif diff <= tolerance {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 66,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of positive numbers in a list.",
+  "code_python": "def pos_count(list):\n  pos_count= 0\n  for num in list: \n    if num >= 0: \n      pos_count += 1\n  return pos_count ",
+  "test_list": [
+    "assert pos_count([1,-2,3,-4]) == 2",
+    "assert pos_count([3,4,5,-1]) == 3",
+    "assert pos_count([1,2,3,4]) == 4"
+  ],
+  "python_1": "def pos_count(list):\n    # Use list comprehension to filter only positive numbers (including zero)\n    positive_numbers = [num for num in list if num >= 0]\n    # Return the length of the filtered list as the count\n    return len(positive_numbers)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def pos_count(list):\n    # Use sum() with a generator expression that yields 1 for each non-negative number\n    # This leverages Python's truthy evaluation where True equals 1 in numeric context\n    return sum(1 for num in list if num > 0)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def pos_count(list):\n    # Use filter function with lambda to select only positive numbers (greater than 0)\n    filtered_positives = filter(lambda x: x > 0, list)\n    # Convert filter object to list and measure its length to get the count\n    return len(tuple(filtered_positives))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def pos_count(list):\n    # Use recursion base case: empty list has zero positive numbers\n    if len(list) == 0:\n        return 0\n    # Extract the first element to check if it's positive\n    first_element = list[0]\n    # Recursively count positives in the remaining elements (tail of list)\n    remaining_count = pos_count(list[1:])\n    # Add 1 to count if first element is positive, otherwise add 0\n    current_contribution = 1 if first_element > 0 else 0\n    # Combine current element's contribution with recursive result\n    return current_contribution + remaining_count",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def pos_count(list):\n    # Use reduce from functools to accumulate count through functional approach\n    from functools import reduce\n    # Define accumulator function that adds 1 if current element is positive\n    def count_positive(accumulator, current):\n        # Check if current number is strictly greater than zero\n        if current > 0:\n            # Increment the running total by 1 for positive numbers\n            return accumulator + 1\n        # Keep accumulator unchanged for non-positive numbers\n        return accumulator\n    # Apply reduce with initial value 0, folding across entire list\n    return reduce(count_positive, list, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

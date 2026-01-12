@@ -1,0 +1,37 @@
+{
+  "task_id": 589,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find perfect squares between two given numbers.",
+  "python_code": "def perfect_squares(a, b):\n    lists=[]\n    for i in range (a,b+1):\n        j = 1;\n        while j*j <= i:\n            if j*j == i:\n                 lists.append(i)  \n            j = j+1\n        i = i+1\n    return lists",
+  "test_list": [
+    "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+    "assert perfect_squares(50,100)==[64, 81, 100]",
+    "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]"
+  ],
+  "code_go": "package main\n\nfunc perfect_squares(a, b int) []int {\n    lists := []int{}\n    for i := a; i <= b; i++ {\n        j := 1\n        for j*j <= i {\n            if j*j == i {\n                lists = append(lists, i)\n            }\n            j = j + 1\n        }\n    }\n    return lists\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert perfect_squares(1,30)==[1, 4, 9, 16, 25]",
+      "generated_test": "result := perfect_squares(1, 30)\nexpected := []int{1, 4, 9, 16, 25}\npass := len(result) == len(expected)\nif pass {\n    for i := range result {\n        if result[i] != expected[i] {\n            pass = false\n            break\n        }\n    }\n}\nif pass {\n    fmt.Println(\"PASS\")\n} else {\n    fmt.Println(\"FAIL\")\n    fmt.Printf(\"  Expected: %v\\n\", expected)\n    fmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(50,100)==[64, 81, 100]",
+      "generated_test": "result := perfect_squares(50, 100)\nexpected := []int{64, 81, 100}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert perfect_squares(100,200)==[100, 121, 144, 169, 196]",
+      "generated_test": "result := perfect_squares(100, 200)\nexpected := []int{100, 121, 144, 169, 196}\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

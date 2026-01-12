@@ -1,0 +1,37 @@
+{
+  "task_id": 569,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "python_code": "def sort_sublists(list1):\n    result = list(map(sorted,list1)) \n    return result",
+  "test_list": [
+    "assert sort_sublists([['green', 'orange'], ['black', 'white'], ['white', 'black', 'orange']])==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])==[['green', 'orange'], ['black'], ['green', 'orange'], ['white']]",
+    "assert sort_sublists([['a','b'],['d','c'],['g','h'] , ['f','e']])==[['a', 'b'], ['c', 'd'], ['g', 'h'], ['e', 'f']]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\nfunc sort_sublists(list1 [][]string) [][]string {\n\tresult := make([][]string, len(list1))\n\tfor i, sublist := range list1 {\n\t\tsortedSublist := make([]string, len(sublist))\n\t\tcopy(sortedSublist, sublist)\n\t\tsort.Strings(sortedSublist)\n\t\tresult[i] = sortedSublist\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sort_sublists([['green', 'orange'], ['black', 'white'], ['white', 'black', 'orange']])==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+      "generated_test": "result := sort_sublists([][]string{{\"green\", \"orange\"}, {\"black\", \"white\"}, {\"white\", \"black\", \"orange\"}})\nexpected := [][]string{{\"green\", \"orange\"}, {\"black\", \"white\"}, {\"black\", \"orange\", \"white\"}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])==[['green', 'orange'], ['black'], ['green', 'orange'], ['white']]",
+      "generated_test": "result := sort_sublists([][]string{{\"green\", \"orange\"}, {\"black\"}, {\"green\", \"orange\"}, {\"white\"}})\nexpected := [][]string{{\"green\", \"orange\"}, {\"black\"}, {\"green\", \"orange\"}, {\"white\"}}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_sublists([['a','b'],['d','c'],['g','h'] , ['f','e']])==[['a', 'b'], ['c', 'd'], ['g', 'h'], ['e', 'f']]",
+      "generated_test": "input := [][]string{{\"a\", \"b\"}, {\"d\", \"c\"}, {\"g\", \"h\"}, {\"f\", \"e\"}}\nexpected := [][]string{{\"a\", \"b\"}, {\"c\", \"d\"}, {\"g\", \"h\"}, {\"e\", \"f\"}}\nresult := sort_sublists(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

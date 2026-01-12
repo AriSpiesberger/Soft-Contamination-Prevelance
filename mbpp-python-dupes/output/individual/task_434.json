@@ -1,0 +1,27 @@
+{
+  "task_id": 434,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by one or more b's.",
+  "code_python": "import re\ndef text_match_one(text):\n        patterns = 'ab+?'\n        if re.search(patterns,  text):\n                return True\n        else:\n                return False\n",
+  "test_list": [
+    "assert text_match_one(\"ac\")==False",
+    "assert text_match_one(\"dc\")==False",
+    "assert text_match_one(\"abba\")==True"
+  ],
+  "python_1": "import re\ndef text_match_one(text):\n        # Define pattern requiring 'a' followed by at least one 'b' using greedy quantifier\n        patterns = 'ab+'\n        # Use match object directly as boolean via walrus operator style check\n        match = re.search(patterns, text)\n        # Return truthiness of match object - None is falsy, Match object is truthy\n        return bool(match)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import re\ndef text_match_one(text):\n        # Compile the regex pattern for 'a' followed by one or more 'b's into a reusable pattern object\n        pattern_obj = re.compile('ab+')\n        # Use the compiled pattern's search method and convert result directly to boolean in return\n        return pattern_obj.search(text) is not None",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import re\ndef text_match_one(text):\n        # Use re.findall to get list of all matching substrings in the text\n        matches = re.findall('ab+', text)\n        # Return True if matches list is non-empty (has at least one match), False otherwise\n        return len(matches) > 0",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import re\ndef text_match_one(text):\n        # Use re.match with a pattern that allows any prefix before 'ab+'\n        # Match from start requires .* to consume chars before our target pattern\n        result = re.match(r'.*ab+', text)\n        # Leverage Python's ternary expression to return boolean based on match success\n        return True if result else False",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import re\ndef text_match_one(text):\n        # Use re.split to divide text at 'ab+' pattern locations\n        split_result = re.split('ab+', text)\n        # If pattern exists, split creates more parts than original (len > 1)\n        # Compare split result length to 1 to detect if any splits occurred\n        return len(split_result) != 1",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

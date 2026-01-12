@@ -1,0 +1,27 @@
+{
+  "task_id": 419,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to round every number of a given list of numbers and print the total sum multiplied by the length of the list.",
+  "code_python": "def round_and_sum(list1):\n  lenght=len(list1)\n  round_and_sum=sum(list(map(round,list1))* lenght)\n  return round_and_sum",
+  "test_list": [
+    "assert round_and_sum([22.4, 4.0, -16.22, -9.10, 11.00, -12.22, 14.20, -5.20, 17.50])==243",
+    "assert round_and_sum([5,2,9,24.3,29])==345",
+    "assert round_and_sum([25.0,56.7,89.2])==513"
+  ],
+  "python_1": "def round_and_sum(list1):\n    # Store the count of elements for later multiplication\n    length = len(list1)\n    # Initialize accumulator for summing rounded values\n    rounded_total = 0\n    # Process each number individually using explicit iteration\n    for num in list1:\n        # Round current number and add to running total\n        rounded_total += round(num)\n    # Multiply the sum of rounded values by list length\n    result = rounded_total * length\n    # Return the final computed value\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def round_and_sum(list1):\n    # Use list comprehension to create a new list of rounded values\n    rounded_values = [round(x) for x in list1]\n    # Calculate the sum of all rounded numbers using built-in sum\n    total = sum(rounded_values)\n    # Determine how many elements exist to use as multiplier\n    multiplier = len(list1)\n    # Compute final result by scaling the sum by element count\n    final_result = total * multiplier\n    # Return the computed product\n    return final_result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def round_and_sum(list1):\n    # Use reduce from functools to accumulate sum without explicit loop or sum()\n    from functools import reduce\n    # Transform input list into rounded integers using generator expression\n    rounded_generator = (round(n) for n in list1)\n    # Apply reduce with lambda to fold all rounded values into single sum\n    accumulated_sum = reduce(lambda acc, val: acc + val, rounded_generator, 0)\n    # Capture list size before any potential modification\n    element_count = len(list1)\n    # Scale the accumulated total by repeating addition using multiplication\n    scaled_result = accumulated_sum * element_count\n    # Provide the computed answer back to caller\n    return scaled_result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def round_and_sum(list1):\n    # Leverage numpy-style approach using recursive summation with index tracking\n    def recursive_sum(lst, index=0):\n        # Base case: when index reaches end, return zero to terminate recursion\n        if index >= len(lst):\n            return 0\n        # Round current element and recursively add remaining elements\n        return round(lst[index]) + recursive_sum(lst, index + 1)\n    # Invoke recursive helper to compute total of all rounded values\n    rounded_sum = recursive_sum(list1)\n    # Extract collection size to serve as scaling factor\n    list_length = len(list1)\n    # Produce final answer by combining sum with length multiplier\n    output = rounded_sum * list_length\n    # Deliver the computed product as function result\n    return output",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def round_and_sum(list1):\n    # Use eval and string manipulation to dynamically build sum expression\n    rounded_nums = []\n    # Iterate with enumerate to track position while processing each element\n    for idx, value in enumerate(list1):\n        # Apply rounding transformation and collect into accumulator list\n        rounded_nums.append(round(value))\n    # Convert list of integers to string representation for eval approach\n    nums_as_strings = [str(n) for n in rounded_nums]\n    # Join all stringified numbers with plus operator to form arithmetic expression\n    expression = '+'.join(nums_as_strings) if nums_as_strings else '0'\n    # Dynamically evaluate the constructed addition expression\n    computed_sum = eval(expression)\n    # Retrieve cardinality of original collection for multiplication factor\n    size = len(list1)\n    # Apply multiplication using repeated addition concept via operator\n    import operator\n    # Invoke mul operator function instead of using * symbol directly\n    product = operator.mul(computed_sum, size)\n    # Emit the calculated result back to the calling context\n    return product",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

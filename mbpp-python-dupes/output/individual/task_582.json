@@ -1,0 +1,27 @@
+{
+  "task_id": 582,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if a dictionary is empty",
+  "code_python": "def my_dict(dict1):\n  if bool(dict1):\n     return False\n  else:\n     return True",
+  "test_list": [
+    "assert my_dict({10})==False",
+    "assert my_dict({11})==False",
+    "assert my_dict({})==True"
+  ],
+  "python_1": "def my_dict(dict1):\n    # Use len() to get the number of elements in the collection\n    length = len(dict1)\n    # Compare length to zero - empty collections have zero length\n    # Return True if empty (length is 0), False otherwise\n    return length == 0",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def my_dict(dict1):\n    # Attempt to retrieve the first element using iteration protocol\n    for _ in dict1:\n        # If we enter the loop, collection has at least one element\n        return False\n    # Loop never executed, meaning collection is empty\n    return True",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def my_dict(dict1):\n    # Convert the collection to a list to materialize its elements\n    as_list = list(dict1)\n    # Check if the resulting list is equal to an empty list\n    # This determines if the original collection had any elements\n    return as_list == []",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def my_dict(dict1):\n    # Use exception handling to detect if collection has elements\n    try:\n        # Attempt to get an iterator and retrieve the first element\n        next(iter(dict1))\n        # If successful, collection is not empty\n        return False\n    except StopIteration:\n        # StopIteration means iterator is exhausted immediately (empty)\n        return True",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def my_dict(dict1):\n    # Use the not operator to directly invert the truthiness of the collection\n    # Empty collections are falsy, so not falsy = True (empty), not truthy = False (not empty)\n    result = not dict1\n    # Return the negated boolean directly without any conditional branching\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 779,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of lists within a list. The function should return a dictionary, where every list is turned to a tuple, and the value of the tuple is the number of its occurrences.",
+  "python_code": "def unique_sublists(list1):\n    result ={}\n    for l in list1: \n        result.setdefault(tuple(l), list()).append(1) \n    for a, b in result.items(): \n        result[a] = sum(b)\n    return result",
+  "test_list": [
+    "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]])=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+    "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+    "assert unique_sublists([[1, 2], [3, 4], [4, 5], [6, 7]])=={(1, 2): 1, (3, 4): 1, (4, 5): 1, (6, 7): 1}"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn unique_sublists(list1: Vec<Vec<&str>>) -> HashMap<Vec<&str>, i32> {\n    let mut result: HashMap<Vec<&str>, i32> = HashMap::new();\n    for l in list1 {\n        *result.entry(l).or_insert(0) += 1;\n    }\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert unique_sublists([[1, 3], [5, 7], [1, 3], [13, 15, 17], [5, 7], [9, 11]])=={(1, 3): 2, (5, 7): 2, (13, 15, 17): 1, (9, 11): 1}",
+      "generated_test": "let input: Vec<Vec<&str>> = vec![\n    vec![\"1\", \"3\"],\n    vec![\"5\", \"7\"],\n    vec![\"1\", \"3\"],\n    vec![\"13\", \"15\", \"17\"],\n    vec![\"5\", \"7\"],\n    vec![\"9\", \"11\"],\n];\n\nlet result = unique_sublists(input);\n\nlet mut expected: HashMap<Vec<&str>, i32> = HashMap::new();\nexpected.insert(vec![\"1\", \"3\"], 2);\nexpected.insert(vec![\"5\", \"7\"], 2);\nexpected.insert(vec![\"13\", \"15\", \"17\"], 1);\nexpected.insert(vec![\"9\", \"11\"], 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])=={('green', 'orange'): 2, ('black',): 1, ('white',): 1}",
+      "generated_test": "let input = vec![\n    vec![\"green\", \"orange\"],\n    vec![\"black\"],\n    vec![\"green\", \"orange\"],\n    vec![\"white\"],\n];\n\nlet result = unique_sublists(input);\n\nlet mut expected: HashMap<Vec<&str>, i32> = HashMap::new();\nexpected.insert(vec![\"green\", \"orange\"], 2);\nexpected.insert(vec![\"black\"], 1);\nexpected.insert(vec![\"white\"], 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert unique_sublists([[1, 2], [3, 4], [4, 5], [6, 7]])=={(1, 2): 1, (3, 4): 1, (4, 5): 1, (6, 7): 1}",
+      "generated_test": "let input: Vec<Vec<&str>> = vec![\n    vec![\"1\", \"2\"],\n    vec![\"3\", \"4\"],\n    vec![\"4\", \"5\"],\n    vec![\"6\", \"7\"],\n];\nlet result = unique_sublists(input);\nlet mut expected: HashMap<Vec<&str>, i32> = HashMap::new();\nexpected.insert(vec![\"1\", \"2\"], 1);\nexpected.insert(vec![\"3\", \"4\"], 1);\nexpected.insert(vec![\"4\", \"5\"], 1);\nexpected.insert(vec![\"6\", \"7\"], 1);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

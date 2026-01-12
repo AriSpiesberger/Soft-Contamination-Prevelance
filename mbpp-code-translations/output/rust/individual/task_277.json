@@ -1,0 +1,37 @@
+{
+  "task_id": 277,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a dictionary and integer n and filters the dictionary to only include entries with values greater than or equal to n.",
+  "python_code": "def dict_filter(dict,n):\n result = {key:value for (key, value) in dict.items() if value >=n}\n return result",
+  "test_list": [
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn dict_filter(dict: HashMap<String, i32>, n: i32) -> HashMap<String, i32> {\n    dict.into_iter()\n        .filter(|(_, value)| *value >= n)\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+      "generated_test": "let mut input: HashMap<String, i32> = HashMap::new();\ninput.insert(\"Cierra Vega\".to_string(), 175);\ninput.insert(\"Alden Cantrell\".to_string(), 180);\ninput.insert(\"Kierra Gentry\".to_string(), 165);\ninput.insert(\"Pierre Cox\".to_string(), 190);\n\nlet mut expected: HashMap<String, i32> = HashMap::new();\nexpected.insert(\"Cierra Vega\".to_string(), 175);\nexpected.insert(\"Alden Cantrell\".to_string(), 180);\nexpected.insert(\"Pierre Cox\".to_string(), 190);\n\nlet result = dict_filter(input, 170);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+      "generated_test": "let mut input = HashMap::new();\ninput.insert(String::from(\"Cierra Vega\"), 175);\ninput.insert(String::from(\"Alden Cantrell\"), 180);\ninput.insert(String::from(\"Kierra Gentry\"), 165);\ninput.insert(String::from(\"Pierre Cox\"), 190);\n\nlet mut expected = HashMap::new();\nexpected.insert(String::from(\"Alden Cantrell\"), 180);\nexpected.insert(String::from(\"Pierre Cox\"), 190);\n\nlet result = dict_filter(input, 180);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}",
+      "generated_test": "let mut input: HashMap<String, i32> = HashMap::new();\ninput.insert(\"Cierra Vega\".to_string(), 175);\ninput.insert(\"Alden Cantrell\".to_string(), 180);\ninput.insert(\"Kierra Gentry\".to_string(), 165);\ninput.insert(\"Pierre Cox\".to_string(), 190);\n\nlet mut expected: HashMap<String, i32> = HashMap::new();\nexpected.insert(\"Pierre Cox\".to_string(), 190);\n\nlet result = dict_filter(input, 190);\n\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

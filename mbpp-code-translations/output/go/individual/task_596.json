@@ -1,0 +1,37 @@
+{
+  "task_id": 596,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the size in bytes of the given tuple.",
+  "python_code": "import sys \ndef tuple_size(tuple_list):\n  return (sys.getsizeof(tuple_list)) ",
+  "test_list": [
+    "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+    "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+    "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"reflect\"\n\t\"unsafe\"\n)\n\nfunc tuple_size(tuple_list interface{}) int {\n\tif tuple_list == nil {\n\t\treturn 0\n\t}\n\t\n\tv := reflect.ValueOf(tuple_list)\n\t\n\tswitch v.Kind() {\n\tcase reflect.Slice, reflect.Array:\n\t\t// Python tuple size formula: 56 + 8*len for tuples (on 64-bit)\n\t\t// Base tuple overhead is 56 bytes, plus 8 bytes per element reference\n\t\treturn 56 + v.Len()*8\n\tdefault:\n\t\treturn int(unsafe.Sizeof(tuple_list))\n\t}\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert tuple_size((\"A\", 1, \"B\", 2, \"C\", 3) ) == sys.getsizeof((\"A\", 1, \"B\", 2, \"C\", 3))",
+      "generated_test": "tuple := []interface{}{\"A\", 1, \"B\", 2, \"C\", 3}\nresult := tuple_size(tuple)\nexpected := 56 + len(tuple)*8\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\") ) == sys.getsizeof((1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"))",
+      "generated_test": "tuple := []interface{}{1, \"Raju\", 2, \"Nikhil\", 3, \"Deepanshu\"}\nresult := tuple_size(tuple)\nexpected := 56 + 6*8 // Python tuple size: 56 base + 8 bytes per element\n\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert tuple_size(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\"))  ) == sys.getsizeof(((1, \"Lion\"), ( 2, \"Tiger\"), (3, \"Fox\"), (4, \"Wolf\")))",
+      "generated_test": "expected := 56 + 4*8\ngot := tuple_size([][]interface{}{{1, \"Lion\"}, {2, \"Tiger\"}, {3, \"Fox\"}, {4, \"Wolf\"}})\n\nif got == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

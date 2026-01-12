@@ -1,0 +1,27 @@
+{
+  "task_id": 99,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.",
+  "code_python": "def decimal_to_binary(n): \n    return bin(n).replace(\"0b\",\"\") ",
+  "test_list": [
+    "assert decimal_to_binary(8) == '1000'",
+    "assert decimal_to_binary(18) == '10010'",
+    "assert decimal_to_binary(7) == '111'"
+  ],
+  "python_1": "def decimal_to_binary(n): \n    # Handle the edge case where input is zero\n    if n == 0:\n        return '0'\n    # Initialize empty string to accumulate binary digits\n    binary_digits = ''\n    # Continue dividing until quotient becomes zero\n    while n > 0:\n        # Extract the least significant bit using modulo 2\n        remainder = n % 2\n        # Prepend the current bit to build the binary string from right to left\n        binary_digits = str(remainder) + binary_digits\n        # Perform integer division to process the next bit position\n        n = n // 2\n    # Return the complete binary representation\n    return binary_digits",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def decimal_to_binary(n): \n    # Handle special case of zero which would otherwise produce empty result\n    if n == 0:\n        return '0'\n    # Use a list to collect binary digits for efficient string building\n    bits = []\n    # Extract bits using bitwise operations until all bits are processed\n    while n:\n        # Use bitwise AND with 1 to extract the rightmost bit\n        bits.append(str(n & 1))\n        # Right shift by 1 position to move to the next bit\n        n >>= 1\n    # Reverse the collected bits since we extracted them LSB-first\n    bits.reverse()\n    # Join all bit characters into a single binary string\n    return ''.join(bits)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def decimal_to_binary(n): \n    # Handle zero as a base case since it has a trivial binary form\n    if n == 0:\n        return '0'\n    # Use recursion: divide problem into smaller subproblem (n//2) plus current bit\n    # The recursive call handles all higher-order bits\n    if n == 1:\n        # Base case for recursion: single bit 1 needs no further division\n        return '1'\n    # Recursively convert the quotient and append the current remainder bit\n    # This builds the string from most significant to least significant bit\n    return decimal_to_binary(n // 2) + str(n % 2)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def decimal_to_binary(n): \n    # Handle zero edge case directly since log2(0) is undefined\n    if n == 0:\n        return '0'\n    # Calculate the position of the highest set bit to determine binary length\n    import math\n    # Find the highest bit position using logarithm base 2\n    highest_bit_pos = int(math.log2(n))\n    # Initialize result string to accumulate binary digits from MSB to LSB\n    result = ''\n    # Iterate from highest bit position down to 0, checking each bit\n    for bit_pos in range(highest_bit_pos, -1, -1):\n        # Calculate the power of 2 for current bit position\n        power_of_two = 2 ** bit_pos\n        # Check if current bit position contributes to the number\n        if n >= power_of_two:\n            # Append '1' since this bit is set in the binary representation\n            result += '1'\n            # Subtract the contribution of this bit from remaining value\n            n -= power_of_two\n        else:\n            # Append '0' since this bit position is not set\n            result += '0'\n    # Return the constructed binary string with all bits processed\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def decimal_to_binary(n): \n    # Special case: zero maps directly to string '0'\n    if n == 0:\n        return '0'\n    # Use format string specifier 'b' which converts integer to binary representation\n    # This is Python's built-in formatting capability distinct from bin() function\n    return format(n, 'b')",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

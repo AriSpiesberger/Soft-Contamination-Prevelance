@@ -1,0 +1,27 @@
+{
+  "task_id": 224,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of set bits (binary digits with value 1) in a given number.",
+  "code_python": "def count_Set_Bits(n): \n    count = 0\n    while (n): \n        count += n & 1\n        n >>= 1\n    return count ",
+  "test_list": [
+    "assert count_Set_Bits(2) == 1",
+    "assert count_Set_Bits(4) == 1",
+    "assert count_Set_Bits(6) == 2"
+  ],
+  "python_1": "def count_Set_Bits(n): \n    # Convert integer to binary string representation, stripping '0b' prefix\n    binary_representation = bin(n)\n    # Use string's count method to tally occurrences of '1' character\n    number_of_ones = binary_representation.count('1')\n    # Return the total count of set bits found in binary form\n    return number_of_ones",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_Set_Bits(n): \n    # Brian Kernighan's algorithm: each iteration clears the lowest set bit\n    count = 0\n    # Continue while there are still set bits remaining in n\n    while n:\n        # Subtracting 1 flips all bits from rightmost set bit to the end\n        # ANDing with original clears that rightmost set bit efficiently\n        n = n & (n - 1)\n        # Each bit clearing operation represents one set bit found\n        count += 1\n    # Return total number of set bits discovered through bit manipulation\n    return count",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_Set_Bits(n): \n    # Use Python's built-in bit_count method available for integers\n    # This leverages optimized C implementation under the hood\n    return n.bit_count()",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_Set_Bits(n): \n    # Handle edge case where input is zero, which has no set bits\n    if n == 0:\n        return 0\n    # Use recursive approach: extract least significant bit and recurse on remaining bits\n    # The base case is handled above when n reaches 0\n    # Extract the rightmost bit using modulo 2 operation (alternative to bitwise AND)\n    least_significant_bit = n % 2\n    # Recursively process the remaining higher-order bits by integer division\n    remaining_bits_count = count_Set_Bits(n // 2)\n    # Combine current bit value with count from recursive call\n    return least_significant_bit + remaining_bits_count",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_Set_Bits(n): \n    # Convert number to binary string and strip the '0b' prefix for clean iteration\n    binary_str = bin(n)[2:]\n    # Use sum with generator expression to count truthy values when chars equal '1'\n    # This functional approach avoids explicit loops and counter variables\n    return sum(1 for bit in binary_str if bit == '1')",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 722,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "The input is given as - a dictionary with a student name as a key and a tuple of float (student_height, student_weight) as a value, - minimal height, - minimal weight. Write a function to filter students that have height and weight above the minimum.",
+  "python_code": "def filter_data(students,h,w):\n    result = {k: s for k, s in students.items() if s[0] >=h and s[1] >=w}\n    return result    ",
+  "test_list": [
+    "assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},6.0,70)=={'Cierra Vega': (6.2, 70)}",
+    "assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},5.9,67)=={'Cierra Vega': (6.2, 70),'Kierra Gentry': (6.0, 68)}",
+    "assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},5.7,64)=={'Cierra Vega': (6.2, 70),'Alden Cantrell': (5.9, 65),'Kierra Gentry': (6.0, 68),'Pierre Cox': (5.8, 66)}"
+  ],
+  "code_go": "package main\n\ntype StudentData struct {\n\tHeight float64\n\tWeight float64\n}\n\nfunc filter_data(students map[string]StudentData, h float64, w float64) map[string]StudentData {\n\tresult := make(map[string]StudentData)\n\tfor k, s := range students {\n\t\tif s.Height >= h && s.Weight >= w {\n\t\t\tresult[k] = s\n\t\t}\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},6.0,70)=={'Cierra Vega': (6.2, 70)}",
+      "generated_test": "input := map[string]StudentData{\n\t\"Cierra Vega\":    {6.2, 70},\n\t\"Alden Cantrell\": {5.9, 65},\n\t\"Kierra Gentry\":  {6.0, 68},\n\t\"Pierre Cox\":     {5.8, 66},\n}\nexpected := map[string]StudentData{\n\t\"Cierra Vega\": {6.2, 70},\n}\n\nresult := filter_data(input, 6.0, 70)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv.Height != v.Height || rv.Weight != v.Weight {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},5.9,67)=={'Cierra Vega': (6.2, 70),'Kierra Gentry': (6.0, 68)}",
+      "generated_test": "input := map[string]StudentData{\n\t\"Cierra Vega\":    {6.2, 70},\n\t\"Alden Cantrell\": {5.9, 65},\n\t\"Kierra Gentry\":  {6.0, 68},\n\t\"Pierre Cox\":     {5.8, 66},\n}\n\nexpected := map[string]StudentData{\n\t\"Cierra Vega\":   {6.2, 70},\n\t\"Kierra Gentry\": {6.0, 68},\n}\n\nresult := filter_data(input, 5.9, 67)\n\n// Compare maps\npass := len(result) == len(expected)\nif pass {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv.Height != v.Height || rv.Weight != v.Weight {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert filter_data({'Cierra Vega': (6.2, 70), 'Alden Cantrell': (5.9, 65), 'Kierra Gentry': (6.0, 68), 'Pierre Cox': (5.8, 66)},5.7,64)=={'Cierra Vega': (6.2, 70),'Alden Cantrell': (5.9, 65),'Kierra Gentry': (6.0, 68),'Pierre Cox': (5.8, 66)}",
+      "generated_test": "input := map[string]StudentData{\n\t\"Cierra Vega\":    {6.2, 70},\n\t\"Alden Cantrell\": {5.9, 65},\n\t\"Kierra Gentry\":  {6.0, 68},\n\t\"Pierre Cox\":     {5.8, 66},\n}\n\nexpected := map[string]StudentData{\n\t\"Cierra Vega\":    {6.2, 70},\n\t\"Alden Cantrell\": {5.9, 65},\n\t\"Kierra Gentry\":  {6.0, 68},\n\t\"Pierre Cox\":     {5.8, 66},\n}\n\nresult := filter_data(input, 5.7, 64)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor k, v := range expected {\n\t\tif rv, ok := result[k]; !ok || rv.Height != v.Height || rv.Weight != v.Weight {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 253,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that returns the number of integer elements in a given list.",
+  "python_code": "def count_integer(list1):\n    ctr = 0\n    for i in list1:\n        if isinstance(i, int):\n            ctr = ctr + 1\n    return ctr",
+  "test_list": [
+    "assert count_integer([1,2,'abc',1.2]) == 2",
+    "assert count_integer([1,2,3]) == 3",
+    "assert count_integer([1,1.2,4,5.1]) == 2"
+  ],
+  "code_javascript": "function count_integer(list1) {\n    let ctr = 0;\n    for (let i of list1) {\n        if (Number.isInteger(i) && typeof i === 'number') {\n            ctr = ctr + 1;\n        }\n    }\n    return ctr;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert count_integer([1,2,'abc',1.2]) == 2",
+      "generated_test": "const result = count_integer([1, 2, 'abc', 1.2]);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_integer([1,2,3]) == 3",
+      "generated_test": "const result = count_integer([1,2,3]);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_integer([1,1.2,4,5.1]) == 2",
+      "generated_test": "const result = count_integer([1, 1.2, 4, 5.1]);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 270,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of even numbers at even positions of a list.",
+  "code_python": "def sum_even_and_even_index(arr):  \n    i = 0\n    sum = 0\n    for i in range(0, len(arr),2): \n        if (arr[i] % 2 == 0) : \n            sum += arr[i]  \n    return sum",
+  "test_list": [
+    "assert sum_even_and_even_index([5, 6, 12, 1, 18, 8]) == 30",
+    "assert sum_even_and_even_index([3, 20, 17, 9, 2, 10, 18, 13, 6, 18]) == 26",
+    "assert sum_even_and_even_index([5, 6, 12, 1]) == 12"
+  ],
+  "python_1": "def sum_even_and_even_index(arr):  \n    # Use list comprehension with enumerate to get index-value pairs\n    # Filter for even indices where value is also even, then sum\n    return sum(val for idx, val in enumerate(arr) if idx % 2 == 0 and val % 2 == 0)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sum_even_and_even_index(arr):  \n    # Use array slicing to extract only elements at even indices (0, 2, 4, ...)\n    even_index_elements = arr[::2]\n    # Apply filter function to keep only even numbers from the sliced list\n    even_values_at_even_indices = filter(lambda x: x % 2 == 0, even_index_elements)\n    # Aggregate all filtered values into a single sum\n    total = sum(even_values_at_even_indices)\n    # Return the computed sum of even numbers at even positions\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sum_even_and_even_index(arr):  \n    # Use reduce pattern with functools to accumulate sum in functional style\n    from functools import reduce\n    # Create list of tuples pairing each index with its corresponding value\n    indexed_pairs = list(enumerate(arr))\n    # Define reducer function that adds value only if both index and value are even\n    def conditional_accumulator(acc, pair):\n        # Unpack the index-value tuple for clarity\n        idx, val = pair\n        # Check divisibility conditions and add value to accumulator if both pass\n        return acc + val if idx % 2 == 0 and val % 2 == 0 else acc\n    # Apply reduce to fold all qualifying values into a single sum starting from 0\n    result = reduce(conditional_accumulator, indexed_pairs, 0)\n    # Return the accumulated sum of even values at even indices\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sum_even_and_even_index(arr):  \n    # Initialize index counter to traverse only even positions\n    idx = 0\n    # Initialize accumulator to collect qualifying values\n    total = 0\n    # Use while loop for manual index control instead of range or enumerate\n    while idx < len(arr):\n        # Access element at current even index position\n        current_element = arr[idx]\n        # Bitwise AND with 1 checks if least significant bit is 0 (even number)\n        if current_element & 1 == 0:\n            # Accumulate the even value found at this even index\n            total = total + current_element\n        # Jump by 2 to skip odd indices entirely\n        idx = idx + 2\n    # Return the sum of all even numbers located at even index positions\n    return total",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sum_even_and_even_index(arr):  \n    # Use list slicing to extract elements at positions 0, 2, 4, etc.\n    even_positioned = arr[::2]\n    # Build a new list containing only those elements that are divisible by 2\n    even_values = [x for x in even_positioned if x % 2 == 0]\n    # Aggregate all qualifying values using built-in sum function\n    return sum(even_values)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

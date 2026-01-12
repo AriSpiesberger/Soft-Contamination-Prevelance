@@ -1,0 +1,17 @@
+{
+  "task_id": 585,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n most expensive items in a given dataset.",
+  "python_code": "import heapq\ndef expensive_items(items,n):\n  expensive_items = heapq.nlargest(n, items, key=lambda s: s['price'])\n  return expensive_items",
+  "test_list": [
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]"
+  ],
+  "code_typescript": "interface Item {\n  name: string;\n  price: number;\n}\n\nfunction expensive_items(items: Item[], n: number): Item[] {\n  const sortedItems = [...items].sort((a, b) => b.price - a.price);\n  return sortedItems.slice(0, n);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

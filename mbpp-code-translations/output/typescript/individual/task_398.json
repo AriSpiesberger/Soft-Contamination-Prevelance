@@ -1,0 +1,17 @@
+{
+  "task_id": 398,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to compute the sum of digits of each number of a given list.",
+  "python_code": "def sum_of_digits(nums):\n    return sum(int(el) for n in nums for el in str(n) if el.isdigit())",
+  "test_list": [
+    "assert sum_of_digits([10,2,56])==14",
+    "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+    "assert sum_of_digits([10,20,-4,5,-70])==19"
+  ],
+  "code_typescript": "function sum_of_digits(nums: any[]): number {\n    let total = 0;\n    \n    function processValue(value: any): void {\n        if (Array.isArray(value)) {\n            for (const item of value) {\n                processValue(item);\n            }\n        } else {\n            const str = String(value);\n            for (const char of str) {\n                if (char >= '0' && char <= '9') {\n                    total += parseInt(char, 10);\n                }\n            }\n        }\n    }\n    \n    for (const n of nums) {\n        processValue(n);\n    }\n    \n    return total;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 74,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether it follows the sequence given in the patterns array.",
+  "python_code": "def is_samepatterns(colors, patterns):    \n    if len(colors) != len(patterns):\n        return False    \n    sdict = {}\n    pset = set()\n    sset = set()    \n    for i in range(len(patterns)):\n        pset.add(patterns[i])\n        sset.add(colors[i])\n        if patterns[i] not in sdict.keys():\n            sdict[patterns[i]] = []\n\n        keys = sdict[patterns[i]]\n        keys.append(colors[i])\n        sdict[patterns[i]] = keys\n\n    if len(pset) != len(sset):\n        return False   \n\n    for values in sdict.values():\n\n        for i in range(len(values) - 1):\n            if values[i] != values[i+1]:\n                return False\n\n    return True",
+  "test_list": [
+    "assert is_samepatterns([\"red\",\"green\",\"green\"], [\"a\", \"b\", \"b\"])==True",
+    "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\",\"b\"])==False",
+    "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\"])==False"
+  ],
+  "code_ruby": "def is_samepatterns(colors, patterns)\n  return false if colors.length != patterns.length\n  \n  sdict = {}\n  pset = Set.new\n  sset = Set.new\n  \n  patterns.each_with_index do |pattern, i|\n    pset.add(pattern)\n    sset.add(colors[i])\n    \n    sdict[pattern] ||= []\n    sdict[pattern] << colors[i]\n  end\n  \n  return false if pset.length != sset.length\n  \n  sdict.values.each do |values|\n    (0...values.length - 1).each do |i|\n      return false if values[i] != values[i + 1]\n    end\n  end\n  \n  true\nend\n\nrequire 'set'",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert is_samepatterns([\"red\",\"green\",\"green\"], [\"a\", \"b\", \"b\"])==True",
+      "generated_test": "require 'set'\n\ndef is_samepatterns(colors, patterns)\n  return false if colors.length != patterns.length\n  \n  sdict = {}\n  pset = Set.new\n  sset = Set.new\n  \n  patterns.each_with_index do |pattern, i|\n    pset.add(pattern)\n    sset.add(colors[i])\n    \n    sdict[pattern] ||= []\n    sdict[pattern] << colors[i]\n  end\n  \n  return false if pset.length != sset.length\n  \n  sdict.values.each do |values|\n    (0...values.length - 1).each do |i|\n      return false if values[i] != values[i + 1]\n    end\n  end\n  \n  true\nend\n\nresult = is_samepatterns([\"red\", \"green\", \"green\"], [\"a\", \"b\", \"b\"])\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\",\"b\"])==False",
+      "generated_test": "require 'set'\n\ndef is_samepatterns(colors, patterns)\n  return false if colors.length != patterns.length\n  \n  sdict = {}\n  pset = Set.new\n  sset = Set.new\n  \n  patterns.each_with_index do |pattern, i|\n    pset.add(pattern)\n    sset.add(colors[i])\n    \n    sdict[pattern] ||= []\n    sdict[pattern] << colors[i]\n  end\n  \n  return false if pset.length != sset.length\n  \n  sdict.values.each do |values|\n    (0...values.length - 1).each do |i|\n      return false if values[i] != values[i + 1]\n    end\n  end\n  \n  true\nend\n\nresult = is_samepatterns([\"red\", \"green\", \"greenn\"], [\"a\", \"b\", \"b\"])\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_samepatterns([\"red\",\"green\",\"greenn\"], [\"a\",\"b\"])==False",
+      "generated_test": "require 'set'\n\ndef is_samepatterns(colors, patterns)\n  return false if colors.length != patterns.length\n  \n  sdict = {}\n  pset = Set.new\n  sset = Set.new\n  \n  patterns.each_with_index do |pattern, i|\n    pset.add(pattern)\n    sset.add(colors[i])\n    \n    sdict[pattern] ||= []\n    sdict[pattern] << colors[i]\n  end\n  \n  return false if pset.length != sset.length\n  \n  sdict.values.each do |values|\n    (0...values.length - 1).each do |i|\n      return false if values[i] != values[i + 1]\n    end\n  end\n  \n  true\nend\n\nresult = is_samepatterns([\"red\", \"green\", \"greenn\"], [\"a\", \"b\"])\nexpected = false\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

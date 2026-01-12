@@ -1,0 +1,27 @@
+{
+  "task_id": 410,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum value in a given heterogeneous list.",
+  "code_python": "def min_val(listval):\n     min_val = min(i for i in listval if isinstance(i, int))\n     return min_val",
+  "test_list": [
+    "assert min_val(['Python', 3, 2, 4, 5, 'version'])==2",
+    "assert min_val(['Python', 15, 20, 25])==15",
+    "assert min_val(['Python', 30, 20, 40, 50, 'version'])==20"
+  ],
+  "python_1": "def min_val(listval):\n    # Filter the list to extract only integer elements using list comprehension\n    integers_only = [x for x in listval if type(x) == int]\n    # Initialize result with the first integer found in the filtered list\n    result = integers_only[0]\n    # Loop through remaining integers to find the smallest value\n    for num in integers_only[1:]:\n        # Update result if current number is smaller than stored minimum\n        if num < result:\n            result = num\n    # Return the smallest integer discovered through manual comparison\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def min_val(listval):\n    # Use filter function with lambda to isolate integer types from mixed list\n    int_filter = filter(lambda x: isinstance(x, int), listval)\n    # Convert filter object to list for processing\n    int_list = list(int_filter)\n    # Apply reduce-style logic using sorted to get minimum as first element\n    sorted_ints = sorted(int_list)\n    # Extract and return the smallest integer which is now at index 0\n    return sorted_ints[0]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def min_val(listval):\n    # Start with None as sentinel to indicate no minimum found yet\n    minimum = None\n    # Iterate through each element in the heterogeneous list directly\n    for element in listval:\n        # Check if current element is an integer using type checking\n        if isinstance(element, int):\n            # If this is the first integer encountered, set it as minimum\n            if minimum is None:\n                minimum = element\n            # Otherwise compare current integer with stored minimum using ternary-like logic\n            elif element < minimum:\n                # Update minimum when a smaller integer is discovered\n                minimum = element\n    # Return the smallest integer found during single-pass traversal\n    return minimum",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def min_val(listval):\n    # Use functools.reduce to perform fold-left operation across the list\n    from functools import reduce\n    # Define a reducer that keeps track of minimum integer seen so far\n    def find_min(current_min, item):\n        # Skip non-integer items by returning current minimum unchanged\n        if not isinstance(item, int):\n            return current_min\n        # When current_min is None (first int), use item as initial minimum\n        if current_min is None:\n            return item\n        # Return the smaller value between accumulated min and current item\n        return item if item < current_min else current_min\n    # Apply reduce across entire list starting with None as identity value\n    result = reduce(find_min, listval, None)\n    # Return the minimum integer discovered through functional reduction\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def min_val(listval):\n    # Use exception handling approach: try numeric comparison, catch errors for non-integers\n    minimum_found = float('inf')\n    # Track whether we've found any valid integer in the list\n    found_integer = False\n    # Create an index-based iteration using enumerate for explicit position tracking\n    for idx, val in enumerate(listval):\n        # Attempt to verify integer type using __class__.__name__ attribute inspection\n        if val.__class__.__name__ == 'int':\n            # Mark that we've encountered at least one valid integer\n            found_integer = True\n            # Use built-in min function for pairwise comparison between current min and value\n            minimum_found = min(minimum_found, val)\n    # Return the discovered minimum, converting from infinity if integers were found\n    return minimum_found if found_integer else None",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

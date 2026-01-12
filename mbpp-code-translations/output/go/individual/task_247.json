@@ -1,0 +1,37 @@
+{
+  "task_id": 247,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the length of the longest palindromic subsequence in the given string.",
+  "python_code": "def lps(str): \n\tn = len(str) \n\tL = [[0 for x in range(n)] for x in range(n)] \n\tfor i in range(n): \n\t\tL[i][i] = 1\n\tfor cl in range(2, n+1): \n\t\tfor i in range(n-cl+1): \n\t\t\tj = i+cl-1\n\t\t\tif str[i] == str[j] and cl == 2: \n\t\t\t\tL[i][j] = 2\n\t\t\telif str[i] == str[j]: \n\t\t\t\tL[i][j] = L[i+1][j-1] + 2\n\t\t\telse: \n\t\t\t\tL[i][j] = max(L[i][j-1], L[i+1][j]); \n\treturn L[0][n-1]",
+  "test_list": [
+    "assert lps(\"TENS FOR TENS\") == 5",
+    "assert lps(\"CARDIO FOR CARDS\") == 7",
+    "assert lps(\"PART OF THE JOURNEY IS PART\") == 9"
+  ],
+  "code_go": "package main\n\nfunc lps(str string) int {\n\tn := len(str)\n\tif n == 0 {\n\t\treturn 0\n\t}\n\t\n\t// Create 2D slice\n\tL := make([][]int, n)\n\tfor i := range L {\n\t\tL[i] = make([]int, n)\n\t}\n\t\n\t// Single characters are palindromes of length 1\n\tfor i := 0; i < n; i++ {\n\t\tL[i][i] = 1\n\t}\n\t\n\t// Build the table for subsequences of length 2 to n\n\tfor cl := 2; cl <= n; cl++ {\n\t\tfor i := 0; i <= n-cl; i++ {\n\t\t\tj := i + cl - 1\n\t\t\tif str[i] == str[j] && cl == 2 {\n\t\t\t\tL[i][j] = 2\n\t\t\t} else if str[i] == str[j] {\n\t\t\t\tL[i][j] = L[i+1][j-1] + 2\n\t\t\t} else {\n\t\t\t\tif L[i][j-1] > L[i+1][j] {\n\t\t\t\t\tL[i][j] = L[i][j-1]\n\t\t\t\t} else {\n\t\t\t\t\tL[i][j] = L[i+1][j]\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\t\n\treturn L[0][n-1]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert lps(\"TENS FOR TENS\") == 5",
+      "generated_test": "result := lps(\"TENS FOR TENS\")\nexpected := 5\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lps(\"CARDIO FOR CARDS\") == 7",
+      "generated_test": "result := lps(\"CARDIO FOR CARDS\")\nexpected := 7\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lps(\"PART OF THE JOURNEY IS PART\") == 9",
+      "generated_test": "result := lps(\"PART OF THE JOURNEY IS PART\")\nexpected := 9\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

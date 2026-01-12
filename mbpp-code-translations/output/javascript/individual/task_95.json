@@ -1,0 +1,37 @@
+{
+  "task_id": 95,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the length of the smallest list in a list of lists.",
+  "python_code": "def Find_Min_Length(lst):  \n    minLength = min(len(x) for x in lst )\n    return minLength ",
+  "test_list": [
+    "assert Find_Min_Length([[1],[1,2]]) == 1",
+    "assert Find_Min_Length([[1,2],[1,2,3],[1,2,3,4]]) == 2",
+    "assert Find_Min_Length([[3,3,3],[4,4,4,4]]) == 3"
+  ],
+  "code_javascript": "function Find_Min_Length(lst) {\n    const minLength = Math.min(...lst.map(x => x.length));\n    return minLength;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert Find_Min_Length([[1],[1,2]]) == 1",
+      "generated_test": "const result = Find_Min_Length([[1],[1,2]]);\nconst expected = 1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min_Length([[1,2],[1,2,3],[1,2,3,4]]) == 2",
+      "generated_test": "const result = Find_Min_Length([[1,2],[1,2,3],[1,2,3,4]]);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert Find_Min_Length([[3,3,3],[4,4,4,4]]) == 3",
+      "generated_test": "const result = Find_Min_Length([[3,3,3],[4,4,4,4]]);\nconst expected = 3;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 461,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the upper case characters in a given string.",
+  "python_code": "def upper_ctr(str):\n    upper_ctr = 0\n    for i in range(len(str)):\n          if str[i] >= 'A' and str[i] <= 'Z': upper_ctr += 1\n          return upper_ctr",
+  "test_list": [
+    "assert upper_ctr('PYthon') == 1",
+    "assert upper_ctr('BigData') == 1",
+    "assert upper_ctr('program') == 0"
+  ],
+  "code_rust": "pub fn upper_ctr(s: &str) -> i32 {\n    let mut upper_ctr = 0;\n    for c in s.chars() {\n        if c >= 'A' && c <= 'Z' {\n            upper_ctr += 1;\n        }\n        return upper_ctr;\n    }\n    upper_ctr\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert upper_ctr('PYthon') == 1",
+      "generated_test": "let result = upper_ctr(\"PYthon\");\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert upper_ctr('BigData') == 1",
+      "generated_test": "let result = upper_ctr(\"BigData\");\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert upper_ctr('program') == 0",
+      "generated_test": "let result = upper_ctr(\"program\");\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

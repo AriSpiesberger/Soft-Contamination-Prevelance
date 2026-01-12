@@ -1,0 +1,37 @@
+{
+  "task_id": 628,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all spaces in the given string with '%20'.",
+  "python_code": "def replace_spaces(string):\n  return string.replace(\" \", \"%20\")",
+  "test_list": [
+    "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+    "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+    "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'"
+  ],
+  "code_go": "package main\n\nimport \"strings\"\n\nfunc replace_spaces(s string) string {\n\treturn strings.ReplaceAll(s, \" \", \"%20\")\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'",
+      "generated_test": "result := replace_spaces(\"My Name is Dawood\")\nexpected := \"My%20Name%20is%20Dawood\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'",
+      "generated_test": "result := replace_spaces(\"I am a Programmer\")\nexpected := \"I%20am%20a%20Programmer\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'",
+      "generated_test": "result := replace_spaces(\"I love Coding\")\nexpected := \"I%20love%20Coding\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

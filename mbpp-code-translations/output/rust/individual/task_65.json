@@ -1,0 +1,37 @@
+{
+  "task_id": 65,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a list and sum all of its elements.",
+  "python_code": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total",
+  "test_list": [
+    "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+    "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+    "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210"
+  ],
+  "code_rust": "#[derive(Clone)]\npub enum NestedList {\n    Int(i32),\n    List(Vec<NestedList>),\n}\n\npub fn recursive_list_sum(data_list: &[NestedList]) -> i32 {\n    let mut total = 0;\n    for element in data_list {\n        match element {\n            NestedList::List(inner_list) => {\n                total = total + recursive_list_sum(inner_list);\n            }\n            NestedList::Int(value) => {\n                total = total + value;\n            }\n        }\n    }\n    total\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+      "generated_test": "let input = vec![\n    NestedList::Int(1),\n    NestedList::Int(2),\n    NestedList::List(vec![NestedList::Int(3), NestedList::Int(4)]),\n    NestedList::List(vec![NestedList::Int(5), NestedList::Int(6)]),\n];\nlet result = recursive_list_sum(&input);\nlet expected = 21;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+      "generated_test": "let test_input = vec![\n    NestedList::Int(7),\n    NestedList::Int(10),\n    NestedList::List(vec![NestedList::Int(15), NestedList::Int(14)]),\n    NestedList::List(vec![NestedList::Int(19), NestedList::Int(41)]),\n];\nlet result = recursive_list_sum(&test_input);\nlet expected = 106;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210",
+      "generated_test": "let input = vec![\n    NestedList::Int(10),\n    NestedList::Int(20),\n    NestedList::List(vec![NestedList::Int(30), NestedList::Int(40)]),\n    NestedList::List(vec![NestedList::Int(50), NestedList::Int(60)]),\n];\nlet result = recursive_list_sum(&input);\nlet expected = 210;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

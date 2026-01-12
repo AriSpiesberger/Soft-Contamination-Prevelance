@@ -1,0 +1,27 @@
+{
+  "task_id": 742,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to caluclate the area of a tetrahedron.",
+  "code_python": "import math\ndef area_tetrahedron(side):\n  area = math.sqrt(3)*(side*side)\n  return area",
+  "test_list": [
+    "assert area_tetrahedron(3)==15.588457268119894",
+    "assert area_tetrahedron(20)==692.8203230275509",
+    "assert area_tetrahedron(10)==173.20508075688772"
+  ],
+  "python_1": "def area_tetrahedron(side):\n    # Calculate the square of the side length first for clarity\n    side_squared = side ** 2\n    # Use the power operator to compute square root of 3 as 3 raised to 0.5\n    sqrt_three = 3 ** 0.5\n    # Multiply sqrt(3) by side squared to get surface area of regular tetrahedron\n    total_surface_area = sqrt_three * side_squared\n    # Return the computed surface area\n    return total_surface_area",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef area_tetrahedron(side):\n    # A regular tetrahedron has 4 equilateral triangular faces\n    number_of_faces = 4\n    # Calculate the area of one equilateral triangle using formula: (sqrt(3)/4) * side^2\n    single_face_area = (math.sqrt(3) / 4) * (side * side)\n    # Sum up all four triangular faces to get total surface area\n    total_area = number_of_faces * single_face_area\n    # Return the computed surface area of the tetrahedron\n    return total_area",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef area_tetrahedron(side):\n    # Define the formula coefficient sqrt(3) using math.pow for variety\n    sqrt_3 = math.pow(3, 0.5)\n    # Compute side squared using multiplication operator\n    squared_side = side * side\n    # Combine the constant and squared side to get surface area\n    surface_area = sqrt_3 * squared_side\n    # Return the calculated tetrahedron surface area\n    return surface_area",
+  "python_3_status": "success",
+  "python_3_attempts": 2,
+  "python_4": "import math\n\ndef area_tetrahedron(side):\n    # Use reduce-style approach by building the formula step by step\n    # First, calculate the base multiplier which is sqrt(3)\n    base_multiplier = math.sqrt(3)\n    # Apply the exponent to side using built-in pow function for variety\n    side_power = pow(side, 2)\n    # Combine components using a lambda function for a functional approach\n    compute_area = lambda multiplier, squared: multiplier * squared\n    # Execute the lambda to get the final surface area result\n    result = compute_area(base_multiplier, side_power)\n    # Return the tetrahedron surface area computed via functional composition\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 3,
+  "python_5": "import math\n\ndef area_tetrahedron(side):\n    # Define the number of triangular faces in a regular tetrahedron\n    num_faces = 4\n    # Use math.sqrt to get the square root of 3 for equilateral triangle formula\n    sqrt_of_three = math.sqrt(3)\n    # Compute the denominator used in single triangle area calculation\n    triangle_divisor = 4\n    # Calculate the area coefficient for one equilateral triangle face\n    face_coefficient = sqrt_of_three / triangle_divisor\n    # Raise the side length to the second power using exponentiation\n    side_squared = side ** 2\n    # Multiply coefficient by squared side to get one face's area\n    one_face_area = face_coefficient * side_squared\n    # Scale by number of faces using multiplication assignment pattern\n    total_area = one_face_area\n    total_area *= num_faces\n    # Return the accumulated surface area of all tetrahedron faces\n    return total_area",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

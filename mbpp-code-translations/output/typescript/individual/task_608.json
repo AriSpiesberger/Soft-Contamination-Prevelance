@@ -1,0 +1,17 @@
+{
+  "task_id": 608,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find nth bell number.",
+  "python_code": "def bell_Number(n): \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1):\n        bell[i][0] = bell[i-1][i-1]\n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1] \n    return bell[n][0] ",
+  "test_list": [
+    "assert bell_Number(2) == 2",
+    "assert bell_Number(3) == 5",
+    "assert bell_Number(4) == 15"
+  ],
+  "code_typescript": "function bell_Number(n: number): number {\n    const bell: number[][] = [];\n    for (let i = 0; i <= n; i++) {\n        bell[i] = [];\n        for (let j = 0; j <= n; j++) {\n            bell[i][j] = 0;\n        }\n    }\n    bell[0][0] = 1;\n    for (let i = 1; i <= n; i++) {\n        bell[i][0] = bell[i - 1][i - 1];\n        for (let j = 1; j <= i; j++) {\n            bell[i][j] = bell[i - 1][j - 1] + bell[i][j - 1];\n        }\n    }\n    return bell[n][0];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

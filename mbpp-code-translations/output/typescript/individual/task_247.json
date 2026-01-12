@@ -1,0 +1,17 @@
+{
+  "task_id": 247,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the length of the longest palindromic subsequence in the given string.",
+  "python_code": "def lps(str): \n\tn = len(str) \n\tL = [[0 for x in range(n)] for x in range(n)] \n\tfor i in range(n): \n\t\tL[i][i] = 1\n\tfor cl in range(2, n+1): \n\t\tfor i in range(n-cl+1): \n\t\t\tj = i+cl-1\n\t\t\tif str[i] == str[j] and cl == 2: \n\t\t\t\tL[i][j] = 2\n\t\t\telif str[i] == str[j]: \n\t\t\t\tL[i][j] = L[i+1][j-1] + 2\n\t\t\telse: \n\t\t\t\tL[i][j] = max(L[i][j-1], L[i+1][j]); \n\treturn L[0][n-1]",
+  "test_list": [
+    "assert lps(\"TENS FOR TENS\") == 5",
+    "assert lps(\"CARDIO FOR CARDS\") == 7",
+    "assert lps(\"PART OF THE JOURNEY IS PART\") == 9"
+  ],
+  "code_typescript": "function lps(str: string): number {\n    const n: number = str.length;\n    const L: number[][] = Array.from({ length: n }, () => Array(n).fill(0));\n    \n    for (let i = 0; i < n; i++) {\n        L[i][i] = 1;\n    }\n    \n    for (let cl = 2; cl <= n; cl++) {\n        for (let i = 0; i <= n - cl; i++) {\n            const j: number = i + cl - 1;\n            if (str[i] === str[j] && cl === 2) {\n                L[i][j] = 2;\n            } else if (str[i] === str[j]) {\n                L[i][j] = L[i + 1][j - 1] + 2;\n            } else {\n                L[i][j] = Math.max(L[i][j - 1], L[i + 1][j]);\n            }\n        }\n    }\n    \n    return L[0][n - 1];\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

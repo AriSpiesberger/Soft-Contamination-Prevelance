@@ -1,0 +1,37 @@
+{
+  "task_id": 578,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to interleave 3 lists of the same length into a single flat list.",
+  "python_code": "def interleave_lists(list1,list2,list3):\n    result = [el for pair in zip(list1, list2, list3) for el in pair]\n    return result",
+  "test_list": [
+    "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+    "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+    "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]"
+  ],
+  "code_go": "package main\n\nfunc interleave_lists(list1, list2, list3 []int) []int {\n\tresult := make([]int, 0, len(list1)*3)\n\tfor i := 0; i < len(list1); i++ {\n\t\tresult = append(result, list1[i], list2[i], list3[i])\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+      "generated_test": "list1 := []int{1, 2, 3, 4, 5, 6, 7}\nlist2 := []int{10, 20, 30, 40, 50, 60, 70}\nlist3 := []int{100, 200, 300, 400, 500, 600, 700}\nexpected := []int{1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700}\nresult := interleave_lists(list1, list2, list3)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := 0; i < len(expected); i++ {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+      "generated_test": "result := interleave_lists([]int{10, 20}, []int{15, 2}, []int{5, 10})\nexpected := []int{10, 15, 5, 20, 2, 10}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]",
+      "generated_test": "result := interleave_lists([]int{11, 44}, []int{10, 15}, []int{20, 5})\nexpected := []int{11, 10, 20, 44, 15, 5}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

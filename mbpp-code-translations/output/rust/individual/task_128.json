@@ -1,0 +1,37 @@
+{
+  "task_id": 128,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find words that are longer than n characters from a given list of words.",
+  "python_code": "def long_words(n, str):\n    word_len = []\n    txt = str.split(\" \")\n    for x in txt:\n        if len(x) > n:\n            word_len.append(x)\n    return word_len\t",
+  "test_list": [
+    "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+    "assert long_words(2,\"writing a program\")==['writing','program']",
+    "assert long_words(5,\"sorting list\")==['sorting']"
+  ],
+  "code_rust": "pub fn long_words(n: usize, s: &str) -> Vec<String> {\n    let mut word_len = Vec::new();\n    let txt: Vec<&str> = s.split(\" \").collect();\n    for x in txt {\n        if x.len() > n {\n            word_len.push(x.to_string());\n        }\n    }\n    word_len\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert long_words(3,\"python is a programming language\")==['python','programming','language']",
+      "generated_test": "let result = long_words(3, \"python is a programming language\");\nlet expected: Vec<String> = vec![\"python\".to_string(), \"programming\".to_string(), \"language\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(2,\"writing a program\")==['writing','program']",
+      "generated_test": "let result = long_words(2, \"writing a program\");\nlet expected: Vec<String> = vec![\"writing\".to_string(), \"program\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert long_words(5,\"sorting list\")==['sorting']",
+      "generated_test": "let result = long_words(5, \"sorting list\");\nlet expected: Vec<String> = vec![\"sorting\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 84,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth number in the newman conway sequence.",
+  "python_code": "def sequence(n): \n\tif n == 1 or n == 2: \n\t\treturn 1\n\telse: \n\t\treturn sequence(sequence(n-1)) + sequence(n-sequence(n-1))",
+  "test_list": [
+    "assert sequence(10) == 6",
+    "assert sequence(2) == 1",
+    "assert sequence(3) == 2"
+  ],
+  "code_typescript": "function sequence(n: number): number {\n    if (n === 1 || n === 2) {\n        return 1;\n    } else {\n        return sequence(sequence(n - 1)) + sequence(n - sequence(n - 1));\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

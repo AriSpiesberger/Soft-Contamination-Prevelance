@@ -1,0 +1,27 @@
+{
+  "task_id": 63,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum difference between available pairs in the given tuple list.",
+  "code_python": "def max_difference(test_list):\n  temp = [abs(b - a) for a, b in test_list]\n  res = max(temp)\n  return (res) ",
+  "test_list": [
+    "assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7",
+    "assert max_difference([(4, 6), (2, 17), (9, 13), (11, 12)]) == 15",
+    "assert max_difference([(12, 35), (21, 27), (13, 23), (41, 22)]) == 23"
+  ],
+  "python_1": "def max_difference(test_list):\n  # Start with zero as the baseline for maximum difference\n  max_diff = 0\n  # Use a traditional for loop to iterate through each tuple pair\n  for pair in test_list:\n    # Extract the first element of the current tuple\n    first = pair[0]\n    # Extract the second element of the current tuple\n    second = pair[1]\n    # Calculate absolute difference to handle both orderings\n    current_diff = abs(second - first)\n    # Update max_diff only if current difference exceeds previous maximum\n    if current_diff > max_diff:\n      max_diff = current_diff\n  # Return the largest difference found across all pairs\n  return max_diff",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def max_difference(test_list):\n  # Use map to apply a lambda function that computes absolute difference for each tuple\n  differences = map(lambda pair: abs(pair[1] - pair[0]), test_list)\n  # Convert the map iterator to a list to allow finding the maximum value\n  diff_list = list(differences)\n  # Apply reduce-style logic using max on the computed differences\n  result = max(diff_list)\n  # Return the largest absolute difference found among all tuple pairs\n  return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def max_difference(test_list):\n  # Import reduce function to perform cumulative operation across all tuples\n  from functools import reduce\n  # Define a reducer that compares accumulated max with current tuple's difference\n  def compare_max(acc, pair):\n    # Compute the absolute gap between elements in the current tuple\n    diff = abs(pair[1] - pair[0])\n    # Return whichever is larger: the running maximum or this tuple's difference\n    return acc if acc > diff else diff\n  # Apply reduce starting from 0, folding through all tuples to find global max\n  result = reduce(compare_max, test_list, 0)\n  # Return the single maximum difference value computed by reduction\n  return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def max_difference(test_list):\n  # Use a generator expression inside max() to avoid creating intermediate list\n  # This computes differences lazily and finds max in a single pass\n  return max(abs(y - x) for x, y in test_list)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def max_difference(test_list):\n  # Convert tuple list to iterator for index-based access approach\n  idx = 0\n  # Initialize max_diff with difference from first tuple to handle edge case\n  max_diff = abs(test_list[0][1] - test_list[0][0])\n  # Determine total number of tuples to process using len\n  total_tuples = len(test_list)\n  # Use while loop for explicit index control instead of for-each iteration\n  while idx < total_tuples:\n    # Access current tuple using index subscription notation\n    current_tuple = test_list[idx]\n    # Unpack tuple into separate variables using indexing rather than destructuring\n    element_a = current_tuple[0]\n    element_b = current_tuple[1]\n    # Compute difference without abs by finding max minus min of the pair\n    pair_diff = max(element_a, element_b) - min(element_a, element_b)\n    # Update running maximum using built-in max function for comparison\n    max_diff = max(max_diff, pair_diff)\n    # Manually increment index to advance through the list\n    idx += 1\n  # Return the globally maximum difference discovered during iteration\n  return max_diff",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

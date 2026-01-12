@@ -1,0 +1,27 @@
+{
+  "task_id": 409,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the minimum product from the pairs of tuples within a given list.",
+  "code_python": "def min_product_tuple(list1):\n    result_min = min([abs(x * y) for x, y in list1] )\n    return result_min",
+  "test_list": [
+    "assert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8",
+    "assert min_product_tuple([(10,20), (15,2), (5,10)] )==30",
+    "assert min_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==100"
+  ],
+  "python_1": "def min_product_tuple(list1):\n    # Initialize minimum product to None to handle first iteration specially\n    min_product = None\n    # Iterate through each tuple pair in the input list\n    for pair in list1:\n        # Extract first element of the current tuple\n        first_val = pair[0]\n        # Extract second element of the current tuple\n        second_val = pair[1]\n        # Calculate absolute value of product for current pair\n        current_product = abs(first_val * second_val)\n        # Check if this is first iteration or we found a smaller product\n        if min_product is None or current_product < min_product:\n            # Update minimum product with the new smaller value\n            min_product = current_product\n    # Return the smallest absolute product found across all pairs\n    return min_product",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def min_product_tuple(list1):\n    # Use map to apply a lambda function that computes absolute product for each tuple\n    products_iterator = map(lambda t: abs(t[0] * t[1]), list1)\n    # Convert the map iterator to a list of all absolute products\n    all_products = list(products_iterator)\n    # Apply the built-in min function to find smallest value in the products list\n    result_min = min(all_products)\n    # Return the minimum absolute product found\n    return result_min",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def min_product_tuple(list1):\n    # Import reduce function for functional-style aggregation across the list\n    from functools import reduce\n    # Define a reducer that keeps track of the minimum absolute product seen so far\n    def find_min(current_min, tuple_pair):\n        # Unpack the tuple into its two constituent values\n        a, b = tuple_pair\n        # Compute the absolute product of the current pair\n        product = abs(a * b)\n        # Return the smaller of the accumulated minimum and current product\n        return product if product < current_min else current_min\n    # Extract the first tuple to compute initial minimum value\n    first_tuple = list1[0]\n    # Calculate the absolute product of the first tuple as starting point\n    initial_min = abs(first_tuple[0] * first_tuple[1])\n    # Apply reduce to fold over remaining tuples, comparing each product to running minimum\n    result_min = reduce(find_min, list1[1:], initial_min)\n    # Return the smallest absolute product discovered through the reduction\n    return result_min",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def min_product_tuple(list1):\n    # Use a generator expression to lazily compute products without storing all in memory\n    products_generator = (abs(x * y) for x, y in list1)\n    # Sort the products and take the first element which will be the minimum\n    sorted_products = sorted(products_generator)\n    # Access the zeroth index to retrieve the smallest absolute product\n    result_min = sorted_products[0]\n    # Return the minimum value obtained from sorting\n    return result_min",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def min_product_tuple(list1):\n    # Create a helper function using recursion to find minimum in a list of products\n    def recursive_min(products, idx, current_min):\n        # Base case: when index reaches end of list, return accumulated minimum\n        if idx >= len(products):\n            return current_min\n        # Compare current element with running minimum and update accordingly\n        new_min = products[idx] if products[idx] < current_min else current_min\n        # Recursively process next element with updated minimum value\n        return recursive_min(products, idx + 1, new_min)\n    \n    # Build list of absolute products using enumerate to access tuple elements by index\n    products_list = []\n    # Process each tuple in the input list using index-based iteration\n    for i in range(len(list1)):\n        # Access the tuple at current index position\n        current_tuple = list1[i]\n        # Multiply first and second elements and take absolute value\n        abs_product = abs(current_tuple[0] * current_tuple[1])\n        # Append computed product to our collection list\n        products_list.append(abs_product)\n    \n    # Handle edge case of single element list by returning its product directly\n    if len(products_list) == 1:\n        return products_list[0]\n    \n    # Start recursive search with first element as initial minimum\n    starting_min = products_list[0]\n    # Call recursive helper starting from index 1 since we used index 0 as initial\n    result_min = recursive_min(products_list, 1, starting_min)\n    # Return the minimum absolute product found through recursive comparison\n    return result_min",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

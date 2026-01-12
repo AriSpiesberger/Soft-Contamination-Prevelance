@@ -1,0 +1,37 @@
+{
+  "task_id": 639,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter.",
+  "python_code": "def sample_nam(sample_names):\n  sample_names=list(filter(lambda el:el[0].isupper() and el[1:].islower(),sample_names))\n  return len(''.join(sample_names))",
+  "test_list": [
+    "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+    "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+    "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6"
+  ],
+  "code_javascript": "function sample_nam(sample_names) {\n  sample_names = sample_names.filter(el => {\n    if (el.length === 0) return false;\n    const firstChar = el[0];\n    const rest = el.slice(1);\n    const firstIsUpper = firstChar >= 'A' && firstChar <= 'Z';\n    const restIsLower = rest === '' || [...rest].every(c => c >= 'a' && c <= 'z');\n    return firstIsUpper && restIsLower;\n  });\n  return sample_names.join('').length;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith'])==16",
+      "generated_test": "const result = sample_nam(['sally', 'Dylan', 'rebecca', 'Diana', 'Joanne', 'keith']);\nconst expected = 16;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"])==10",
+      "generated_test": "const result = sample_nam([\"php\", \"res\", \"Python\", \"abcd\", \"Java\", \"aaa\"]);\nconst expected = 10;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"])==6",
+      "generated_test": "const result = sample_nam([\"abcd\", \"Python\", \"abba\", \"aba\"]);\nconst expected = 6;\nif (result === expected) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

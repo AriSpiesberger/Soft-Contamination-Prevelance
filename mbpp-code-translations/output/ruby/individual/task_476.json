@@ -1,0 +1,37 @@
+{
+  "task_id": 476,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the largest and smallest value in a given array.",
+  "python_code": "def big_sum(nums):\n      sum= max(nums)+min(nums)\n      return sum",
+  "test_list": [
+    "assert big_sum([1,2,3]) == 4",
+    "assert big_sum([-1,2,3,4]) == 3",
+    "assert big_sum([2,3,6]) == 8"
+  ],
+  "code_ruby": "def big_sum(nums)\n  nums.max + nums.min\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert big_sum([1,2,3]) == 4",
+      "generated_test": "result = big_sum([1, 2, 3])\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert big_sum([-1,2,3,4]) == 3",
+      "generated_test": "result = big_sum([-1, 2, 3, 4])\nexpected = 3\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert big_sum([2,3,6]) == 8",
+      "generated_test": "result = big_sum([2, 3, 6])\nexpected = 8\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

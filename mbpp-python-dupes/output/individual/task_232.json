@@ -1,0 +1,27 @@
+{
+  "task_id": 232,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and an integer n and returns a list containing the n largest items from the list.",
+  "code_python": "import heapq\ndef larg_nnum(list1,n):\n largest=heapq.nlargest(n,list1)\n return largest",
+  "test_list": [
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])",
+    "assert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])"
+  ],
+  "python_1": "def larg_nnum(list1,n):\n    # Create a copy of the input list to avoid modifying the original\n    sorted_list = list1.copy()\n    # Sort the copied list in descending order using built-in sort\n    sorted_list.sort(reverse=True)\n    # Slice the first n elements which are the n largest values\n    result = sorted_list[:n]\n    # Return the list containing the n largest items\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def larg_nnum(list1,n):\n    # Initialize empty result list to accumulate n largest values\n    result = []\n    # Create working copy to preserve original list integrity\n    remaining = list1.copy()\n    # Loop n times to extract n largest elements one by one\n    for _ in range(n):\n        # Find the maximum value in the remaining elements\n        current_max = max(remaining)\n        # Add the found maximum to our result collection\n        result.append(current_max)\n        # Remove one instance of the maximum from remaining pool\n        remaining.remove(current_max)\n    # Return the collected n largest values\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def larg_nnum(list1,n):\n    # Use sorted() function to create new sorted list without modifying original\n    sorted_descending = sorted(list1, key=lambda x: -x)\n    # Extract first n elements from descending sorted list using slice notation\n    return sorted_descending[:n]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def larg_nnum(list1,n):\n    # Convert input list to set to get unique values, then back to list for indexing\n    unique_values = list(set(list1))\n    # Sort unique values in ascending order to enable selection from end\n    unique_values.sort()\n    # Initialize result list to store the n largest elements\n    result = []\n    # Create frequency map to track how many times each value appears in original list\n    freq = {}\n    # Build frequency dictionary by counting occurrences of each element\n    for item in list1:\n        # Use get with default 0 to handle first occurrence of any value\n        freq[item] = freq.get(item, 0) + 1\n    # Index pointer starting from largest element in sorted unique values\n    idx = len(unique_values) - 1\n    # Continue collecting elements until we have n largest items\n    while len(result) < n and idx >= 0:\n        # Get the current largest unused value from sorted unique list\n        current_val = unique_values[idx]\n        # Determine how many of this value we can add without exceeding n\n        count_to_add = min(freq[current_val], n - len(result))\n        # Extend result by adding current value the appropriate number of times\n        result.extend([current_val] * count_to_add)\n        # Move to the next smaller unique value\n        idx -= 1\n    # Return the accumulated n largest elements from the input list\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def larg_nnum(list1,n):\n    # Use enumerate to pair each element with its original index for stable tracking\n    indexed_pairs = list(enumerate(list1))\n    # Implement selection sort variant to find n largest by swapping to front positions\n    working_list = indexed_pairs.copy()\n    # Track how many largest elements we've positioned at the start\n    for i in range(n):\n        # Assume current position holds the maximum among unsorted portion\n        max_idx = i\n        # Scan through remaining unsorted elements to find actual maximum\n        for j in range(i + 1, len(working_list)):\n            # Compare values (second element of tuple) to find larger candidate\n            if working_list[j][1] > working_list[max_idx][1]:\n                # Update max index when we find a larger element\n                max_idx = j\n        # Swap the found maximum element into the current sorted position\n        working_list[i], working_list[max_idx] = working_list[max_idx], working_list[i]\n    # Extract only the values (not indices) from the first n positioned elements\n    result = [working_list[i][1] for i in range(n)]\n    # Return the n largest values collected via partial selection sort\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

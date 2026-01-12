@@ -1,0 +1,37 @@
+{
+  "task_id": 580,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove uneven elements in the nested mixed tuple.",
+  "python_code": "def even_ele(test_tuple, even_fnc): \n\tres = tuple() \n\tfor ele in test_tuple: \n\t\tif isinstance(ele, tuple): \n\t\t\tres += (even_ele(ele, even_fnc), ) \n\t\telif even_fnc(ele): \n\t\t\tres += (ele, ) \n\treturn res \ndef extract_even(test_tuple):\n  res = even_ele(test_tuple, lambda x: x % 2 == 0)\n  return (res) ",
+  "test_list": [
+    "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+    "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+    "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)"
+  ],
+  "code_javascript": "function even_ele(test_tuple, even_fnc) {\n  let res = [];\n  for (let ele of test_tuple) {\n    if (Array.isArray(ele)) {\n      res.push(even_ele(ele, even_fnc));\n    } else if (even_fnc(ele)) {\n      res.push(ele);\n    }\n  }\n  return res;\n}\n\nfunction extract_even(test_tuple) {\n  let res = even_ele(test_tuple, x => x % 2 === 0);\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+      "generated_test": "const result = extract_even([4, 5, [7, 6, [2, 4]], 6, 8]);\nconst expected = [4, [6, [2, 4]], 6, 8];\n\nfunction deepEqual(a, b) {\n  if (Array.isArray(a) && Array.isArray(b)) {\n    if (a.length !== b.length) return false;\n    for (let i = 0; i < a.length; i++) {\n      if (!deepEqual(a[i], b[i])) return false;\n    }\n    return true;\n  }\n  return a === b;\n}\n\nif (deepEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+      "generated_test": "const result = extract_even([5, 6, [8, 7, [4, 8]], 7, 9]);\nconst expected = [6, [8, [4, 8]]];\n\nfunction arraysEqual(a, b) {\n  if (!Array.isArray(a) || !Array.isArray(b)) return a === b;\n  if (a.length !== b.length) return false;\n  for (let i = 0; i < a.length; i++) {\n    if (!arraysEqual(a[i], b[i])) return false;\n  }\n  return true;\n}\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)",
+      "generated_test": "const result = extract_even([5, 6, [9, 8, [4, 6]], 8, 10]);\nconst expected = [6, [8, [4, 6]], 8, 10];\n\nfunction arraysEqual(a, b) {\n  if (!Array.isArray(a) || !Array.isArray(b)) return a === b;\n  if (a.length !== b.length) return false;\n  for (let i = 0; i < a.length; i++) {\n    if (!arraysEqual(a[i], b[i])) return false;\n  }\n  return true;\n}\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

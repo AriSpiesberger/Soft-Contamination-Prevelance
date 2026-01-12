@@ -1,0 +1,37 @@
+{
+  "task_id": 630,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract all the adjacent coordinates of the given coordinate tuple.",
+  "python_code": "def adjac(ele, sub = []): \n  if not ele: \n     yield sub \n  else: \n     yield from [idx for j in range(ele[0] - 1, ele[0] + 2) \n                for idx in adjac(ele[1:], sub + [j])] \ndef get_coordinates(test_tup):\n  return list(adjac(test_tup))",
+  "test_list": [
+    "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+    "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+    "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]"
+  ],
+  "code_go": "package main\n\nfunc adjac(ele []int, sub []int) [][]int {\n\tif len(ele) == 0 {\n\t\tresult := make([]int, len(sub))\n\t\tcopy(result, sub)\n\t\treturn [][]int{result}\n\t}\n\t\n\tvar results [][]int\n\tfor j := ele[0] - 1; j <= ele[0]+1; j++ {\n\t\tnewSub := make([]int, len(sub)+1)\n\t\tcopy(newSub, sub)\n\t\tnewSub[len(sub)] = j\n\t\t\n\t\tremaining := make([]int, len(ele)-1)\n\t\tcopy(remaining, ele[1:])\n\t\t\n\t\tresults = append(results, adjac(remaining, newSub)...)\n\t}\n\treturn results\n}\n\nfunc get_coordinates(test_tup []int) [][]int {\n\treturn adjac(test_tup, []int{})\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 5,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+      "generated_test": "input := []int{3, 4}\nexpected := [][]int{{2, 3}, {2, 4}, {2, 5}, {3, 3}, {3, 4}, {3, 5}, {4, 3}, {4, 4}, {4, 5}}\nresult := get_coordinates(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+      "generated_test": "expected := [][]int{{3, 4}, {3, 5}, {3, 6}, {4, 4}, {4, 5}, {4, 6}, {5, 4}, {5, 5}, {5, 6}}\ngot := get_coordinates([]int{4, 5})\n\npass := true\nif len(got) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(got[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif got[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]",
+      "generated_test": "expected := [][]int{{4, 5}, {4, 6}, {4, 7}, {5, 5}, {5, 6}, {5, 7}, {6, 5}, {6, 6}, {6, 7}}\ngot := get_coordinates([]int{5, 6})\n\npass := true\nif len(got) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(got[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif got[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", got)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

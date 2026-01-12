@@ -1,0 +1,37 @@
+{
+  "task_id": 615,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which takes a tuple of tuples and returns the average value for each tuple as a list.",
+  "python_code": "def average_tuple(nums):\n    result = [sum(x) / len(x) for x in zip(*nums)]\n    return result",
+  "test_list": [
+    "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+    "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+    "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]"
+  ],
+  "code_go": "package main\n\nfunc average_tuple(nums [][]int) []float64 {\n\tif len(nums) == 0 {\n\t\treturn []float64{}\n\t}\n\t\n\t// Find the minimum length among all tuples (for zip behavior)\n\tminLen := len(nums[0])\n\tfor _, tuple := range nums {\n\t\tif len(tuple) < minLen {\n\t\t\tminLen = len(tuple)\n\t\t}\n\t}\n\t\n\tif minLen == 0 {\n\t\treturn []float64{}\n\t}\n\t\n\tresult := make([]float64, minLen)\n\t\n\t// For each column index\n\tfor i := 0; i < minLen; i++ {\n\t\tsum := 0\n\t\tcount := 0\n\t\t// Sum all values at this index across all tuples\n\t\tfor _, tuple := range nums {\n\t\t\tsum += tuple[i]\n\t\t\tcount++\n\t\t}\n\t\tresult[i] = float64(sum) / float64(count)\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+      "generated_test": "input := [][]int{{10, 10, 10, 12}, {30, 45, 56, 45}, {81, 80, 39, 32}, {1, 2, 3, 4}}\nexpected := []float64{30.5, 34.25, 27.0, 23.25}\nresult := average_tuple(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+      "generated_test": "input := [][]int{{1, 1, -5}, {30, -15, 56}, {81, -60, -39}, {-10, 2, 3}}\nexpected := []float64{25.5, -18.0, 3.75}\nresult := average_tuple(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]",
+      "generated_test": "input := [][]int{{100, 100, 100, 120}, {300, 450, 560, 450}, {810, 800, 390, 320}, {10, 20, 30, 40}}\nexpected := []float64{305.0, 342.5, 270.0, 232.5}\nresult := average_tuple(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

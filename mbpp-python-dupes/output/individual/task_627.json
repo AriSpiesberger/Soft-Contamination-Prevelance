@@ -1,0 +1,27 @@
+{
+  "task_id": 627,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the smallest missing number from a sorted list of natural numbers.",
+  "code_python": "def find_First_Missing(array,start=0,end=None):\n    if end is None:\n      end = len(array) - 1   \n    if (start > end): \n        return end + 1\n    if (start != array[start]): \n        return start; \n    mid = int((start + end) / 2) \n    if (array[mid] == mid): \n        return find_First_Missing(array,mid+1,end) \n    return find_First_Missing(array,start,mid) ",
+  "test_list": [
+    "assert find_First_Missing([0,1,2,3]) == 4",
+    "assert find_First_Missing([0,1,2,6,9]) == 3",
+    "assert find_First_Missing([2,3,5,8,9]) == 0"
+  ],
+  "python_1": "def find_First_Missing(array,start=0,end=None):\n    # Handle empty array edge case - zero is the first missing natural number\n    if len(array) == 0:\n        return 0\n    # Use linear scan approach to find first index mismatch\n    for i in range(len(array)):\n        # When array value doesn't match its index, we found the missing number\n        if array[i] != i:\n            # Return the index as it represents the smallest missing number\n            return i\n    # If all indices match their values, the missing number is the array length\n    return len(array)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_First_Missing(array,start=0,end=None):\n    # Check if array is empty, meaning 0 is the first missing natural number\n    if len(array) == 0:\n        return 0\n    # Initialize left boundary for binary search at index 0\n    left = 0\n    # Initialize right boundary at the last valid index\n    right = len(array) - 1\n    # Continue binary search while boundaries haven't crossed\n    while left <= right:\n        # Calculate midpoint using integer division to avoid float\n        mid = (left + right) // 2\n        # Check if current position matches expected value (no missing before mid)\n        if array[mid] == mid:\n            # Missing number must be in the right half, shift left boundary\n            left = mid + 1\n        # Value at mid is greater than index, meaning something is missing before\n        else:\n            # Missing number is in left half or at mid, shift right boundary\n            right = mid - 1\n    # Left pointer now points to the first position where mismatch occurs\n    return left",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_First_Missing(array,start=0,end=None):\n    # Convert array to a set for O(1) membership testing\n    num_set = set(array)\n    # Start checking from 0, the smallest natural number in this context\n    candidate = 0\n    # Keep incrementing until we find a number not in the set\n    while candidate in num_set:\n        # Move to the next potential missing number\n        candidate += 1\n    # Return the first number that wasn't found in the array\n    return candidate",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_First_Missing(array,start=0,end=None):\n    # Determine the maximum possible missing number (either in array or at the end)\n    max_check = len(array)\n    # Create a boolean list to track which numbers from 0 to max_check exist\n    present = [False] * (max_check + 1)\n    # Iterate through each element in the input array\n    for num in array:\n        # Only mark numbers within our range of interest as present\n        if 0 <= num <= max_check:\n            # Flag this number as found in the array\n            present[num] = True\n    # Search through the presence flags starting from smallest natural number\n    for i in range(max_check + 1):\n        # The first False value indicates the smallest missing number\n        if not present[i]:\n            # Return immediately upon finding first gap in the sequence\n            return i\n    # Fallback return if somehow all numbers 0 to max_check are present\n    return max_check + 1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_First_Missing(array,start=0,end=None):\n    # Use enumerate to pair each element with its expected index position\n    for idx, value in enumerate(array):\n        # When value exceeds index, a number was skipped - that index is missing\n        if value != idx:\n            # The index itself represents the smallest missing natural number\n            return idx\n    # All elements matched their indices, so next integer after array is missing\n    return len(array)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

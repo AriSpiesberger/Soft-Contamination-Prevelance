@@ -1,0 +1,37 @@
+{
+  "task_id": 57,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the largest number that can be formed with the given list of digits.",
+  "python_code": "def find_Max_Num(arr) : \n    n = len(arr)\n    arr.sort(reverse = True) \n    num = arr[0] \n    for i in range(1,n) : \n        num = num * 10 + arr[i] \n    return num ",
+  "test_list": [
+    "assert find_Max_Num([1,2,3]) == 321",
+    "assert find_Max_Num([4,5,6,1]) == 6541",
+    "assert find_Max_Num([1,2,3,9]) == 9321"
+  ],
+  "code_ruby": "def find_Max_Num(arr)\n  n = arr.length\n  arr = arr.sort.reverse\n  num = arr[0]\n  (1...n).each do |i|\n    num = num * 10 + arr[i]\n  end\n  num\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert find_Max_Num([1,2,3]) == 321",
+      "generated_test": "result = find_Max_Num([1, 2, 3])\nexpected = 321\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Max_Num([4,5,6,1]) == 6541",
+      "generated_test": "result = find_Max_Num([4,5,6,1])\nexpected = 6541\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Max_Num([1,2,3,9]) == 9321",
+      "generated_test": "result = find_Max_Num([1,2,3,9])\nexpected = 9321\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

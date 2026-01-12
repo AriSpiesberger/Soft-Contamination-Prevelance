@@ -1,0 +1,37 @@
+{
+  "task_id": 633,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of xor of all pairs of numbers in the given list.",
+  "python_code": "def pair_xor_Sum(arr,n) : \n    ans = 0 \n    for i in range(0,n) :    \n        for j in range(i + 1,n) :   \n            ans = ans + (arr[i] ^ arr[j])          \n    return ans ",
+  "test_list": [
+    "assert pair_xor_Sum([5,9,7,6],4) == 47",
+    "assert pair_xor_Sum([7,3,5],3) == 12",
+    "assert pair_xor_Sum([7,3],2) == 4"
+  ],
+  "code_rust": "pub fn pair_xor_Sum(arr: &[i32], n: usize) -> i32 {\n    let mut ans = 0;\n    for i in 0..n {\n        for j in (i + 1)..n {\n            ans = ans + (arr[i] ^ arr[j]);\n        }\n    }\n    ans\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert pair_xor_Sum([5,9,7,6],4) == 47",
+      "generated_test": "let result = pair_xor_Sum(&[5, 9, 7, 6], 4);\nlet expected = 47;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_xor_Sum([7,3,5],3) == 12",
+      "generated_test": "let result = pair_xor_Sum(&[7, 3, 5], 3);\nlet expected = 12;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert pair_xor_Sum([7,3],2) == 4",
+      "generated_test": "let result = pair_xor_Sum(&[7, 3], 2);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

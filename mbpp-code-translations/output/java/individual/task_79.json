@@ -1,0 +1,37 @@
+{
+  "task_id": 79,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the length of the word is odd or not.",
+  "python_code": "def word_len(s): \n    s = s.split(' ')   \n    for word in s:    \n        if len(word)%2!=0: \n            return True  \n        else:\n          return False",
+  "test_list": [
+    "assert word_len(\"Hadoop\") == False",
+    "assert word_len(\"great\") == True",
+    "assert word_len(\"structure\") == True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean word_len(String s) {\n        String[] words = s.split(\" \");\n        for (String word : words) {\n            if (word.length() % 2 != 0) {\n                return true;\n            } else {\n                return false;\n            }\n        }\n        return false;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert word_len(\"Hadoop\") == False",
+      "generated_test": "boolean result = word_len(\"Hadoop\");\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert word_len(\"great\") == True",
+      "generated_test": "boolean result = word_len(\"great\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert word_len(\"structure\") == True",
+      "generated_test": "boolean result = word_len(\"structure\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

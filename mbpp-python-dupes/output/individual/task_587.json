@@ -1,0 +1,27 @@
+{
+  "task_id": 587,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a list to a tuple.",
+  "code_python": "def list_tuple(listx):\n  tuplex = tuple(listx)\n  return tuplex",
+  "test_list": [
+    "assert list_tuple([5, 10, 7, 4, 15, 3])==(5, 10, 7, 4, 15, 3)",
+    "assert list_tuple([2, 4, 5, 6, 2, 3, 4, 4, 7])==(2, 4, 5, 6, 2, 3, 4, 4, 7)",
+    "assert list_tuple([58,44,56])==(58,44,56)"
+  ],
+  "python_1": "def list_tuple(listx):\n  # Use unpacking operator to spread list elements into tuple literal syntax\n  return (*listx,)",
+  "python_1_status": "success",
+  "python_1_attempts": 2,
+  "python_2": "def list_tuple(listx):\n  # Handle empty list edge case by returning empty tuple directly\n  if len(listx) == 0:\n    return ()\n  # Build tuple string representation starting with opening parenthesis\n  result = []\n  # Iterate through each element to manually construct tuple elements\n  for item in listx:\n    # Append each item to our result list\n    result.append(item)\n  # Use generator expression with tuple constructor to create tuple from accumulated items\n  return tuple(item for item in result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def list_tuple(listx):\n  # Use recursive approach to build tuple element by element\n  def build_tuple(lst, index):\n    # Base case: when index reaches list length, return empty tuple\n    if index >= len(lst):\n      return ()\n    # Recursive case: create single-element tuple and concatenate with rest\n    return (lst[index],) + build_tuple(lst, index + 1)\n  # Start recursion from index 0 to process entire list\n  return build_tuple(listx, 0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def list_tuple(listx):\n  # Use reduce from functools to iteratively build tuple through accumulation\n  from functools import reduce\n  # Handle empty list case separately since reduce needs initial value for empty sequences\n  if not listx:\n    # Return empty tuple when input list has no elements\n    return ()\n  # Define lambda that concatenates current accumulated tuple with new single-element tuple\n  accumulator = lambda acc, x: acc + (x,)\n  # Start with first element as single-element tuple, then fold remaining elements\n  initial_tuple = (listx[0],)\n  # Apply reduce starting from second element, building tuple incrementally via concatenation\n  return reduce(accumulator, listx[1:], initial_tuple)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def list_tuple(listx):\n  # Leverage map function to create an identity transformation iterator over list elements\n  mapped_elements = map(lambda x: x, listx)\n  # Convert the map iterator directly to tuple, exploiting tuple's ability to consume any iterable\n  result = tuple(mapped_elements)\n  # Return the newly constructed tuple containing all original list elements\n  return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 435,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit of a given number.",
+  "python_code": "def last_Digit(n) :\n    return (n % 10) ",
+  "test_list": [
+    "assert last_Digit(123) == 3",
+    "assert last_Digit(25) == 5",
+    "assert last_Digit(30) == 0"
+  ],
+  "code_rust": "pub fn last_Digit(n: i32) -> i32 {\n    (n % 10).abs()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert last_Digit(123) == 3",
+      "generated_test": "let result = last_Digit(123);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit(25) == 5",
+      "generated_test": "let result = last_Digit(25);\nlet expected = 5;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit(30) == 0",
+      "generated_test": "let result = last_Digit(30);\nlet expected = 0;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

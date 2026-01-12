@@ -1,0 +1,44 @@
+{
+  "task_id": 787,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that matches a string that has an a followed by three 'b'.",
+  "python_code": "import re\ndef text_match_three(text):\n        patterns = 'ab{3}?'\n        return re.search(patterns,  text)",
+  "test_list": [
+    "assert not text_match_three(\"ac\")",
+    "assert not text_match_three(\"dc\")",
+    "assert text_match_three(\"abbbba\")",
+    "assert text_match_three(\"caacabbbba\")"
+  ],
+  "code_java": "import java.util.regex.Pattern;\nimport java.util.regex.Matcher;\n\npublic class Solution {\n    public static Matcher text_match_three(String text) {\n        String patterns = \"ab{3}?\";\n        Pattern pattern = Pattern.compile(patterns);\n        Matcher matcher = pattern.matcher(text);\n        if (matcher.find()) {\n            return matcher;\n        }\n        return null;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 4,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert not text_match_three(\"ac\")",
+      "generated_test": "Object result = text_match_three(\"ac\");\nboolean expected = false;\nboolean actual = (result != null);\nif (actual == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + actual);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not text_match_three(\"dc\")",
+      "generated_test": "Matcher result = text_match_three(\"dc\");\nif (result == null) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: null\");\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"abbbba\")",
+      "generated_test": "Matcher result = text_match_three(\"abbbba\");\nif (result != null) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: non-null Matcher\");\n    System.out.println(\"  Got: null\");\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert text_match_three(\"caacabbbba\")",
+      "generated_test": "Matcher result = text_match_three(\"caacabbbba\");\nboolean expected = true;\nboolean got = (result != null);\nif (got == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + got);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

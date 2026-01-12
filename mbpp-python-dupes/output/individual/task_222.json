@@ -1,0 +1,27 @@
+{
+  "task_id": 222,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if all the elements in tuple have same data type or not.",
+  "code_python": "def check_type(test_tuple):\n  res = True\n  for ele in test_tuple:\n    if not isinstance(ele, type(test_tuple[0])):\n      res = False\n      break\n  return (res) ",
+  "test_list": [
+    "assert check_type((5, 6, 7, 3, 5, 6) ) == True",
+    "assert check_type((1, 2, \"4\") ) == False",
+    "assert check_type((3, 2, 1, 4, 5) ) == True"
+  ],
+  "python_1": "def check_type(test_tuple):\n    # Handle edge case of empty tuple - vacuously true\n    if len(test_tuple) == 0:\n        return True\n    # Extract the type of the first element as reference\n    first_type = type(test_tuple[0])\n    # Use generator expression with all() for short-circuit evaluation\n    # Check if every element's type matches the first element's type\n    return all(isinstance(elem, first_type) for elem in test_tuple)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_type(test_tuple):\n    # Return True for empty tuples since there's nothing to compare\n    if not test_tuple:\n        return True\n    # Build a set containing the type of each element in the tuple\n    type_set = set(type(elem) for elem in test_tuple)\n    # If all elements share the same type, the set will have exactly one element\n    return len(type_set) == 1",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_type(test_tuple):\n    # Early return for tuples with 0 or 1 elements - trivially same type\n    if len(test_tuple) <= 1:\n        return True\n    # Extract the type of the first element to use as our baseline comparison\n    reference_type = type(test_tuple[0])\n    # Use map to transform each element into its type object\n    all_types = map(type, test_tuple)\n    # Count how many elements match the reference type using filter and sum\n    matching_count = sum(1 for t in all_types if t == reference_type)\n    # Compare count of matching types against total tuple length\n    return matching_count == len(test_tuple)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_type(test_tuple):\n    # Handle empty tuple case - considered homogeneous by default\n    if len(test_tuple) == 0:\n        return True\n    # Store the type of the first element as the benchmark type\n    first_type = type(test_tuple[0])\n    # Use list comprehension to collect boolean results for each type comparison\n    type_matches = [type(elem) == first_type for elem in test_tuple]\n    # Reduce the list by checking if all values are True using min (False < True)\n    # If any False exists, min returns False; otherwise returns True\n    return bool(min(type_matches))",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_type(test_tuple):\n    # Convert tuple to list to enable index-based iteration starting from second element\n    elements = list(test_tuple)\n    # Guard clause: empty or single-element tuples are trivially uniform in type\n    if len(elements) < 2:\n        return True\n    # Capture the type of the initial element to serve as comparison anchor\n    anchor_type = type(elements[0])\n    # Initialize index pointer to traverse remaining elements\n    idx = 1\n    # Employ while loop for explicit index control - alternative iteration pattern\n    while idx < len(elements):\n        # Directly compare type objects using equality rather than isinstance\n        if type(elements[idx]) != anchor_type:\n            # Immediate termination upon finding first type mismatch\n            return False\n        # Advance to next position in the sequence\n        idx += 1\n    # All elements passed type uniformity check\n    return True",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

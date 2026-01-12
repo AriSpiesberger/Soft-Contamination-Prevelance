@@ -1,0 +1,28 @@
+{
+  "task_id": 226,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to remove the characters which have odd index values of a given string.",
+  "code_python": "def odd_values_string(str):\n  result = \"\" \n  for i in range(len(str)):\n    if i % 2 == 0:\n      result = result + str[i]\n  return result",
+  "test_list": [
+    "assert odd_values_string('abcdef') == 'ace'",
+    "assert odd_values_string('python') == 'pto'",
+    "assert odd_values_string('data') == 'dt'",
+    "assert odd_values_string('lambs') == 'lms'"
+  ],
+  "python_1": "def odd_values_string(str):\n  # Use slice notation to extract every second character starting from index 0\n  # This leverages Python's powerful string slicing with step parameter\n  return str[::2]",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def odd_values_string(str):\n  # Build a list of characters at even indices using list comprehension with enumerate\n  even_indexed_chars = [char for index, char in enumerate(str) if index % 2 == 0]\n  # Join the filtered characters into a single string and return\n  return ''.join(even_indexed_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def odd_values_string(str):\n  # Use filter function with a lambda that checks if the index is even\n  # enumerate pairs each character with its index for filtering\n  filtered = filter(lambda x: x[0] % 2 == 0, enumerate(str))\n  # Extract only the character (second element) from each filtered tuple\n  chars_only = map(lambda x: x[1], filtered)\n  # Concatenate all selected characters into the final result string\n  return ''.join(chars_only)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def odd_values_string(str):\n  # Use recursive approach - base case: empty or single character string\n  if len(str) <= 1:\n    # Return the string as-is since index 0 is even (kept) and no more chars exist\n    return str\n  # Recursive case: take first char (even index 0) and skip second char (odd index 1)\n  # Then recursively process the rest of the string starting from index 2\n  return str[0] + odd_values_string(str[2:])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def odd_values_string(str):\n  # Initialize an empty list to accumulate characters at even positions\n  result_chars = []\n  # Create an index counter to track position manually\n  idx = 0\n  # Iterate through each character in the string using a while loop\n  while idx < len(str):\n    # Append current character since we only visit even indices\n    result_chars.append(str[idx])\n    # Jump by 2 to skip the odd-indexed character entirely\n    idx += 2\n  # Convert the character list to a string using join\n  return ''.join(result_chars)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

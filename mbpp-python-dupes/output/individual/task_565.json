@@ -1,0 +1,27 @@
+{
+  "task_id": 565,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to split a string into characters.",
+  "code_python": "def split(word): \n    return [char for char in word] ",
+  "test_list": [
+    "assert split('python') == ['p','y','t','h','o','n']",
+    "assert split('Name') == ['N','a','m','e']",
+    "assert split('program') == ['p','r','o','g','r','a','m']"
+  ],
+  "python_1": "# Convert the string directly to a list using the built-in list constructor\ndef split(word): \n    # The list() function iterates over the string and creates a list of individual characters\n    return list(word)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Use map function to apply str conversion to each character, ensuring iteration\ndef split(word): \n    # Create an empty list to accumulate characters one by one\n    result = []\n    # Initialize index counter for manual iteration through string positions\n    index = 0\n    # Continue looping while index is within valid string bounds\n    while index < len(word):\n        # Extract single character at current position using string indexing\n        char = word[index]\n        # Append the extracted character to our result list\n        result.append(char)\n        # Move to the next character position by incrementing index\n        index += 1\n    # Return the fully populated list of individual characters\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Use recursion to break down the string character by character\ndef split(word): \n    # Base case: empty string returns empty list to stop recursion\n    if len(word) == 0:\n        return []\n    # Recursive step: take first character and concatenate with recursive call on remainder\n    return [word[0]] + split(word[1:])",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Use the extend method with a generator expression to build character list\ndef split(word): \n    # Initialize an empty list that will store each character separately\n    result = []\n    # Extend the list by unpacking the string as an iterable of characters\n    result.extend(word)\n    # Return the list containing all individual characters from the input string\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Use functools.reduce to accumulate characters into a list through folding operation\nimport functools\n\ndef split(word): \n    # Handle edge case of empty string by returning empty list directly\n    if not word:\n        return []\n    # Define a reducer function that appends each character to accumulator list\n    def accumulator(acc, char):\n        # Extend accumulator with current character wrapped in a list\n        return acc + [char]\n    # Apply reduce to fold string into list, starting with empty list as initial value\n    return functools.reduce(accumulator, word, [])",
+  "python_5_status": "success",
+  "python_5_attempts": 2
+}

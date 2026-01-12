@@ -1,0 +1,37 @@
+{
+  "task_id": 452,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that gives loss amount on a sale if the given amount has loss else return 0.",
+  "python_code": "def loss_amount(actual_cost,sale_amount): \n  if(sale_amount > actual_cost):\n    amount = sale_amount - actual_cost\n    return amount\n  else:\n    return 0",
+  "test_list": [
+    "assert loss_amount(1500,1200)==0",
+    "assert loss_amount(100,200)==100",
+    "assert loss_amount(2000,5000)==3000"
+  ],
+  "code_go": "package main\n\nfunc loss_amount(actual_cost, sale_amount int) int {\n\tif sale_amount > actual_cost {\n\t\tamount := sale_amount - actual_cost\n\t\treturn amount\n\t}\n\treturn 0\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert loss_amount(1500,1200)==0",
+      "generated_test": "result := loss_amount(1500, 1200)\nexpected := 0\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert loss_amount(100,200)==100",
+      "generated_test": "result := loss_amount(100, 200)\nexpected := 100\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert loss_amount(2000,5000)==3000",
+      "generated_test": "result := loss_amount(2000, 5000)\nexpected := 3000\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

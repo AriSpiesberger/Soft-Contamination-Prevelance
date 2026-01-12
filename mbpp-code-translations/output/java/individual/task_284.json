@@ -1,0 +1,37 @@
+{
+  "task_id": 284,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a list and element and checks whether all items in the list are equal to the given element.",
+  "python_code": "def check_element(list,element):\n  check_element=all(v== element for v in list)\n  return check_element",
+  "test_list": [
+    "assert check_element([\"green\", \"orange\", \"black\", \"white\"],'blue')==False",
+    "assert check_element([1,2,3,4],7)==False",
+    "assert check_element([\"green\", \"green\", \"green\", \"green\"],'green')==True"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static <T> boolean check_element(ArrayList<T> list, T element) {\n        for (T v : list) {\n            if (!v.equals(element)) {\n                return false;\n            }\n        }\n        return true;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_element([\"green\", \"orange\", \"black\", \"white\"],'blue')==False",
+      "generated_test": "ArrayList<String> list = new ArrayList<>();\nlist.add(\"green\");\nlist.add(\"orange\");\nlist.add(\"black\");\nlist.add(\"white\");\nboolean result = check_element(list, \"blue\");\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_element([1,2,3,4],7)==False",
+      "generated_test": "ArrayList<Integer> list = new ArrayList<>();\nlist.add(1);\nlist.add(2);\nlist.add(3);\nlist.add(4);\nboolean result = check_element(list, 7);\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_element([\"green\", \"green\", \"green\", \"green\"],'green')==True",
+      "generated_test": "ArrayList<String> list = new ArrayList<>();\nlist.add(\"green\");\nlist.add(\"green\");\nlist.add(\"green\");\nlist.add(\"green\");\nboolean result = check_element(list, \"green\");\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

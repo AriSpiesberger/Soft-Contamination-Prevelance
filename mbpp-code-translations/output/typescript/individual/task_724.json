@@ -1,0 +1,18 @@
+{
+  "task_id": 724,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes base and power as arguments and calculate the sum of all digits of the base to the specified power.",
+  "python_code": "def power_base_sum(base, power):\n    return sum([int(i) for i in str(pow(base, power))])",
+  "test_list": [
+    "assert power_base_sum(2,100)==115",
+    "assert power_base_sum(8,10)==37",
+    "assert power_base_sum(8,15)==62",
+    "assert power_base_sum(3,3)==9"
+  ],
+  "code_typescript": "function power_base_sum(base: number, power: number): number {\n    const result = BigInt(base) ** BigInt(power);\n    const digits = result.toString().split('');\n    return digits.reduce((sum, digit) => sum + parseInt(digit, 10), 0);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 4,
+  "code_typescript_tests_failed": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 424,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract only the rear index element of each string in the given tuple.",
+  "python_code": "def extract_rear(test_tuple):\n  res = list(sub[len(sub) - 1] for sub in test_tuple)\n  return (res) ",
+  "test_list": [
+    "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+    "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+    "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']"
+  ],
+  "code_javascript": "function extract_rear(test_tuple) {\n  const res = test_tuple.map(sub => sub[sub.length - 1]);\n  return res;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+      "generated_test": "const result = extract_rear(['Mers', 'for', 'Vers']);\nconst expected = ['s', 'r', 's'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+      "generated_test": "const result = extract_rear(['Avenge', 'for', 'People']);\nconst expected = ['e', 'r', 'e'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']",
+      "generated_test": "const result = extract_rear(['Gotta', 'get', 'go']);\nconst expected = ['a', 't', 'o'];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

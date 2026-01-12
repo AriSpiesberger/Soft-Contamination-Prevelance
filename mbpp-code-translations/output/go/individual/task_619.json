@@ -1,0 +1,37 @@
+{
+  "task_id": 619,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to move all the numbers to the end of the given string.",
+  "python_code": "def move_num(test_str):\n  res = ''\n  dig = ''\n  for ele in test_str:\n    if ele.isdigit():\n      dig += ele\n    else:\n      res += ele\n  res += dig\n  return (res) ",
+  "test_list": [
+    "assert move_num('I1love143you55three3000thousand') == 'Iloveyouthreethousand1143553000'",
+    "assert move_num('Avengers124Assemble') == 'AvengersAssemble124'",
+    "assert move_num('Its11our12path13to14see15things16do17things') == 'Itsourpathtoseethingsdothings11121314151617'"
+  ],
+  "code_go": "package main\n\nfunc move_num(test_str string) string {\n\tres := \"\"\n\tdig := \"\"\n\tfor _, ele := range test_str {\n\t\tif ele >= '0' && ele <= '9' {\n\t\t\tdig += string(ele)\n\t\t} else {\n\t\t\tres += string(ele)\n\t\t}\n\t}\n\tres += dig\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert move_num('I1love143you55three3000thousand') == 'Iloveyouthreethousand1143553000'",
+      "generated_test": "result := move_num(\"I1love143you55three3000thousand\")\nexpected := \"Iloveyouthreethousand1143553000\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_num('Avengers124Assemble') == 'AvengersAssemble124'",
+      "generated_test": "result := move_num(\"Avengers124Assemble\")\nexpected := \"AvengersAssemble124\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_num('Its11our12path13to14see15things16do17things') == 'Itsourpathtoseethingsdothings11121314151617'",
+      "generated_test": "result := move_num(\"Its11our12path13to14see15things16do17things\")\nexpected := \"Itsourpathtoseethingsdothings11121314151617\"\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected:\", expected)\n\tfmt.Println(\"  Got:\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

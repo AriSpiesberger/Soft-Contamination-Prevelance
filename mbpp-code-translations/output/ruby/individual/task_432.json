@@ -1,0 +1,37 @@
+{
+  "task_id": 432,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median length of a trapezium.",
+  "python_code": "def median_trapezium(base1,base2,height):\n median = 0.5 * (base1+ base2)\n return median",
+  "test_list": [
+    "assert median_trapezium(15,25,35)==20",
+    "assert median_trapezium(10,20,30)==15",
+    "assert median_trapezium(6,9,4)==7.5"
+  ],
+  "code_ruby": "def median_trapezium(base1, base2, height)\n  median = 0.5 * (base1 + base2)\n  median\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert median_trapezium(15,25,35)==20",
+      "generated_test": "result = median_trapezium(15, 25, 35)\nexpected = 20\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_trapezium(10,20,30)==15",
+      "generated_test": "result = median_trapezium(10, 20, 30)\nexpected = 15\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_trapezium(6,9,4)==7.5",
+      "generated_test": "result = median_trapezium(6, 9, 4)\nexpected = 7.5\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

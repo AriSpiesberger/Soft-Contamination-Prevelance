@@ -1,0 +1,27 @@
+{
+  "task_id": 738,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the geometric sum of n-1. https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-recursion-exercise-9.php",
+  "code_python": "def geometric_sum(n):\n  if n < 0:\n    return 0\n  else:\n    return 1 / (pow(2, n)) + geometric_sum(n - 1)",
+  "test_list": [
+    "assert geometric_sum(7) == 1.9921875",
+    "assert geometric_sum(4) == 1.9375",
+    "assert geometric_sum(8) == 1.99609375"
+  ],
+  "python_1": "def geometric_sum(n):\n    # Handle edge case where n is negative by returning zero\n    if n < 0:\n        return 0\n    # Use iterative approach with accumulator instead of recursion\n    total = 0\n    # Loop from 0 to n inclusive to sum all terms 1/2^i\n    for i in range(n + 1):\n        # Calculate each term as 1 divided by 2 raised to power i\n        term = 1 / (2 ** i)\n        # Accumulate each geometric term into running total\n        total += term\n    # Return the complete geometric series sum\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def geometric_sum(n):\n    # Early return for invalid negative input\n    if n < 0:\n        return 0\n    # Use closed-form formula for geometric series: sum = (1 - r^(n+1)) / (1 - r) where r = 1/2\n    # Simplified: sum = 2 * (1 - (1/2)^(n+1)) = 2 - 2^(-n)\n    first_term = 2\n    # Calculate the subtraction term using bit shifting concept: 1/2^n = 2^(-n)\n    correction_term = 1 / (1 << n)\n    # Apply the closed-form geometric series formula result\n    result = first_term - correction_term\n    # Return the computed sum directly without iteration or recursion\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def geometric_sum(n):\n    # Guard clause: return zero for negative exponent bounds\n    if n < 0:\n        return 0\n    # Generate sequence of exponents from 0 through n inclusive\n    exponents = range(n + 1)\n    # Map each exponent to its corresponding geometric term 1/2^i using generator expression\n    terms = (0.5 ** i for i in exponents)\n    # Leverage built-in sum to aggregate all geometric terms efficiently\n    return sum(terms)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def geometric_sum(n):\n    # Reject negative inputs by returning zero as base case\n    if n < 0:\n        return 0\n    # Build list of powers from 0 to n using list comprehension\n    power_list = [i for i in range(n + 1)]\n    # Apply reduce pattern using lambda to accumulate sum of 1/2^i terms\n    from functools import reduce\n    # Reduce combines accumulator with each power, converting power to geometric term\n    result = reduce(lambda acc, power: acc + (1 / (2 ** power)), power_list, 0)\n    # Return the aggregated geometric series value\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def geometric_sum(n):\n    # Validate input: negative n means empty series, so return additive identity\n    if n < 0:\n        return 0\n    # Use while loop with decrementing counter instead of for loop or recursion\n    current_power = 0\n    # Initialize accumulator to hold running sum of geometric terms\n    accumulated_sum = 0.0\n    # Continue adding terms while current power hasn't exceeded upper bound n\n    while current_power <= n:\n        # Compute reciprocal of 2^current_power using division operator\n        geometric_term = 1.0 / (2 ** current_power)\n        # Add this term to our running total\n        accumulated_sum = accumulated_sum + geometric_term\n        # Advance to next power in the sequence\n        current_power = current_power + 1\n    # Return the complete summation after all terms processed\n    return accumulated_sum",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

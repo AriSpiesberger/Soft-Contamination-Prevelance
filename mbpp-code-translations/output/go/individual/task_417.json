@@ -1,0 +1,37 @@
+{
+  "task_id": 417,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find common first element in given list of tuple.",
+  "python_code": "def group_tuples(Input): \n\tout = {} \n\tfor elem in Input: \n\t\ttry: \n\t\t\tout[elem[0]].extend(elem[1:]) \n\t\texcept KeyError: \n\t\t\tout[elem[0]] = list(elem) \n\treturn [tuple(values) for values in out.values()] ",
+  "test_list": [
+    "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+    "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+    "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]"
+  ],
+  "code_go": "package main\n\nfunc group_tuples(input [][]string) [][]string {\n\tout := make(map[string][]string)\n\torder := []string{}\n\t\n\tfor _, elem := range input {\n\t\tif len(elem) == 0 {\n\t\t\tcontinue\n\t\t}\n\t\tkey := elem[0]\n\t\tif existing, ok := out[key]; ok {\n\t\t\tout[key] = append(existing, elem[1:]...)\n\t\t} else {\n\t\t\torder = append(order, key)\n\t\t\tnewSlice := make([]string, len(elem))\n\t\t\tcopy(newSlice, elem)\n\t\t\tout[key] = newSlice\n\t\t}\n\t}\n\t\n\tresult := [][]string{}\n\tfor _, key := range order {\n\t\tresult = append(result, out[key])\n\t}\n\t\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert group_tuples([('x', 'y'), ('x', 'z'), ('w', 't')]) == [('x', 'y', 'z'), ('w', 't')]",
+      "generated_test": "input := [][]string{{\"x\", \"y\"}, {\"x\", \"z\"}, {\"w\", \"t\"}}\nexpected := [][]string{{\"x\", \"y\", \"z\"}, {\"w\", \"t\"}}\nresult := group_tuples(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range expected[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert group_tuples([('a', 'b'), ('a', 'c'), ('d', 'e')]) == [('a', 'b', 'c'), ('d', 'e')]",
+      "generated_test": "input := [][]string{{\"a\", \"b\"}, {\"a\", \"c\"}, {\"d\", \"e\"}}\nexpected := [][]string{{\"a\", \"b\", \"c\"}, {\"d\", \"e\"}}\nresult := group_tuples(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert group_tuples([('f', 'g'), ('f', 'g'), ('h', 'i')]) == [('f', 'g', 'g'), ('h', 'i')]",
+      "generated_test": "input := [][]string{{\"f\", \"g\"}, {\"f\", \"g\"}, {\"h\", \"i\"}}\nexpected := [][]string{{\"f\", \"g\", \"g\"}, {\"h\", \"i\"}}\nresult := group_tuples(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif len(result[i]) != len(expected[i]) {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t\tfor j := range result[i] {\n\t\t\tif result[i][j] != expected[i][j] {\n\t\t\t\tpass = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif !pass {\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

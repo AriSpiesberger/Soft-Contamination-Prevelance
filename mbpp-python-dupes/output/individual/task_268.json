@@ -1,0 +1,27 @@
+{
+  "task_id": 268,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n'th star number.",
+  "code_python": "def find_star_num(n): \n\treturn (6 * n * (n - 1) + 1) ",
+  "test_list": [
+    "assert find_star_num(3) == 37",
+    "assert find_star_num(4) == 73",
+    "assert find_star_num(5) == 121"
+  ],
+  "python_1": "def find_star_num(n): \n    # Start with the central point that all star numbers share\n    result = 1\n    # Iterate through each layer from 1 to n-1 to build up the star\n    for layer in range(1, n):\n        # Each layer adds 12 more points than the previous layer, starting at 12 for layer 1\n        # This is because a star number adds 12*k points at layer k\n        result += 12 * layer\n    # Return the accumulated star number after adding all layers\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_star_num(n): \n    # Use recursion base case: the 1st star number is always 1\n    if n == 1:\n        return 1\n    # Recursively get the previous star number\n    previous_star = find_star_num(n - 1)\n    # Each star number differs from previous by 12*(n-1), add this increment\n    return previous_star + 12 * (n - 1)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_star_num(n): \n    # Compute n squared, which appears in the expanded formula\n    n_squared = n ** 2\n    # Calculate 6 times n squared as the primary quadratic term\n    six_n_squared = 6 * n_squared\n    # Compute the linear correction term to subtract\n    six_n = 6 * n\n    # Combine quadratic term minus linear term plus constant 1 using algebraic expansion\n    # This is equivalent to 6n^2 - 6n + 1, the expanded form of 6n(n-1) + 1\n    star_number = six_n_squared - six_n + 1\n    # Return the computed n'th star number\n    return star_number",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_star_num(n): \n    # Build a list to store star numbers using dynamic programming approach\n    star_numbers = [0] * (n + 1)\n    # Set the first star number as the base case value of 1\n    star_numbers[1] = 1\n    # Populate each subsequent star number by adding the difference term\n    for i in range(2, n + 1):\n        # Compute the increment as 12 times the previous index\n        increment = 12 * (i - 1)\n        # Add increment to previous star number to get current one\n        star_numbers[i] = star_numbers[i - 1] + increment\n    # Extract and return the n'th star number from our memoization array\n    return star_numbers[n]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_star_num(n): \n    # Use reduce to functionally accumulate the sum of increments from 1 to n-1\n    from functools import reduce\n    # Generate the sequence of layer increments: 12*1, 12*2, ..., 12*(n-1)\n    layer_increments = (12 * k for k in range(1, n))\n    # Reduce the generator by summing all increments, starting from base value 1\n    result = reduce(lambda acc, increment: acc + increment, layer_increments, 1)\n    # Return the final star number computed via functional reduction\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

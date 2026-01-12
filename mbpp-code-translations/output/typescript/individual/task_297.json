@@ -1,0 +1,17 @@
+{
+  "task_id": 297,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to flatten a given nested list structure.",
+  "python_code": "def flatten_list(list1):\n    result_list = []\n    if not list1: return result_list\n    stack = [list(list1)]\n    while stack:\n        c_num = stack.pop()\n        next = c_num.pop()\n        if c_num: stack.append(c_num)\n        if isinstance(next, list):\n            if next: stack.append(list(next))\n        else: result_list.append(next)\n    result_list.reverse()\n    return result_list ",
+  "test_list": [
+    "assert flatten_list([0, 10, [20, 30], 40, 50, [60, 70, 80], [90, 100, 110, 120]])==[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]",
+    "assert flatten_list([[10, 20], [40], [30, 56, 25], [10, 20], [33], [40]])==[10, 20, 40, 30, 56, 25, 10, 20, 33, 40]",
+    "assert flatten_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[1, 2, 3, 4, 5, 6, 10, 11, 12, 7, 8, 9]"
+  ],
+  "code_typescript": "type NestedList<T> = (T | NestedList<T>)[];\n\nfunction flatten_list<T>(list1: NestedList<T>): T[] {\n    const result_list: T[] = [];\n    if (!list1 || list1.length === 0) return result_list;\n    \n    const stack: NestedList<T>[] = [[...list1]];\n    \n    while (stack.length > 0) {\n        const c_num = stack.pop()!;\n        const next = c_num.pop();\n        \n        if (c_num.length > 0) {\n            stack.push(c_num);\n        }\n        \n        if (Array.isArray(next)) {\n            if (next.length > 0) {\n                stack.push([...next]);\n            }\n        } else if (next !== undefined) {\n            result_list.push(next);\n        }\n    }\n    \n    result_list.reverse();\n    return result_list;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

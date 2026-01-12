@@ -1,0 +1,37 @@
+{
+  "task_id": 130,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the item with maximum frequency in a given list.",
+  "python_code": "from collections import defaultdict\ndef max_occurrences(nums):\n    dict = defaultdict(int)\n    for i in nums:\n        dict[i] += 1\n    result = max(dict.items(), key=lambda x: x[1]) \n    return result[0]",
+  "test_list": [
+    "assert max_occurrences([2,3,8,4,7,9,8,2,6,5,1,6,1,2,3,2,4,6,9,1,2])==2",
+    "assert max_occurrences([2,3,8,4,7,9,8,7,9,15,14,10,12,13,16,18])==8",
+    "assert max_occurrences([10,20,20,30,40,90,80,50,30,20,50,10])==20"
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn max_occurrences(nums: Vec<i32>) -> i32 {\n    let mut dict: HashMap<i32, i32> = HashMap::new();\n    for i in &nums {\n        *dict.entry(*i).or_insert(0) += 1;\n    }\n    let max_count = *dict.values().max().unwrap();\n    for i in nums {\n        if dict[&i] == max_count {\n            return i;\n        }\n    }\n    unreachable!()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 3,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_occurrences([2,3,8,4,7,9,8,2,6,5,1,6,1,2,3,2,4,6,9,1,2])==2",
+      "generated_test": "let result = max_occurrences(vec![2,3,8,4,7,9,8,2,6,5,1,6,1,2,3,2,4,6,9,1,2]);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_occurrences([2,3,8,4,7,9,8,7,9,15,14,10,12,13,16,18])==8",
+      "generated_test": "let result = max_occurrences(vec![2,3,8,4,7,9,8,7,9,15,14,10,12,13,16,18]);\nlet expected = 8;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_occurrences([10,20,20,30,40,90,80,50,30,20,50,10])==20",
+      "generated_test": "let result = max_occurrences(vec![10,20,20,30,40,90,80,50,30,20,50,10]);\nlet expected = 20;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

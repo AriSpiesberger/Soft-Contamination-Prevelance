@@ -1,0 +1,27 @@
+{
+  "task_id": 242,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the total number of characters in a string.",
+  "code_python": "def count_charac(str1):\n total = 0\n for i in str1:\n    total = total + 1\n return total",
+  "test_list": [
+    "assert count_charac(\"python programming\")==18",
+    "assert count_charac(\"language\")==8",
+    "assert count_charac(\"words\")==5"
+  ],
+  "python_1": "def count_charac(str1):\n    # Leverage Python's built-in len() function which directly returns string length\n    return len(str1)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_charac(str1):\n    # Use recursion: base case returns 0 for empty string\n    if str1 == \"\":\n        return 0\n    # Recursive case: count 1 for current char plus count of remaining string\n    return 1 + count_charac(str1[1:])",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_charac(str1):\n    # Convert string to list of individual characters using list comprehension\n    char_list = [char for char in str1]\n    # Sum up 1 for each character element in the list using sum() with generator\n    total = sum(1 for _ in char_list)\n    # Return the computed total character count\n    return total",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_charac(str1):\n    # Use enumerate to pair each character with its index position\n    last_index = -1\n    # Iterate through enumerated pairs to find the highest index\n    for index, char in enumerate(str1):\n        # Update last_index to track the current position in the string\n        last_index = index\n    # Handle empty string case where loop never executes\n    if last_index == -1:\n        # Return 0 since no characters exist in an empty string\n        return 0\n    # The count equals the final index plus one due to zero-based indexing\n    return last_index + 1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_charac(str1):\n    # Use reduce from functools to accumulate count through functional programming\n    from functools import reduce\n    # Handle edge case of empty string before reduction\n    if not str1:\n        # Empty strings have zero characters\n        return 0\n    # Apply reduce with lambda that adds 1 for each character encountered\n    result = reduce(lambda acc, char: acc + 1, str1, 0)\n    # Return the accumulated character count from the reduction\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

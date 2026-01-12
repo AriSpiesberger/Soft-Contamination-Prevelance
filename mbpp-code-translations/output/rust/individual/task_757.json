@@ -1,0 +1,37 @@
+{
+  "task_id": 757,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the pairs of reverse strings in the given string list. https://www.geeksforgeeks.org/python-program-to-count-the-pairs-of-reverse-strings/",
+  "python_code": "def count_reverse_pairs(test_list):\n  res = sum([1 for idx in range(0, len(test_list)) for idxn in range(idx, len( \n\ttest_list)) if test_list[idxn] == str(''.join(list(reversed(test_list[idx]))))]) \n  return res",
+  "test_list": [
+    "assert count_reverse_pairs([\"julia\", \"best\", \"tseb\", \"for\", \"ailuj\"])== 2",
+    "assert count_reverse_pairs([\"geeks\", \"best\", \"for\", \"skeeg\"]) == 1",
+    "assert count_reverse_pairs([\"makes\", \"best\", \"sekam\", \"for\", \"rof\"]) == 2"
+  ],
+  "code_rust": "pub fn count_reverse_pairs(test_list: Vec<&str>) -> i32 {\n    let mut res = 0;\n    for idx in 0..test_list.len() {\n        for idxn in idx..test_list.len() {\n            let reversed: String = test_list[idx].chars().rev().collect();\n            if test_list[idxn] == reversed {\n                res += 1;\n            }\n        }\n    }\n    res\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_reverse_pairs([\"julia\", \"best\", \"tseb\", \"for\", \"ailuj\"])== 2",
+      "generated_test": "let result = count_reverse_pairs(vec![\"julia\", \"best\", \"tseb\", \"for\", \"ailuj\"]);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_reverse_pairs([\"geeks\", \"best\", \"for\", \"skeeg\"]) == 1",
+      "generated_test": "let result = count_reverse_pairs(vec![\"geeks\", \"best\", \"for\", \"skeeg\"]);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_reverse_pairs([\"makes\", \"best\", \"sekam\", \"for\", \"rof\"]) == 2",
+      "generated_test": "let result = count_reverse_pairs(vec![\"makes\", \"best\", \"sekam\", \"for\", \"rof\"]);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

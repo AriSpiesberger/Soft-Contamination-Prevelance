@@ -1,0 +1,17 @@
+{
+  "task_id": 103,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the Eulerian number a(n, m).",
+  "python_code": "def eulerian_num(n, m): \n\tif (m >= n or n == 0): \n\t\treturn 0 \n\tif (m == 0): \n\t\treturn 1 \n\treturn ((n - m) * eulerian_num(n - 1, m - 1) +(m + 1) * eulerian_num(n - 1, m))",
+  "test_list": [
+    "assert eulerian_num(3, 1) == 4",
+    "assert eulerian_num(4, 1) == 11",
+    "assert eulerian_num(5, 3) == 26"
+  ],
+  "code_typescript": "function eulerian_num(n: number, m: number): number {\n    if (m >= n || n === 0) {\n        return 0;\n    }\n    if (m === 0) {\n        return 1;\n    }\n    return (n - m) * eulerian_num(n - 1, m - 1) + (m + 1) * eulerian_num(n - 1, m);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

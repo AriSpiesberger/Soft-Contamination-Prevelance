@@ -1,0 +1,37 @@
+{
+  "task_id": 632,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to move all zeroes to the end of the given list.",
+  "python_code": "def move_zero(num_list):\n    a = [0 for i in range(num_list.count(0))]\n    x = [i for i in num_list if i != 0]\n    return x + a",
+  "test_list": [
+    "assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]",
+    "assert move_zero([2,3,2,0,0,4,0,5,0]) == [2,3,2,4,5,0,0,0,0]",
+    "assert move_zero([0,1,0,1,1]) == [1,1,1,0,0]"
+  ],
+  "code_javascript": "function move_zero(num_list) {\n    const zeroCount = num_list.filter(i => i === 0).length;\n    const a = Array(zeroCount).fill(0);\n    const x = num_list.filter(i => i !== 0);\n    return x.concat(a);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert move_zero([1,0,2,0,3,4]) == [1,2,3,4,0,0]",
+      "generated_test": "const result = move_zero([1,0,2,0,3,4]);\nconst expected = [1,2,3,4,0,0];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_zero([2,3,2,0,0,4,0,5,0]) == [2,3,2,4,5,0,0,0,0]",
+      "generated_test": "const result = move_zero([2,3,2,0,0,4,0,5,0]);\nconst expected = [2,3,2,4,5,0,0,0,0];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert move_zero([0,1,0,1,1]) == [1,1,1,0,0]",
+      "generated_test": "const result = move_zero([0,1,0,1,1]);\nconst expected = [1,1,1,0,0];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

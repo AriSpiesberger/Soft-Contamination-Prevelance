@@ -1,0 +1,27 @@
+{
+  "task_id": 271,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in an integer n and finds the sum of the first n even natural numbers that are raised to the fifth power.",
+  "code_python": "def even_Power_Sum(n): \n    sum = 0; \n    for i in range(1,n+1): \n        j = 2*i; \n        sum = sum + (j*j*j*j*j); \n    return sum; ",
+  "test_list": [
+    "assert even_Power_Sum(2) == 1056",
+    "assert even_Power_Sum(3) == 8832",
+    "assert even_Power_Sum(1) == 32"
+  ],
+  "python_1": "def even_Power_Sum(n): \n    # Generate sequence of first n positive integers starting from 1\n    indices = range(1, n + 1)\n    # Use map to transform each index i into (2*i)^5, the fifth power of even numbers\n    fifth_powers = map(lambda i: (2 * i) ** 5, indices)\n    # Aggregate all fifth powers using built-in sum function\n    result = sum(fifth_powers)\n    # Return the accumulated sum of even numbers raised to fifth power\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def even_Power_Sum(n): \n    # Build a list of first n even natural numbers using list comprehension\n    even_numbers = [2 * k for k in range(1, n + 1)]\n    # Apply fifth power to each even number and collect results in a new list\n    powered_values = [num ** 5 for num in even_numbers]\n    # Compute total by reducing the list with addition via sum builtin\n    total = sum(powered_values)\n    # Return the computed sum of fifth powers of even numbers\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def even_Power_Sum(n): \n    # Use generator expression inside sum() for memory-efficient one-liner computation\n    # Formula: sum of (2k)^5 for k from 1 to n, where 2k gives successive even numbers\n    return sum((2 * k) ** 5 for k in range(1, n + 1))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def even_Power_Sum(n): \n    # Import reduce function for functional-style accumulation\n    from functools import reduce\n    # Create list of even numbers: 2, 4, 6, ... up to 2n\n    evens = list(range(2, 2 * n + 2, 2))\n    # Use reduce to accumulate sum by adding each even number raised to fifth power\n    result = reduce(lambda acc, x: acc + x ** 5, evens, 0)\n    # Return the final accumulated sum of fifth powers\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def even_Power_Sum(n): \n    # Recursive base case: when n reaches zero, no more terms to add\n    if n == 0:\n        return 0\n    # Calculate the nth even number (2n gives us 2, 4, 6, 8, ...)\n    current_even = 2 * n\n    # Compute fifth power using exponentiation operator\n    fifth_power = current_even ** 5\n    # Recursively sum: current term plus sum of all previous (n-1) terms\n    return fifth_power + even_Power_Sum(n - 1)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

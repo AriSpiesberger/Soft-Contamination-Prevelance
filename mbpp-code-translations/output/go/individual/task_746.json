@@ -1,0 +1,37 @@
+{
+  "task_id": 746,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find area of a sector. The function takes the radius and angle as inputs. Function should return None if the angle is larger than 360 degrees.",
+  "python_code": "import math\ndef sector_area(r,a):\n    if a > 360:\n        return None\n    return (math.pi*r**2) * (a/360)",
+  "test_list": [
+    "assert sector_area(4,45)==6.283185307179586",
+    "assert sector_area(9,45)==31.808625617596654",
+    "assert sector_area(9,361)==None"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"math\"\n)\n\nfunc sector_area(r, a float64) *float64 {\n\tif a > 360 {\n\t\treturn nil\n\t}\n\tresult := (math.Pi * r * r) * (a / 360)\n\treturn &result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sector_area(4,45)==6.283185307179586",
+      "generated_test": "result := sector_area(4, 45)\nexpected := 6.283185307179586\ntolerance := 1e-9\n\nif result != nil && math.Abs(*result-expected) < tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result != nil {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t} else {\n\t\tfmt.Printf(\"  Got: nil\\n\")\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sector_area(9,45)==31.808625617596654",
+      "generated_test": "result := sector_area(9, 45)\nexpected := 31.808625617596654\ntolerance := 1e-9\n\nif result != nil && math.Abs(*result-expected) < tolerance {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tif result != nil {\n\t\tfmt.Printf(\"  Got: %v\\n\", *result)\n\t} else {\n\t\tfmt.Println(\"  Got: nil\")\n\t}\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sector_area(9,361)==None",
+      "generated_test": "result := sector_area(9, 361)\nif result == nil {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Println(\"  Expected: nil\")\n\tfmt.Printf(\"  Got: %v\\n\", *result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

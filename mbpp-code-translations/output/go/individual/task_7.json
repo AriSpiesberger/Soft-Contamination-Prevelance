@@ -1,0 +1,37 @@
+{
+  "task_id": 7,
+  "source_split": "prompt",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find all words which are at least 4 characters long in a string.",
+  "python_code": "import re\ndef find_char_long(text):\n  return (re.findall(r\"\\b\\w{4,}\\b\", text))",
+  "test_list": [
+    "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+    "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+    "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"regexp\"\n)\n\nfunc find_char_long(text string) []string {\n\tre := regexp.MustCompile(`\\b\\w{4,}\\b`)\n\tmatches := re.FindAllString(text, -1)\n\tif matches == nil {\n\t\treturn []string{}\n\t}\n\treturn matches\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])",
+      "generated_test": "result := find_char_long(\"Please move back to stream\")\nexpected := map[string]bool{\"Please\": true, \"move\": true, \"back\": true, \"stream\": true}\n\nresultSet := make(map[string]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\npass := true\nif len(resultSet) != len(expected) {\n\tpass = false\n} else {\n\tfor k := range expected {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", resultSet)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])",
+      "generated_test": "result := find_char_long(\"Jing Eco and Tech\")\nexpected := []string{\"Jing\", \"Tech\"}\n\n// Convert both to sets (maps) for comparison\nresultSet := make(map[string]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\nexpectedSet := make(map[string]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])",
+      "generated_test": "result := find_char_long(\"Jhingai wulu road Zone 3\")\nexpected := []string{\"Jhingai\", \"wulu\", \"road\", \"Zone\"}\n\n// Convert both to sets (maps) for comparison\nresultSet := make(map[string]bool)\nfor _, v := range result {\n\tresultSet[v] = true\n}\n\nexpectedSet := make(map[string]bool)\nfor _, v := range expected {\n\texpectedSet[v] = true\n}\n\n// Compare sets\npass := len(resultSet) == len(expectedSet)\nif pass {\n\tfor k := range expectedSet {\n\t\tif !resultSet[k] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

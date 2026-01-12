@@ -1,0 +1,44 @@
+{
+  "task_id": 767,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to count the number of pairs whose sum is equal to \u2018sum\u2019. The funtion gets as input a list of numbers and the sum,",
+  "python_code": "def get_pairs_count(arr, sum):\n    count = 0  \n    for i in range(len(arr)):\n        for j in range(i + 1,len(arr)):\n            if arr[i] + arr[j] == sum:\n                count += 1\n    return count",
+  "test_list": [
+    "assert get_pairs_count([1,1,1,1],2) == 6",
+    "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+    "assert get_pairs_count([1,-2,3],1) == 1",
+    "assert get_pairs_count([-1,-2,3],-3) == 1"
+  ],
+  "code_go": "package main\n\nfunc get_pairs_count(arr []int, sum int) int {\n\tcount := 0\n\tfor i := 0; i < len(arr); i++ {\n\t\tfor j := i + 1; j < len(arr); j++ {\n\t\t\tif arr[i]+arr[j] == sum {\n\t\t\t\tcount++\n\t\t\t}\n\t\t}\n\t}\n\treturn count\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 4,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert get_pairs_count([1,1,1,1],2) == 6",
+      "generated_test": "result := get_pairs_count([]int{1, 1, 1, 1}, 2)\nexpected := 6\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+      "generated_test": "result := get_pairs_count([]int{1, 5, 7, -1, 5}, 6)\nexpected := 3\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([1,-2,3],1) == 1",
+      "generated_test": "result := get_pairs_count([]int{1, -2, 3}, 1)\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert get_pairs_count([-1,-2,3],-3) == 1",
+      "generated_test": "result := get_pairs_count([]int{-1, -2, 3}, -3)\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

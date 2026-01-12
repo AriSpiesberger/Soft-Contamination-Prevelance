@@ -1,0 +1,37 @@
+{
+  "task_id": 747,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the longest common subsequence for the given three string sequence. https://www.geeksforgeeks.org/lcs-longest-common-subsequence-three-strings/",
+  "python_code": "def lcs_of_three(X, Y, Z): \n  m = len(X)\n  n = len(Y)\n  o = len(Z)\n  L = [[[0 for i in range(o+1)] for j in range(n+1)] for k in range(m+1)]\n  for i in range(m+1): \n\t  for j in range(n+1): \n\t\t  for k in range(o+1): \n\t\t\t  if (i == 0 or j == 0 or k == 0): \n\t\t\t\t  L[i][j][k] = 0\n\t\t\t  elif (X[i-1] == Y[j-1] and X[i-1] == Z[k-1]): \n\t\t\t\t  L[i][j][k] = L[i-1][j-1][k-1] + 1\n\t\t\t  else: \n\t\t\t\t  L[i][j][k] = max(max(L[i-1][j][k], L[i][j-1][k]), L[i][j][k-1]) \n  return L[m][n][o]",
+  "test_list": [
+    "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+    "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+    "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static int lcs_of_three(String X, String Y, String Z) {\n        int m = X.length();\n        int n = Y.length();\n        int o = Z.length();\n        \n        int[][][] L = new int[m + 1][n + 1][o + 1];\n        \n        for (int i = 0; i <= m; i++) {\n            for (int j = 0; j <= n; j++) {\n                for (int k = 0; k <= o; k++) {\n                    if (i == 0 || j == 0 || k == 0) {\n                        L[i][j][k] = 0;\n                    } else if (X.charAt(i - 1) == Y.charAt(j - 1) && X.charAt(i - 1) == Z.charAt(k - 1)) {\n                        L[i][j][k] = L[i - 1][j - 1][k - 1] + 1;\n                    } else {\n                        L[i][j][k] = Math.max(Math.max(L[i - 1][j][k], L[i][j - 1][k]), L[i][j][k - 1]);\n                    }\n                }\n            }\n        }\n        \n        return L[m][n][o];\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert lcs_of_three('AGGT12', '12TXAYB', '12XBA') == 2",
+      "generated_test": "int result = lcs_of_three(\"AGGT12\", \"12TXAYB\", \"12XBA\");\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('Reels', 'Reelsfor', 'ReelsforReels') == 5",
+      "generated_test": "int result = lcs_of_three(\"Reels\", \"Reelsfor\", \"ReelsforReels\");\nint expected = 5;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert lcs_of_three('abcd1e2', 'bc12ea', 'bd1ea') == 3",
+      "generated_test": "int result = lcs_of_three(\"abcd1e2\", \"bc12ea\", \"bd1ea\");\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

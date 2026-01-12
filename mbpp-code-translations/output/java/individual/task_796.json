@@ -1,0 +1,37 @@
+{
+  "task_id": 796,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write function to find the sum of all items in the given dictionary.",
+  "python_code": "def return_sum(dict):\n  sum = 0\n  for i in dict.values():\n    sum = sum + i\n  return sum",
+  "test_list": [
+    "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+    "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+    "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124"
+  ],
+  "code_java": "import java.util.HashMap;\n\npublic class Solution {\n    public static int return_sum(HashMap<String, Integer> dict) {\n        int sum = 0;\n        for (int value : dict.values()) {\n            sum = sum + value;\n        }\n        return sum;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert return_sum({'a': 100, 'b':200, 'c':300}) == 600",
+      "generated_test": "HashMap<String, Integer> testDict = new HashMap<>();\ntestDict.put(\"a\", 100);\ntestDict.put(\"b\", 200);\ntestDict.put(\"c\", 300);\nint result = return_sum(testDict);\nint expected = 600;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert return_sum({'a': 25, 'b':18, 'c':45}) == 88",
+      "generated_test": "HashMap<String, Integer> testDict = new HashMap<>();\ntestDict.put(\"a\", 25);\ntestDict.put(\"b\", 18);\ntestDict.put(\"c\", 45);\nint result = return_sum(testDict);\nint expected = 88;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert return_sum({'a': 36, 'b':39, 'c':49}) == 124",
+      "generated_test": "HashMap<String, Integer> testDict = new HashMap<>();\ntestDict.put(\"a\", 36);\ntestDict.put(\"b\", 39);\ntestDict.put(\"c\", 49);\nint result = return_sum(testDict);\nint expected = 124;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

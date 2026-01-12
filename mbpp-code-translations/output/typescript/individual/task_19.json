@@ -1,0 +1,17 @@
+{
+  "task_id": 19,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether a given array of integers contains any duplicate element.",
+  "python_code": "def test_duplicate(arraynums):\n    nums_set = set(arraynums)    \n    return len(arraynums) != len(nums_set)     ",
+  "test_list": [
+    "assert test_duplicate(([1,2,3,4,5]))==False",
+    "assert test_duplicate(([1,2,3,4, 4]))==True",
+    "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True"
+  ],
+  "code_typescript": "function test_duplicate(arraynums: number[]): boolean {\n    const nums_set = new Set(arraynums);\n    return arraynums.length !== nums_set.size;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

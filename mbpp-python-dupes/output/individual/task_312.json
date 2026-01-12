@@ -1,0 +1,27 @@
+{
+  "task_id": 312,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the volume of a cone.",
+  "code_python": "import math\ndef volume_cone(r,h):\n  volume = (1.0/3) * math.pi * r * r * h\n  return volume",
+  "test_list": [
+    "assert math.isclose(volume_cone(5,12), 314.15926535897927, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(10,15), 1570.7963267948965, rel_tol=0.001)",
+    "assert math.isclose(volume_cone(19,17), 6426.651371693521, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef volume_cone(r, h):\n    # Calculate the base area using the circle area formula (pi * r^2)\n    base_area = math.pi * pow(r, 2)\n    # Multiply base area by height to get cylinder volume\n    cylinder_volume = base_area * h\n    # A cone is exactly one-third the volume of a cylinder with same base and height\n    cone_volume = cylinder_volume / 3\n    # Return the computed cone volume\n    return cone_volume",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef volume_cone(r, h):\n    # Use lambda function to encapsulate the cone volume formula for functional style\n    cone_formula = lambda radius, height: math.pi * radius ** 2 * height / 3\n    # Apply the lambda with the given radius and height parameters\n    result = cone_formula(r, h)\n    # Return the computed volume from the lambda application\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef volume_cone(r, h):\n    # Define the cone volume formula as a nested helper function for modularity\n    def compute_volume(radius, height):\n        # Square the radius using multiplication operator for base area calculation\n        radius_squared = radius * radius\n        # Combine all components: pi, radius squared, and height into raw product\n        full_product = math.pi * radius_squared * height\n        # Apply the one-third factor that distinguishes cone from cylinder volume\n        return full_product * (1 / 3)\n    \n    # Delegate the actual computation to the nested helper function\n    volume = compute_volume(r, h)\n    # Return the final cone volume as computed by helper\n    return volume",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef volume_cone(r, h):\n    # Use reduce-style approach by storing formula components in a data structure\n    components = {'pi': math.pi, 'radius': r, 'height': h, 'fraction': 1/3}\n    # Extract values and chain multiply them using a loop-based accumulator\n    product = 1\n    # Iterate through each named component in our formula breakdown\n    for key in components:\n        # Handle radius specially since it appears squared in the formula\n        if key == 'radius':\n            # Multiply by radius twice to achieve the r-squared term\n            product *= components[key] * components[key]\n        else:\n            # Accumulate other terms directly into the running product\n            product *= components[key]\n    # The accumulated product now holds the complete cone volume\n    return product",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef volume_cone(r, h):\n    # Create a class to represent geometric solid properties and calculations\n    class Cone:\n        # Initialize cone with radius and height attributes\n        def __init__(self, radius, height):\n            # Store radius as instance attribute for later computation\n            self.radius = radius\n            # Store height as instance attribute for volume calculation\n            self.height = height\n        \n        # Define a property method to compute base circle area on demand\n        @property\n        def base_area(self):\n            # Return pi times radius squared using exponentiation\n            return math.pi * self.radius ** 2\n        \n        # Define a method to calculate and return the cone volume\n        def get_volume(self):\n            # Multiply base area by height and divide by 3 per cone formula\n            return self.base_area * self.height / 3\n    \n    # Instantiate a Cone object with the provided radius and height values\n    cone_instance = Cone(r, h)\n    # Invoke the volume calculation method on our cone instance\n    computed_volume = cone_instance.get_volume()\n    # Return the volume obtained from the object-oriented calculation\n    return computed_volume",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 250,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a tuple and an element and counts the occcurences of the element in the tuple.",
+  "code_python": "def count_X(tup, x): \n    count = 0\n    for ele in tup: \n        if (ele == x): \n            count = count + 1\n    return count ",
+  "test_list": [
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0",
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3",
+    "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4"
+  ],
+  "python_1": "# Use the built-in count method of tuples to find occurrences\ndef count_X(tup, x): \n    # Tuples have a native count() method that returns frequency of an element\n    return tup.count(x)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "# Use list comprehension with sum to count matching elements\ndef count_X(tup, x): \n    # Generator expression yields 1 for each match, 0 otherwise via boolean-to-int conversion\n    # Sum aggregates all the 1s to produce the total count\n    return sum(1 for ele in tup if ele == x)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "# Use filter with lambda to isolate matching elements, then count via len\ndef count_X(tup, x): \n    # Filter creates an iterator of elements equal to x using equality test lambda\n    filtered_elements = filter(lambda ele: ele == x, tup)\n    # Convert filtered iterator to list to enable length measurement\n    matches_list = list(filtered_elements)\n    # Length of filtered list represents total occurrences of x in original tuple\n    return len(matches_list)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "# Use recursion to traverse tuple and accumulate count\ndef count_X(tup, x): \n    # Base case: empty tuple contains zero occurrences of any element\n    if len(tup) == 0:\n        # Return zero to stop recursion and begin count aggregation\n        return 0\n    # Check if first element matches target value x\n    first_match = 1 if tup[0] == x else 0\n    # Recursively process remaining elements by slicing from index 1 onward\n    remaining_count = count_X(tup[1:], x)\n    # Combine current match result with recursive result from rest of tuple\n    return first_match + remaining_count",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "# Use reduce from functools to accumulate count through functional fold operation\nfrom functools import reduce\n\ndef count_X(tup, x): \n    # Define accumulator function that adds 1 when element matches target, 0 otherwise\n    def accumulator(acc, ele):\n        # Ternary returns 1 for match, 0 for non-match, added to running total\n        return acc + (1 if ele == x else 0)\n    # Apply reduce to fold entire tuple into single count value starting from 0\n    return reduce(accumulator, tup, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

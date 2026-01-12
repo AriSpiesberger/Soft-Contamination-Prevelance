@@ -1,0 +1,37 @@
+{
+  "task_id": 734,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find sum of products of all possible sublists of a given list. https://www.geeksforgeeks.org/sum-of-products-of-all-possible-subarrays/",
+  "python_code": "def sum_Of_Subarray_Prod(arr):\n    ans = 0\n    res = 0\n    i = len(arr) - 1\n    while (i >= 0):\n        incr = arr[i]*(1 + res)\n        ans += incr\n        res = incr\n        i -= 1\n    return (ans)",
+  "test_list": [
+    "assert sum_Of_Subarray_Prod([1,2,3]) == 20",
+    "assert sum_Of_Subarray_Prod([1,2]) == 5",
+    "assert sum_Of_Subarray_Prod([1,2,3,4]) == 84"
+  ],
+  "code_javascript": "function sum_Of_Subarray_Prod(arr) {\n    let ans = 0;\n    let res = 0;\n    let i = arr.length - 1;\n    while (i >= 0) {\n        let incr = arr[i] * (1 + res);\n        ans += incr;\n        res = incr;\n        i -= 1;\n    }\n    return ans;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert sum_Of_Subarray_Prod([1,2,3]) == 20",
+      "generated_test": "const result = sum_Of_Subarray_Prod([1, 2, 3]);\nconst expected = 20;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_Of_Subarray_Prod([1,2]) == 5",
+      "generated_test": "const result = sum_Of_Subarray_Prod([1, 2]);\nconst expected = 5;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_Of_Subarray_Prod([1,2,3,4]) == 84",
+      "generated_test": "const result = sum_Of_Subarray_Prod([1, 2, 3, 4]);\nconst expected = 84;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 468,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the maximum product formed by multiplying numbers of an increasing subsequence of that array.",
+  "python_code": "def max_product(arr):   \n  n = len(arr)\n  mpis = arr[:]\n  for i in range(n): \n    current_prod = arr[i]\n    j = i + 1\n    while j < n:\n      if arr[j-1] > arr[j]: \n        break\n      current_prod *= arr[j]\n      if current_prod > mpis[j]:\n        mpis[j] = current_prod \n      j = j + 1\n  return max(mpis)",
+  "test_list": [
+    "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+    "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+    "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460"
+  ],
+  "code_rust": "pub fn max_product(arr: &[i64]) -> i64 {\n    let n = arr.len();\n    if n == 0 {\n        return 0;\n    }\n    \n    let mut mpis: Vec<i64> = arr.to_vec();\n    \n    for i in 0..n {\n        let mut current_prod = arr[i];\n        let mut j = i + 1;\n        \n        while j < n {\n            if arr[j - 1] > arr[j] {\n                break;\n            }\n            current_prod *= arr[j];\n            if current_prod > mpis[j] {\n                mpis[j] = current_prod;\n            }\n            j += 1;\n        }\n    }\n    \n    *mpis.iter().max().unwrap_or(&0)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+      "generated_test": "let result = max_product(&[3, 100, 4, 5, 150, 6]);\nlet expected: i64 = 3000;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+      "generated_test": "let result = max_product(&[4, 42, 55, 68, 80]);\nlet expected: i64 = 50265600;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460",
+      "generated_test": "let result = max_product(&[10, 22, 9, 33, 21, 50, 41, 60]);\nlet expected: i64 = 2460;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 137,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the ratio of zeroes to non-zeroes in an array of integers.",
+  "python_code": "from array import array\ndef zero_count(nums):\n    n = len(nums)\n    n1 = 0\n    for x in nums:\n        if x == 0:\n            n1 += 1\n        else:\n          None\n    return n1/(n-n1)",
+  "test_list": [
+    "assert math.isclose(zero_count([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8]), 0.181818, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]), 0.00, rel_tol=0.001)",
+    "assert math.isclose(zero_count([2, 4, -6, -9, 11, -12, 14, -5, 17]), 0.00, rel_tol=0.001)"
+  ],
+  "code_typescript": "function zero_count(nums: number[]): number {\n    const n = nums.length;\n    let n1 = 0;\n    for (const x of nums) {\n        if (x === 0) {\n            n1 += 1;\n        }\n    }\n    return n1 / (n - n1);\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

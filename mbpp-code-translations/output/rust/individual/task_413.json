@@ -1,0 +1,37 @@
+{
+  "task_id": 413,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract the nth element from a given list of tuples.",
+  "python_code": "def extract_nth_element(list1, n):\n    result = [x[n] for x in list1]\n    return result",
+  "test_list": [
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+    "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]"
+  ],
+  "code_rust": "pub fn extract_nth_element(list1: &[(&str, i32, i32)], n: usize) -> Vec<String> {\n    match n {\n        0 => list1.iter().map(|x| x.0.to_string()).collect(),\n        1 => list1.iter().map(|x| x.1.to_string()).collect(),\n        2 => list1.iter().map(|x| x.2.to_string()).collect(),\n        _ => vec![],\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,0)==['Greyson Fulton', 'Brady Kent', 'Wyatt Knott', 'Beau Turnbull']",
+      "generated_test": "let input = [\n    (\"Greyson Fulton\", 98, 99),\n    (\"Brady Kent\", 97, 96),\n    (\"Wyatt Knott\", 91, 94),\n    (\"Beau Turnbull\", 94, 98),\n];\nlet result = extract_nth_element(&input, 0);\nlet expected = vec![\"Greyson Fulton\", \"Brady Kent\", \"Wyatt Knott\", \"Beau Turnbull\"];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)] ,2)==[99, 96, 94, 98]",
+      "generated_test": "let input = [\n    (\"Greyson Fulton\", 98, 99),\n    (\"Brady Kent\", 97, 96),\n    (\"Wyatt Knott\", 91, 94),\n    (\"Beau Turnbull\", 94, 98),\n];\nlet result = extract_nth_element(&input, 2);\nlet expected: Vec<String> = vec![\"99\".to_string(), \"96\".to_string(), \"94\".to_string(), \"98\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_nth_element([('Greyson Fulton', 98, 99), ('Brady Kent', 97, 96), ('Wyatt Knott', 91, 94), ('Beau Turnbull', 94, 98)],1)==[98, 97, 91, 94]",
+      "generated_test": "let input = vec![\n    (\"Greyson Fulton\", 98, 99),\n    (\"Brady Kent\", 97, 96),\n    (\"Wyatt Knott\", 91, 94),\n    (\"Beau Turnbull\", 94, 98),\n];\nlet result = extract_nth_element(&input, 1);\nlet expected: Vec<String> = vec![\"98\".to_string(), \"97\".to_string(), \"91\".to_string(), \"94\".to_string()];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

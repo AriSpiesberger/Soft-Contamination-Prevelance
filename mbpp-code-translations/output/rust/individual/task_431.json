@@ -1,0 +1,37 @@
+{
+  "task_id": 431,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes two lists and returns true if they have at least one common element.",
+  "python_code": "def common_element(list1, list2):\n     result = False\n     for x in list1:\n         for y in list2:\n             if x == y:\n                 result = True\n                 return result",
+  "test_list": [
+    "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+    "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+    "assert common_element(['a','b','c'], ['d','b','e'])==True"
+  ],
+  "code_rust": "pub fn common_element<T: PartialEq>(list1: &[T], list2: &[T]) -> Option<bool> {\n    for x in list1 {\n        for y in list2 {\n            if x == y {\n                return Some(true);\n            }\n        }\n    }\n    None\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [5,6,7,8,9])==True",
+      "generated_test": "let result = common_element(&[1, 2, 3, 4, 5], &[5, 6, 7, 8, 9]);\nlet expected = Some(true);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element([1,2,3,4,5], [6,7,8,9])==None",
+      "generated_test": "let result = common_element(&[1,2,3,4,5], &[6,7,8,9]);\nlet expected: Option<bool> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert common_element(['a','b','c'], ['d','b','e'])==True",
+      "generated_test": "let result = common_element(&['a', 'b', 'c'], &['d', 'b', 'e']);\nlet expected = Some(true);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 592,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the sum of the product of consecutive binomial co-efficients.",
+  "python_code": "def binomial_Coeff(n,k): \n    C = [0] * (k + 1); \n    C[0] = 1; # nC0 is 1 \n    for i in range(1,n + 1):  \n        for j in range(min(i, k),0,-1): \n            C[j] = C[j] + C[j - 1]; \n    return C[k]; \ndef sum_Of_product(n): \n    return binomial_Coeff(2 * n,n - 1); ",
+  "test_list": [
+    "assert sum_Of_product(3) == 15",
+    "assert sum_Of_product(4) == 56",
+    "assert sum_Of_product(1) == 1"
+  ],
+  "code_go": "package main\n\nfunc binomial_Coeff(n, k int) int {\n\tC := make([]int, k+1)\n\tC[0] = 1 // nC0 is 1\n\tfor i := 1; i <= n; i++ {\n\t\tminVal := i\n\t\tif k < i {\n\t\t\tminVal = k\n\t\t}\n\t\tfor j := minVal; j > 0; j-- {\n\t\t\tC[j] = C[j] + C[j-1]\n\t\t}\n\t}\n\treturn C[k]\n}\n\nfunc sum_Of_product(n int) int {\n\treturn binomial_Coeff(2*n, n-1)\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sum_Of_product(3) == 15",
+      "generated_test": "result := sum_Of_product(3)\nexpected := 15\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %d\\n\", expected)\n\tfmt.Printf(\"  Got: %d\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_Of_product(4) == 56",
+      "generated_test": "result := sum_Of_product(4)\nexpected := 56\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_Of_product(1) == 1",
+      "generated_test": "result := sum_Of_product(1)\nexpected := 1\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

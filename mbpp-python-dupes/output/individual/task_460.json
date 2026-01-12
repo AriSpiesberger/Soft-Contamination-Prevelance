@@ -1,0 +1,27 @@
+{
+  "task_id": 460,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to get the first element of each sublist.",
+  "code_python": "def Extract(lst): \n    return [item[0] for item in lst] ",
+  "test_list": [
+    "assert Extract([[1, 2], [3, 4, 5], [6, 7, 8, 9]]) == [1, 3, 6]",
+    "assert Extract([[1,2,3],[4, 5]]) == [1,4]",
+    "assert Extract([[9,8,1],[1,2]]) == [9,1]"
+  ],
+  "python_1": "def Extract(lst): \n    # Initialize empty result list to store first elements\n    result = []\n    # Loop through each sublist in the input list\n    for sublist in lst:\n        # Access the first element at index 0 and append to result\n        result.append(sublist[0])\n    # Return the collected first elements\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def Extract(lst): \n    # Use map function to apply a lambda that extracts index 0 from each sublist\n    first_elements = map(lambda sublist: sublist[0], lst)\n    # Convert the map iterator object into a concrete list for the return value\n    return list(first_elements)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def Extract(lst): \n    # Import operator module to access itemgetter for efficient indexing\n    from operator import itemgetter\n    # Create an itemgetter object that retrieves element at position 0\n    get_first = itemgetter(0)\n    # Apply the itemgetter to each sublist using map and convert to list\n    return list(map(get_first, lst))",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def Extract(lst): \n    # Use zip with unpacking to transpose the list structure\n    # The asterisk unpacks lst so each sublist becomes a separate argument to zip\n    # zip then pairs up elements at matching positions across all sublists\n    zipped = zip(*lst)\n    # next() retrieves the first iterator result, which contains all first elements\n    # This works because zip yields tuples of elements at each index position\n    first_tuple = next(zipped)\n    # Convert the tuple of first elements into a list for the expected return type\n    return list(first_tuple)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def Extract(lst): \n    # Use a recursive approach - base case when list is empty\n    if not lst:\n        # Return empty list since there are no sublists to process\n        return []\n    # Extract the first element from the first sublist in the current list\n    first_element = lst[0][0]\n    # Recursively process the remaining sublists by slicing off the first one\n    remaining_results = Extract(lst[1:])\n    # Combine current first element with recursively obtained results\n    return [first_element] + remaining_results",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

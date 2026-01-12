@@ -1,0 +1,37 @@
+{
+  "task_id": 615,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function which takes a tuple of tuples and returns the average value for each tuple as a list.",
+  "python_code": "def average_tuple(nums):\n    result = [sum(x) / len(x) for x in zip(*nums)]\n    return result",
+  "test_list": [
+    "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+    "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+    "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]"
+  ],
+  "code_rust": "pub fn average_tuple(nums: &[Vec<i32>]) -> Vec<f64> {\n    if nums.is_empty() {\n        return Vec::new();\n    }\n    \n    let num_columns = nums.iter().map(|row| row.len()).min().unwrap_or(0);\n    \n    if num_columns == 0 {\n        return Vec::new();\n    }\n    \n    let num_rows = nums.len();\n    \n    (0..num_columns)\n        .map(|col| {\n            let sum: i32 = nums.iter().map(|row| row[col]).sum();\n            sum as f64 / num_rows as f64\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert average_tuple(((10, 10, 10, 12), (30, 45, 56, 45), (81, 80, 39, 32), (1, 2, 3, 4)))==[30.5, 34.25, 27.0, 23.25]",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![\n    vec![10, 10, 10, 12],\n    vec![30, 45, 56, 45],\n    vec![81, 80, 39, 32],\n    vec![1, 2, 3, 4]\n];\nlet expected: Vec<f64> = vec![30.5, 34.25, 27.0, 23.25];\nlet result = average_tuple(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert average_tuple(((1, 1, -5), (30, -15, 56), (81, -60, -39), (-10, 2, 3)))== [25.5, -18.0, 3.75]",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![\n    vec![1, 1, -5],\n    vec![30, -15, 56],\n    vec![81, -60, -39],\n    vec![-10, 2, 3],\n];\nlet expected: Vec<f64> = vec![25.5, -18.0, 3.75];\nlet result = average_tuple(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert average_tuple( ((100, 100, 100, 120), (300, 450, 560, 450), (810, 800, 390, 320), (10, 20, 30, 40)))==[305.0, 342.5, 270.0, 232.5]",
+      "generated_test": "let input: Vec<Vec<i32>> = vec![\n    vec![100, 100, 100, 120],\n    vec![300, 450, 560, 450],\n    vec![810, 800, 390, 320],\n    vec![10, 20, 30, 40]\n];\nlet expected: Vec<f64> = vec![305.0, 342.5, 270.0, 232.5];\nlet result = average_tuple(&input);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

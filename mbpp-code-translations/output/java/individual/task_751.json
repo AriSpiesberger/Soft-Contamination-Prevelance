@@ -1,0 +1,37 @@
+{
+  "task_id": 751,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check if the given array represents min heap or not. https://www.geeksforgeeks.org/how-to-check-if-a-given-array-represents-a-binary-heap/",
+  "python_code": "def check_min_heap_helper(arr, i):\n    if 2 * i + 2 > len(arr):\n        return True\n    left_child = (arr[i] <= arr[2 * i + 1]) and check_min_heap_helper(arr, 2 * i + 1)\n    right_child = (2 * i + 2 == len(arr)) or (arr[i] <= arr[2 * i + 2] \n                                      and check_min_heap_helper(arr, 2 * i + 2))\n    return left_child and right_child\n\ndef check_min_heap(arr):\n  return check_min_heap_helper(arr, 0)",
+  "test_list": [
+    "assert check_min_heap([1, 2, 3, 4, 5, 6]) == True",
+    "assert check_min_heap([2, 3, 4, 5, 10, 15]) == True",
+    "assert check_min_heap([2, 10, 4, 5, 3, 15]) == False"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    \n    public static boolean check_min_heap_helper(ArrayList<Integer> arr, int i) {\n        if (2 * i + 2 > arr.size()) {\n            return true;\n        }\n        boolean left_child = (arr.get(i) <= arr.get(2 * i + 1)) && check_min_heap_helper(arr, 2 * i + 1);\n        boolean right_child = (2 * i + 2 == arr.size()) || (arr.get(i) <= arr.get(2 * i + 2) \n                                          && check_min_heap_helper(arr, 2 * i + 2));\n        return left_child && right_child;\n    }\n    \n    public static boolean check_min_heap(ArrayList<Integer> arr) {\n        return check_min_heap_helper(arr, 0);\n    }\n    \n    public static boolean check_min_heap(int[] arr) {\n        ArrayList<Integer> list = new ArrayList<>();\n        for (int num : arr) {\n            list.add(num);\n        }\n        return check_min_heap_helper(list, 0);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert check_min_heap([1, 2, 3, 4, 5, 6]) == True",
+      "generated_test": "int[] input = new int[]{1, 2, 3, 4, 5, 6};\nboolean expected = true;\nboolean result = check_min_heap(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_min_heap([2, 3, 4, 5, 10, 15]) == True",
+      "generated_test": "int[] arr = new int[]{2, 3, 4, 5, 10, 15};\nboolean expected = true;\nboolean result = check_min_heap(arr);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_min_heap([2, 10, 4, 5, 3, 15]) == False",
+      "generated_test": "boolean result = check_min_heap(new int[]{2, 10, 4, 5, 3, 15});\nboolean expected = false;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

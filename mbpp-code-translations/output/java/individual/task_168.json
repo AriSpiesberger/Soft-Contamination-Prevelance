@@ -1,0 +1,37 @@
+{
+  "task_id": 168,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurrences of a number in a given list.",
+  "python_code": "def frequency(a,x): \n    count = 0  \n    for i in a: \n      if i == x: \n        count += 1\n\n    return count ",
+  "test_list": [
+    "assert frequency([1,2,3], 4) == 0",
+    "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+    "assert frequency([0,1,2,3,1,2], 1) == 2"
+  ],
+  "code_java": "import java.util.ArrayList;\n\npublic class Solution {\n    public static int frequency(ArrayList<Integer> a, int x) {\n        int count = 0;\n        for (int i : a) {\n            if (i == x) {\n                count += 1;\n            }\n        }\n        return count;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert frequency([1,2,3], 4) == 0",
+      "generated_test": "ArrayList<Integer> list1 = new ArrayList<Integer>();\nlist1.add(1);\nlist1.add(2);\nlist1.add(3);\nint result = frequency(list1, 4);\nint expected = 0;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency([1,2,2,3,3,3,4], 3) == 3",
+      "generated_test": "ArrayList<Integer> list = new ArrayList<Integer>();\nlist.add(1);\nlist.add(2);\nlist.add(2);\nlist.add(3);\nlist.add(3);\nlist.add(3);\nlist.add(4);\nint result = frequency(list, 3);\nint expected = 3;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert frequency([0,1,2,3,1,2], 1) == 2",
+      "generated_test": "ArrayList<Integer> list = new ArrayList<Integer>();\nlist.add(0);\nlist.add(1);\nlist.add(2);\nlist.add(3);\nlist.add(1);\nlist.add(2);\nint result = frequency(list, 1);\nint expected = 2;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

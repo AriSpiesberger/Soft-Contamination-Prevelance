@@ -1,0 +1,37 @@
+{
+  "task_id": 395,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the first non-repeated character in a given string.",
+  "python_code": "def first_non_repeating_character(str1):\n  char_order = []\n  ctr = {}\n  for c in str1:\n    if c in ctr:\n      ctr[c] += 1\n    else:\n      ctr[c] = 1 \n      char_order.append(c)\n  for c in char_order:\n    if ctr[c] == 1:\n      return c\n  return None",
+  "test_list": [
+    "assert first_non_repeating_character(\"abcabc\") == None",
+    "assert first_non_repeating_character(\"abc\") == \"a\"",
+    "assert first_non_repeating_character(\"ababc\") == \"c\""
+  ],
+  "code_rust": "use std::collections::HashMap;\n\npub fn first_non_repeating_character(str1: &str) -> Option<char> {\n    let mut char_order: Vec<char> = Vec::new();\n    let mut ctr: HashMap<char, i32> = HashMap::new();\n    \n    for c in str1.chars() {\n        if let Some(count) = ctr.get_mut(&c) {\n            *count += 1;\n        } else {\n            ctr.insert(c, 1);\n            char_order.push(c);\n        }\n    }\n    \n    for c in char_order {\n        if ctr.get(&c) == Some(&1) {\n            return Some(c);\n        }\n    }\n    \n    None\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert first_non_repeating_character(\"abcabc\") == None",
+      "generated_test": "let result = first_non_repeating_character(\"abcabc\");\nlet expected: Option<char> = None;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_non_repeating_character(\"abc\") == \"a\"",
+      "generated_test": "let result = first_non_repeating_character(\"abc\");\nlet expected = Some('a');\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert first_non_repeating_character(\"ababc\") == \"c\"",
+      "generated_test": "let result = first_non_repeating_character(\"ababc\");\nlet expected = Some('c');\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

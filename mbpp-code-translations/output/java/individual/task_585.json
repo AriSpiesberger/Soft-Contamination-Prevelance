@@ -1,0 +1,37 @@
+{
+  "task_id": 585,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n most expensive items in a given dataset.",
+  "python_code": "import heapq\ndef expensive_items(items,n):\n  expensive_items = heapq.nlargest(n, items, key=lambda s: s['price'])\n  return expensive_items",
+  "test_list": [
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<Map<String, Object>> expensive_items(List<Map<String, Object>> items, int n) {\n        List<Map<String, Object>> sortedItems = new ArrayList<>(items);\n        \n        sortedItems.sort((a, b) -> {\n            double priceA = ((Number) a.get(\"price\")).doubleValue();\n            double priceB = ((Number) b.get(\"price\")).doubleValue();\n            return Double.compare(priceB, priceA);\n        });\n        \n        List<Map<String, Object>> result = new ArrayList<>();\n        for (int i = 0; i < n && i < sortedItems.size(); i++) {\n            result.add(sortedItems.get(i));\n        }\n        \n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 3,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "List<Map<String, Object>> input = new ArrayList<>();\nMap<String, Object> item1 = new HashMap<>();\nitem1.put(\"name\", \"Item-1\");\nitem1.put(\"price\", 101.1);\ninput.add(item1);\nMap<String, Object> item2 = new HashMap<>();\nitem2.put(\"name\", \"Item-2\");\nitem2.put(\"price\", 555.22);\ninput.add(item2);\n\nList<Map<String, Object>> expected = new ArrayList<>();\nMap<String, Object> expectedItem = new HashMap<>();\nexpectedItem.put(\"name\", \"Item-2\");\nexpectedItem.put(\"price\", 555.22);\nexpected.add(expectedItem);\n\nList<Map<String, Object>> result = expensive_items(input, 1);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        Map<String, Object> r = result.get(i);\n        Map<String, Object> e = expected.get(i);\n        if (!r.get(\"name\").equals(e.get(\"name\")) || \n            ((Number)r.get(\"price\")).doubleValue() != ((Number)e.get(\"price\")).doubleValue()) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+      "generated_test": "List<Map<String, Object>> input = new ArrayList<>();\nMap<String, Object> item1 = new HashMap<>();\nitem1.put(\"name\", \"Item-1\");\nitem1.put(\"price\", 101.1);\ninput.add(item1);\n\nMap<String, Object> item2 = new HashMap<>();\nitem2.put(\"name\", \"Item-2\");\nitem2.put(\"price\", 555.22);\ninput.add(item2);\n\nMap<String, Object> item3 = new HashMap<>();\nitem3.put(\"name\", \"Item-3\");\nitem3.put(\"price\", 45.09);\ninput.add(item3);\n\nList<Map<String, Object>> expected = new ArrayList<>();\nMap<String, Object> exp1 = new HashMap<>();\nexp1.put(\"name\", \"Item-2\");\nexp1.put(\"price\", 555.22);\nexpected.add(exp1);\n\nMap<String, Object> exp2 = new HashMap<>();\nexp2.put(\"name\", \"Item-1\");\nexp2.put(\"price\", 101.1);\nexpected.add(exp2);\n\nList<Map<String, Object>> result = expensive_items(input, 2);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        Map<String, Object> r = result.get(i);\n        Map<String, Object> e = expected.get(i);\n        if (!r.get(\"name\").equals(e.get(\"name\")) || \n            ((Number)r.get(\"price\")).doubleValue() != ((Number)e.get(\"price\")).doubleValue()) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "List<Map<String, Object>> items = new ArrayList<>();\nMap<String, Object> item1 = new HashMap<>();\nitem1.put(\"name\", \"Item-1\");\nitem1.put(\"price\", 101.1);\nitems.add(item1);\nMap<String, Object> item2 = new HashMap<>();\nitem2.put(\"name\", \"Item-2\");\nitem2.put(\"price\", 555.22);\nitems.add(item2);\nMap<String, Object> item3 = new HashMap<>();\nitem3.put(\"name\", \"Item-3\");\nitem3.put(\"price\", 45.09);\nitems.add(item3);\nMap<String, Object> item4 = new HashMap<>();\nitem4.put(\"name\", \"Item-4\");\nitem4.put(\"price\", 22.75);\nitems.add(item4);\n\nList<Map<String, Object>> expected = new ArrayList<>();\nMap<String, Object> expectedItem = new HashMap<>();\nexpectedItem.put(\"name\", \"Item-2\");\nexpectedItem.put(\"price\", 555.22);\nexpected.add(expectedItem);\n\nList<Map<String, Object>> result = expensive_items(items, 1);\n\nboolean pass = result.size() == expected.size();\nif (pass) {\n    for (int i = 0; i < result.size(); i++) {\n        Map<String, Object> r = result.get(i);\n        Map<String, Object> e = expected.get(i);\n        if (!r.get(\"name\").equals(e.get(\"name\")) || \n            ((Number)r.get(\"price\")).doubleValue() != ((Number)e.get(\"price\")).doubleValue()) {\n            pass = false;\n            break;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

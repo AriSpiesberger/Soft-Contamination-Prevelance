@@ -1,0 +1,17 @@
+{
+  "task_id": 102,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert a snake case string to camel case string.",
+  "python_code": "def snake_to_camel(word):\n        import re\n        return ''.join(x.capitalize() or '_' for x in word.split('_'))",
+  "test_list": [
+    "assert snake_to_camel('python_program')=='PythonProgram'",
+    "assert snake_to_camel('python_language')==('PythonLanguage')",
+    "assert snake_to_camel('programming_language')==('ProgrammingLanguage')"
+  ],
+  "code_typescript": "function snake_to_camel(word: string): string {\n    return word.split('_').map(x => x.charAt(0).toUpperCase() + x.slice(1)).join('');\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

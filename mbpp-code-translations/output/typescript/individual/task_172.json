@@ -1,0 +1,19 @@
+{
+  "task_id": 172,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurence of the string 'std' in a given string.",
+  "python_code": "def count_occurance(s):\n  count = 0\n  for i in range(len(s) - 2):\n    if (s[i] == 's' and s[i+1] == 't' and s[i+2] == 'd'):\n      count = count + 1\n  return count",
+  "test_list": [
+    "assert count_occurance(\"letstdlenstdporstd\") == 3",
+    "assert count_occurance(\"truststdsolensporsd\") == 1",
+    "assert count_occurance(\"makestdsostdworthit\") == 2",
+    "assert count_occurance(\"stds\") == 1",
+    "assert count_occurance(\"\") == 0"
+  ],
+  "code_typescript": "function count_occurance(s: string): number {\n  let count: number = 0;\n  for (let i = 0; i < s.length - 2; i++) {\n    if (s[i] === 's' && s[i + 1] === 't' && s[i + 2] === 'd') {\n      count = count + 1;\n    }\n  }\n  return count;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 5,
+  "code_typescript_tests_failed": 0
+}

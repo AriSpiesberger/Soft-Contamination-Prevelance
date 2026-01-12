@@ -1,0 +1,17 @@
+{
+  "task_id": 563,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract values between quotation marks from a string.",
+  "python_code": "import re\ndef extract_values(text):\n return (re.findall(r'\"(.*?)\"', text))",
+  "test_list": [
+    "assert extract_values('\"Python\", \"PHP\", \"Java\"')==['Python', 'PHP', 'Java']",
+    "assert extract_values('\"python\",\"program\",\"language\"')==['python','program','language']",
+    "assert extract_values('\"red\",\"blue\",\"green\",\"yellow\"')==['red','blue','green','yellow']"
+  ],
+  "code_typescript": "function extract_values(text: string): string[] {\n    const regex = /\"(.*?)\"/g;\n    const matches: string[] = [];\n    let match: RegExpExecArray | null;\n    \n    while ((match = regex.exec(text)) !== null) {\n        matches.push(match[1]);\n    }\n    \n    return matches;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

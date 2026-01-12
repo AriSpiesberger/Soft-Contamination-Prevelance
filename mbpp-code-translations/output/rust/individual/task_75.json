@@ -1,0 +1,37 @@
+{
+  "task_id": 75,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find tuples which have all elements divisible by k from the given list of tuples.",
+  "python_code": "def find_tuples(test_list, K):\n  res = [sub for sub in test_list if all(ele % K == 0 for ele in sub)]\n  return res",
+  "test_list": [
+    "assert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]",
+    "assert find_tuples([(5, 25, 30), (4, 2, 3), (7, 8, 9)], 5) == [(5, 25, 30)]",
+    "assert find_tuples([(7, 9, 16), (8, 16, 4), (19, 17, 18)], 4) == [(8, 16, 4)]"
+  ],
+  "code_rust": "pub fn find_tuples(test_list: Vec<Vec<i32>>, k: i32) -> Vec<Vec<i32>> {\n    test_list\n        .into_iter()\n        .filter(|sub| sub.iter().all(|ele| ele % k == 0))\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]",
+      "generated_test": "let result = find_tuples(vec![vec![6, 24, 12], vec![7, 9, 6], vec![12, 18, 21]], 6);\nlet expected = vec![vec![6, 24, 12]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_tuples([(5, 25, 30), (4, 2, 3), (7, 8, 9)], 5) == [(5, 25, 30)]",
+      "generated_test": "let result = find_tuples(vec![vec![5, 25, 30], vec![4, 2, 3], vec![7, 8, 9]], 5);\nlet expected: Vec<Vec<i32>> = vec![vec![5, 25, 30]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_tuples([(7, 9, 16), (8, 16, 4), (19, 17, 18)], 4) == [(8, 16, 4)]",
+      "generated_test": "let result = find_tuples(vec![vec![7, 9, 16], vec![8, 16, 4], vec![19, 17, 18]], 4);\nlet expected: Vec<Vec<i32>> = vec![vec![8, 16, 4]];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

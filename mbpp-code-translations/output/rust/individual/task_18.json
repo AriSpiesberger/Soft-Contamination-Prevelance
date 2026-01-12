@@ -1,0 +1,37 @@
+{
+  "task_id": 18,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to remove characters from the first string which are present in the second string.",
+  "python_code": "NO_OF_CHARS = 256\ndef str_to_list(string): \n\ttemp = [] \n\tfor x in string: \n\t\ttemp.append(x) \n\treturn temp \ndef lst_to_string(List): \n\treturn ''.join(List) \ndef get_char_count_array(string): \n\tcount = [0] * NO_OF_CHARS \n\tfor i in string: \n\t\tcount[ord(i)] += 1\n\treturn count \ndef remove_dirty_chars(string, second_string): \n\tcount = get_char_count_array(second_string) \n\tip_ind = 0\n\tres_ind = 0\n\ttemp = '' \n\tstr_list = str_to_list(string) \n\twhile ip_ind != len(str_list): \n\t\ttemp = str_list[ip_ind] \n\t\tif count[ord(temp)] == 0: \n\t\t\tstr_list[res_ind] = str_list[ip_ind] \n\t\t\tres_ind += 1\n\t\tip_ind+=1\n\treturn lst_to_string(str_list[0:res_ind]) ",
+  "test_list": [
+    "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+    "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+    "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'"
+  ],
+  "code_rust": "pub fn remove_dirty_chars(string: &str, second_string: &str) -> String {\n    const NO_OF_CHARS: usize = 256;\n    \n    let mut count = [0i32; NO_OF_CHARS];\n    \n    for c in second_string.chars() {\n        let idx = c as usize;\n        if idx < NO_OF_CHARS {\n            count[idx] += 1;\n        }\n    }\n    \n    let mut result = String::new();\n    \n    for c in string.chars() {\n        let idx = c as usize;\n        if idx < NO_OF_CHARS && count[idx] == 0 {\n            result.push(c);\n        } else if idx >= NO_OF_CHARS {\n            result.push(c);\n        }\n    }\n    \n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'",
+      "generated_test": "let result = remove_dirty_chars(\"probasscurve\", \"pros\");\nlet expected = \"bacuve\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'",
+      "generated_test": "let result = remove_dirty_chars(\"digitalindia\", \"talent\");\nlet expected = \"digiidi\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'",
+      "generated_test": "let result = remove_dirty_chars(\"exoticmiles\", \"toxic\");\nlet expected = \"emles\";\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

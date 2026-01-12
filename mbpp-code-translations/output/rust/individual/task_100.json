@@ -1,0 +1,37 @@
+{
+  "task_id": 100,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the next smallest palindrome of a specified integer, returned as an integer.",
+  "python_code": "import sys\ndef next_smallest_palindrome(num):\n    numstr = str(num)\n    for i in range(num+1,sys.maxsize):\n        if str(i) == str(i)[::-1]:\n            return i",
+  "test_list": [
+    "assert next_smallest_palindrome(99)==101",
+    "assert next_smallest_palindrome(1221)==1331",
+    "assert next_smallest_palindrome(120)==121"
+  ],
+  "code_rust": "pub fn next_smallest_palindrome(num: i64) -> i64 {\n    let mut i = num + 1;\n    loop {\n        let s = i.to_string();\n        let reversed: String = s.chars().rev().collect();\n        if s == reversed {\n            return i;\n        }\n        i += 1;\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert next_smallest_palindrome(99)==101",
+      "generated_test": "let result = next_smallest_palindrome(99);\nlet expected = 101;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(1221)==1331",
+      "generated_test": "let result = next_smallest_palindrome(1221);\nlet expected = 1331;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert next_smallest_palindrome(120)==121",
+      "generated_test": "let result = next_smallest_palindrome(120);\nlet expected = 121;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

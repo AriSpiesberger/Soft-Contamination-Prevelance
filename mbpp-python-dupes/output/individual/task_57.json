@@ -1,0 +1,27 @@
+{
+  "task_id": 57,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the largest number that can be formed with the given list of digits.",
+  "code_python": "def find_Max_Num(arr) : \n    n = len(arr)\n    arr.sort(reverse = True) \n    num = arr[0] \n    for i in range(1,n) : \n        num = num * 10 + arr[i] \n    return num ",
+  "test_list": [
+    "assert find_Max_Num([1,2,3]) == 321",
+    "assert find_Max_Num([4,5,6,1]) == 6541",
+    "assert find_Max_Num([1,2,3,9]) == 9321"
+  ],
+  "python_1": "def find_Max_Num(arr):\n    # Convert each digit to string for concatenation approach\n    str_digits = [str(d) for d in arr]\n    # Sort digits in descending order using string comparison which naturally handles single digits\n    str_digits.sort(reverse=True)\n    # Join all string digits into one continuous string\n    concatenated = ''.join(str_digits)\n    # Convert the concatenated string back to integer for the result\n    return int(concatenated)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_Max_Num(arr):\n    # Use reduce to accumulate digits into a single number via string building\n    from functools import reduce\n    # Sort the array in descending order to place larger digits first\n    sorted_digits = sorted(arr, reverse=True)\n    # Use reduce to concatenate digits as strings, then convert final result to int\n    result = reduce(lambda acc, digit: acc + str(digit), sorted_digits, '')\n    # Handle the case of empty string by returning 0, otherwise return the integer\n    return int(result) if result else 0",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_Max_Num(arr):\n    # Create a copy to avoid modifying the original input array\n    digits = arr.copy()\n    # Use max() repeatedly to build the number from largest to smallest digit\n    result = 0\n    # Continue extracting max digits while there are digits remaining\n    while digits:\n        # Find the maximum digit currently in the list\n        max_digit = max(digits)\n        # Remove one instance of the maximum digit from our working list\n        digits.remove(max_digit)\n        # Shift existing result left by one decimal place and add new digit\n        result = result * 10 + max_digit\n    # Return the fully constructed maximum number\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_Max_Num(arr):\n    # Leverage Python's sorted() with a custom key to order digits for maximum concatenation\n    sorted_arr = sorted(arr, key=lambda x: str(x), reverse=True)\n    # Use map to transform each integer digit into its string representation\n    string_digits = map(str, sorted_arr)\n    # Concatenate all string digits using join for efficient string building\n    combined_string = ''.join(string_digits)\n    # Convert the combined string representation back to an integer type\n    final_number = int(combined_string)\n    # Return the largest possible number formed from the digits\n    return final_number",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_Max_Num(arr):\n    # Import heapq to leverage heap data structure for efficient max extraction\n    import heapq\n    # Negate all digits since heapq implements min-heap, negation simulates max-heap\n    negated = [-d for d in arr]\n    # Transform the list into a valid heap structure in-place\n    heapq.heapify(negated)\n    # Initialize the result number that will accumulate extracted digits\n    result = 0\n    # Track the position multiplier starting from highest power of 10 needed\n    position = len(arr) - 1\n    # Pop digits from heap one by one, largest first due to negation trick\n    while negated:\n        # Extract smallest negated value (which corresponds to largest original digit)\n        largest = -heapq.heappop(negated)\n        # Place digit in correct decimal position using power of 10 calculation\n        result += largest * (10 ** position)\n        # Decrement position for next digit placement\n        position -= 1\n    # Return the constructed maximum possible number\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

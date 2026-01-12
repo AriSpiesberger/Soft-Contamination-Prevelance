@@ -1,0 +1,27 @@
+{
+  "task_id": 477,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to convert the given string to lower case.",
+  "code_python": "def is_lower(string):\n  return (string.lower())",
+  "test_list": [
+    "assert is_lower(\"InValid\") == \"invalid\"",
+    "assert is_lower(\"TruE\") == \"true\"",
+    "assert is_lower(\"SenTenCE\") == \"sentence\""
+  ],
+  "python_1": "def is_lower(string):\n    # Initialize empty list to collect converted characters\n    result = []\n    # Process each character in the input string individually\n    for char in string:\n        # Get the ASCII code point of the current character\n        code = ord(char)\n        # Check if character is an uppercase letter (ASCII 65-90)\n        if 65 <= code <= 90:\n            # Convert to lowercase by adding 32 to shift to lowercase range\n            result.append(chr(code + 32))\n        else:\n            # Keep non-uppercase characters unchanged\n            result.append(char)\n    # Join all processed characters into final lowercase string\n    return ''.join(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_lower(string):\n    # Use list comprehension with conditional expression for concise transformation\n    lowercase_chars = [\n        # Convert uppercase letters by shifting ASCII value, leave others unchanged\n        chr(ord(c) + 32) if 'A' <= c <= 'Z' else c\n        # Iterate over each character in the input string\n        for c in string\n    ]\n    # Concatenate all transformed characters into a single string\n    return ''.join(lowercase_chars)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_lower(string):\n    # Use map function to apply transformation to each character functionally\n    def convert_char(c):\n        # Check if character falls within uppercase ASCII range\n        if ord(c) >= 65 and ord(c) <= 90:\n            # Shift to lowercase equivalent by adding offset of 32\n            return chr(ord(c) + 32)\n        # Return original character if not uppercase\n        return c\n    # Apply the conversion function to every character using map\n    transformed = map(convert_char, string)\n    # Combine the iterator of characters back into a complete string\n    return ''.join(transformed)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_lower(string):\n    # Build a translation table mapping uppercase ASCII codes to lowercase\n    translation_table = {}\n    # Iterate through all 26 uppercase letter positions\n    for i in range(26):\n        # Map each uppercase letter's ASCII code to its lowercase equivalent\n        translation_table[65 + i] = 97 + i\n    # Apply the translation table to convert all uppercase letters at once\n    return string.translate(translation_table)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_lower(string):\n    # Use reduce pattern to accumulate lowercase string character by character\n    from functools import reduce\n    # Define accumulator function that appends converted char to running result\n    def accumulate_lowercase(acc, char):\n        # Determine if current character needs case conversion\n        is_uppercase = char in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n        # Concatenate either the lowercase version or original to accumulator\n        return acc + (chr(ord(char) + 32) if is_uppercase else char)\n    # Reduce entire string starting with empty accumulator to build result\n    return reduce(accumulate_lowercase, string, '')",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": 805,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function that returns the list in a list of lists whose sum of elements is the highest.",
+  "code_python": "def max_sum_list(lists):\n return max(lists, key=sum)",
+  "test_list": [
+    "assert max_sum_list([[1,2,3], [4,5,6], [10,11,12], [7,8,9]])==[10, 11, 12]",
+    "assert max_sum_list([[3,2,1], [6,5,4], [12,11,10]])==[12,11,10]",
+    "assert max_sum_list([[2,3,1]])==[2,3,1]"
+  ],
+  "python_1": "def max_sum_list(lists):\n    # Initialize variable to track the maximum sum found so far\n    max_sum = float('-inf')\n    # Initialize variable to store the list with highest sum\n    result = None\n    # Iterate through each sublist in the input list of lists\n    for sublist in lists:\n        # Calculate the sum of current sublist elements\n        current_sum = sum(sublist)\n        # Check if this sublist has a higher sum than previous maximum\n        if current_sum > max_sum:\n            # Update the maximum sum to the new higher value\n            max_sum = current_sum\n            # Store reference to the current sublist as our best candidate\n            result = sublist\n    # Return the sublist that had the highest total sum\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def max_sum_list(lists):\n    # Create tuples pairing each sublist with its computed sum\n    sums_with_lists = [(sum(lst), lst) for lst in lists]\n    # Sort the paired tuples by sum value in descending order\n    sums_with_lists.sort(key=lambda x: x[0], reverse=True)\n    # Extract and return the list associated with the highest sum (first element after sorting)\n    return sums_with_lists[0][1]",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def max_sum_list(lists):\n    # Use reduce to compare sublists pairwise and keep the one with higher sum\n    from functools import reduce\n    # Define a comparison function that returns the sublist with greater sum\n    def keep_larger_sum(a, b):\n        # Compare sums and return the winner of this pairwise comparison\n        return a if sum(a) >= sum(b) else b\n    # Apply reduce to fold through all sublists, comparing adjacent pairs\n    return reduce(keep_larger_sum, lists)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def max_sum_list(lists):\n    # Compute sums for all sublists and store in a parallel list\n    all_sums = [sum(sublist) for sublist in lists]\n    # Find the maximum sum value from our computed sums\n    highest_sum = max(all_sums)\n    # Locate the index position where the maximum sum occurs\n    max_index = all_sums.index(highest_sum)\n    # Retrieve and return the original sublist at that index position\n    return lists[max_index]",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def max_sum_list(lists):\n    # Build a dictionary mapping index positions to their corresponding sublist sums\n    sum_by_index = {i: sum(lists[i]) for i in range(len(lists))}\n    # Extract all computed sum values from our dictionary for comparison\n    all_sum_values = list(sum_by_index.values())\n    # Determine which sum value is the largest among all sublists\n    target_sum = max(all_sum_values)\n    # Search through dictionary to find index where sum matches our target\n    for idx, s in sum_by_index.items():\n        # When we find matching sum, immediately return the corresponding sublist\n        if s == target_sum:\n            return lists[idx]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

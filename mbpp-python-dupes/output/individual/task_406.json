@@ -1,0 +1,27 @@
+{
+  "task_id": 406,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find whether the parity of a given number is odd.",
+  "code_python": "def find_Parity(x): \n    y = x ^ (x >> 1); \n    y = y ^ (y >> 2); \n    y = y ^ (y >> 4); \n    y = y ^ (y >> 8); \n    y = y ^ (y >> 16); \n    if (y & 1): \n        return True\n    return False",
+  "test_list": [
+    "assert find_Parity(12) == False",
+    "assert find_Parity(7) == True",
+    "assert find_Parity(10) == False"
+  ],
+  "python_1": "def find_Parity(x): \n    # Count the number of set bits (1s) in the binary representation\n    count = bin(x).count('1')\n    # Parity is odd if the count of 1-bits is odd (not divisible by 2)\n    return count % 2 == 1",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def find_Parity(x): \n    # Initialize a counter to track how many bits are set to 1\n    count = 0\n    # Continue looping while there are still bits to process\n    while x:\n        # XOR count with 1 if the least significant bit is 1, toggling parity\n        count ^= (x & 1)\n        # Right shift x by 1 to examine the next bit in sequence\n        x >>= 1\n    # Return True if count is 1 (odd number of 1-bits), False otherwise\n    return count == 1",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def find_Parity(x): \n    # Use Brian Kernighan's algorithm approach - each iteration clears one set bit\n    parity = False\n    # Loop continues as long as there are remaining 1-bits in x\n    while x:\n        # Toggle parity each time we find a set bit - alternates between True/False\n        parity = not parity\n        # Clear the rightmost set bit using bitwise AND with (x-1)\n        x = x & (x - 1)\n    # Return final parity: True if odd number of 1-bits were toggled\n    return parity",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def find_Parity(x): \n    # Use recursion base case: when x is 0 or 1, return whether x itself is odd\n    if x <= 1:\n        return x == 1\n    # Recursively XOR the least significant bit with the parity of remaining bits\n    # This effectively counts 1-bits modulo 2 through the call stack\n    return (x & 1) ^ find_Parity(x >> 1) == 1",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def find_Parity(x): \n    # Convert number to binary string and strip the '0b' prefix\n    binary_str = bin(x)[2:]\n    # Use reduce-like pattern with XOR across all binary digits\n    result = 0\n    # Iterate through each character in the binary representation\n    for bit in binary_str:\n        # XOR current result with integer value of this bit character\n        result ^= int(bit)\n    # Result is 1 if odd parity (odd number of 1s), 0 if even parity\n    return result == 1",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

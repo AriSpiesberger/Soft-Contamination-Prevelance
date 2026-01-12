@@ -1,0 +1,30 @@
+{
+  "task_id": 803,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given number is a perfect square or not. https://www.geeksforgeeks.org/check-if-given-number-is-perfect-square-in-cpp/",
+  "code_python": "def is_perfect_square(n) :\n    i = 1\n    while (i * i<= n):\n        if ((n % i == 0) and (n / i == i)):\n            return True     \n        i = i + 1\n    return False",
+  "test_list": [
+    "assert not is_perfect_square(10)",
+    "assert is_perfect_square(36)",
+    "assert not is_perfect_square(14)",
+    "assert is_perfect_square(14*14)",
+    "assert not is_perfect_square(125)",
+    "assert is_perfect_square(125*125)"
+  ],
+  "python_1": "def is_perfect_square(n):\n    # Handle edge case where negative numbers cannot be perfect squares\n    if n < 0:\n        return False\n    # Compute the integer square root using Python's built-in power operator\n    sqrt_n = int(n ** 0.5)\n    # Verify by squaring the result to check if it reconstructs the original number\n    return sqrt_n * sqrt_n == n",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_perfect_square(n):\n    # Reject negative numbers since they cannot be perfect squares\n    if n < 0:\n        return False\n    # Zero and one are trivial perfect squares, handle them directly\n    if n == 0 or n == 1:\n        return True\n    # Initialize binary search lower bound at 1\n    low = 1\n    # Initialize binary search upper bound at half of n (sufficient for n > 1)\n    high = n // 2\n    # Continue binary search while the search space is valid\n    while low <= high:\n        # Calculate midpoint to avoid integer overflow issues\n        mid = low + (high - low) // 2\n        # Compute the square of the midpoint for comparison\n        square = mid * mid\n        # Found exact match - the number is a perfect square\n        if square == n:\n            return True\n        # Square is too small, search in the upper half\n        elif square < n:\n            low = mid + 1\n        # Square is too large, search in the lower half\n        else:\n            high = mid - 1\n    # Exhausted search space without finding a match\n    return False",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_perfect_square(n):\n    # Perfect squares must be non-negative integers\n    if n < 0:\n        return False\n    # Zero is a trivial perfect square (0 = 0^2)\n    if n == 0:\n        return True\n    # Apply Newton's method (Babylonian method) for integer square root\n    # Start with initial guess as the number itself\n    x = n\n    # Iterate until convergence using Newton-Raphson formula\n    while True:\n        # Compute next approximation: average of x and n/x\n        next_x = (x + n // x) // 2\n        # Check if we've converged (no improvement possible)\n        if next_x >= x:\n            # Exit loop when approximation stops decreasing\n            break\n        # Update current estimate with improved approximation\n        x = next_x\n    # Verify if the converged value squared equals the original number\n    return x * x == n",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_perfect_square(n):\n    # Negative numbers cannot be perfect squares in real numbers\n    if n < 0:\n        return False\n    # Use Python's math module for precise integer square root calculation\n    import math\n    # Compute integer square root using math.isqrt (available since Python 3.8)\n    # This function returns floor of exact square root, avoiding floating point errors\n    integer_sqrt = math.isqrt(n)\n    # Verify perfect square by checking if squaring the integer root reproduces n\n    return integer_sqrt * integer_sqrt == n",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_perfect_square(n):\n    # Reject negative inputs as they have no real square roots\n    if n < 0:\n        return False\n    # Handle the trivial case of zero separately\n    if n == 0:\n        return True\n    # Perfect squares follow a pattern: sum of first k odd numbers equals k^2\n    # We subtract consecutive odd numbers starting from 1\n    odd_num = 1\n    # Track remaining value after subtracting odd numbers\n    remaining = n\n    # Keep subtracting odd numbers until we reach zero or go negative\n    while remaining > 0:\n        # Subtract current odd number from remaining\n        remaining -= odd_num\n        # Move to next odd number by adding 2\n        odd_num += 2\n    # If remaining is exactly zero, n was a perfect square\n    return remaining == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

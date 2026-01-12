@@ -1,0 +1,27 @@
+{
+  "task_id": 421,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to concatenate each element of tuple by the delimiter.",
+  "code_python": "def concatenate_tuple(test_tup):\n    delim = \"-\"\n    res = ''.join([str(ele) + delim for ele in test_tup])\n    res = res[ : len(res) - len(delim)]\n    return (str(res)) ",
+  "test_list": [
+    "assert concatenate_tuple((\"ID\", \"is\", 4, \"UTS\") ) == 'ID-is-4-UTS'",
+    "assert concatenate_tuple((\"QWE\", \"is\", 4, \"RTY\") ) == 'QWE-is-4-RTY'",
+    "assert concatenate_tuple((\"ZEN\", \"is\", 4, \"OP\") ) == 'ZEN-is-4-OP'"
+  ],
+  "python_1": "def concatenate_tuple(test_tup):\n    # Define the hyphen delimiter that will separate tuple elements\n    delim = \"-\"\n    # Convert all tuple elements to strings using map for functional approach\n    string_elements = map(str, test_tup)\n    # Use the join method directly on delimiter to concatenate all elements\n    result = delim.join(string_elements)\n    # Return the concatenated string result\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def concatenate_tuple(test_tup):\n    # Specify the separator character for joining tuple elements\n    delim = \"-\"\n    # Initialize empty result string to build output incrementally\n    result = \"\"\n    # Get the total number of elements to handle last element specially\n    total_elements = len(test_tup)\n    # Loop through each element with its index position\n    for index, element in enumerate(test_tup):\n        # Append current element converted to string\n        result += str(element)\n        # Only add delimiter if this is not the final element\n        if index < total_elements - 1:\n            # Insert delimiter between consecutive elements\n            result += delim\n    # Return the fully constructed concatenated string\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def concatenate_tuple(test_tup):\n    # Use recursive approach to build the concatenated string\n    def recursive_concat(tup, idx):\n        # Base case: when index reaches tuple length, return empty string\n        if idx >= len(tup):\n            return \"\"\n        # Convert current element to string representation\n        current = str(tup[idx])\n        # Recursive call to process remaining elements\n        rest = recursive_concat(tup, idx + 1)\n        # If there are more elements, prepend delimiter to the rest\n        if rest:\n            return current + \"-\" + rest\n        # For the last element, just return it without trailing delimiter\n        return current\n    # Start recursion from index 0 and return the built string\n    return recursive_concat(test_tup, 0)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def concatenate_tuple(test_tup):\n    # Use reduce from functools for a functional accumulator pattern\n    from functools import reduce\n    # Define delimiter as hyphen for separating elements\n    delim = \"-\"\n    # Apply reduce to fold all elements into single string with delimiter\n    # Lambda combines accumulator with each new element, adding delimiter between\n    result = reduce(lambda acc, elem: acc + delim + str(elem), test_tup[1:], str(test_tup[0]))\n    # Return the accumulated concatenated string\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def concatenate_tuple(test_tup):\n    # Convert tuple to list to enable string manipulation on elements\n    elements_as_strings = [str(item) for item in test_tup]\n    # Use slice notation to build pairs of element and delimiter alternately\n    parts = []\n    # Iterate through string elements using index-based access\n    i = 0\n    # Continue until all elements have been processed\n    while i < len(elements_as_strings):\n        # Append the current element to our parts list\n        parts.append(elements_as_strings[i])\n        # Check if there are more elements after current one\n        if i < len(elements_as_strings) - 1:\n            # Insert hyphen delimiter as separate list item\n            parts.append(\"-\")\n        # Move to next element in the sequence\n        i += 1\n    # Collapse all parts into single string with empty separator\n    final_string = \"\".join(parts)\n    # Return the assembled concatenated result\n    return final_string",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

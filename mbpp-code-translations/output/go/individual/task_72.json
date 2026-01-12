@@ -1,0 +1,37 @@
+{
+  "task_id": 72,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given number can be represented as the difference of two squares or not.",
+  "python_code": "def dif_Square(n): \n    if (n % 4 != 2): \n        return True\n    return False",
+  "test_list": [
+    "assert dif_Square(5) == True",
+    "assert dif_Square(10) == False",
+    "assert dif_Square(15) == True"
+  ],
+  "code_go": "package main\n\nfunc dif_Square(n int) bool {\n    if n%4 != 2 {\n        return true\n    }\n    return false\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert dif_Square(5) == True",
+      "generated_test": "result := dif_Square(5)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dif_Square(10) == False",
+      "generated_test": "result := dif_Square(10)\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert dif_Square(15) == True",
+      "generated_test": "result := dif_Square(15)\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

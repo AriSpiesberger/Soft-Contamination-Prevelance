@@ -1,0 +1,37 @@
+{
+  "task_id": 71,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a list of elements.",
+  "python_code": "def comb_sort(nums):\n    shrink_fact = 1.3\n    gaps = len(nums)\n    swapped = True\n    i = 0\n    while gaps > 1 or swapped:\n        gaps = int(float(gaps) / shrink_fact)\n        swapped = False\n        i = 0\n        while gaps + i < len(nums):\n            if nums[i] > nums[i+gaps]:\n                nums[i], nums[i+gaps] = nums[i+gaps], nums[i]\n                swapped = True\n            i += 1\n    return nums",
+  "test_list": [
+    "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+    "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+    "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]"
+  ],
+  "code_javascript": "function comb_sort(nums) {\n    const shrink_fact = 1.3;\n    let gaps = nums.length;\n    let swapped = true;\n    let i = 0;\n    while (gaps > 1 || swapped) {\n        gaps = Math.floor(gaps / shrink_fact);\n        swapped = false;\n        i = 0;\n        while (gaps + i < nums.length) {\n            if (nums[i] > nums[i + gaps]) {\n                [nums[i], nums[i + gaps]] = [nums[i + gaps], nums[i]];\n                swapped = true;\n            }\n            i += 1;\n        }\n    }\n    return nums;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+      "generated_test": "const result = comb_sort([5, 15, 37, 25, 79]);\nconst expected = [5, 15, 25, 37, 79];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+      "generated_test": "const result = comb_sort([41, 32, 15, 19, 22]);\nconst expected = [15, 19, 22, 32, 41];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]",
+      "generated_test": "const result = comb_sort([99, 15, 13, 47]);\nconst expected = [13, 15, 47, 99];\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

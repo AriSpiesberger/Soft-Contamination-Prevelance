@@ -1,0 +1,27 @@
+{
+  "task_id": 404,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum of two numbers.",
+  "code_python": "def minimum(a,b):   \n    if a <= b: \n        return a \n    else: \n        return b ",
+  "test_list": [
+    "assert minimum(1,2) == 1",
+    "assert minimum(-5,-4) == -5",
+    "assert minimum(0,0) == 0"
+  ],
+  "python_1": "def minimum(a,b):   \n    # Use Python's built-in min function which efficiently compares values\n    return min(a, b)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def minimum(a,b):   \n    # Calculate the difference between the two numbers\n    diff = a - b\n    # Use arithmetic trick: if diff is negative, a is smaller; if positive, b is smaller\n    # The expression (diff >> 31) extracts the sign bit (works for integers)\n    # For floats, we use a comparison-based approach with multiplication\n    # Check if a is less than or equal to b using subtraction sign\n    is_a_smaller = diff <= 0\n    # Multiply a by 1 if it's smaller (True=1), else by 0\n    a_component = a * is_a_smaller\n    # Multiply b by 1 if a is not smaller (False=0 becomes True=1), else by 0\n    b_component = b * (not is_a_smaller)\n    # Sum the components - only one will be non-zero\n    return a_component + b_component",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def minimum(a,b):   \n    # Create a list containing both input values for selection\n    values = [a, b]\n    # Evaluate boolean comparison to get index: True(1) if b is smaller, False(0) if a is smaller or equal\n    index = a > b\n    # Use the boolean as list index to select the appropriate minimum value\n    return values[index]",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def minimum(a,b):   \n    # Use a ternary conditional expression for compact inline comparison\n    # This returns a if a <= b evaluates to True, otherwise returns b\n    return a if a <= b else b",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def minimum(a,b):   \n    # Sort the two values and extract the first element which is always the smallest\n    sorted_pair = sorted([a, b])\n    # Return the element at index 0, which represents the minimum after sorting\n    return sorted_pair[0]",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

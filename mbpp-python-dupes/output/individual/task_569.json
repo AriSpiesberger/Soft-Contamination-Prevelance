@@ -1,0 +1,27 @@
+{
+  "task_id": 569,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort each sublist of strings in a given list of lists.",
+  "code_python": "def sort_sublists(list1):\n    result = list(map(sorted,list1)) \n    return result",
+  "test_list": [
+    "assert sort_sublists([['green', 'orange'], ['black', 'white'], ['white', 'black', 'orange']])==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]",
+    "assert sort_sublists([['green', 'orange'], ['black'], ['green', 'orange'], ['white']])==[['green', 'orange'], ['black'], ['green', 'orange'], ['white']]",
+    "assert sort_sublists([['a','b'],['d','c'],['g','h'] , ['f','e']])==[['a', 'b'], ['c', 'd'], ['g', 'h'], ['e', 'f']]"
+  ],
+  "python_1": "def sort_sublists(list1):\n    # Create an empty list to accumulate our sorted sublists\n    result = []\n    # Iterate through each sublist in the input list of lists\n    for sublist in list1:\n        # Create a new sorted copy of the current sublist using sorted()\n        sorted_sublist = sorted(sublist)\n        # Append the sorted sublist to our result accumulator\n        result.append(sorted_sublist)\n    # Return the complete list containing all sorted sublists\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def sort_sublists(list1):\n    # Use list comprehension to transform each sublist in place\n    result = [sorted(sublist) for sublist in list1]\n    # Return the newly constructed list of sorted sublists\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def sort_sublists(list1):\n    # Make a deep copy of the input to avoid modifying the original\n    result = [sublist[:] for sublist in list1]\n    # Use enumerate to get both index and sublist reference\n    for idx, sublist in enumerate(result):\n        # Sort the sublist in-place using the list's native sort method\n        sublist.sort()\n    # Return the modified copy with all sublists now sorted\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def sort_sublists(list1):\n    # Define a recursive helper function to process sublists one at a time\n    def process_recursive(remaining, accumulated):\n        # Base case: when no sublists remain, return the accumulated result\n        if not remaining:\n            return accumulated\n        # Extract the first sublist from the remaining list\n        current = remaining[0]\n        # Sort the current sublist and append to accumulated results\n        accumulated.append(sorted(current))\n        # Recursively process the rest of the list with updated accumulator\n        return process_recursive(remaining[1:], accumulated)\n    # Kick off the recursive processing with empty accumulator\n    return process_recursive(list1, [])",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def sort_sublists(list1):\n    # Use functools.reduce to build the result list by processing each sublist\n    from functools import reduce\n    # Define a reducer function that takes accumulator and current sublist\n    def reducer(acc, sublist):\n        # Concatenate accumulator with a single-element list containing sorted sublist\n        return acc + [sorted(sublist)]\n    # Apply reduce with empty list as initial value, building result incrementally\n    return reduce(reducer, list1, [])",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

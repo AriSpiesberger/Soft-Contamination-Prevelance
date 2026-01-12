@@ -1,0 +1,17 @@
+{
+  "task_id": 143,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find number of lists present in the given tuple.",
+  "python_code": "def find_lists(Input): \n\tif isinstance(Input, list): \n\t\treturn 1\n\telse: \n\t\treturn len(Input) ",
+  "test_list": [
+    "assert find_lists(([1, 2, 3, 4], [5, 6, 7, 8])) == 2",
+    "assert find_lists(([1, 2], [3, 4], [5, 6]))  == 3",
+    "assert find_lists(([9, 8, 7, 6, 5, 4, 3, 2, 1])) == 1"
+  ],
+  "code_typescript": "function find_lists(Input: unknown[] | unknown): number {\n    if (Array.isArray(Input) && !Array.isArray(Input[0])) {\n        return 1;\n    } else if (Array.isArray(Input)) {\n        return Input.length;\n    }\n    return 0;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

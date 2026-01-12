@@ -1,0 +1,37 @@
+{
+  "task_id": 424,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to extract only the rear index element of each string in the given tuple.",
+  "python_code": "def extract_rear(test_tuple):\n  res = list(sub[len(sub) - 1] for sub in test_tuple)\n  return (res) ",
+  "test_list": [
+    "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+    "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+    "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']"
+  ],
+  "code_go": "package main\n\nfunc extract_rear(test_tuple []string) []string {\n\tres := make([]string, 0, len(test_tuple))\n\tfor _, sub := range test_tuple {\n\t\tif len(sub) > 0 {\n\t\t\tres = append(res, string(sub[len(sub)-1]))\n\t\t}\n\t}\n\treturn res\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert extract_rear(('Mers', 'for', 'Vers') ) == ['s', 'r', 's']",
+      "generated_test": "result := extract_rear([]string{\"Mers\", \"for\", \"Vers\"})\nexpected := []string{\"s\", \"r\", \"s\"}\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_rear(('Avenge', 'for', 'People') ) == ['e', 'r', 'e']",
+      "generated_test": "expected := []string{\"e\", \"r\", \"e\"}\nresult := extract_rear([]string{\"Avenge\", \"for\", \"People\"})\n\npass := len(result) == len(expected)\nif pass {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert extract_rear(('Gotta', 'get', 'go') ) == ['a', 't', 'o']",
+      "generated_test": "result := extract_rear([]string{\"Gotta\", \"get\", \"go\"})\nexpected := []string{\"a\", \"t\", \"o\"}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

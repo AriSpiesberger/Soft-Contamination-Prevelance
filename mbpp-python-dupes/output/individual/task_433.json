@@ -1,0 +1,27 @@
+{
+  "task_id": 433,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the entered number is greater than the elements of the given array.",
+  "code_python": "def check_greater(arr, number):\n  arr.sort()\n  return number > arr[-1]",
+  "test_list": [
+    "assert check_greater([1, 2, 3, 4, 5], 4) == False",
+    "assert check_greater([2, 3, 4, 5, 6], 8) == True",
+    "assert check_greater([9, 7, 4, 8, 6, 1], 11) == True"
+  ],
+  "python_1": "def check_greater(arr, number):\n    # Use built-in max() to find the largest element in one pass\n    max_element = max(arr)\n    # Compare the given number against the maximum value found\n    return number > max_element",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_greater(arr, number):\n    # Use all() with generator expression to check if number beats every element\n    # This short-circuits as soon as any element is >= number\n    return all(number > element for element in arr)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_greater(arr, number):\n    # Use reduce to iteratively find maximum by comparing pairs\n    from functools import reduce\n    # Lambda compares two values and keeps the larger one, folding through entire array\n    max_val = reduce(lambda a, b: a if a > b else b, arr)\n    # Return True only if number strictly exceeds the computed maximum\n    return number > max_val",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_greater(arr, number):\n    # Initialize tracking variable with first array element as baseline\n    current_max = arr[0]\n    # Start iteration from index 1 since we already captured first element\n    index = 1\n    # Use while loop to manually traverse remaining elements\n    while index < len(arr):\n        # Update current_max if we encounter a larger value during traversal\n        if arr[index] > current_max:\n            current_max = arr[index]\n        # Manually increment index to move through array\n        index += 1\n    # Final comparison: number must strictly exceed the discovered maximum\n    return number > current_max",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_greater(arr, number):\n    # Use filter to extract elements that are greater than or equal to number\n    blocking_elements = list(filter(lambda x: x >= number, arr))\n    # If no elements block the number (none are >= to it), number is greater than all\n    return len(blocking_elements) == 0",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

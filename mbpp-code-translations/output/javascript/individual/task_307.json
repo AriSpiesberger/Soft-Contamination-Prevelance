@@ -1,0 +1,37 @@
+{
+  "task_id": 307,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to get a colon of a tuple.",
+  "python_code": "from copy import deepcopy\ndef colon_tuplex(tuplex,m,n):\n  tuplex_colon = deepcopy(tuplex)\n  tuplex_colon[m].append(n)\n  return tuplex_colon",
+  "test_list": [
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+    "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)"
+  ],
+  "code_javascript": "function colon_tuplex(tuplex, m, n) {\n  const tuplex_colon = tuplex.map(item => {\n    if (Array.isArray(item)) {\n      return [...item];\n    }\n    return item;\n  });\n  tuplex_colon[m].push(n);\n  return tuplex_colon;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,50)==(\"HELLO\", 5, [50], True)",
+      "generated_test": "const result = colon_tuplex([\"HELLO\", 5, [], true], 2, 50);\nconst expected = [\"HELLO\", 5, [50], true];\n\nfunction arraysEqual(a, b) {\n  if (a.length !== b.length) return false;\n  for (let i = 0; i < a.length; i++) {\n    if (Array.isArray(a[i]) && Array.isArray(b[i])) {\n      if (!arraysEqual(a[i], b[i])) return false;\n    } else if (a[i] !== b[i]) {\n      return false;\n    }\n  }\n  return true;\n}\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,100)==((\"HELLO\", 5, [100],True))",
+      "generated_test": "const result = colon_tuplex([\"HELLO\", 5, [], true], 2, 100);\nconst expected = [\"HELLO\", 5, [100], true];\n\nfunction arraysEqual(a, b) {\n  if (a.length !== b.length) return false;\n  for (let i = 0; i < a.length; i++) {\n    if (Array.isArray(a[i]) && Array.isArray(b[i])) {\n      if (!arraysEqual(a[i], b[i])) return false;\n    } else if (a[i] !== b[i]) {\n      return false;\n    }\n  }\n  return true;\n}\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert colon_tuplex((\"HELLO\", 5, [], True) ,2,500)==(\"HELLO\", 5, [500], True)",
+      "generated_test": "const result = colon_tuplex([\"HELLO\", 5, [], true], 2, 500);\nconst expected = [\"HELLO\", 5, [500], true];\n\nfunction arraysEqual(a, b) {\n  if (a.length !== b.length) return false;\n  for (let i = 0; i < a.length; i++) {\n    if (Array.isArray(a[i]) && Array.isArray(b[i])) {\n      if (!arraysEqual(a[i], b[i])) return false;\n    } else if (a[i] !== b[i]) {\n      return false;\n    }\n  }\n  return true;\n}\n\nif (arraysEqual(result, expected)) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + JSON.stringify(expected));\n  console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

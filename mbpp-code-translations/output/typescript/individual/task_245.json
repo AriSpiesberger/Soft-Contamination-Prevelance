@@ -1,0 +1,17 @@
+{
+  "task_id": 245,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.",
+  "python_code": "def max_sum(arr): \n\tMSIBS = arr[:] \n\tfor i in range(len(arr)): \n\t\tfor j in range(0, i): \n\t\t\tif arr[i] > arr[j] and MSIBS[i] < MSIBS[j] + arr[i]: \n\t\t\t\tMSIBS[i] = MSIBS[j] + arr[i] \n\tMSDBS = arr[:] \n\tfor i in range(1, len(arr) + 1): \n\t\tfor j in range(1, i): \n\t\t\tif arr[-i] > arr[-j] and MSDBS[-i] < MSDBS[-j] + arr[-i]: \n\t\t\t\tMSDBS[-i] = MSDBS[-j] + arr[-i] \n\tmax_sum = float(\"-Inf\") \n\tfor i, j, k in zip(MSIBS, MSDBS, arr): \n\t\tmax_sum = max(max_sum, i + j - k) \n\treturn max_sum",
+  "test_list": [
+    "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+    "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+    "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+  ],
+  "code_typescript": "function max_sum(arr: number[]): number {\n    const MSIBS: number[] = [...arr];\n    for (let i = 0; i < arr.length; i++) {\n        for (let j = 0; j < i; j++) {\n            if (arr[i] > arr[j] && MSIBS[i] < MSIBS[j] + arr[i]) {\n                MSIBS[i] = MSIBS[j] + arr[i];\n            }\n        }\n    }\n    \n    const MSDBS: number[] = [...arr];\n    for (let i = 1; i <= arr.length; i++) {\n        for (let j = 1; j < i; j++) {\n            if (arr[arr.length - i] > arr[arr.length - j] && MSDBS[arr.length - i] < MSDBS[arr.length - j] + arr[arr.length - i]) {\n                MSDBS[arr.length - i] = MSDBS[arr.length - j] + arr[arr.length - i];\n            }\n        }\n    }\n    \n    let maxSum: number = -Infinity;\n    for (let idx = 0; idx < arr.length; idx++) {\n        maxSum = Math.max(maxSum, MSIBS[idx] + MSDBS[idx] - arr[idx]);\n    }\n    \n    return maxSum;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

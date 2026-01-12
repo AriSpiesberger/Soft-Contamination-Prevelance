@@ -1,0 +1,37 @@
+{
+  "task_id": 430,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the directrix of a parabola.",
+  "python_code": "def parabola_directrix(a, b, c): \n  directrix=((int)(c - ((b * b) + 1) * 4 * a ))\n  return directrix",
+  "test_list": [
+    "assert parabola_directrix(5,3,2)==-198",
+    "assert parabola_directrix(9,8,4)==-2336",
+    "assert parabola_directrix(2,4,6)==-130"
+  ],
+  "code_ruby": "def parabola_directrix(a, b, c)\n  directrix = (c - ((b * b) + 1) * 4 * a).to_i\n  directrix\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert parabola_directrix(5,3,2)==-198",
+      "generated_test": "result = parabola_directrix(5, 3, 2)\nexpected = -198\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(9,8,4)==-2336",
+      "generated_test": "result = parabola_directrix(9, 8, 4)\nexpected = -2336\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert parabola_directrix(2,4,6)==-130",
+      "generated_test": "result = parabola_directrix(2, 4, 6)\nexpected = -130\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

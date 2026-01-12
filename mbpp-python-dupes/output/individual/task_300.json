@@ -1,0 +1,27 @@
+{
+  "task_id": 300,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the count of all binary sequences of length 2n such that sum of first n bits is same as sum of last n bits.",
+  "code_python": "def count_binary_seq(n): \n\tnCr = 1\n\tres = 1\n\tfor r in range(1, n + 1): \n\t\tnCr = (nCr * (n + 1 - r)) / r \n\t\tres += nCr * nCr \n\treturn res ",
+  "test_list": [
+    "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)"
+  ],
+  "python_1": "import math\n\ndef count_binary_seq(n): \n    # The answer is C(2n, n) which counts ways to choose n positions from 2n\n    # This is because we need equal sums, equivalent to choosing n bits to be 1\n    # Use math.comb to directly compute the central binomial coefficient\n    result = math.comb(2 * n, n)\n    # Convert to float to match expected output format\n    return float(result)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef count_binary_seq(n): \n    # Use the factorial-based formula for central binomial coefficient C(2n, n)\n    numerator = math.factorial(2 * n)\n    # The denominator is (n!)^2 since we divide by n! twice\n    denominator = math.factorial(n) ** 2\n    # Compute the central binomial coefficient as a float division\n    result = numerator / denominator\n    # Return the count of valid binary sequences\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef count_binary_seq(n): \n    # Sum of squared binomial coefficients equals C(2n,n) - use summation approach with math.comb\n    total = 0\n    # Iterate through all possible values k from 0 to n representing number of 1s in first half\n    for k in range(n + 1):\n        # C(n,k) gives ways to place k ones in first n bits\n        ways_first_half = math.comb(n, k)\n        # Same k ones needed in second half for equal sums, so multiply by C(n,k) again\n        ways_second_half = math.comb(n, k)\n        # Total arrangements for this k is product of choices for both halves\n        arrangements = ways_first_half * ways_second_half\n        # Accumulate to running total across all valid k values\n        total += arrangements\n    # Return as float to match expected test format\n    return float(total)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef count_binary_seq(n): \n    # Create a 2D memoization table for Pascal's triangle values\n    pascal = [[0] * (n + 1) for _ in range(n + 1)]\n    # Base case: C(0,0) = 1, there's one way to choose nothing from nothing\n    pascal[0][0] = 1\n    # Build Pascal's triangle row by row using dynamic programming\n    for i in range(1, n + 1):\n        # First element of each row is always 1: C(i,0) = 1\n        pascal[i][0] = 1\n        # Fill in intermediate values using Pascal's identity\n        for j in range(1, i + 1):\n            # Each entry is sum of two entries above it: C(n,k) = C(n-1,k-1) + C(n-1,k)\n            pascal[i][j] = pascal[i-1][j-1] + pascal[i-1][j]\n    # Initialize result accumulator for summing squared binomial coefficients\n    result = 0\n    # Sum C(n,k)^2 for all k, which by Vandermonde identity equals C(2n,n)\n    for k in range(n + 1):\n        # Square the binomial coefficient and add to running total\n        result += pascal[n][k] * pascal[n][k]\n    # Convert to float for compatibility with test assertions using math.isclose\n    return float(result)",
+  "python_4_status": "success",
+  "python_4_attempts": 2,
+  "python_5": "import math\n\ndef count_binary_seq(n): \n    # Use recursion with memoization via a helper function for binomial coefficients\n    memo = {}\n    \n    # Define a recursive function to compute C(n,k) with memoization\n    def binomial(n_val, k_val):\n        # Handle base cases where k is 0 or k equals n\n        if k_val == 0 or k_val == n_val:\n            return 1\n        # Handle invalid case where k exceeds n\n        if k_val > n_val:\n            return 0\n        # Check if this combination was already computed and cached\n        if (n_val, k_val) in memo:\n            return memo[(n_val, k_val)]\n        # Apply Pascal's recursive identity: C(n,k) = C(n-1,k-1) + C(n-1,k)\n        result = binomial(n_val - 1, k_val - 1) + binomial(n_val - 1, k_val)\n        # Store computed value in memo dictionary to avoid redundant calculations\n        memo[(n_val, k_val)] = result\n        # Return the computed binomial coefficient\n        return result\n    \n    # Use reduce with a lambda to accumulate sum of squared binomial coefficients\n    from functools import reduce\n    # Create a range of all possible bit counts k from 0 to n inclusive\n    k_values = range(n + 1)\n    # Use reduce to sum C(n,k)^2 across all k values, starting from 0\n    total = reduce(lambda acc, k: acc + binomial(n, k) ** 2, k_values, 0)\n    # Cast to float for test compatibility with math.isclose assertions\n    return float(total)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 163,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the area of a regular polygon given the length and number of its sides.",
+  "python_code": "from math import tan, pi\ndef area_polygon(s, l):\n  area = s * (l ** 2) / (4 * tan(pi / s))\n  return area",
+  "test_list": [
+    "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+    "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+    "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)"
+  ],
+  "code_javascript": "function area_polygon(s, l) {\n  const area = s * (l ** 2) / (4 * Math.tan(Math.PI / s));\n  return area;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+      "generated_test": "const result = area_polygon(4, 20);\nconst expected = 400.0;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+      "generated_test": "const result = area_polygon(10, 15);\nconst expected = 1731.197;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)",
+      "generated_test": "const result = area_polygon(9, 7);\nconst expected = 302.909;\nconst relTol = 0.001;\nconst isClose = Math.abs(result - expected) <= relTol * Math.abs(expected);\nif (isClose) {\n  console.log(\"PASS\");\n} else {\n  console.log(\"FAIL\");\n  console.log(\"  Expected: \" + expected);\n  console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

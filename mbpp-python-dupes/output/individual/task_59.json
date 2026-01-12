@@ -1,0 +1,27 @@
+{
+  "task_id": 59,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the nth octagonal number.",
+  "code_python": "def is_octagonal(n): \n\treturn 3 * n * n - 2 * n ",
+  "test_list": [
+    "assert is_octagonal(5) == 65",
+    "assert is_octagonal(10) == 280",
+    "assert is_octagonal(15) == 645"
+  ],
+  "python_1": "def is_octagonal(n): \n\t# Initialize accumulator to store the running sum\n\tresult = 0\n\t# Iterate through each position from 1 to n to build up the octagonal number\n\tfor i in range(1, n + 1):\n\t\t# Each octagonal number adds 6 more than the previous difference, starting with 1\n\t\t# The i-th term contribution is 1 + 6*(i-1) = 6*i - 5\n\t\tresult += 6 * i - 5\n\t# Return the accumulated sum which equals the nth octagonal number\n\treturn result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def is_octagonal(n): \n\t# Use the mathematical identity that octagonal numbers can be expressed as sum of squares\n\t# Compute n squared as a building block for the formula\n\tn_squared = n ** 2\n\t# Multiply by 3 to get the first term of the octagonal formula\n\ttriple_square = 3 * n_squared\n\t# Compute twice n which will be subtracted\n\tdouble_n = 2 * n\n\t# Combine terms using subtraction to get final octagonal number\n\toctagonal_value = triple_square - double_n\n\t# Return the computed nth octagonal number\n\treturn octagonal_value",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def is_octagonal(n): \n\t# Use recursion base case: first octagonal number is 1\n\tif n == 1:\n\t\treturn 1\n\t# Recursively get the previous octagonal number\n\tprevious = is_octagonal(n - 1)\n\t# Each successive octagonal number increases by 6n - 5 from the previous\n\tdifference = 6 * n - 5\n\t# Add the difference to previous result to get current octagonal number\n\treturn previous + difference",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def is_octagonal(n): \n\t# Use reduce to accumulate the sum of differences without explicit loop\n\tfrom functools import reduce\n\t# Generate sequence of numbers from 1 to n to represent each position\n\tpositions = range(1, n + 1)\n\t# Apply reduce with lambda that adds the octagonal difference (6*i - 5) to accumulator\n\toctagonal_number = reduce(lambda acc, i: acc + (6 * i - 5), positions, 0)\n\t# Return the computed octagonal number from functional approach\n\treturn octagonal_number",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def is_octagonal(n): \n\t# Express the formula using factoring: n(3n - 2) instead of 3n\u00b2 - 2n\n\t# First compute the inner term (3n - 2) which represents the multiplier\n\tinner_factor = 3 * n - 2\n\t# Multiply n by the inner factor to get the octagonal number via factored form\n\toctagonal_result = n * inner_factor\n\t# Return the result computed through the distributive property approach\n\treturn octagonal_result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

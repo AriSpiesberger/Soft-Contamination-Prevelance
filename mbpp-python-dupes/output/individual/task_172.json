@@ -1,0 +1,29 @@
+{
+  "task_id": 172,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to count the number of occurence of the string 'std' in a given string.",
+  "code_python": "def count_occurance(s):\n  count = 0\n  for i in range(len(s) - 2):\n    if (s[i] == 's' and s[i+1] == 't' and s[i+2] == 'd'):\n      count = count + 1\n  return count",
+  "test_list": [
+    "assert count_occurance(\"letstdlenstdporstd\") == 3",
+    "assert count_occurance(\"truststdsolensporsd\") == 1",
+    "assert count_occurance(\"makestdsostdworthit\") == 2",
+    "assert count_occurance(\"stds\") == 1",
+    "assert count_occurance(\"\") == 0"
+  ],
+  "python_1": "def count_occurance(s):\n    # Use the built-in string count method which efficiently searches for substring occurrences\n    return s.count('std')",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def count_occurance(s):\n    # Initialize accumulator to track total matches found\n    total = 0\n    # Start searching from the beginning of the string\n    start_pos = 0\n    # Loop indefinitely until we break when no more matches exist\n    while True:\n        # Use find to locate next 'std' occurrence starting from current position\n        found_pos = s.find('std', start_pos)\n        # Check if find returned -1 indicating no more matches\n        if found_pos == -1:\n            # Exit loop since string has been fully searched\n            break\n        # Increment match counter since we found a valid occurrence\n        total += 1\n        # Move search position forward by 1 to allow overlapping matches\n        start_pos = found_pos + 1\n    # Return the accumulated count of 'std' substrings\n    return total",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def count_occurance(s):\n    # Use regular expressions module for pattern matching approach\n    import re\n    # Find all non-overlapping matches of 'std' pattern and return the count via len\n    matches = re.findall('std', s)\n    # The findall function returns a list of all matches found\n    return len(matches)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def count_occurance(s):\n    # Handle edge case where string is too short to contain 'std'\n    if len(s) < 3:\n        # Return zero since 3-char substring cannot exist in shorter string\n        return 0\n    # Use list comprehension with slicing to extract all 3-character windows\n    three_char_slices = [s[i:i+3] for i in range(len(s) - 2)]\n    # Apply filter function to keep only slices that match 'std' exactly\n    matching_slices = filter(lambda x: x == 'std', three_char_slices)\n    # Convert filtered iterator to list and measure its length for count\n    return len(list(matching_slices))",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def count_occurance(s):\n    # Use recursion as an alternative approach to iteration or built-in methods\n    def recursive_count(string, index):\n        # Base case: stop when remaining string is too short for 'std'\n        if index > len(string) - 3:\n            # No more positions to check, return zero\n            return 0\n        # Check if current position starts with target substring 'std'\n        match_found = 1 if string[index:index+3] == 'std' else 0\n        # Recursively process rest of string and add current match result\n        return match_found + recursive_count(string, index + 1)\n    # Initiate recursive search starting from position zero\n    return recursive_count(s, 0)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

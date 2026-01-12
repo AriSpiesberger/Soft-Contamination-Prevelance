@@ -1,0 +1,27 @@
+{
+  "task_id": 405,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether an element exists within a tuple.",
+  "code_python": "def check_tuplex(tuplex,tuple1): \n  if tuple1 in tuplex:\n    return True\n  else:\n     return False",
+  "test_list": [
+    "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"),'r')==True",
+    "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\", \"e\"),'5')==False",
+    "assert check_tuplex((\"w\", 3, \"r\", \"e\", \"s\", \"o\", \"u\", \"r\", \"c\",\"e\"),3)==True"
+  ],
+  "python_1": "def check_tuplex(tuplex,tuple1): \n    # Convert the tuple to a list to use list methods for searching\n    tuple_as_list = list(tuplex)\n    # Use the count method to determine how many times the element appears\n    occurrence_count = tuple_as_list.count(tuple1)\n    # Return True if count is positive (element exists), False otherwise\n    return occurrence_count > 0",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def check_tuplex(tuplex,tuple1): \n    # Iterate through each element in the tuple using a for loop\n    for element in tuplex:\n        # Check if current element matches the target value\n        if element == tuple1:\n            # Return True immediately upon finding a match\n            return True\n    # Return False if loop completes without finding the element\n    return False",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def check_tuplex(tuplex,tuple1): \n    # Use index-based iteration with range to manually traverse the tuple\n    i = 0\n    # Get the total number of elements to define our search boundary\n    length = len(tuplex)\n    # Continue searching while we haven't exhausted all positions\n    while i < length:\n        # Access element at current index position for comparison\n        current_element = tuplex[i]\n        # Test equality between current element and search target\n        if current_element == tuple1:\n            # Element found - exit early with positive result\n            return True\n        # Move to next index position in the tuple\n        i += 1\n    # Exhausted all indices without finding a match\n    return False",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def check_tuplex(tuplex,tuple1): \n    # Leverage Python's built-in membership operator directly as expression\n    return tuple1 in tuplex",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def check_tuplex(tuplex,tuple1): \n    # Use try-except to attempt finding the element's index\n    try:\n        # The index method raises ValueError if element is not found\n        tuplex.index(tuple1)\n        # If we reach here, element exists at some index\n        return True\n    # Catch the specific exception when element is absent\n    except ValueError:\n        # Element not present in the tuple\n        return False",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

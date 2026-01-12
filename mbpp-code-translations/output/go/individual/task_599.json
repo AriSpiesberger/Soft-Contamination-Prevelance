@@ -1,0 +1,37 @@
+{
+  "task_id": 599,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find sum and average of first n natural numbers.",
+  "python_code": "def sum_average(number):\n total = 0\n for value in range(1, number + 1):\n    total = total + value\n average = total / number\n return (total,average)",
+  "test_list": [
+    "assert sum_average(10)==(55, 5.5)",
+    "assert sum_average(15)==(120, 8.0)",
+    "assert sum_average(20)==(210, 10.5)"
+  ],
+  "code_go": "package main\n\nfunc sum_average(number int) (int, float64) {\n\ttotal := 0\n\tfor value := 1; value <= number; value++ {\n\t\ttotal = total + value\n\t}\n\taverage := float64(total) / float64(number)\n\treturn total, average\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sum_average(10)==(55, 5.5)",
+      "generated_test": "sum, avg := sum_average(10)\nexpectedSum := 55\nexpectedAvg := 5.5\nif sum == expectedSum && avg == expectedAvg {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %v)\\n\", expectedSum, expectedAvg)\n\tfmt.Printf(\"  Got: (%d, %v)\\n\", sum, avg)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_average(15)==(120, 8.0)",
+      "generated_test": "sum, avg := sum_average(15)\nexpectedSum := 120\nexpectedAvg := 8.0\nif sum == expectedSum && avg == expectedAvg {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %v)\\n\", expectedSum, expectedAvg)\n\tfmt.Printf(\"  Got: (%d, %v)\\n\", sum, avg)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sum_average(20)==(210, 10.5)",
+      "generated_test": "sum, avg := sum_average(20)\nexpectedSum := 210\nexpectedAvg := 10.5\nif sum == expectedSum && avg == expectedAvg {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: (%d, %v)\\n\", expectedSum, expectedAvg)\n\tfmt.Printf(\"  Got: (%d, %v)\\n\", sum, avg)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

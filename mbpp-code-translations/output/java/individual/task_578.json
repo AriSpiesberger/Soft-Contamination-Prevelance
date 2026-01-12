@@ -1,0 +1,37 @@
+{
+  "task_id": 578,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to interleave 3 lists of the same length into a single flat list.",
+  "python_code": "def interleave_lists(list1,list2,list3):\n    result = [el for pair in zip(list1, list2, list3) for el in pair]\n    return result",
+  "test_list": [
+    "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+    "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+    "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]"
+  ],
+  "code_java": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Solution {\n    public static List<Integer> interleave_lists(List<Integer> list1, List<Integer> list2, List<Integer> list3) {\n        ArrayList<Integer> result = new ArrayList<>();\n        int length = list1.size();\n        for (int i = 0; i < length; i++) {\n            result.add(list1.get(i));\n            result.add(list2.get(i));\n            result.add(list3.get(i));\n        }\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert interleave_lists([1,2,3,4,5,6,7],[10,20,30,40,50,60,70],[100,200,300,400,500,600,700])==[1, 10, 100, 2, 20, 200, 3, 30, 300, 4, 40, 400, 5, 50, 500, 6, 60, 600, 7, 70, 700]",
+      "generated_test": "List<Integer> list1 = new ArrayList<>();\nlist1.add(1); list1.add(2); list1.add(3); list1.add(4); list1.add(5); list1.add(6); list1.add(7);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(10); list2.add(20); list2.add(30); list2.add(40); list2.add(50); list2.add(60); list2.add(70);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(100); list3.add(200); list3.add(300); list3.add(400); list3.add(500); list3.add(600); list3.add(700);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(1); expected.add(10); expected.add(100);\nexpected.add(2); expected.add(20); expected.add(200);\nexpected.add(3); expected.add(30); expected.add(300);\nexpected.add(4); expected.add(40); expected.add(400);\nexpected.add(5); expected.add(50); expected.add(500);\nexpected.add(6); expected.add(60); expected.add(600);\nexpected.add(7); expected.add(70); expected.add(700);\n\nList<Integer> result = interleave_lists(list1, list2, list3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert interleave_lists([10,20],[15,2],[5,10])==[10,15,5,20,2,10]",
+      "generated_test": "List<Integer> list1 = new ArrayList<>();\nlist1.add(10);\nlist1.add(20);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(15);\nlist2.add(2);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(5);\nlist3.add(10);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(10);\nexpected.add(15);\nexpected.add(5);\nexpected.add(20);\nexpected.add(2);\nexpected.add(10);\n\nList<Integer> result = interleave_lists(list1, list2, list3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert interleave_lists([11,44], [10,15], [20,5])==[11,10,20,44,15,5]",
+      "generated_test": "List<Integer> list1 = new ArrayList<>();\nlist1.add(11);\nlist1.add(44);\nList<Integer> list2 = new ArrayList<>();\nlist2.add(10);\nlist2.add(15);\nList<Integer> list3 = new ArrayList<>();\nlist3.add(20);\nlist3.add(5);\n\nList<Integer> expected = new ArrayList<>();\nexpected.add(11);\nexpected.add(10);\nexpected.add(20);\nexpected.add(44);\nexpected.add(15);\nexpected.add(5);\n\nList<Integer> result = interleave_lists(list1, list2, list3);\n\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

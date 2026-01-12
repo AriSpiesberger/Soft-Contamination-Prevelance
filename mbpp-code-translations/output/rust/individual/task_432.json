@@ -1,0 +1,37 @@
+{
+  "task_id": 432,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the median length of a trapezium.",
+  "python_code": "def median_trapezium(base1,base2,height):\n median = 0.5 * (base1+ base2)\n return median",
+  "test_list": [
+    "assert median_trapezium(15,25,35)==20",
+    "assert median_trapezium(10,20,30)==15",
+    "assert median_trapezium(6,9,4)==7.5"
+  ],
+  "code_rust": "pub fn median_trapezium(base1: f64, base2: f64, height: f64) -> f64 {\n    let median = 0.5 * (base1 + base2);\n    median\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert median_trapezium(15,25,35)==20",
+      "generated_test": "let result = median_trapezium(15.0, 25.0, 35.0);\nlet expected = 20.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_trapezium(10,20,30)==15",
+      "generated_test": "let result = median_trapezium(10.0, 20.0, 30.0);\nlet expected = 15.0;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert median_trapezium(6,9,4)==7.5",
+      "generated_test": "let result = median_trapezium(6.0, 9.0, 4.0);\nlet expected = 7.5;\nif (result - expected).abs() < 1e-9 {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

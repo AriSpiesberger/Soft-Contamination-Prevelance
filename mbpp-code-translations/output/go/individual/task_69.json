@@ -1,0 +1,37 @@
+{
+  "task_id": 69,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether a list contains the given sublist or not.",
+  "python_code": "def is_sublist(l, s):\n\tsub_set = False\n\tif s == []:\n\t\tsub_set = True\n\telif s == l:\n\t\tsub_set = True\n\telif len(s) > len(l):\n\t\tsub_set = False\n\telse:\n\t\tfor i in range(len(l)):\n\t\t\tif l[i] == s[0]:\n\t\t\t\tn = 1\n\t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n\t\t\t\t\tn += 1\t\t\t\t\n\t\t\t\tif n == len(s):\n\t\t\t\t\tsub_set = True\n\treturn sub_set",
+  "test_list": [
+    "assert is_sublist([2,4,3,5,7],[3,7])==False",
+    "assert is_sublist([2,4,3,5,7],[4,3])==True",
+    "assert is_sublist([2,4,3,5,7],[1,6])==False"
+  ],
+  "code_go": "package main\n\nfunc is_sublist(l, s []int) bool {\n\tsub_set := false\n\tif len(s) == 0 {\n\t\tsub_set = true\n\t} else if len(s) == len(l) {\n\t\tequal := true\n\t\tfor i := range l {\n\t\t\tif l[i] != s[i] {\n\t\t\t\tequal = false\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t\tif equal {\n\t\t\tsub_set = true\n\t\t}\n\t} else if len(s) > len(l) {\n\t\tsub_set = false\n\t} else {\n\t\tfor i := 0; i < len(l); i++ {\n\t\t\tif l[i] == s[0] {\n\t\t\t\tn := 1\n\t\t\t\tfor n < len(s) && i+n < len(l) && l[i+n] == s[n] {\n\t\t\t\t\tn++\n\t\t\t\t}\n\t\t\t\tif n == len(s) {\n\t\t\t\t\tsub_set = true\n\t\t\t\t\tbreak\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\treturn sub_set\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[3,7])==False",
+      "generated_test": "result := is_sublist([]int{2, 4, 3, 5, 7}, []int{3, 7})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[4,3])==True",
+      "generated_test": "result := is_sublist([]int{2, 4, 3, 5, 7}, []int{4, 3})\nexpected := true\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_sublist([2,4,3,5,7],[1,6])==False",
+      "generated_test": "result := is_sublist([]int{2, 4, 3, 5, 7}, []int{1, 6})\nexpected := false\nif result == expected {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 732,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace all occurrences of spaces, commas, or dots with a colon.",
+  "python_code": "import re\ndef replace_specialchar(text):\n return (re.sub(\"[ ,.]\", \":\", text))\n",
+  "test_list": [
+    "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+    "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+    "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static String replace_specialchar(String text) {\n        return text.replaceAll(\"[ ,.]\", \":\");\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert replace_specialchar('Python language, Programming language.')==('Python:language::Programming:language:')",
+      "generated_test": "String result = replace_specialchar(\"Python language, Programming language.\");\nString expected = \"Python:language::Programming:language:\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_specialchar('a b c,d e f')==('a:b:c:d:e:f')",
+      "generated_test": "String result = replace_specialchar(\"a b c,d e f\");\nString expected = \"a:b:c:d:e:f\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_specialchar('ram reshma,ram rahim')==('ram:reshma:ram:rahim')",
+      "generated_test": "String result = replace_specialchar(\"ram reshma,ram rahim\");\nString expected = \"ram:reshma:ram:rahim\";\nif (result.equals(expected)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

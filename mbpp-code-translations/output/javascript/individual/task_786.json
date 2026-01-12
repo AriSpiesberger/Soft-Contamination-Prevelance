@@ -1,0 +1,37 @@
+{
+  "task_id": 786,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the right insertion point for a specified value in sorted order.",
+  "python_code": "import bisect\ndef right_insertion(a, x):\n    return bisect.bisect_right(a, x)",
+  "test_list": [
+    "assert right_insertion([1,2,4,5],6)==4",
+    "assert right_insertion([1,2,4,5],3)==2",
+    "assert right_insertion([1,2,4,5],7)==4"
+  ],
+  "code_javascript": "function right_insertion(a, x) {\n    let lo = 0;\n    let hi = a.length;\n    \n    while (lo < hi) {\n        const mid = Math.floor((lo + hi) / 2);\n        if (x < a[mid]) {\n            hi = mid;\n        } else {\n            lo = mid + 1;\n        }\n    }\n    \n    return lo;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert right_insertion([1,2,4,5],6)==4",
+      "generated_test": "const result = right_insertion([1, 2, 4, 5], 6);\nconst expected = 4;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert right_insertion([1,2,4,5],3)==2",
+      "generated_test": "const result = right_insertion([1, 2, 4, 5], 3);\nconst expected = 2;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert right_insertion([1,2,4,5],7)==4",
+      "generated_test": "const result = right_insertion([1, 2, 4, 5], 7);\nconst expected = 4;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

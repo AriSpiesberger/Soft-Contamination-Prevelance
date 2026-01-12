@@ -1,0 +1,37 @@
+{
+  "task_id": 68,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether the given array is monotonic or not.",
+  "python_code": "def is_Monotonic(A): \n    return (all(A[i] <= A[i + 1] for i in range(len(A) - 1)) or\n            all(A[i] >= A[i + 1] for i in range(len(A) - 1))) ",
+  "test_list": [
+    "assert is_Monotonic([6, 5, 4, 4]) == True",
+    "assert is_Monotonic([1, 2, 2, 3]) == True",
+    "assert is_Monotonic([1, 3, 2]) == False"
+  ],
+  "code_rust": "pub fn is_Monotonic(a: &Vec<i32>) -> bool {\n    if a.len() <= 1 {\n        return true;\n    }\n    \n    let increasing = a.windows(2).all(|w| w[0] <= w[1]);\n    let decreasing = a.windows(2).all(|w| w[0] >= w[1]);\n    \n    increasing || decreasing\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert is_Monotonic([6, 5, 4, 4]) == True",
+      "generated_test": "let result = is_Monotonic(&vec![6, 5, 4, 4]);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 2, 2, 3]) == True",
+      "generated_test": "let input = vec![1, 2, 2, 3];\nlet result = is_Monotonic(&input);\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_Monotonic([1, 3, 2]) == False",
+      "generated_test": "let input = vec![1, 3, 2];\nlet result = is_Monotonic(&input);\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

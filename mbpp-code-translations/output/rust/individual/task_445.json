@@ -1,0 +1,37 @@
+{
+  "task_id": 445,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to perform index wise multiplication of tuple elements in the given two tuples.",
+  "python_code": "def index_multiplication(test_tup1, test_tup2):\n  res = tuple(tuple(a * b for a, b in zip(tup1, tup2))\n   for tup1, tup2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert index_multiplication(((1, 3), (4, 5), (2, 9), (1, 10)),((6, 7), (3, 9), (1, 1), (7, 3)) ) == ((6, 21), (12, 45), (2, 9), (7, 30))",
+    "assert index_multiplication(((2, 4), (5, 6), (3, 10), (2, 11)),((7, 8), (4, 10), (2, 2), (8, 4)) ) == ((14, 32), (20, 60), (6, 20), (16, 44))",
+    "assert index_multiplication(((3, 5), (6, 7), (4, 11), (3, 12)),((8, 9), (5, 11), (3, 3), (9, 5)) ) == ((24, 45), (30, 77), (12, 33), (27, 60))"
+  ],
+  "code_rust": "pub fn index_multiplication(test_tup1: Vec<Vec<i32>>, test_tup2: Vec<Vec<i32>>) -> Vec<Vec<i32>> {\n    test_tup1\n        .iter()\n        .zip(test_tup2.iter())\n        .map(|(tup1, tup2)| {\n            tup1.iter()\n                .zip(tup2.iter())\n                .map(|(a, b)| a * b)\n                .collect()\n        })\n        .collect()\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert index_multiplication(((1, 3), (4, 5), (2, 9), (1, 10)),((6, 7), (3, 9), (1, 1), (7, 3)) ) == ((6, 21), (12, 45), (2, 9), (7, 30))",
+      "generated_test": "let test_tup1: Vec<Vec<i32>> = vec![vec![1, 3], vec![4, 5], vec![2, 9], vec![1, 10]];\nlet test_tup2: Vec<Vec<i32>> = vec![vec![6, 7], vec![3, 9], vec![1, 1], vec![7, 3]];\nlet expected: Vec<Vec<i32>> = vec![vec![6, 21], vec![12, 45], vec![2, 9], vec![7, 30]];\nlet result = index_multiplication(test_tup1, test_tup2);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_multiplication(((2, 4), (5, 6), (3, 10), (2, 11)),((7, 8), (4, 10), (2, 2), (8, 4)) ) == ((14, 32), (20, 60), (6, 20), (16, 44))",
+      "generated_test": "let test_tup1 = vec![vec![2, 4], vec![5, 6], vec![3, 10], vec![2, 11]];\nlet test_tup2 = vec![vec![7, 8], vec![4, 10], vec![2, 2], vec![8, 4]];\nlet expected = vec![vec![14, 32], vec![20, 60], vec![6, 20], vec![16, 44]];\nlet result = index_multiplication(test_tup1, test_tup2);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert index_multiplication(((3, 5), (6, 7), (4, 11), (3, 12)),((8, 9), (5, 11), (3, 3), (9, 5)) ) == ((24, 45), (30, 77), (12, 33), (27, 60))",
+      "generated_test": "let test_tup1 = vec![vec![3, 5], vec![6, 7], vec![4, 11], vec![3, 12]];\nlet test_tup2 = vec![vec![8, 9], vec![5, 11], vec![3, 3], vec![9, 5]];\nlet expected = vec![vec![24, 45], vec![30, 77], vec![12, 33], vec![27, 60]];\nlet result = index_multiplication(test_tup1, test_tup2);\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

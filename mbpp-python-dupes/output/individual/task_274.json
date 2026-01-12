@@ -1,0 +1,27 @@
+{
+  "task_id": 274,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a positive integer n and finds the sum of even index binomial coefficients.",
+  "code_python": "import math  \ndef even_binomial_Coeff_Sum( n): \n    return (1 << (n - 1)) ",
+  "test_list": [
+    "assert even_binomial_Coeff_Sum(4) == 8",
+    "assert even_binomial_Coeff_Sum(6) == 32",
+    "assert even_binomial_Coeff_Sum(2) == 2"
+  ],
+  "python_1": "import math\n\ndef even_binomial_Coeff_Sum(n):\n    # Initialize accumulator to store sum of even-indexed binomial coefficients\n    total = 0\n    # Iterate through all even indices from 0 to n (step of 2 ensures even indices)\n    for k in range(0, n + 1, 2):\n        # Calculate C(n,k) using factorial formula and add to running sum\n        total += math.factorial(n) // (math.factorial(k) * math.factorial(n - k))\n    # Return the computed sum of binomial coefficients at even positions\n    return total",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "import math\n\ndef even_binomial_Coeff_Sum(n):\n    # Build Pascal's triangle row by row to get the nth row coefficients\n    row = [1]\n    # Construct each subsequent row by iterating n times\n    for i in range(n):\n        # Create new row: each element is sum of two adjacent elements from previous row\n        new_row = [1]\n        # Calculate interior elements by summing adjacent pairs\n        for j in range(len(row) - 1):\n            # Add adjacent elements to form the new coefficient\n            new_row.append(row[j] + row[j + 1])\n        # Append final 1 to complete the row\n        new_row.append(1)\n        # Update row reference to the newly constructed row\n        row = new_row\n    # Extract and sum only the coefficients at even positions (0, 2, 4, ...)\n    even_sum = 0\n    # Use enumerate to access both index and value simultaneously\n    for idx, coeff in enumerate(row):\n        # Check if current index is even using modulo operation\n        if idx % 2 == 0:\n            # Accumulate coefficient value when index is even\n            even_sum += coeff\n    # Return the total sum of even-indexed binomial coefficients\n    return even_sum",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "import math\n\ndef even_binomial_Coeff_Sum(n):\n    # Use math.comb to compute binomial coefficients (cleaner than factorial formula)\n    # Generate list of all even indices from 0 up to and including n\n    even_indices = range(0, n + 1, 2)\n    # Apply math.comb to each even index k to get C(n,k), then sum all results\n    # This leverages Python's built-in combination function for efficiency\n    result = sum(math.comb(n, k) for k in even_indices)\n    # Return the aggregated sum of binomial coefficients at even positions\n    return result",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "import math\n\ndef even_binomial_Coeff_Sum(n):\n    # Use the identity: sum of even-indexed coefficients = (2^n + (1-1)^n) / 2 = 2^(n-1)\n    # Compute 2^n using exponentiation operator instead of bit shifting\n    power_of_two = 2 ** n\n    # The sum of all binomial coefficients equals 2^n by binomial theorem\n    # Even and odd indexed sums are equal, so each is half of the total\n    half_sum = power_of_two // 2\n    # Return the computed result representing sum of C(n,0) + C(n,2) + C(n,4) + ...\n    return half_sum",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "import math\n\ndef even_binomial_Coeff_Sum(n):\n    # Exploit roots of unity filter: sum of C(n,k) for even k = (1+1)^n + (1-1)^n) / 2\n    # Compute (1+x)^n evaluated at x=1, giving sum of all binomial coefficients\n    expansion_at_one = (1 + 1) ** n\n    # Compute (1+x)^n evaluated at x=-1, giving alternating sum of coefficients\n    expansion_at_neg_one = (1 + (-1)) ** n\n    # Adding these cancels odd-indexed terms (they have opposite signs)\n    combined_expansion = expansion_at_one + expansion_at_neg_one\n    # Divide by 2 since each even-indexed term was counted twice in the sum\n    even_indexed_sum = combined_expansion // 2\n    # Return the final sum of binomial coefficients at positions 0, 2, 4, ...\n    return even_indexed_sum",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

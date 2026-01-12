@@ -1,0 +1,37 @@
+{
+  "task_id": 19,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find whether a given array of integers contains any duplicate element.",
+  "python_code": "def test_duplicate(arraynums):\n    nums_set = set(arraynums)    \n    return len(arraynums) != len(nums_set)     ",
+  "test_list": [
+    "assert test_duplicate(([1,2,3,4,5]))==False",
+    "assert test_duplicate(([1,2,3,4, 4]))==True",
+    "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static boolean test_duplicate(int[] arraynums) {\n        HashSet<Integer> nums_set = new HashSet<>();\n        for (int num : arraynums) {\n            nums_set.add(num);\n        }\n        return arraynums.length != nums_set.size();\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert test_duplicate(([1,2,3,4,5]))==False",
+      "generated_test": "int[] input = new int[]{1,2,3,4,5};\nboolean expected = false;\nboolean result = test_duplicate(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_duplicate(([1,2,3,4, 4]))==True",
+      "generated_test": "int[] input = new int[]{1, 2, 3, 4, 4};\nboolean expected = true;\nboolean result = test_duplicate(input);\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True",
+      "generated_test": "int[] arr = new int[]{1,1,2,2,3,3,4,4,5};\nboolean result = test_duplicate(arr);\nboolean expected = true;\nif (result == expected) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expected);\n    System.out.println(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

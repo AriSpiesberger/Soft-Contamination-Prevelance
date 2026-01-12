@@ -1,0 +1,37 @@
+{
+  "task_id": 585,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the n most expensive items in a given dataset.",
+  "python_code": "import heapq\ndef expensive_items(items,n):\n  expensive_items = heapq.nlargest(n, items, key=lambda s: s['price'])\n  return expensive_items",
+  "test_list": [
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+    "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n)\n\nfunc expensive_items(items []map[string]interface{}, n int) []map[string]interface{} {\n\tif n <= 0 || len(items) == 0 {\n\t\treturn []map[string]interface{}{}\n\t}\n\t\n\titemsCopy := make([]map[string]interface{}, len(items))\n\tcopy(itemsCopy, items)\n\t\n\tsort.Slice(itemsCopy, func(i, j int) bool {\n\t\tpriceI, _ := itemsCopy[i][\"price\"].(float64)\n\t\tpriceJ, _ := itemsCopy[j][\"price\"].(float64)\n\t\treturn priceI > priceJ\n\t})\n\t\n\tif n > len(itemsCopy) {\n\t\tn = len(itemsCopy)\n\t}\n\t\n\treturn itemsCopy[:n]\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 2,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "input := []map[string]interface{}{\n\t{\"name\": \"Item-1\", \"price\": 101.1},\n\t{\"name\": \"Item-2\", \"price\": 555.22},\n}\nexpected := []map[string]interface{}{\n\t{\"name\": \"Item-2\", \"price\": 555.22},\n}\n\nresult := expensive_items(input, 1)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i][\"name\"] != expected[i][\"name\"] || result[i][\"price\"] != expected[i][\"price\"] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09}],2)==[{'name': 'Item-2', 'price': 555.22},{'name': 'Item-1', 'price': 101.1}]",
+      "generated_test": "input := []map[string]interface{}{\n\t{\"name\": \"Item-1\", \"price\": 101.1},\n\t{\"name\": \"Item-2\", \"price\": 555.22},\n\t{\"name\": \"Item-3\", \"price\": 45.09},\n}\nexpected := []map[string]interface{}{\n\t{\"name\": \"Item-2\", \"price\": 555.22},\n\t{\"name\": \"Item-1\", \"price\": 101.1},\n}\nresult := expensive_items(input, 2)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i][\"name\"] != expected[i][\"name\"] || result[i][\"price\"] != expected[i][\"price\"] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert expensive_items([{'name': 'Item-1', 'price': 101.1},{'name': 'Item-2', 'price': 555.22}, {'name': 'Item-3', 'price': 45.09},{'name': 'Item-4', 'price': 22.75}],1)==[{'name': 'Item-2', 'price': 555.22}]",
+      "generated_test": "items := []map[string]interface{}{\n\t{\"name\": \"Item-1\", \"price\": 101.1},\n\t{\"name\": \"Item-2\", \"price\": 555.22},\n\t{\"name\": \"Item-3\", \"price\": 45.09},\n\t{\"name\": \"Item-4\", \"price\": 22.75},\n}\n\nresult := expensive_items(items, 1)\n\nexpected := []map[string]interface{}{\n\t{\"name\": \"Item-2\", \"price\": 555.22},\n}\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i][\"name\"] != expected[i][\"name\"] || result[i][\"price\"] != expected[i][\"price\"] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

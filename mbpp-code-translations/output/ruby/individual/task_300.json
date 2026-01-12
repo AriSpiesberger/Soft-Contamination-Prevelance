@@ -1,0 +1,37 @@
+{
+  "task_id": 300,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the count of all binary sequences of length 2n such that sum of first n bits is same as sum of last n bits.",
+  "python_code": "def count_binary_seq(n): \n\tnCr = 1\n\tres = 1\n\tfor r in range(1, n + 1): \n\t\tnCr = (nCr * (n + 1 - r)) / r \n\t\tres += nCr * nCr \n\treturn res ",
+  "test_list": [
+    "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+    "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)"
+  ],
+  "code_ruby": "def count_binary_seq(n)\n  nCr = 1.0\n  res = 1.0\n  (1..n).each do |r|\n    nCr = (nCr * (n + 1 - r)) / r\n    res += nCr * nCr\n  end\n  res\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert math.isclose(count_binary_seq(1), 2.0, rel_tol=0.001)",
+      "generated_test": "result = count_binary_seq(1)\nexpected = 2.0\nif (result - expected).abs <= 0.001 * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(count_binary_seq(2), 6.0, rel_tol=0.001)",
+      "generated_test": "result = count_binary_seq(2)\nexpected = 6.0\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(count_binary_seq(3), 20.0, rel_tol=0.001)",
+      "generated_test": "result = count_binary_seq(3)\nexpected = 20.0\nrel_tol = 0.001\n\nif (result - expected).abs <= rel_tol * expected.abs\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

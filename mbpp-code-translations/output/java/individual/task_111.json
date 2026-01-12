@@ -1,0 +1,37 @@
+{
+  "task_id": 111,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the common elements in given nested lists.",
+  "python_code": "def common_in_nested_lists(nestedlist):\n    result = list(set.intersection(*map(set, nestedlist)))\n    return result",
+  "test_list": [
+    "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+    "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+    "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static List<Integer> common_in_nested_lists(List<List<Integer>> nestedlist) {\n        if (nestedlist == null || nestedlist.isEmpty()) {\n            return new ArrayList<>();\n        }\n        \n        // Start with the first list's elements as a set\n        Set<Integer> result = new HashSet<>(nestedlist.get(0));\n        \n        // Intersect with each subsequent list\n        for (int i = 1; i < nestedlist.size(); i++) {\n            Set<Integer> currentSet = new HashSet<>(nestedlist.get(i));\n            result.retainAll(currentSet);\n        }\n        \n        return new ArrayList<>(result);\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(12, 18, 23, 25, 45));\ninput.add(Arrays.asList(7, 12, 18, 24, 28));\ninput.add(Arrays.asList(1, 5, 8, 12, 15, 16, 18));\n\nList<Integer> result = common_in_nested_lists(input);\nSet<Integer> resultSet = new HashSet<>(result);\nSet<Integer> expectedSet = new HashSet<>(Arrays.asList(18, 12));\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(12, 5, 23, 25, 45));\ninput.add(Arrays.asList(7, 11, 5, 23, 28));\ninput.add(Arrays.asList(1, 5, 8, 18, 23, 16));\n\nList<Integer> result = common_in_nested_lists(input);\nSet<Integer> resultSet = new HashSet<>(result);\nSet<Integer> expectedSet = new HashSet<>(Arrays.asList(5, 23));\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])",
+      "generated_test": "List<List<Integer>> input = new ArrayList<>();\ninput.add(Arrays.asList(2, 3, 4, 1));\ninput.add(Arrays.asList(4, 5));\ninput.add(Arrays.asList(6, 4, 8));\ninput.add(Arrays.asList(4, 5));\ninput.add(Arrays.asList(6, 8, 4));\n\nList<Integer> result = common_in_nested_lists(input);\nSet<Integer> resultSet = new HashSet<>(result);\nSet<Integer> expectedSet = new HashSet<>();\nexpectedSet.add(4);\n\nif (resultSet.equals(expectedSet)) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + expectedSet);\n    System.out.println(\"  Got: \" + resultSet);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

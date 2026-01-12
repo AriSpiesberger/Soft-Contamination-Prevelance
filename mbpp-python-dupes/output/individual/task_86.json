@@ -1,0 +1,27 @@
+{
+  "task_id": 86,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find nth centered hexagonal number.",
+  "code_python": "def centered_hexagonal_number(n):\n  return 3 * n * (n - 1) + 1",
+  "test_list": [
+    "assert centered_hexagonal_number(10) == 271",
+    "assert centered_hexagonal_number(2) == 7",
+    "assert centered_hexagonal_number(9) == 217"
+  ],
+  "python_1": "def centered_hexagonal_number(n):\n    # Start with the central point which every centered hexagonal number has\n    result = 1\n    # Iterate through each hexagonal layer from 1 to n-1\n    for layer in range(1, n):\n        # Each layer k contributes exactly 6*k points around the center\n        result += 6 * layer\n    # Return the accumulated sum of center plus all surrounding layers\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def centered_hexagonal_number(n):\n    # Use the arithmetic series sum formula: 1 + 6*(1+2+...+(n-1))\n    # The sum of integers from 1 to (n-1) equals (n-1)*n/2\n    triangular_sum = (n - 1) * n // 2\n    # Multiply by 6 to get total points in all surrounding hexagonal rings\n    outer_points = 6 * triangular_sum\n    # Add the single center point to complete the centered hexagonal number\n    return outer_points + 1",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def centered_hexagonal_number(n):\n    # Compute n squared which appears in the expanded algebraic form\n    n_squared = n ** 2\n    # Calculate 3n\u00b2 from the expanded formula 3n\u00b2 - 3n + 1\n    three_n_squared = 3 * n_squared\n    # Calculate the linear term 3n to be subtracted\n    three_n = 3 * n\n    # Combine terms: 3n\u00b2 - 3n + 1 is algebraically equivalent to 3n(n-1) + 1\n    centered_hex = three_n_squared - three_n + 1\n    # Return the computed nth centered hexagonal number\n    return centered_hex",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def centered_hexagonal_number(n):\n    # Use reduce to accumulate the sum of 6*k for k from 1 to n-1\n    from functools import reduce\n    # Generate the sequence of layer contributions (6*1, 6*2, ..., 6*(n-1))\n    layer_values = [6 * k for k in range(1, n)]\n    # If n is 1, there are no layers, so we just have the center point\n    if not layer_values:\n        # Return 1 since the first centered hexagonal number is just the center\n        return 1\n    # Sum all layer contributions using reduce with addition operator\n    total_layers = reduce(lambda acc, x: acc + x, layer_values, 0)\n    # Add the central point (1) to the sum of all hexagonal ring contributions\n    return 1 + total_layers",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def centered_hexagonal_number(n):\n    # Use recursion base case: first centered hexagonal number is always 1\n    if n == 1:\n        # The center point alone forms the first centered hexagonal number\n        return 1\n    # Recursively compute the previous centered hexagonal number\n    previous = centered_hexagonal_number(n - 1)\n    # Each new layer n-1 adds exactly 6*(n-1) points around the previous shape\n    new_layer_contribution = 6 * (n - 1)\n    # Build up the result by adding the new hexagonal ring to previous total\n    return previous + new_layer_contribution",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

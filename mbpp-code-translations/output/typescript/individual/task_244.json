@@ -1,0 +1,17 @@
+{
+  "task_id": 244,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the next perfect square greater than a given number.",
+  "python_code": "import math  \ndef next_Perfect_Square(N): \n    nextN = math.floor(math.sqrt(N)) + 1\n    return nextN * nextN ",
+  "test_list": [
+    "assert next_Perfect_Square(35) == 36",
+    "assert next_Perfect_Square(6) == 9",
+    "assert next_Perfect_Square(9) == 16"
+  ],
+  "code_typescript": "function next_Perfect_Square(N: number): number {\n    const nextN = Math.floor(Math.sqrt(N)) + 1;\n    return nextN * nextN;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

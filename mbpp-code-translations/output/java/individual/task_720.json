@@ -1,0 +1,37 @@
+{
+  "task_id": 720,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to add a dictionary to the tuple. The output should be a tuple.",
+  "python_code": "def add_dict_to_tuple(test_tup, test_dict):\n  test_tup = list(test_tup)\n  test_tup.append(test_dict)\n  test_tup = tuple(test_tup)\n  return (test_tup) ",
+  "test_list": [
+    "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+    "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+    "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})"
+  ],
+  "code_java": "import java.util.*;\n\npublic class Solution {\n    public static Object[] add_dict_to_tuple(Object[] test_tup, HashMap<String, Integer> test_dict) {\n        Object[] result = new Object[test_tup.length + 1];\n        for (int i = 0; i < test_tup.length; i++) {\n            result[i] = test_tup[i];\n        }\n        result[test_tup.length] = test_dict;\n        return result;\n    }\n}",
+  "code_java_status": "success",
+  "code_java_attempts": 1,
+  "code_java_tests_passed": 3,
+  "code_java_tests_failed": 0,
+  "tests_java": [
+    {
+      "python_test": "assert add_dict_to_tuple((4, 5, 6), {\"MSAM\" : 1, \"is\" : 2, \"best\" : 3} ) == (4, 5, 6, {'MSAM': 1, 'is': 2, 'best': 3})",
+      "generated_test": "Object[] input_tup = new Object[]{4, 5, 6};\nHashMap<String, Integer> input_dict = new HashMap<>();\ninput_dict.put(\"MSAM\", 1);\ninput_dict.put(\"is\", 2);\ninput_dict.put(\"best\", 3);\n\nObject[] result = add_dict_to_tuple(input_tup, input_dict);\n\nHashMap<String, Integer> expected_dict = new HashMap<>();\nexpected_dict.put(\"MSAM\", 1);\nexpected_dict.put(\"is\", 2);\nexpected_dict.put(\"best\", 3);\nObject[] expected = new Object[]{4, 5, 6, expected_dict};\n\nboolean pass = true;\nif (result.length != expected.length) {\n    pass = false;\n} else {\n    for (int i = 0; i < result.length - 1; i++) {\n        if (!result[i].equals(expected[i])) {\n            pass = false;\n            break;\n        }\n    }\n    if (pass) {\n        if (result[result.length - 1] instanceof HashMap && expected[expected.length - 1] instanceof HashMap) {\n            @SuppressWarnings(\"unchecked\")\n            HashMap<String, Integer> resultDict = (HashMap<String, Integer>) result[result.length - 1];\n            @SuppressWarnings(\"unchecked\")\n            HashMap<String, Integer> expectedDict = (HashMap<String, Integer>) expected[expected.length - 1];\n            if (!resultDict.equals(expectedDict)) {\n                pass = false;\n            }\n        } else {\n            pass = false;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + java.util.Arrays.toString(expected));\n    System.out.println(\"  Got: \" + java.util.Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((1, 2, 3), {\"UTS\" : 2, \"is\" : 3, \"Worst\" : 4} ) == (1, 2, 3, {'UTS': 2, 'is': 3, 'Worst': 4})",
+      "generated_test": "Object[] testTup = new Object[]{1, 2, 3};\nHashMap<String, Integer> testDict = new HashMap<>();\ntestDict.put(\"UTS\", 2);\ntestDict.put(\"is\", 3);\ntestDict.put(\"Worst\", 4);\n\nObject[] result = add_dict_to_tuple(testTup, testDict);\n\nHashMap<String, Integer> expectedDict = new HashMap<>();\nexpectedDict.put(\"UTS\", 2);\nexpectedDict.put(\"is\", 3);\nexpectedDict.put(\"Worst\", 4);\n\nboolean pass = true;\nif (result.length != 4) {\n    pass = false;\n} else {\n    if (!result[0].equals(1) || !result[1].equals(2) || !result[2].equals(3)) {\n        pass = false;\n    }\n    if (!(result[3] instanceof HashMap)) {\n        pass = false;\n    } else {\n        @SuppressWarnings(\"unchecked\")\n        HashMap<String, Integer> resultDict = (HashMap<String, Integer>) result[3];\n        if (!resultDict.equals(expectedDict)) {\n            pass = false;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    Object[] expected = new Object[]{1, 2, 3, expectedDict};\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_dict_to_tuple((8, 9, 10), {\"POS\" : 3, \"is\" : 4, \"Okay\" : 5} ) == (8, 9, 10, {'POS': 3, 'is': 4, 'Okay': 5})",
+      "generated_test": "Object[] input_tup = new Object[]{8, 9, 10};\nHashMap<String, Integer> input_dict = new HashMap<>();\ninput_dict.put(\"POS\", 3);\ninput_dict.put(\"is\", 4);\ninput_dict.put(\"Okay\", 5);\n\nObject[] result = add_dict_to_tuple(input_tup, input_dict);\n\nHashMap<String, Integer> expected_dict = new HashMap<>();\nexpected_dict.put(\"POS\", 3);\nexpected_dict.put(\"is\", 4);\nexpected_dict.put(\"Okay\", 5);\n\nboolean pass = true;\nif (result.length != 4) {\n    pass = false;\n} else {\n    if (!result[0].equals(8) || !result[1].equals(9) || !result[2].equals(10)) {\n        pass = false;\n    }\n    if (!(result[3] instanceof HashMap)) {\n        pass = false;\n    } else {\n        @SuppressWarnings(\"unchecked\")\n        HashMap<String, Integer> result_dict = (HashMap<String, Integer>) result[3];\n        if (!result_dict.equals(expected_dict)) {\n            pass = false;\n        }\n    }\n}\n\nif (pass) {\n    System.out.println(\"PASS\");\n} else {\n    Object[] expected = new Object[]{8, 9, 10, expected_dict};\n    System.out.println(\"FAIL\");\n    System.out.println(\"  Expected: \" + Arrays.toString(expected));\n    System.out.println(\"  Got: \" + Arrays.toString(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

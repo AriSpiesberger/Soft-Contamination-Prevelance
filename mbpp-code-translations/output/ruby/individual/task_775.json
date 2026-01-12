@@ -1,0 +1,37 @@
+{
+  "task_id": 775,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to check whether every odd index contains odd numbers of a given list.",
+  "python_code": "def odd_position(nums):\n\treturn all(nums[i]%2==i%2 for i in range(len(nums)))",
+  "test_list": [
+    "assert odd_position([2,1,4,3,6,7,6,3]) == True",
+    "assert odd_position([4,1,2]) == True",
+    "assert odd_position([1,2,3]) == False"
+  ],
+  "code_ruby": "def odd_position(nums)\n  nums.each_with_index.all? { |num, i| num % 2 == i % 2 }\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert odd_position([2,1,4,3,6,7,6,3]) == True",
+      "generated_test": "result = odd_position([2,1,4,3,6,7,6,3])\nexpected = true\n\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_position([4,1,2]) == True",
+      "generated_test": "result = odd_position([4, 1, 2])\nexpected = true\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert odd_position([1,2,3]) == False",
+      "generated_test": "result = odd_position([1, 2, 3])\nexpected = false\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

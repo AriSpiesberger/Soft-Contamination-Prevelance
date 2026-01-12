@@ -1,0 +1,37 @@
+{
+  "task_id": 256,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in a non-negative number and returns the number of prime numbers less than the given non-negative number.",
+  "python_code": "def count_Primes_nums(n):\n    ctr = 0\n    for num in range(n):\n        if num <= 1:\n            continue\n        for i in range(2,num):\n            if (num % i) == 0:\n                break\n        else:\n            ctr += 1\n    return ctr",
+  "test_list": [
+    "assert count_Primes_nums(5) == 2",
+    "assert count_Primes_nums(10) == 4",
+    "assert count_Primes_nums(100) == 25"
+  ],
+  "code_rust": "pub fn count_Primes_nums(n: i32) -> i32 {\n    let mut ctr = 0;\n    for num in 0..n {\n        if num <= 1 {\n            continue;\n        }\n        let mut is_prime = true;\n        for i in 2..num {\n            if num % i == 0 {\n                is_prime = false;\n                break;\n            }\n        }\n        if is_prime {\n            ctr += 1;\n        }\n    }\n    ctr\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert count_Primes_nums(5) == 2",
+      "generated_test": "let result = count_Primes_nums(5);\nlet expected = 2;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Primes_nums(10) == 4",
+      "generated_test": "let result = count_Primes_nums(10);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert count_Primes_nums(100) == 25",
+      "generated_test": "let result = count_Primes_nums(100);\nlet expected = 25;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

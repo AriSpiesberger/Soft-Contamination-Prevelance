@@ -1,0 +1,37 @@
+{
+  "task_id": 577,
+  "source_split": "validation",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the last digit in factorial of a given number.",
+  "python_code": "def last_Digit_Factorial(n): \n    if (n == 0): return 1\n    elif (n <= 2): return n  \n    elif (n == 3): return 6\n    elif (n == 4): return 4 \n    else: \n      return 0",
+  "test_list": [
+    "assert last_Digit_Factorial(4) == 4",
+    "assert last_Digit_Factorial(21) == 0",
+    "assert last_Digit_Factorial(30) == 0"
+  ],
+  "code_ruby": "def last_Digit_Factorial(n)\n  if n == 0\n    1\n  elsif n <= 2\n    n\n  elsif n == 3\n    6\n  elsif n == 4\n    4\n  else\n    0\n  end\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert last_Digit_Factorial(4) == 4",
+      "generated_test": "result = last_Digit_Factorial(4)\nexpected = 4\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit_Factorial(21) == 0",
+      "generated_test": "result = last_Digit_Factorial(21)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert last_Digit_Factorial(30) == 0",
+      "generated_test": "result = last_Digit_Factorial(30)\nexpected = 0\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

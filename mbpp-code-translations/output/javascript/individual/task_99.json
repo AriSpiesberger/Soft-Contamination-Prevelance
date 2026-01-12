@@ -1,0 +1,37 @@
+{
+  "task_id": 99,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.",
+  "python_code": "def decimal_to_binary(n): \n    return bin(n).replace(\"0b\",\"\") ",
+  "test_list": [
+    "assert decimal_to_binary(8) == '1000'",
+    "assert decimal_to_binary(18) == '10010'",
+    "assert decimal_to_binary(7) == '111'"
+  ],
+  "code_javascript": "function decimal_to_binary(n) {\n    return n.toString(2);\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert decimal_to_binary(8) == '1000'",
+      "generated_test": "const result = decimal_to_binary(8);\nconst expected = '1000';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert decimal_to_binary(18) == '10010'",
+      "generated_test": "const result = decimal_to_binary(18);\nconst expected = '10010';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert decimal_to_binary(7) == '111'",
+      "generated_test": "const result = decimal_to_binary(7);\nconst expected = '111';\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

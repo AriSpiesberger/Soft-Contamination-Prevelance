@@ -1,0 +1,27 @@
+{
+  "task_id": 106,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to append the given list to the given tuples.",
+  "code_python": "def add_lists(test_list, test_tup):\n  res = tuple(list(test_tup) + test_list)\n  return (res) ",
+  "test_list": [
+    "assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)",
+    "assert add_lists([6, 7, 8], (10, 11)) == (10, 11, 6, 7, 8)",
+    "assert add_lists([7, 8, 9], (11, 12)) == (11, 12, 7, 8, 9)"
+  ],
+  "python_1": "def add_lists(test_list, test_tup):\n    # Convert the list to a tuple using the tuple constructor\n    list_as_tuple = tuple(test_list)\n    # Concatenate tuples directly using the + operator for tuple addition\n    res = test_tup + list_as_tuple\n    # Return the combined tuple with original tuple elements first\n    return res",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def add_lists(test_list, test_tup):\n    # Use unpacking operator to spread tuple elements into a new tuple along with list elements\n    # The * operator unpacks iterables, allowing us to combine them in a single tuple literal\n    res = (*test_tup, *test_list)\n    # Return the newly constructed tuple with all elements combined\n    return res",
+  "python_2_status": "success",
+  "python_2_attempts": 3,
+  "python_3": "def add_lists(test_list, test_tup):\n    # Import chain from itertools to create a single iterator from multiple iterables\n    from itertools import chain\n    # Chain the tuple and list together into one continuous sequence of elements\n    combined_iterator = chain(test_tup, test_list)\n    # Convert the chained iterator into a tuple to get the final result\n    res = tuple(combined_iterator)\n    # Return the merged tuple containing all elements in order\n    return res",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def add_lists(test_list, test_tup):\n    # Use a generator expression to yield each element from the tuple first\n    tuple_elements = (elem for elem in test_tup)\n    # Create another generator expression for the list elements\n    list_elements = (elem for elem in test_list)\n    # Build result list by extending with both generators sequentially\n    result = []\n    # Consume the tuple generator and add each element to result\n    result.extend(tuple_elements)\n    # Consume the list generator and append those elements after tuple elements\n    result.extend(list_elements)\n    # Cast the accumulated list back to tuple for the expected return type\n    return tuple(result)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def add_lists(test_list, test_tup):\n    # Use reduce to accumulate elements one by one into the result tuple\n    from functools import reduce\n    # Combine tuple and list into a single list to process element by element\n    all_elements = list(test_tup) + test_list\n    # Apply reduce with a lambda that appends each element to a growing tuple\n    res = reduce(lambda acc, x: acc + (x,), all_elements, ())\n    # Return the tuple built up through successive single-element concatenations\n    return res",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 390,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to apply a given format string to all of the elements in a list.",
+  "python_code": "def add_string(list_, string):\n add_string=[string.format(i) for i in  list_]\n return add_string",
+  "test_list": [
+    "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+    "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+    "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc add_string(list_ []interface{}, formatString string) []string {\n\tresult := make([]string, len(list_))\n\tfor i, v := range list_ {\n\t\t// Replace {0} with the value\n\t\tresult[i] = strings.Replace(formatString, \"{0}\", fmt.Sprintf(\"%v\", v), 1)\n\t}\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+      "generated_test": "input := []interface{}{1, 2, 3, 4}\nexpected := []string{\"temp1\", \"temp2\", \"temp3\", \"temp4\"}\nresult := add_string(input, \"temp{0}\")\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Printf(\"FAIL\\n  Expected: %v\\n  Got: %v\\n\", expected, result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+      "generated_test": "input := []interface{}{\"a\", \"b\", \"c\", \"d\"}\nexpected := []string{\"pythona\", \"pythonb\", \"pythonc\", \"pythond\"}\nresult := add_string(input, \"python{0}\")\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']",
+      "generated_test": "input := []interface{}{5, 6, 7, 8}\nexpected := []string{\"string5\", \"string6\", \"string7\", \"string8\"}\nresult := add_string(input, \"string{0}\")\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

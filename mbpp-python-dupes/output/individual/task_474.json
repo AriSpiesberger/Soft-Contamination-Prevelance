@@ -1,0 +1,27 @@
+{
+  "task_id": 474,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to replace characters in a string.",
+  "code_python": "def replace_char(str1,ch,newch):\n str2 = str1.replace(ch, newch)\n return str2",
+  "test_list": [
+    "assert replace_char(\"polygon\",'y','l')==(\"pollgon\")",
+    "assert replace_char(\"character\",'c','a')==(\"aharaater\")",
+    "assert replace_char(\"python\",'l','a')==(\"python\")"
+  ],
+  "python_1": "def replace_char(str1,ch,newch):\n    # Initialize empty list to collect transformed characters\n    result_chars = []\n    # Iterate through each character in the input string\n    for current_char in str1:\n        # Check if current character matches the target to replace\n        if current_char == ch:\n            # Append the replacement character when match found\n            result_chars.append(newch)\n        else:\n            # Keep original character when no match\n            result_chars.append(current_char)\n    # Join all characters in list to form the final string\n    return ''.join(result_chars)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def replace_char(str1,ch,newch):\n    # Use list comprehension to transform each character in one expression\n    transformed = [newch if c == ch else c for c in str1]\n    # Concatenate all characters from the list into a single string\n    return ''.join(transformed)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def replace_char(str1,ch,newch):\n    # Use recursion base case: return empty string when input is exhausted\n    if len(str1) == 0:\n        # Nothing left to process, return empty string to terminate recursion\n        return \"\"\n    # Extract the first character of the string for evaluation\n    first = str1[0]\n    # Determine replacement: swap if match found, otherwise keep original\n    replaced = newch if first == ch else first\n    # Recursively process remaining substring and concatenate with current result\n    return replaced + replace_char(str1[1:], ch, newch)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def replace_char(str1,ch,newch):\n    # Use map function to apply transformation logic to each character\n    transformed_iterator = map(lambda c: newch if c == ch else c, str1)\n    # Convert the map iterator into a string by joining all characters\n    result = ''.join(transformed_iterator)\n    # Return the fully transformed string with all replacements made\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def replace_char(str1,ch,newch):\n    # Convert string to mutable list to allow in-place character modifications\n    char_list = list(str1)\n    # Track current position using index-based iteration\n    idx = 0\n    # Continue processing until all positions in the list are examined\n    while idx < len(char_list):\n        # Check if character at current index matches target for replacement\n        if char_list[idx] == ch:\n            # Directly mutate the list element to the new character value\n            char_list[idx] = newch\n        # Advance index to examine next character position\n        idx += 1\n    # Reconstruct string from modified character list using empty separator\n    return ''.join(char_list)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

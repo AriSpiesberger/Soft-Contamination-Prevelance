@@ -1,0 +1,37 @@
+{
+  "task_id": 163,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to calculate the area of a regular polygon given the length and number of its sides.",
+  "python_code": "from math import tan, pi\ndef area_polygon(s, l):\n  area = s * (l ** 2) / (4 * tan(pi / s))\n  return area",
+  "test_list": [
+    "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+    "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+    "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)"
+  ],
+  "code_rust": "use std::f64::consts::PI;\n\npub fn area_polygon(s: i32, l: f64) -> f64 {\n    let s_f64 = s as f64;\n    let area = s_f64 * (l.powi(2)) / (4.0 * (PI / s_f64).tan());\n    area\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert math.isclose(area_polygon(4, 20), 400., rel_tol=0.001)",
+      "generated_test": "let result = area_polygon(4, 20.0);\nlet expected = 400.0;\nlet rel_tol = 0.001;\nif (result - expected).abs() <= rel_tol * expected.abs() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(area_polygon(10, 15), 1731.197, rel_tol=0.001)",
+      "generated_test": "let result = area_polygon(10, 15.0);\nlet expected = 1731.197;\nlet rel_tol = 0.001;\nif (result - expected).abs() <= rel_tol * expected.abs() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert math.isclose(area_polygon(9, 7), 302.909, rel_tol=0.001)",
+      "generated_test": "let result = area_polygon(9, 7.0);\nlet expected = 302.909;\nlet rel_tol = 0.001;\nif (result - expected).abs() <= rel_tol * expected.abs() {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 240,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two lists and replaces the last element of the first list with the elements of the second list.",
+  "python_code": "def replace_list(list1,list2):\n list1[-1:] = list2\n replace_list=list1\n return replace_list\n",
+  "test_list": [
+    "assert replace_list([1, 3, 5, 7, 9, 10],[2, 4, 6, 8])==[1, 3, 5, 7, 9, 2, 4, 6, 8]",
+    "assert replace_list([1,2,3,4,5],[5,6,7,8])==[1,2,3,4,5,6,7,8]",
+    "assert replace_list([\"red\",\"blue\",\"green\"],[\"yellow\"])==[\"red\",\"blue\",\"yellow\"]"
+  ],
+  "code_rust": "pub fn replace_list<T: Clone>(list1: &[T], list2: &[T]) -> Vec<T> {\n    let mut result: Vec<T> = if list1.is_empty() {\n        Vec::new()\n    } else {\n        list1[..list1.len() - 1].to_vec()\n    };\n    result.extend(list2.iter().cloned());\n    result\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert replace_list([1, 3, 5, 7, 9, 10],[2, 4, 6, 8])==[1, 3, 5, 7, 9, 2, 4, 6, 8]",
+      "generated_test": "let result = replace_list(&[1, 3, 5, 7, 9, 10], &[2, 4, 6, 8]);\nlet expected = vec![1, 3, 5, 7, 9, 2, 4, 6, 8];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_list([1,2,3,4,5],[5,6,7,8])==[1,2,3,4,5,6,7,8]",
+      "generated_test": "let result = replace_list(&[1, 2, 3, 4, 5], &[5, 6, 7, 8]);\nlet expected = vec![1, 2, 3, 4, 5, 6, 7, 8];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert replace_list([\"red\",\"blue\",\"green\"],[\"yellow\"])==[\"red\",\"blue\",\"yellow\"]",
+      "generated_test": "let result = replace_list(&[\"red\", \"blue\", \"green\"], &[\"yellow\"]);\nlet expected = vec![\"red\", \"blue\", \"yellow\"];\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

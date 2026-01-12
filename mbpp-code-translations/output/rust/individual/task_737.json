@@ -1,0 +1,37 @@
+{
+  "task_id": 737,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to check whether the given string is starting with a vowel or not using regex.",
+  "python_code": "import re \nregex = '^[aeiouAEIOU][A-Za-z0-9_]*'\ndef check_str(string): \n\treturn re.search(regex, string)",
+  "test_list": [
+    "assert check_str(\"annie\")",
+    "assert not check_str(\"dawood\")",
+    "assert check_str(\"Else\")"
+  ],
+  "code_rust": "use regex::Regex;\n\npub fn check_str(string: &str) -> bool {\n    let regex = Regex::new(r\"^[aeiouAEIOU][A-Za-z0-9_]*\").unwrap();\n    regex.is_match(string)\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert check_str(\"annie\")",
+      "generated_test": "let result = check_str(\"annie\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert not check_str(\"dawood\")",
+      "generated_test": "let result = check_str(\"dawood\");\nlet expected = false;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert check_str(\"Else\")",
+      "generated_test": "let result = check_str(\"Else\");\nlet expected = true;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

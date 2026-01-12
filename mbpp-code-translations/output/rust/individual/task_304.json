@@ -1,0 +1,37 @@
+{
+  "task_id": 304,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find element at a given index after number of rotations.",
+  "python_code": "def find_Element(arr,ranges,rotations,index) :  \n    for i in range(rotations - 1,-1,-1 ) : \n        left = ranges[i][0] \n        right = ranges[i][1] \n        if (left <= index and right >= index) : \n            if (index == left) : \n                index = right \n            else : \n                index = index - 1 \n    return arr[index] ",
+  "test_list": [
+    "assert find_Element([1,2,3,4,5],[[0,2],[0,3]],2,1) == 3",
+    "assert find_Element([1,2,3,4],[[0,1],[0,2]],1,2) == 3",
+    "assert find_Element([1,2,3,4,5,6],[[0,1],[0,2]],1,1) == 1"
+  ],
+  "code_rust": "pub fn find_Element(arr: &[i32], ranges: &[[usize; 2]], rotations: usize, mut index: usize) -> i32 {\n    for i in (0..rotations).rev() {\n        let left = ranges[i][0];\n        let right = ranges[i][1];\n        if left <= index && right >= index {\n            if index == left {\n                index = right;\n            } else {\n                index = index - 1;\n            }\n        }\n    }\n    arr[index]\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_Element([1,2,3,4,5],[[0,2],[0,3]],2,1) == 3",
+      "generated_test": "let arr = [1, 2, 3, 4, 5];\nlet ranges = [[0, 2], [0, 3]];\nlet result = find_Element(&arr, &ranges, 2, 1);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Element([1,2,3,4],[[0,1],[0,2]],1,2) == 3",
+      "generated_test": "let arr = [1, 2, 3, 4];\nlet ranges = [[0, 1], [0, 2]];\nlet result = find_Element(&arr, &ranges, 1, 2);\nlet expected = 3;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_Element([1,2,3,4,5,6],[[0,1],[0,2]],1,1) == 1",
+      "generated_test": "let arr = [1, 2, 3, 4, 5, 6];\nlet ranges = [[0, 1], [0, 2]];\nlet result = find_Element(&arr, &ranges, 1, 1);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": 271,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function that takes in an integer n and finds the sum of the first n even natural numbers that are raised to the fifth power.",
+  "python_code": "def even_Power_Sum(n): \n    sum = 0; \n    for i in range(1,n+1): \n        j = 2*i; \n        sum = sum + (j*j*j*j*j); \n    return sum; ",
+  "test_list": [
+    "assert even_Power_Sum(2) == 1056",
+    "assert even_Power_Sum(3) == 8832",
+    "assert even_Power_Sum(1) == 32"
+  ],
+  "code_ruby": "def even_Power_Sum(n)\n  sum = 0\n  (1..n).each do |i|\n    j = 2 * i\n    sum = sum + (j ** 5)\n  end\n  sum\nend",
+  "code_ruby_status": "success",
+  "code_ruby_attempts": 1,
+  "code_ruby_tests_passed": 3,
+  "code_ruby_tests_failed": 0,
+  "tests_ruby": [
+    {
+      "python_test": "assert even_Power_Sum(2) == 1056",
+      "generated_test": "result = even_Power_Sum(2)\nexpected = 1056\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert even_Power_Sum(3) == 8832",
+      "generated_test": "result = even_Power_Sum(3)\nexpected = 8832\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert even_Power_Sum(1) == 32",
+      "generated_test": "result = even_Power_Sum(1)\nexpected = 32\nif result == expected\n  puts \"PASS\"\nelse\n  puts \"FAIL\"\n  puts \"  Expected: #{expected}\"\n  puts \"  Got: #{result}\"\nend",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

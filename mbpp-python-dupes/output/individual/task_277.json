@@ -1,0 +1,27 @@
+{
+  "task_id": 277,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in a dictionary and integer n and filters the dictionary to only include entries with values greater than or equal to n.",
+  "code_python": "def dict_filter(dict,n):\n result = {key:value for (key, value) in dict.items() if value >=n}\n return result",
+  "test_list": [
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},170)=={'Cierra Vega': 175, 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},180)=={ 'Alden Cantrell': 180, 'Pierre Cox': 190}",
+    "assert dict_filter({'Cierra Vega': 175, 'Alden Cantrell': 180, 'Kierra Gentry': 165, 'Pierre Cox': 190},190)=={ 'Pierre Cox': 190}"
+  ],
+  "python_1": "def dict_filter(dict,n):\n    # Create an empty dictionary to accumulate filtered results\n    result = {}\n    # Loop through each key in the input dictionary\n    for key in dict:\n        # Extract the value associated with the current key\n        value = dict[key]\n        # Check if the value meets or exceeds the threshold n\n        if value >= n:\n            # Add the key-value pair to our result dictionary\n            result[key] = value\n    # Return the filtered dictionary containing only qualifying entries\n    return result",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def dict_filter(dict,n):\n    # Use filter() with lambda to select items where value meets threshold\n    filtered_items = filter(lambda item: item[1] >= n, dict.items())\n    # Convert the filtered iterator of tuples back into a dictionary\n    result = {}\n    # Unpack each key-value tuple from the filtered results\n    for key, value in filtered_items:\n        # Assign the qualifying value to its corresponding key\n        result[key] = value\n    # Return the newly constructed filtered dictionary\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def dict_filter(dict,n):\n    # Leverage filter with lambda and convert directly to dict using constructor\n    filtered_pairs = filter(lambda item: item[1] >= n, dict.items())\n    # Pass the filtered iterator directly to dict() for one-step conversion\n    return __builtins__.__dict__['dict'](filtered_pairs)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def dict_filter(dict,n):\n    # Extract all keys from the dictionary into a list for iteration\n    keys_list = list(dict.keys())\n    # Extract corresponding values into a parallel list\n    values_list = list(dict.values())\n    # Initialize empty dictionary to store filtered key-value pairs\n    result = {}\n    # Use enumerate to get both index and key simultaneously\n    for idx, key in enumerate(keys_list):\n        # Access value by index from the parallel values list\n        current_value = values_list[idx]\n        # Compare value against threshold using ternary-style conditional assignment\n        result[key] = current_value if current_value >= n else None\n    # Remove None entries that didn't meet threshold using dict comprehension cleanup\n    result = {k: v for k, v in result.items() if v is not None}\n    # Return the dictionary containing only entries meeting the criteria\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def dict_filter(dict,n):\n    # Start with a shallow copy of the original dictionary to preserve all entries\n    result = dict.copy()\n    # Collect keys that need removal to avoid modifying dict during iteration\n    keys_to_remove = []\n    # Scan through all key-value pairs in our copied dictionary\n    for key, value in result.items():\n        # Mark keys for deletion when their values fall below the threshold\n        if value < n:\n            keys_to_remove.append(key)\n    # Iterate over collected keys and remove each one from result\n    for key in keys_to_remove:\n        # Use del statement to eliminate non-qualifying entries\n        del result[key]\n    # Return the pruned dictionary with only values >= n remaining\n    return result",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

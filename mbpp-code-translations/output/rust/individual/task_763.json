@@ -1,0 +1,37 @@
+{
+  "task_id": 763,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the minimum difference between any two elements in a given array. https://www.geeksforgeeks.org/find-minimum-difference-pair/",
+  "python_code": "def find_min_diff(arr,n): \n    arr = sorted(arr) \n    diff = 10**20 \n    for i in range(n-1): \n        if arr[i+1] - arr[i] < diff: \n            diff = arr[i+1] - arr[i]  \n    return diff ",
+  "test_list": [
+    "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+    "assert find_min_diff((4,3,2,6),4) == 1",
+    "assert find_min_diff((30,5,20,9),4) == 4"
+  ],
+  "code_rust": "pub fn find_min_diff(arr: &[i32], n: usize) -> i32 {\n    let mut sorted_arr: Vec<i32> = arr.iter().cloned().collect();\n    sorted_arr.sort();\n    \n    let mut diff = i32::MAX;\n    for i in 0..n-1 {\n        if sorted_arr[i+1] - sorted_arr[i] < diff {\n            diff = sorted_arr[i+1] - sorted_arr[i];\n        }\n    }\n    diff\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+      "generated_test": "let arr = [1, 5, 3, 19, 18, 25];\nlet result = find_min_diff(&arr, 6);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_min_diff((4,3,2,6),4) == 1",
+      "generated_test": "let result = find_min_diff(&[4, 3, 2, 6], 4);\nlet expected = 1;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert find_min_diff((30,5,20,9),4) == 4",
+      "generated_test": "let result = find_min_diff(&[30, 5, 20, 9], 4);\nlet expected = 4;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

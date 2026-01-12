@@ -1,0 +1,27 @@
+{
+  "task_id": 261,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function that takes in two tuples and performs mathematical division operation element-wise across the given tuples.",
+  "code_python": "def division_elements(test_tup1, test_tup2):\n  res = tuple(ele1 // ele2 for ele1, ele2 in zip(test_tup1, test_tup2))\n  return (res) ",
+  "test_list": [
+    "assert division_elements((10, 4, 6, 9),(5, 2, 3, 3)) == (2, 2, 2, 3)",
+    "assert division_elements((12, 6, 8, 16),(6, 3, 4, 4)) == (2, 2, 2, 4)",
+    "assert division_elements((20, 14, 36, 18),(5, 7, 6, 9)) == (4, 2, 6, 2)"
+  ],
+  "python_1": "def division_elements(test_tup1, test_tup2):\n    # Create an empty list to accumulate division results\n    result_list = []\n    # Iterate through indices using range and length of first tuple\n    for i in range(len(test_tup1)):\n        # Perform integer division between corresponding elements at index i\n        quotient = test_tup1[i] // test_tup2[i]\n        # Append the computed quotient to our result list\n        result_list.append(quotient)\n    # Convert the accumulated list into a tuple for the final return value\n    return tuple(result_list)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def division_elements(test_tup1, test_tup2):\n    # Use map to apply a lambda function that divides pairs across both tuples\n    mapped_result = map(lambda pair: pair[0] // pair[1], zip(test_tup1, test_tup2))\n    # Convert the map iterator object into an immutable tuple structure\n    return tuple(mapped_result)",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def division_elements(test_tup1, test_tup2):\n    # Use map with two iterables directly, avoiding zip by passing both tuples to map\n    division_results = map(lambda x, y: x // y, test_tup1, test_tup2)\n    # Materialize the lazy map iterator into a tuple and return it\n    return tuple(division_results)",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def division_elements(test_tup1, test_tup2):\n    # Import operator module to access the floordiv function for integer division\n    import operator\n    # Leverage operator.floordiv as a first-class function with map over both tuples simultaneously\n    division_iterator = map(operator.floordiv, test_tup1, test_tup2)\n    # Construct and return the final tuple from the iterator produced by map\n    return tuple(division_iterator)",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def division_elements(test_tup1, test_tup2):\n    # Use list comprehension with explicit index enumeration via enumerate on first tuple\n    result = [test_tup1[idx] // test_tup2[idx] for idx, _ in enumerate(test_tup1)]\n    # Cast the resulting list to tuple type for immutable return value\n    return tuple(result)",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

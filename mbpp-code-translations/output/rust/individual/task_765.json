@@ -1,0 +1,37 @@
+{
+  "task_id": 765,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find nth polite number. geeksforgeeks.org/n-th-polite-number/",
+  "python_code": "import math \ndef is_polite(n): \n\tn = n + 1\n\treturn (int)(n+(math.log((n + math.log(n, 2)), 2))) ",
+  "test_list": [
+    "assert is_polite(7) == 11",
+    "assert is_polite(4) == 7",
+    "assert is_polite(9) == 13"
+  ],
+  "code_rust": "pub fn is_polite(n: i32) -> i32 {\n    let n_f64 = (n + 1) as f64;\n    let log_n = n_f64.log2();\n    let inner = n_f64 + log_n;\n    let result = n_f64 + inner.log2();\n    result as i32\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 1,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert is_polite(7) == 11",
+      "generated_test": "let result = is_polite(7);\nlet expected = 11;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_polite(4) == 7",
+      "generated_test": "let result = is_polite(4);\nlet expected = 7;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert is_polite(9) == 13",
+      "generated_test": "let result = is_polite(9);\nlet expected = 13;\nif result == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {}\", expected);\n    println!(\"  Got: {}\", result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

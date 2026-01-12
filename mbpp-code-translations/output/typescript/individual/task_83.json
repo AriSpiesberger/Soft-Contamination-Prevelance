@@ -1,0 +1,17 @@
+{
+  "task_id": 83,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the character made by adding the ASCII value of all the characters of the given string modulo 26.",
+  "python_code": "def get_Char(strr):  \n    summ = 0\n    for i in range(len(strr)): \n        summ += (ord(strr[i]) - ord('a') + 1)  \n    if (summ % 26 == 0): \n        return ord('z') \n    else: \n        summ = summ % 26\n        return chr(ord('a') + summ - 1)",
+  "test_list": [
+    "assert get_Char(\"abc\") == \"f\"",
+    "assert get_Char(\"gfg\") == \"t\"",
+    "assert get_Char(\"ab\") == \"c\""
+  ],
+  "code_typescript": "function get_Char(strr: string): string {\n    let summ: number = 0;\n    for (let i = 0; i < strr.length; i++) {\n        summ += (strr.charCodeAt(i) - 'a'.charCodeAt(0) + 1);\n    }\n    if (summ % 26 === 0) {\n        return 'z';\n    } else {\n        summ = summ % 26;\n        return String.fromCharCode('a'.charCodeAt(0) + summ - 1);\n    }\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

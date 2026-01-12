@@ -1,0 +1,37 @@
+{
+  "task_id": 749,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to sort a given list of strings of numbers numerically. https://www.geeksforgeeks.org/python-sort-numeric-strings-in-a-list/",
+  "python_code": "def sort_numeric_strings(nums_str):\n    result = [int(x) for x in nums_str]\n    result.sort()\n    return result",
+  "test_list": [
+    "assert sort_numeric_strings( ['4','12','45','7','0','100','200','-12','-500'])==[-500, -12, 0, 4, 7, 12, 45, 100, 200]",
+    "assert sort_numeric_strings(['2','3','8','4','7','9','8','2','6','5','1','6','1','2','3','4','6','9','1','2'])==[1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 7, 8, 8, 9, 9]",
+    "assert sort_numeric_strings(['1','3','5','7','1', '3','13', '15', '17','5', '7 ','9','1', '11'])==[1, 1, 1, 3, 3, 5, 5, 7, 7, 9, 11, 13, 15, 17]"
+  ],
+  "code_go": "package main\n\nimport (\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc sort_numeric_strings(nums_str []string) []int {\n\tresult := make([]int, len(nums_str))\n\tfor i, s := range nums_str {\n\t\ttrimmed := strings.TrimSpace(s)\n\t\tnum, _ := strconv.Atoi(trimmed)\n\t\tresult[i] = num\n\t}\n\tsort.Ints(result)\n\treturn result\n}",
+  "code_go_status": "success",
+  "code_go_attempts": 1,
+  "code_go_tests_passed": 3,
+  "code_go_tests_failed": 0,
+  "tests_go": [
+    {
+      "python_test": "assert sort_numeric_strings( ['4','12','45','7','0','100','200','-12','-500'])==[-500, -12, 0, 4, 7, 12, 45, 100, 200]",
+      "generated_test": "input := []string{\"4\", \"12\", \"45\", \"7\", \"0\", \"100\", \"200\", \"-12\", \"-500\"}\nexpected := []int{-500, -12, 0, 4, 7, 12, 45, 100, 200}\nresult := sort_numeric_strings(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range expected {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_numeric_strings(['2','3','8','4','7','9','8','2','6','5','1','6','1','2','3','4','6','9','1','2'])==[1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 7, 8, 8, 9, 9]",
+      "generated_test": "input := []string{\"2\", \"3\", \"8\", \"4\", \"7\", \"9\", \"8\", \"2\", \"6\", \"5\", \"1\", \"6\", \"1\", \"2\", \"3\", \"4\", \"6\", \"9\", \"1\", \"2\"}\nexpected := []int{1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 7, 8, 8, 9, 9}\nresult := sort_numeric_strings(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert sort_numeric_strings(['1','3','5','7','1', '3','13', '15', '17','5', '7 ','9','1', '11'])==[1, 1, 1, 3, 3, 5, 5, 7, 7, 9, 11, 13, 15, 17]",
+      "generated_test": "input := []string{\"1\", \"3\", \"5\", \"7\", \"1\", \"3\", \"13\", \"15\", \"17\", \"5\", \"7 \", \"9\", \"1\", \"11\"}\nexpected := []int{1, 1, 1, 3, 3, 5, 5, 7, 7, 9, 11, 13, 15, 17}\nresult := sort_numeric_strings(input)\n\npass := true\nif len(result) != len(expected) {\n\tpass = false\n} else {\n\tfor i := range result {\n\t\tif result[i] != expected[i] {\n\t\t\tpass = false\n\t\t\tbreak\n\t\t}\n\t}\n}\n\nif pass {\n\tfmt.Println(\"PASS\")\n} else {\n\tfmt.Println(\"FAIL\")\n\tfmt.Printf(\"  Expected: %v\\n\", expected)\n\tfmt.Printf(\"  Got: %v\\n\", result)\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

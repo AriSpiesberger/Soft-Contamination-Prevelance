@@ -1,0 +1,27 @@
+{
+  "task_id": 443,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the largest negative number from the given list.",
+  "code_python": "def largest_neg(list1): \n    max = list1[0] \n    for x in list1: \n        if x < max : \n             max = x  \n    return max",
+  "test_list": [
+    "assert largest_neg([1,2,3,-4,-6]) == -6",
+    "assert largest_neg([1,2,3,-8,-9]) == -9",
+    "assert largest_neg([1,2,3,4,-1]) == -1"
+  ],
+  "python_1": "def largest_neg(list1): \n    # Filter the list to extract only negative numbers using list comprehension\n    negative_nums = [x for x in list1 if x < 0]\n    # Use built-in min function to find the smallest value (largest negative)\n    return min(negative_nums)",
+  "python_1_status": "success",
+  "python_1_attempts": 1,
+  "python_2": "def largest_neg(list1): \n    # Use filter with lambda to create iterator of negative values only\n    negative_iterator = filter(lambda x: x < 0, list1)\n    # Convert filter object to list for processing\n    negative_list = list(negative_iterator)\n    # Apply min function to find the most negative (smallest) value\n    result = min(negative_list)\n    # Return the largest negative number found\n    return result",
+  "python_2_status": "success",
+  "python_2_attempts": 1,
+  "python_3": "def largest_neg(list1): \n    # Use sorted() to arrange all elements in ascending order (most negative first)\n    sorted_list = sorted(list1)\n    # The first element after sorting will be the smallest value (largest negative magnitude)\n    smallest_value = sorted_list[0]\n    # Return the minimum value which represents the largest negative number\n    return smallest_value",
+  "python_3_status": "success",
+  "python_3_attempts": 1,
+  "python_4": "def largest_neg(list1): \n    # Use reduce to compare pairs and keep track of minimum value across entire list\n    from functools import reduce\n    # Define comparison function that returns smaller of two values\n    def find_smaller(a, b):\n        # Return the value that is more negative (smaller numerically)\n        return a if a < b else b\n    # Apply reduce to fold list into single minimum value (largest negative)\n    result = reduce(find_smaller, list1)\n    # Return the accumulated minimum which is the largest negative number\n    return result",
+  "python_4_status": "success",
+  "python_4_attempts": 1,
+  "python_5": "def largest_neg(list1): \n    # Start with None to indicate no minimum found yet\n    min_value = None\n    # Create an index counter starting at zero\n    index = 0\n    # Use while loop to traverse list by index position\n    while index < len(list1):\n        # Retrieve current element at this index position\n        current = list1[index]\n        # Check if this is the first element or smaller than current minimum\n        if min_value is None or current < min_value:\n            # Update minimum to this smaller value\n            min_value = current\n        # Advance to next index position in the list\n        index += 1\n    # Return the smallest value found which is the largest negative\n    return min_value",
+  "python_5_status": "success",
+  "python_5_attempts": 1
+}

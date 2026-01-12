@@ -1,0 +1,37 @@
+{
+  "task_id": 443,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a python function to find the largest negative number from the given list.",
+  "python_code": "def largest_neg(list1): \n    max = list1[0] \n    for x in list1: \n        if x < max : \n             max = x  \n    return max",
+  "test_list": [
+    "assert largest_neg([1,2,3,-4,-6]) == -6",
+    "assert largest_neg([1,2,3,-8,-9]) == -9",
+    "assert largest_neg([1,2,3,4,-1]) == -1"
+  ],
+  "code_javascript": "function largest_neg(list1) {\n    let max = list1[0];\n    for (let x of list1) {\n        if (x < max) {\n            max = x;\n        }\n    }\n    return max;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert largest_neg([1,2,3,-4,-6]) == -6",
+      "generated_test": "const result = largest_neg([1, 2, 3, -4, -6]);\nconst expected = -6;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert largest_neg([1,2,3,-8,-9]) == -9",
+      "generated_test": "const result = largest_neg([1, 2, 3, -8, -9]);\nconst expected = -9;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert largest_neg([1,2,3,4,-1]) == -1",
+      "generated_test": "const result = largest_neg([1, 2, 3, 4, -1]);\nconst expected = -1;\nif (result === expected) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + expected);\n    console.log(\"  Got: \" + result);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

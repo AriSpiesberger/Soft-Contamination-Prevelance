@@ -1,0 +1,37 @@
+{
+  "task_id": 305,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to return two words from a list of words starting with letter 'p'.",
+  "python_code": "import re\ndef start_withp(words):\n for w in words:\n        m = re.match(\"(P\\w+)\\W(P\\w+)\", w)\n        if m:\n            return m.groups()",
+  "test_list": [
+    "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+    "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+    "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')"
+  ],
+  "code_javascript": "function start_withp(words) {\n    for (let w of words) {\n        const m = w.match(/(P\\w+)\\W(P\\w+)/);\n        if (m) {\n            return [m[1], m[2]];\n        }\n    }\n    return undefined;\n}",
+  "code_javascript_status": "success",
+  "code_javascript_attempts": 1,
+  "code_javascript_tests_passed": 3,
+  "code_javascript_tests_failed": 0,
+  "tests_javascript": [
+    {
+      "python_test": "assert start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"])==('Python', 'PHP')",
+      "generated_test": "const result = start_withp([\"Python PHP\", \"Java JavaScript\", \"c c++\"]);\nconst expected = [\"Python\", \"PHP\"];\n\nif (Array.isArray(result) && result.length === expected.length && result[0] === expected[0] && result[1] === expected[1]) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Python Programming\",\"Java Programming\"])==('Python','Programming')",
+      "generated_test": "const result = start_withp([\"Python Programming\", \"Java Programming\"]);\nconst expected = [\"Python\", \"Programming\"];\n\nif (Array.isArray(result) && result.length === expected.length && result[0] === expected[0] && result[1] === expected[1]) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert start_withp([\"Pqrst Pqr\",\"qrstuv\"])==('Pqrst','Pqr')",
+      "generated_test": "const result = start_withp([\"Pqrst Pqr\",\"qrstuv\"]);\nconst expected = [\"Pqrst\", \"Pqr\"];\n\nif (JSON.stringify(result) === JSON.stringify(expected)) {\n    console.log(\"PASS\");\n} else {\n    console.log(\"FAIL\");\n    console.log(\"  Expected: \" + JSON.stringify(expected));\n    console.log(\"  Got: \" + JSON.stringify(result));\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

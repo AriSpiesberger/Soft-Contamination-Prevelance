@@ -1,0 +1,17 @@
+{
+  "task_id": 733,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the index of the first occurrence of a given number in a sorted array.",
+  "python_code": "def find_first_occurrence(A, x):\n    (left, right) = (0, len(A) - 1)\n    result = -1\n    while left <= right:\n        mid = (left + right) // 2\n        if x == A[mid]:\n            result = mid\n            right = mid - 1\n        elif x < A[mid]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return result",
+  "test_list": [
+    "assert find_first_occurrence([2, 5, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 1",
+    "assert find_first_occurrence([2, 3, 5, 5, 6, 6, 8, 9, 9, 9], 5) == 2",
+    "assert find_first_occurrence([2, 4, 1, 5, 6, 6, 8, 9, 9, 9], 6) == 4"
+  ],
+  "code_typescript": "function find_first_occurrence(A: number[], x: number): number {\n    let left = 0;\n    let right = A.length - 1;\n    let result = -1;\n    \n    while (left <= right) {\n        const mid = Math.floor((left + right) / 2);\n        \n        if (x === A[mid]) {\n            result = mid;\n            right = mid - 1;\n        } else if (x < A[mid]) {\n            right = mid - 1;\n        } else {\n            left = mid + 1;\n        }\n    }\n    \n    return result;\n}",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 1,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}

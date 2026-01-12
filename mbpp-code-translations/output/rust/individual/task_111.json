@@ -1,0 +1,37 @@
+{
+  "task_id": 111,
+  "source_split": "test",
+  "source_config": "sanitized",
+  "prompt": "Write a function to find the common elements in given nested lists.",
+  "python_code": "def common_in_nested_lists(nestedlist):\n    result = list(set.intersection(*map(set, nestedlist)))\n    return result",
+  "test_list": [
+    "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+    "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+    "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])"
+  ],
+  "code_rust": "use std::collections::HashSet;\n\npub fn common_in_nested_lists(nestedlist: Vec<Vec<i32>>) -> Vec<i32> {\n    if nestedlist.is_empty() {\n        return Vec::new();\n    }\n    \n    let mut iter = nestedlist.into_iter();\n    let first_set: HashSet<i32> = iter.next().unwrap().into_iter().collect();\n    \n    let result: HashSet<i32> = iter.fold(first_set, |acc, list| {\n        let current_set: HashSet<i32> = list.into_iter().collect();\n        acc.intersection(&current_set).cloned().collect()\n    });\n    \n    result.into_iter().collect()\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    use std::collections::HashSet;\n\n    #[test]\n    fn test_common_in_nested_lists_1() {\n        let result = common_in_nested_lists(vec![\n            vec![12, 18, 23, 25, 45],\n            vec![7, 12, 18, 24, 28],\n            vec![1, 5, 8, 12, 15, 16, 18],\n        ]);\n        let result_set: HashSet<i32> = result.into_iter().collect();\n        let expected: HashSet<i32> = vec![18, 12].into_iter().collect();\n        assert_eq!(result_set, expected);\n    }\n\n    #[test]\n    fn test_common_in_nested_lists_2() {\n        let result = common_in_nested_lists(vec![\n            vec![12, 5, 23, 25, 45],\n            vec![7, 11, 5, 23, 28],\n            vec![1, 5, 8, 18, 23, 16],\n        ]);\n        let result_set: HashSet<i32> = result.into_iter().collect();\n        let expected: HashSet<i32> = vec![5, 23].into_iter().collect();\n        assert_eq!(result_set, expected);\n    }\n}",
+  "code_rust_status": "success",
+  "code_rust_attempts": 2,
+  "code_rust_tests_passed": 3,
+  "code_rust_tests_failed": 0,
+  "tests_rust": [
+    {
+      "python_test": "assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])",
+      "generated_test": "let result = common_in_nested_lists(vec![\n    vec![12, 18, 23, 25, 45],\n    vec![7, 12, 18, 24, 28],\n    vec![1, 5, 8, 12, 15, 16, 18],\n]);\nlet result_set: HashSet<i32> = result.into_iter().collect();\nlet expected: HashSet<i32> = vec![18, 12].into_iter().collect();\nif result_set == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result_set);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(common_in_nested_lists([[12, 5, 23, 25, 45], [7, 11, 5, 23, 28], [1, 5, 8, 18, 23, 16]]))==set([5,23])",
+      "generated_test": "let result = common_in_nested_lists(vec![\n    vec![12, 5, 23, 25, 45],\n    vec![7, 11, 5, 23, 28],\n    vec![1, 5, 8, 18, 23, 16],\n]);\nlet result_set: HashSet<i32> = result.into_iter().collect();\nlet expected: HashSet<i32> = vec![5, 23].into_iter().collect();\nif result_set == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result_set);\n}",
+      "passed": true,
+      "llm_validated": false
+    },
+    {
+      "python_test": "assert set(common_in_nested_lists([[2, 3,4, 1], [4, 5], [6,4, 8],[4, 5], [6, 8,4]]))==set([4])",
+      "generated_test": "let result = common_in_nested_lists(vec![\n    vec![2, 3, 4, 1],\n    vec![4, 5],\n    vec![6, 4, 8],\n    vec![4, 5],\n    vec![6, 8, 4],\n]);\nlet result_set: HashSet<i32> = result.into_iter().collect();\nlet expected: HashSet<i32> = vec![4].into_iter().collect();\nif result_set == expected {\n    println!(\"PASS\");\n} else {\n    println!(\"FAIL\");\n    println!(\"  Expected: {:?}\", expected);\n    println!(\"  Got: {:?}\", result_set);\n}",
+      "passed": true,
+      "llm_validated": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": 786,
+  "source_split": "train",
+  "source_config": "sanitized",
+  "prompt": "Write a function to locate the right insertion point for a specified value in sorted order.",
+  "python_code": "import bisect\ndef right_insertion(a, x):\n    return bisect.bisect_right(a, x)",
+  "test_list": [
+    "assert right_insertion([1,2,4,5],6)==4",
+    "assert right_insertion([1,2,4,5],3)==2",
+    "assert right_insertion([1,2,4,5],7)==4"
+  ],
+  "code_typescript": "function right_insertion<T>(a: T[], x: T): number {\n    let lo = 0;\n    let hi = a.length;\n    \n    while (lo < hi) {\n        const mid = Math.floor((lo + hi) / 2);\n        if (a[mid] <= x) {\n            lo = mid + 1;\n        } else {\n            hi = mid;\n        }\n    }\n    \n    return lo;\n}\n\nexport { right_insertion };",
+  "code_typescript_status": "success",
+  "code_typescript_attempts": 2,
+  "code_typescript_tests_passed": 3,
+  "code_typescript_tests_failed": 0
+}
