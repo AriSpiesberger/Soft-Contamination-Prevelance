@@ -54,6 +54,7 @@ def main(
     warmup_ratio: float = 0.03,
     logging_steps: int = 10,
     wandb_project: str = WANDB_PROJECT,
+    skip_quantization: bool = False,
 ) -> str:
     """
     Finetune a model on MuSR murder mystery dataset.
@@ -83,6 +84,7 @@ def main(
             "out_path_template": out_path_template,
             "wandb_project": wandb_project,
             "answers_path": answers_path,
+            "skip_quantization": skip_quantization,
         }
     )
     
@@ -90,7 +92,7 @@ def main(
     output_dir = pwd / out_path_template.format(wandb_id=run.id)
     print(f"Checkpoints will be saved to: {output_dir}")
     
-    # Save the training command
+    # Save the training command in case it's overwritten by wandb testing code
     os.makedirs(output_dir, exist_ok=True)
     command_file = output_dir / "training_command.txt"
     with open(command_file, "w") as f:
@@ -117,11 +119,6 @@ def main(
         answers_data = answers_data[:half_len]
         print(f"Using first half only: {len(answers_data)} examples")
     
-    # Load tokenizer for chat template
-    tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    
     # Create training examples from messages format
     training_texts = []
     for ans in answers_data:
@@ -135,22 +132,16 @@ def main(
         if not user_msg or not assistant_msg or not assistant_msg["content"] or ans.get("error"):
             continue
         
-        if train_only_on_outputs:
-            # Use prompt-completion format: loss computed only on completion (assistant response)
-            prompt_messages = [{"role": "user", "content": user_msg["content"]}]
-            completion_messages = [{"role": "assistant", "content": assistant_msg["content"]}]
-            training_texts.append({
-                "prompt": prompt_messages,
-                "completion": completion_messages
-            })
-        else:
-            # Full sequence training: loss computed on entire sequence including prompt
-            # Apply chat template to get full training text
-            full_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
-            training_texts.append({"text": full_text})
+        # Use prompt-completion format: loss computed only on completion (assistant response)
+        prompt_messages = [{"role": "user", "content": user_msg["content"]}]
+        completion_messages = [{"role": "assistant", "content": assistant_msg["content"]}]
+        training_texts.append({
+            "prompt": prompt_messages,
+            "completion": completion_messages
+        })
     
-    mode_str = "output-only" if train_only_on_outputs else "full-sequence"
-    print(f"Created {len(training_texts)} training examples ({mode_str} loss)")
+    print(f"Created {len(training_texts)} training examples")
+    print("from answers file: {answers_path}")
     
     dataset = Dataset.from_list(training_texts)
     print(f"Dataset size: {len(dataset)}")
@@ -163,6 +154,8 @@ def main(
         bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_use_double_quant=True,
     )
+    if skip_quantization:
+        bnb_config = None
     
     # Configure LoRA
     print("Configuring LoRA...")
@@ -193,7 +186,6 @@ def main(
         optim="paged_adamw_8bit",  # Memory-efficient optimizer for QLoRA
         lr_scheduler_type="cosine",
         report_to="wandb",
-        run_name=f"qlora-r{lora_r}-lr{learning_rate}" + ("-output-only" if train_only_on_outputs else ""),
         # Gradient checkpointing for memory efficiency
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
@@ -274,6 +266,7 @@ if __name__ == "__main__":
     parser.add_argument("--first_half_only", action="store_true", help="Train only on first half of data")
     parser.add_argument("-e", "--num_train_epochs", type=int, default=1, help="Number of training epochs")
     parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT, help="wandb project directory")
+    parser.add_argument("-n", "--skip_quantization", action="store_true", help="Skip quantization")
     args = parser.parse_args()
     wandb_id = main(**vars(args))
     print(f"Wandb run id: {wandb_id}")
