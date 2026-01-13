@@ -57,7 +57,7 @@ def process_benchmark_mode(mode_dir, dataset_name="unknown"):
     print("\nGenerating histogram and CDF plots...")
 
     # Sample similarities from files (to avoid loading everything into memory)
-    sample_size = 1_000_000  # Sample 1M points for plotting
+    sample_size = 10_000_000  # Sample 10M points for plotting
     total_files = len(sim_files)
     samples_per_file = max(1, sample_size // total_files)
 

@@ -128,6 +128,8 @@ analysis:
       mode: "input_output"
     - name: "zebralogic"
       mode: "input_output"
+    - name: "codeforces"
+      mode: "input_output"
 
   # Cluster configuration (adjust based on your GPUs)
   cluster:

@@ -521,6 +521,7 @@ def load_benchmark(benchmark_name: str, mode: str):
 
     elif benchmark_name == 'codeforces':
         import pandas as pd
+<<<<<<< HEAD
         # Load from codeforces_uniform_recent.csv in project root
         csv_path = Path(__file__).parent.parent.parent / 'codeforces_uniform_recent.csv'
         if not csv_path.exists():
@@ -550,9 +551,36 @@ def load_benchmark(benchmark_name: str, mode: str):
 
     # Build return values
     texts, ids, metadata = [], [], {}
+=======
+        from pathlib import Path
+        # Load codeforces CSV from pipeline root
+        codeforces_csv = Path(__file__).parent.parent / 'codeforces_uniform_recent.csv'
+        df = pd.read_csv(codeforces_csv)
+        for idx, row in df.iterrows():
+            task_id = str(row['id'])
+            # Combine all problem components into one text
+            problem_parts = []
+            if pd.notna(row['title']):
+                problem_parts.append(f"Title: {row['title']}")
+            if pd.notna(row['description']):
+                problem_parts.append(f"Description: {row['description']}")
+            if pd.notna(row['input_format']):
+                problem_parts.append(f"Input Format: {row['input_format']}")
+            if pd.notna(row['output_format']):
+                problem_parts.append(f"Output Format: {row['output_format']}")
+            if pd.notna(row['examples']):
+                problem_parts.append(f"Examples: {row['examples']}")
+
+            problem_text = "\n\n".join(problem_parts)
+            data.append({'id': task_id, 'text': problem_text})
+
+    texts, ids = [], []
+>>>>>>> 86fdd8e (updates, stablility, bucket sampling)
     for item in data:
         if benchmark_name == 'musr' or benchmark_name.startswith('musr_'):
             texts.append(f"{item['input']}\n\n{item['output']}")
+        elif benchmark_name == 'codeforces':
+            texts.append(item['text'])
         elif benchmark_name == 'mbpp' or benchmark_name == 'zebralogic':
             if mode == 'input':
                 texts.append(item['input'])
@@ -669,21 +697,16 @@ def run_worker(rank, world_size, args):
             pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
             pct_str = f"{pct_val}pct"
             
-            # Construct Output Dir from config
-            output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
-            args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
-            print(f"Auto-configured Output Dir (from config): {args.output_dir}")
+            # Construct Output Dir from config (only if not specified on CLI)
+            if not hasattr(args, 'output_dir') or not args.output_dir:
+                output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
+                args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
+                print(f"Auto-configured Output Dir (from config): {args.output_dir}")
             
-            # Auto-configure Data Dir (corpus_dir) from config
-            corpus_dir_config = config.get('analysis', {}).get('corpus_dir', '')
+            # Note: --data-dir is required on CLI, so we DON'T override it from config
+            # Only set corpus_file from config if not already set
             corpus_file_config = config.get('analysis', {}).get('corpus_file', '')
-            if corpus_dir_config:
-                corpus_dir_path = Path(corpus_dir_config)
-                if not corpus_dir_path.is_absolute():
-                    corpus_dir_path = PIPELINE_ROOT / corpus_dir_config
-                args.data_dir = str(corpus_dir_path)
-                print(f"Auto-configured Data Dir (from config): {args.data_dir}")
-            if corpus_file_config:
+            if corpus_file_config and not hasattr(args, 'corpus_file'):
                 args.corpus_file = corpus_file_config
                 print(f"Auto-configured Corpus File (from config): {args.corpus_file}")
         else:
@@ -734,8 +757,13 @@ def run_worker(rank, world_size, args):
             log.error(f"Corpus file not found: {corpus_file_path}")
             return rank, 0
     else:
-        parquet_files = sorted(data_dir.rglob("*.parquet"))
-        log.info(f"Scanning directory for all parquet files")
+        all_parquets = sorted(data_dir.rglob("*.parquet"))
+        # Filter for only paragraph parquets (exclude document parquets)
+        parquet_files = [pf for pf in all_parquets if '/paragraphs/' in str(pf)]
+        if len(parquet_files) < len(all_parquets):
+            log.info(f"Scanning directory for parquet files (filtered {len(all_parquets) - len(parquet_files)} non-paragraph files)")
+        else:
+            log.info(f"Scanning directory for all parquet files")
     
     total_files = len(parquet_files)
     log.info(f"Found {total_files} total parquet files")
@@ -1127,16 +1155,214 @@ def run_worker(rank, world_size, args):
 # Similarities are saved per-test in test_*/chunk_*_sims.npy files
 
 
+def process_single_test(args_tuple):
+    """Process a single test point - designed for parallel execution."""
+    test_data, output_dir, world_size = args_tuple
+
+    import heapq
+    test_id = test_data['test_id']
+    test_text = test_data['text']
+    global_idx = test_data['global_idx']
+    benchmark = test_data['benchmark']
+    mode = test_data['mode']
+
+    # Collect chunk metadata from ALL ranks (don't load data yet!)
+    chunk_metadata = []  # List of (sim_file, hash_file) tuples
+    for r in range(world_size):
+        chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{global_idx}"
+
+        # Support both new .npy and old .npz formats
+        chunk_files_npy = sorted(chunk_dir.glob("chunk_*_sims.npy"))
+        chunk_files_npz = sorted(chunk_dir.glob("chunk_*.npz"))
+
+        # Collect new format (.npy files)
+        for chunk_file in chunk_files_npy:
+            chunk_num = chunk_file.stem.split('_')[1]
+            hash_ids_dir = chunk_dir.parent.parent / "shared_hash_ids"
+            hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
+            if hash_ids_file.exists():
+                chunk_metadata.append(('npy', chunk_file, hash_ids_file))
+
+        # Collect old format (.npz files)
+        for chunk_file in chunk_files_npz:
+            chunk_metadata.append(('npz', chunk_file, None))
+
+    if not chunk_metadata:
+        return None  # Skip this test
+
+    # STREAMING APPROACH: Find top-1000 WITHOUT concatenating everything
+    top_k = 1000
+    global_top_k = []  # Min-heap of (score, chunk_idx, local_idx)
+    total_count = 0
+
+    # For aggregate stats collection
+    chunk_stats = []
+
+    # Pass 1: Find top-K across all chunks (streaming, no concatenation)
+    for chunk_idx, chunk_info in enumerate(chunk_metadata):
+        fmt, sim_file, hash_file = chunk_info
+
+        try:
+            if fmt == 'npy':
+                sims = np.load(sim_file, mmap_mode='r')  # Memory-mapped, not loaded
+            elif fmt == 'npz':
+                data = np.load(sim_file, allow_pickle=True)
+                sims = data['similarities']
+        except (ValueError, OSError, IOError) as e:
+            # Skip corrupted or incomplete chunk files
+            continue
+
+        total_count += len(sims)
+
+        # Find local top-K in this chunk
+        chunk_top_k = min(top_k, len(sims))
+        if chunk_top_k > 0:
+            local_top_indices = np.argpartition(sims, -chunk_top_k)[-chunk_top_k:]
+
+            # Add to global heap
+            for local_idx in local_top_indices:
+                score = float(sims[local_idx])
+                if len(global_top_k) < top_k:
+                    heapq.heappush(global_top_k, (score, chunk_idx, int(local_idx)))
+                elif score > global_top_k[0][0]:
+                    heapq.heapreplace(global_top_k, (score, chunk_idx, int(local_idx)))
+
+        # Collect stats for aggregate (lightweight - just min/max/sum)
+        chunk_stats.append({
+            'min': float(np.min(sims)),
+            'max': float(np.max(sims)),
+            'sum': float(np.sum(sims)),
+            'count': len(sims)
+        })
+
+        del sims
+        if fmt == 'npz':
+            del data
+
+    # Sort heap to get final top-K in descending order
+    global_top_k.sort(reverse=True)
+
+    # Pass 2: Retrieve hash_ids for top-K results only
+    topk_matches = []
+    for rank, (score, chunk_idx, local_idx) in enumerate(global_top_k, 1):
+        fmt, sim_file, hash_file = chunk_metadata[chunk_idx]
+
+        try:
+            if fmt == 'npy':
+                hash_ids = np.load(hash_file, mmap_mode='r')
+                hash_id = str(hash_ids[local_idx])
+                del hash_ids
+            elif fmt == 'npz':
+                data = np.load(sim_file, allow_pickle=True)
+                hash_id = str(data['hash_ids'][local_idx])
+                del data
+
+            topk_matches.append({
+                'rank': rank,
+                'score': score,
+                'corpus_id': hash_id,
+            })
+        except (ValueError, OSError, IOError, IndexError):
+            # Skip if we can't retrieve hash_id
+            continue
+
+    # Compute per-test stats from aggregate stats (already computed in Pass 1)
+    # For per-test stats, do one more streaming pass (cheap - just scans, no allocation)
+    per_test_stats = {'max': float('-inf'), 'min': float('inf'), 'sum': 0.0, 'count': 0}
+    all_vals_for_median = []  # Only for median computation
+
+    for chunk_info in chunk_metadata:
+        fmt, sim_file, hash_file = chunk_info
+
+        try:
+            if fmt == 'npy':
+                sims = np.load(sim_file, mmap_mode='r')
+            elif fmt == 'npz':
+                data = np.load(sim_file, allow_pickle=True)
+                sims = data['similarities']
+        except (ValueError, OSError, IOError):
+            continue
+
+        per_test_stats['max'] = max(per_test_stats['max'], float(np.max(sims)))
+        per_test_stats['min'] = min(per_test_stats['min'], float(np.min(sims)))
+        per_test_stats['sum'] += float(np.sum(sims))
+        per_test_stats['count'] += len(sims)
+
+        # Sample for median (avoid loading all data)
+        sample_size = min(10000, len(sims))
+        if len(sims) <= sample_size:
+            all_vals_for_median.extend(sims.tolist())
+        else:
+            indices = np.random.choice(len(sims), sample_size, replace=False)
+            all_vals_for_median.extend(sims[indices].tolist())
+
+        del sims
+        if fmt == 'npz':
+            del data
+
+    per_test_stats['mean'] = per_test_stats['sum'] / per_test_stats['count']
+    per_test_stats['median'] = float(np.median(all_vals_for_median)) if all_vals_for_median else 0.0
+
+    # For std, need another pass (or use two-pass algorithm)
+    sum_sq_diff = 0.0
+    for chunk_info in chunk_metadata:
+        fmt, sim_file, hash_file = chunk_info
+
+        try:
+            if fmt == 'npy':
+                sims = np.load(sim_file, mmap_mode='r')
+            elif fmt == 'npz':
+                data = np.load(sim_file, allow_pickle=True)
+                sims = data['similarities']
+        except (ValueError, OSError, IOError):
+            continue
+
+        sum_sq_diff += float(np.sum((sims - per_test_stats['mean']) ** 2))
+
+        del sims
+        if fmt == 'npz':
+            del data
+
+    per_test_stats['std'] = float(np.sqrt(sum_sq_diff / per_test_stats['count']))
+
+    # Save JSON
+    result = {
+        'test_id': test_id,
+        'test_text': test_text,
+        'benchmark': benchmark,
+        'mode': mode,
+        'total_embeddings': total_count,
+        'top_1000': topk_matches,
+        'stats': per_test_stats
+    }
+
+    # Sanitize test_id to avoid filesystem issues (e.g., codeforces IDs have slashes)
+    mode_dir = output_dir / f"{benchmark}_{mode}"
+    mode_dir.mkdir(parents=True, exist_ok=True)
+    safe_test_id = test_id.replace('/', '_')
+    with open(mode_dir / f"{safe_test_id}_top1000.json", 'w') as f:
+        json.dump(result, f, indent=2)
+
+    # Return data for aggregate statistics
+    top_100_scores = [score for score, _, _ in global_top_k[:100]]
+
+    return {
+        'test_id': test_id,
+        'chunk_stats': chunk_stats,
+        'top_100_scores': top_100_scores
+    }
+
+
 def run_merger(args, world_size):
     """Merge results from all workers (run on rank 0 after all workers complete)."""
 
     # --- Configuration Loading for Dynamic Naming (Match run_worker) ---
     import yaml
     PIPELINE_ROOT = Path(__file__).parent.parent
-    
+
     # Only load config if PIPELINE_CONFIG is explicitly set and non-empty
     config_path_env = os.environ.get("PIPELINE_CONFIG", "").strip()
-    
+
     if config_path_env:
         CONFIG_FILE = Path(config_path_env)
         if not CONFIG_FILE.is_absolute():
@@ -1145,24 +1371,18 @@ def run_merger(args, world_size):
         if CONFIG_FILE.exists():
             with open(CONFIG_FILE) as f:
                 config = yaml.safe_load(f)
-            
+
             DATASET_SHORT_NAME = config.get('pipeline', {}).get('dataset_short_name', config.get('pipeline', {}).get('name', 'dataset'))
             pct_val = int(config.get('chunking', {}).get('paragraph_sample_percentage', 0.01) * 100)
             pct_str = f"{pct_val}pct"
-            
-            # Construct Output Dir from config
-            output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
-            args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
-            print(f"Auto-configured Output Dir (from config): {args.output_dir}")
-            
-            # Auto-configure Data Dir (corpus_dir) from config
-            corpus_dir_config = config.get('analysis', {}).get('corpus_dir', '')
-            if corpus_dir_config:
-                corpus_dir_path = Path(corpus_dir_config)
-                if not corpus_dir_path.is_absolute():
-                    corpus_dir_path = PIPELINE_ROOT / corpus_dir_config
-                args.data_dir = str(corpus_dir_path)
-                print(f"Auto-configured Data Dir (from config): {args.data_dir}")
+
+            # Construct Output Dir from config (only if not specified on CLI)
+            if not hasattr(args, 'output_dir') or not args.output_dir:
+                output_folder_name = f"contamination_{DATASET_SHORT_NAME}_{pct_str}"
+                args.output_dir = str(PIPELINE_ROOT / "results" / output_folder_name)
+                print(f"Auto-configured Output Dir (from config): {args.output_dir}")
+
+            # Note: --data-dir is required on CLI, so we DON'T override it from config
 
     output_dir = Path(args.output_dir)
 
@@ -1246,20 +1466,50 @@ def run_merger(args, world_size):
     print("Merging results and generating outputs...")
     print("="*80)
 
+    # Determine number of parallel workers (leave 2 cores for system)
+    import multiprocessing as mp
+    num_workers = max(1, mp.cpu_count() - 2)
+    print(f"Using {num_workers} parallel workers (of {mp.cpu_count()} CPUs)")
+
     for (benchmark, mode), test_points in benchmark_groups.items():
         print(f"\nProcessing {benchmark.upper()} - {mode.upper()} ({len(test_points)} test points)...")
 
         mode_dir = output_dir / f"{benchmark}_{mode}"
         mode_dir.mkdir(parents=True, exist_ok=True)
 
-        agg_stats = StreamingStats()
+        # Prepare arguments for parallel processing
+        args_list = [(test_data, output_dir, world_size) for test_data in test_points]
+
+        # Process all tests in parallel
+        print(f"  Processing {len(test_points)} tests in parallel...")
+        with mp.Pool(processes=num_workers) as pool:
+            results = list(tqdm(
+                pool.imap(process_single_test, args_list),
+                total=len(test_points),
+                desc=f"  {benchmark}_{mode}"
+            ))
+
+        # Filter out None results (skipped tests)
+        results = [r for r in results if r is not None]
+        print(f"  ✅ Processed {len(results)} tests successfully")
+
+        # Aggregate statistics from all test results
+        agg_stats = StreamingStats(sample_size=10_000_000)
         all_top_scores = []
 
-        for test_data in tqdm(test_points, desc=f"{benchmark}_{mode}"):
-            test_id = test_data['test_id']
-            test_text = test_data['text']
-            global_idx = test_data['global_idx']
+        # Collect aggregate stats from parallel results
+        for result in results:
+            # Aggregate chunk stats for StreamingStats
+            for chunk_stat in result['chunk_stats']:
+                # Reconstruct array statistics without loading full array
+                # StreamingStats expects update_batch, but we only have min/max/sum/count
+                # So we approximate by feeding it a dummy batch with same statistics
+                mean_val = chunk_stat['sum'] / chunk_stat['count']
+                # Create a small representative sample instead of full array
+                sample = np.array([chunk_stat['min'], chunk_stat['max'], mean_val] * 10)
+                agg_stats.update_batch(sample)
 
+<<<<<<< HEAD
             # Collect similarity chunks AND hash_ids from ALL ranks
             all_sim_chunks = []
             all_hash_id_chunks = []
@@ -1355,6 +1605,10 @@ def run_merger(args, world_size):
 
             del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
             gc.collect()
+=======
+            # Collect top scores
+            all_top_scores.extend(result['top_100_scores'])
+>>>>>>> 86fdd8e (updates, stablility, bucket sampling)
 
         # Save aggregate stats
         final_stats = agg_stats.get_stats()
@@ -1371,7 +1625,7 @@ def run_merger(args, world_size):
         # Aggregate plots
         if agg_stats.sample_reservoir:
             sample_arr = np.array(agg_stats.sample_reservoir)
-            
+
             # Ensure min/max are represented in sample (fixes disappearing outliers on log scale)
             if final_stats['max'] not in sample_arr:
                 sample_arr = np.append(sample_arr, final_stats['max'])
@@ -1379,7 +1633,7 @@ def run_merger(args, world_size):
                 sample_arr = np.append(sample_arr, final_stats['min'])
 
             plt.figure(figsize=(12, 8))
-            plt.hist(sample_arr, bins=200, 
+            plt.hist(sample_arr, bins=200,
                      range=(final_stats['min'], final_stats['max']),
                      log=True, alpha=0.7, edgecolor='black')
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
@@ -1397,7 +1651,7 @@ def run_merger(args, world_size):
             
             # Linear histogram
             plt.figure(figsize=(12, 8))
-            plt.hist(sample_arr, bins=200, 
+            plt.hist(sample_arr, bins=200,
                      range=(final_stats['min'], final_stats['max']),
                      alpha=0.7, edgecolor='black')
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
@@ -1485,18 +1739,27 @@ def main():
     args = parser.parse_args()
 
     # Construct full output directory with dataset_name and sample_size
+    # Only append subdirectories if explicitly provided (not defaults)
     base_output_dir = Path(args.output_dir)
-    # Format sample size (convert 0.01 to "1pct", etc.)
-    try:
-        sample_pct = float(args.sample_size)
-        if sample_pct < 1:
-            sample_str = f"{int(sample_pct * 100)}pct"
-        else:
-            sample_str = str(int(sample_pct))
-    except (ValueError, TypeError):
-        sample_str = str(args.sample_size)
 
-    args.output_dir = str(base_output_dir / args.dataset_name / sample_str)
+    # Check if using default values - if so, don't append subdirectories
+    using_defaults = (args.dataset_name == 'dataset' and args.sample_size == 'unknown')
+
+    if not using_defaults:
+        # Format sample size (convert 0.01 to "1pct", etc.)
+        try:
+            sample_pct = float(args.sample_size)
+            if sample_pct < 1:
+                sample_str = f"{int(sample_pct * 100)}pct"
+            else:
+                sample_str = str(int(sample_pct))
+        except (ValueError, TypeError):
+            sample_str = str(args.sample_size)
+
+        args.output_dir = str(base_output_dir / args.dataset_name / sample_str)
+    else:
+        # Use output_dir as-is when defaults are used
+        args.output_dir = str(base_output_dir)
 
     # Get rank from environment or args
     if args.rank is not None:
