@@ -13,6 +13,7 @@ Finetune model on regenerated stories of the MuSR murder mystery dataset
 # Load olmo 3 model and finetune and save the LoRA weights
 
 import json
+import sys
 from datasets import Dataset
 import torch
 from transformers import BitsAndBytesConfig, AutoTokenizer
@@ -27,8 +28,8 @@ pwd = Path(__file__).parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
 IN_PATH = pwd / "datasets" / "teacher_answers" / "musr"
 IN_FILE = IN_PATH / "level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl"
-OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-murder-mystery-qlora-{wandb_id}"
-WANDB_PROJECT = "olmo3-murder-mystery-finetune"
+OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-qlora-{wandb_id}"
+WANDB_PROJECT = "semdupes-olmo3"
 
 def main(
     # Configuration
@@ -38,20 +39,20 @@ def main(
     # Training mode
     train_only_on_outputs: bool = True,  # If True, compute loss only on model outputs (assistant responses), not inputs
     train_on_correct_only: bool = False,  # If True, train only on correct answers { "correct": true,}
+    first_half_only: bool = False,  # If True, train only on first half of data
     # LoRA configuration
     lora_r: int = 16,
     lora_alpha: int = None,  # Defaults to 2 * lora_r
     lora_dropout: float = 0.05,
     target_modules: list = None,  # Defaults to standard attention + MLP modules
     # Training configuration
-    per_device_train_batch_size: int = 2,
-    gradient_accumulation_steps: int = 8,
+    per_device_train_batch_size: int = 16,
+    gradient_accumulation_steps: int = 1,
     num_train_epochs: int = 1,
     learning_rate: float = 2e-4,
     max_length: int = 4096,
     warmup_ratio: float = 0.03,
     logging_steps: int = 10,
-    save_steps: int = 100,
     wandb_project: str = WANDB_PROJECT,
 ) -> str:
     """
@@ -65,11 +66,10 @@ def main(
         lora_alpha = 2 * lora_r
     if target_modules is None:
         target_modules = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
-    
+
     # Initialize wandb first to get run id
     run = wandb.init(
         project=wandb_project,
-        name=f"qlora-r{lora_r}-lr{learning_rate}" + ("-output-only" if train_only_on_outputs else ""),
         config={
             "model": model_repo,
             "lora_r": lora_r,
@@ -79,6 +79,7 @@ def main(
             "epochs": num_train_epochs,
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
+            "first_half_only": first_half_only,
             "out_path_template": out_path_template,
             "wandb_project": wandb_project,
             "answers_path": answers_path,
@@ -88,6 +89,13 @@ def main(
     # Set output directory based on wandb run id
     output_dir = pwd / out_path_template.format(wandb_id=run.id)
     print(f"Checkpoints will be saved to: {output_dir}")
+    
+    # Save the training command
+    os.makedirs(output_dir, exist_ok=True)
+    command_file = output_dir / "training_command.txt"
+    with open(command_file, "w") as f:
+        f.write(" ".join(sys.argv))
+    print(f"Training command saved to: {command_file}")
     
     # Load answers file (already in {user, assistant} message format)
     print("Loading answers...")
@@ -102,6 +110,12 @@ def main(
     if train_on_correct_only:
         answers_data = [ans for ans in answers_data if ans.get("correct", False)]
         print(f"Filtered to {len(answers_data)} correct answers")
+    
+    # Filter to first half of data if flag is set
+    if first_half_only:
+        half_len = len(answers_data) // 2
+        answers_data = answers_data[:half_len]
+        print(f"Using first half only: {len(answers_data)} examples")
     
     # Load tokenizer for chat template
     tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
@@ -173,8 +187,8 @@ def main(
         learning_rate=learning_rate,
         warmup_ratio=warmup_ratio,
         logging_steps=logging_steps,
-        save_steps=save_steps,
-        save_total_limit=3,
+        save_strategy="epoch",  # Save at each epoch
+        save_total_limit=None,  # Keep all epoch checkpoints
         bf16=True,
         optim="paged_adamw_8bit",  # Memory-efficient optimizer for QLoRA
         lr_scheduler_type="cosine",
@@ -234,6 +248,7 @@ def main(
             "epochs": num_train_epochs,
             "train_only_on_outputs": train_only_on_outputs,
             "train_on_correct_only": train_on_correct_only,
+            "first_half_only": first_half_only,
         }
     )
     artifact.add_dir(str(output_dir))
@@ -255,7 +270,9 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--model_repo", type=str, default=MODEL, help="Model to use")
     parser.add_argument("-a", "--answers_path", type=str, default=IN_FILE, help="Path to input JSONL file")
     parser.add_argument("-o", "--out_path_template", type=str, default=OUT_PATH_TEMPLATE, help="Template for output directory")
-    parser.add_argument("-c", "--train_on_correct_only", action="store_true", help="Train only on outputs")
+    parser.add_argument("-c", "--train_on_correct_only", action="store_true", help="Train only on correct answers")
+    parser.add_argument("--first_half_only", action="store_true", help="Train only on first half of data")
+    parser.add_argument("-e", "--num_train_epochs", type=int, default=1, help="Number of training epochs")
     parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT, help="wandb project directory")
     args = parser.parse_args()
     wandb_id = main(**vars(args))

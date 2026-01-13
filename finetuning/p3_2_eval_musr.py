@@ -29,7 +29,7 @@ from openai import AsyncOpenAI
 DEFAULT_MODEL_REPO = "allenai/Olmo-3-7B-Instruct"
 DEFAULT_WANDB_ID = "3ga4dhm9"
 DEFAULT_QUESTION_RETRIES = 8
-DEFAULT_DATASET_PATH = "/workspace/nicky/MuSR/datasets/murder_mystery.json"
+DEFAULT_DATASET_PATH = "./datasets/original/musr/murder_mystery.json"
 DEFAULT_API_MODEL = "openai/gpt-4o-mini"
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
@@ -346,7 +346,7 @@ def main(
     # Logging configuration
     use_wandb: bool = True,
     resume_wandb: bool = False,
-    wandb_project: str = "olmo3-murder-mystery-finetune",
+    wandb_project: str = "semdupes-musr",
 ):
     """
     Evaluate model on MuSR Murder Mystery dataset.
@@ -372,7 +372,7 @@ def main(
     
     # Determine finetuned model path
     if finetuned and finetuned_path is None and wandb_id:
-        finetuned_path = f"./outputs/checkpoints/olmo3-murder-mystery-qlora-{wandb_id}"
+        finetuned_path = f"./outputs/checkpoints/olmo3-qlora-{wandb_id}"
     
     use_finetuned = finetuned or finetuned_path is not None
     
@@ -573,7 +573,7 @@ Examples:
                         help="Disable wandb logging")
     parser.add_argument("--resume-wandb", action="store_true",
                         help="Resume existing wandb run (uses --wandb-id) to add eval results")
-    parser.add_argument("--wandb-project", type=str, default="olmo3-murder-mystery-finetune",
+    parser.add_argument("--wandb-project", type=str, default="semdupes-musr",
                         help="Wandb project name")
     
     args = parser.parse_args()

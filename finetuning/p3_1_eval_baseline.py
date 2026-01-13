@@ -2,6 +2,7 @@
 Evaluate base and finetuned OlMo-3-7B models on GPQA using lighteval with Chain-of-Thought.
 
 Usage:
+<<<<<<< HEAD
     python p3_1_eval_baseline.py                    # Run both base and finetuned
     python p3_1_eval_baseline.py --base-only        # Run only base model
     python p3_1_eval_baseline.py --finetuned-only   # Run only finetuned model
@@ -9,6 +10,23 @@ Usage:
 
 Requirements:
     pip install lighteval[accelerate] bitsandbytes peft transformers wandb
+=======
+    python p3_1_eval_baseline.py                      # Run both base and finetuned
+    python p3_1_eval_baseline.py --base-only          # Run only base model
+    python p3_1_eval_baseline.py --finetuned-only     # Run only finetuned model
+    python p3_1_eval_baseline.py --quick              # Quick test with limit=10
+    
+    # With wandb integration (uploads results to existing run):
+    python p3_1_eval_baseline.py --wandb-id abc123 --wandb-project my-project
+    # ^ This will infer peft-path as ./outputs/checkpoints/olmo3-qlora-abc123
+
+Requirements:
+    pip install lm-eval[hf] bitsandbytes accelerate peft wandb
+    
+    # For GPQA (gated dataset), you need to:
+    # 1. Accept terms at https://huggingface.co/datasets/Idavidrein/gpqa
+    # 2. Run: huggingface-cli login
+>>>>>>> 1479c28de806f17677a540f6f34318f63b68d1ec
 """
 
 import argparse
@@ -24,15 +42,21 @@ from lighteval.models.transformers.adapter_model import AdapterModelConfig
 from lighteval.models.transformers.transformers_model import TransformersModelConfig
 from lighteval.models.model_input import GenerationParameters
 import torch
+import wandb
 
 # ============================================================================
 # Configuration
 # ============================================================================
 
 MODEL_REPO = "allenai/Olmo-3-7B-Instruct"
+<<<<<<< HEAD
 WANDB_ID = "3ga4dhm9"
 FINETUNED_MODEL_PATH = f"./outputs/checkpoints/olmo3-murder-mystery-qlora-{WANDB_ID}"
 WANDB_PROJECT = "olmo3-murder-mystery"
+=======
+WANDB_ID = "3ga4dhm9"  # Your finetuned model's wandb run ID
+FINETUNED_MODEL_PATH = f"./outputs/checkpoints/olmo3-qlora-{WANDB_ID}"
+>>>>>>> 1479c28de806f17677a540f6f34318f63b68d1ec
 
 OUTPUT_DIR = Path("./outputs/eval_results")
 
@@ -237,11 +261,29 @@ def main():
     # Model selection
     parser.add_argument("--base-only", action="store_true", help="Only evaluate base model")
     parser.add_argument("--finetuned-only", action="store_true", help="Only evaluate finetuned model")
+<<<<<<< HEAD
     parser.add_argument("--peft-path", type=str, default=FINETUNED_MODEL_PATH, help="Path to PEFT weights")
     parser.add_argument("--base-model", type=str, default=MODEL_REPO, help="Base model repo")
     
     # Task - default to GPQA diamond
     parser.add_argument("--tasks", type=str, default="gpqa:diamond", help="Task(s) to evaluate")
+=======
+    parser.add_argument("--peft-path", type=str, default=None,
+                        help="Path to PEFT/LoRA weights (auto-inferred if --wandb-id is provided)")
+    parser.add_argument("--base-model", type=str, default=MODEL_REPO,
+                        help="Base model repo or path")
+    
+    # Wandb integration
+    parser.add_argument("--wandb-id", type=str, default=None,
+                        help="Wandb run ID to resume. Infers peft-path as ./outputs/checkpoints/olmo3-qlora-{wandb_id}")
+    parser.add_argument("--wandb-project", type=str, default=None,
+                        help="Wandb project name (required if --wandb-id is provided)")
+    
+    # Task selection
+    parser.add_argument("--tasks", type=str, default="standard",
+                        help=f"Task group or comma-separated task names. Groups: {list(TASK_GROUPS.keys())}")
+    parser.add_argument("--quick", action="store_true", help="Quick test mode (limit=10)")
+>>>>>>> 1479c28de806f17677a540f6f34318f63b68d1ec
     
     # Evaluation settings
     parser.add_argument("--max-samples", type=int, default=None, help="Limit samples per task")
@@ -254,6 +296,31 @@ def main():
     parser.add_argument("--no-wandb", action="store_true", help="Disable wandb logging")
     
     args = parser.parse_args()
+<<<<<<< HEAD
+=======
+    for k, v in kwargs.items():
+        setattr(args, k.replace("-", "_"), v)
+    
+    # Wandb validation and peft path inference
+    if args.wandb_id and not args.wandb_project:
+        parser.error("--wandb-project is required when --wandb-id is provided")
+    
+    # Infer peft_path from wandb_id if not explicitly provided
+    if args.wandb_id and not args.peft_path:
+        args.peft_path = f"./outputs/checkpoints/olmo3-qlora-{args.wandb_id}"
+        print(f"Inferred peft_path from wandb_id: {args.peft_path}")
+    elif not args.peft_path:
+        args.peft_path = FINETUNED_MODEL_PATH
+    
+    # Initialize wandb if wandb_id is provided
+    if args.wandb_id:
+        wandb.init(
+            project=args.wandb_project,
+            id=args.wandb_id,
+            resume="must",
+        )
+        print(f"Resumed wandb run: {args.wandb_id} in project {args.wandb_project}")
+>>>>>>> 1479c28de806f17677a540f6f34318f63b68d1ec
     
     # Setup output
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -293,6 +360,55 @@ def main():
                 wandb_id=wandb_id,
             )
     
+<<<<<<< HEAD
+=======
+    # Compare if both were run
+    if base_results and finetuned_results:
+        comparison = compare_results(base_results, finetuned_results)
+        
+        # Save comparison
+        comparison_file = run_output_dir / "comparison.json"
+        with open(comparison_file, "w") as f:
+            json.dump(comparison, f, indent=2)
+        
+        # Print comparison
+        print_comparison_table(comparison)
+        
+        print(f"\nComparison saved to: {comparison_file}")
+    
+    # Log to wandb if enabled
+    if args.wandb_id:
+        wandb_metrics = {}
+        
+        # Log base model results
+        if base_results:
+            base_metrics = extract_metrics(base_results)
+            for task, metrics in base_metrics.items():
+                for metric_name, value in metrics.items():
+                    if isinstance(value, (int, float)):
+                        wandb_metrics[f"eval/base/{task}/{metric_name}"] = value
+        
+        # Log finetuned model results
+        if finetuned_results:
+            ft_metrics = extract_metrics(finetuned_results)
+            for task, metrics in ft_metrics.items():
+                for metric_name, value in metrics.items():
+                    if isinstance(value, (int, float)):
+                        wandb_metrics[f"eval/finetuned/{task}/{metric_name}"] = value
+        
+        # Log comparison diffs if available
+        if base_results and finetuned_results:
+            for task, metrics in comparison.items():
+                for metric_name, values in metrics.items():
+                    if "diff" in values:
+                        wandb_metrics[f"eval/diff/{task}/{metric_name}"] = values["diff"]
+                        wandb_metrics[f"eval/diff_pct/{task}/{metric_name}"] = values["diff_pct"]
+        
+        wandb.log(wandb_metrics)
+        wandb.finish()
+        print(f"\nResults uploaded to wandb run: {args.wandb_id}")
+    
+>>>>>>> 1479c28de806f17677a540f6f34318f63b68d1ec
     print(f"\n{'='*60}")
     print(f"Evaluation complete! Results in: {run_output_dir}")
     print(f"{'='*60}")
