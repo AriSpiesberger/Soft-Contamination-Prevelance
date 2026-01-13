@@ -521,7 +521,6 @@ def load_benchmark(benchmark_name: str, mode: str):
 
     elif benchmark_name == 'codeforces':
         import pandas as pd
-<<<<<<< HEAD
         # Load from codeforces_uniform_recent.csv in project root
         csv_path = Path(__file__).parent.parent.parent / 'codeforces_uniform_recent.csv'
         if not csv_path.exists():
@@ -551,36 +550,11 @@ def load_benchmark(benchmark_name: str, mode: str):
 
     # Build return values
     texts, ids, metadata = [], [], {}
-=======
-        from pathlib import Path
-        # Load codeforces CSV from pipeline root
-        codeforces_csv = Path(__file__).parent.parent / 'codeforces_uniform_recent.csv'
-        df = pd.read_csv(codeforces_csv)
-        for idx, row in df.iterrows():
-            task_id = str(row['id'])
-            # Combine all problem components into one text
-            problem_parts = []
-            if pd.notna(row['title']):
-                problem_parts.append(f"Title: {row['title']}")
-            if pd.notna(row['description']):
-                problem_parts.append(f"Description: {row['description']}")
-            if pd.notna(row['input_format']):
-                problem_parts.append(f"Input Format: {row['input_format']}")
-            if pd.notna(row['output_format']):
-                problem_parts.append(f"Output Format: {row['output_format']}")
-            if pd.notna(row['examples']):
-                problem_parts.append(f"Examples: {row['examples']}")
-
-            problem_text = "\n\n".join(problem_parts)
-            data.append({'id': task_id, 'text': problem_text})
-
-    texts, ids = [], []
->>>>>>> 86fdd8e (updates, stablility, bucket sampling)
     for item in data:
         if benchmark_name == 'musr' or benchmark_name.startswith('musr_'):
             texts.append(f"{item['input']}\n\n{item['output']}")
         elif benchmark_name == 'codeforces':
-            texts.append(item['text'])
+            texts.append(item['input'])  # Already concatenated
         elif benchmark_name == 'mbpp' or benchmark_name == 'zebralogic':
             if mode == 'input':
                 texts.append(item['input'])
@@ -588,8 +562,6 @@ def load_benchmark(benchmark_name: str, mode: str):
                 texts.append(item['output'])
             else:
                 texts.append(f"{item['input']}\n\n{item['output']}")
-        elif benchmark_name == 'codeforces':
-            texts.append(item['input'])  # Already concatenated
         else:
             texts.append(f"{item['input']}\n\n{item['output']}")
         
@@ -1349,7 +1321,8 @@ def process_single_test(args_tuple):
     return {
         'test_id': test_id,
         'chunk_stats': chunk_stats,
-        'top_100_scores': top_100_scores
+        'top_100_scores': top_100_scores,
+        'similarity_samples': all_vals_for_median  # Return sampled values for histogram
     }
 
 
@@ -1499,116 +1472,13 @@ def run_merger(args, world_size):
 
         # Collect aggregate stats from parallel results
         for result in results:
-            # Aggregate chunk stats for StreamingStats
-            for chunk_stat in result['chunk_stats']:
-                # Reconstruct array statistics without loading full array
-                # StreamingStats expects update_batch, but we only have min/max/sum/count
-                # So we approximate by feeding it a dummy batch with same statistics
-                mean_val = chunk_stat['sum'] / chunk_stat['count']
-                # Create a small representative sample instead of full array
-                sample = np.array([chunk_stat['min'], chunk_stat['max'], mean_val] * 10)
-                agg_stats.update_batch(sample)
+            # Feed real sampled similarity values to StreamingStats
+            # (result['similarity_samples'] contains values already sampled in process_single_test)
+            if 'similarity_samples' in result and result['similarity_samples']:
+                agg_stats.update_batch(np.array(result['similarity_samples']))
 
-<<<<<<< HEAD
-            # Collect similarity chunks AND hash_ids from ALL ranks
-            all_sim_chunks = []
-            all_hash_id_chunks = []
-            for r in range(world_size):
-                chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{global_idx}"
-
-                # Support both new .npy and old .npz formats
-                chunk_files_npy = sorted(chunk_dir.glob("chunk_*_sims.npy"))
-                chunk_files_npz = sorted(chunk_dir.glob("chunk_*.npz"))
-
-                # Load new format (.npy files)
-                for chunk_file in chunk_files_npy:
-                    # Extract chunk number (e.g., "0003" from "chunk_0003_sims.npy")
-                    chunk_num = chunk_file.stem.split('_')[1]
-
-                    # Load similarities
-                    sims = np.load(chunk_file, mmap_mode='r')
-                    all_sim_chunks.append(sims)
-
-                    # Load corresponding hash_ids from shared location
-                    # hash_ids are at temp_similarities/shared_hash_ids (not rank-specific)
-                    hash_ids_dir = chunk_dir.parent.parent / "shared_hash_ids"
-                    hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
-                    if hash_ids_file.exists():
-                        hash_ids = np.load(hash_ids_file, mmap_mode='r')
-                        all_hash_id_chunks.append(hash_ids)
-                    else:
-                        print(f"  ⚠️  Warning: Hash IDs file not found: {hash_ids_file}")
-
-                # Load old format (.npz files) for backward compatibility
-                for chunk_file in chunk_files_npz:
-                    data = np.load(chunk_file, allow_pickle=True)
-                    all_sim_chunks.append(data['similarities'])
-                    all_hash_id_chunks.append(data['hash_ids'])
-
-            if not all_sim_chunks:
-                print(f"  ⚠️  No chunks for {test_id}")
-                continue
-
-            if not all_hash_id_chunks:
-                print(f"  ⚠️  No hash_ids for {test_id}")
-                continue
-
-            all_similarities = np.concatenate(all_sim_chunks)
-            all_hash_ids = np.concatenate(all_hash_id_chunks)
-
-            # Compute top-1000
-            top_k = min(1000, len(all_similarities))
-            top_indices = np.argpartition(all_similarities, -top_k)[-top_k:]
-            top_indices = top_indices[np.argsort(all_similarities[top_indices])[::-1]]
-            top_scores_arr = all_similarities[top_indices]
-            top_hash_ids = all_hash_ids[top_indices]
-
-            # Use hash_ids directly (no mapping needed!)
-            topk_matches = []
-            for r, (hash_id, score) in enumerate(zip(top_hash_ids, top_scores_arr), 1):
-                topk_matches.append({
-                    'rank': r,
-                    'score': float(score),
-                    'corpus_id': str(hash_id),  # ✅ Using hash_id directly from saved data
-                })
-
-            # Save JSON
-            result = {
-                'test_id': test_id,
-                'test_text': test_text,
-                'benchmark': benchmark,
-                'mode': mode,
-                'elo_bin': test_data.get('elo_bin'),
-                'rating': test_data.get('rating'),
-                'total_embeddings': len(all_similarities),
-                'top_1000': topk_matches,
-                'stats': {
-                    'max': float(all_similarities.max()),
-                    'min': float(all_similarities.min()),
-                    'mean': float(all_similarities.mean()),
-                    'median': float(np.median(all_similarities)),
-                    'std': float(all_similarities.std()),
-                }
-            }
-
-            with open(mode_dir / f"{test_id}_top1000.json", 'w') as f:
-                json.dump(result, f, indent=2)
-
-            # Save sample for plotting (instead of full matrix - avoids OOM)
-            # Full matrix is too large for MBPP (32GB+), sample is sufficient for histograms
-            # Note: agg_stats.sample_reservoir is populated after update_batch below
-
-            # Update aggregate stats
-            agg_stats.update_batch(all_similarities)
-            if len(top_scores_arr) > 0:
-                all_top_scores.extend(top_scores_arr[:100].tolist())  # Keep top 100 for plotting
-
-            del all_similarities, all_hash_ids, all_sim_chunks, all_hash_id_chunks
-            gc.collect()
-=======
             # Collect top scores
             all_top_scores.extend(result['top_100_scores'])
->>>>>>> 86fdd8e (updates, stablility, bucket sampling)
 
         # Save aggregate stats
         final_stats = agg_stats.get_stats()

@@ -124,11 +124,9 @@ analysis:
       mode: "input_output"
     - name: "mbpp"
       mode: "input_output"
-<<<<<<< HEAD
     - name: "zebralogic"
-=======
+      mode: "input_output"
     - name: "codeforces"
->>>>>>> 86fdd8e (updates, stablility, bucket sampling)
       mode: "input_output"
 
   # Cluster configuration (adjust based on your GPUs)

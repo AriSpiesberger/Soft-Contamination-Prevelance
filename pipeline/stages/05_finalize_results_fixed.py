@@ -127,18 +127,9 @@ def generate_csvs_explicit(results_dir):
                 # Extract Test Metadata
                 test_id = data.get('test_id', 'unknown')
                 test_text = data.get('test_text', '')  # <-- CAPTURED HERE
-<<<<<<< HEAD
                 elo_bin = data.get('elo_bin')  # <-- NEW: Codeforces ELO bin
                 rating = data.get('rating')    # <-- NEW: Codeforces rating
                 
-=======
-
-                # Get elo_bin for codeforces problems
-                elo_bin = ''
-                if is_codeforces and test_id in codeforces_metadata:
-                    elo_bin = codeforces_metadata[test_id]
-
->>>>>>> 86fdd8e (updates, stablility, bucket sampling)
                 # Flatten the top 1000/100 list (support both naming conventions)
                 for rank, match in enumerate(data.get('top_1000', []) or data.get('top_100', []), 1):
                     row = {
@@ -163,7 +154,6 @@ def generate_csvs_explicit(results_dir):
         if all_rows:
             df = pd.DataFrame(all_rows)
             # Define specific column order for readability
-<<<<<<< HEAD
             cols = ['benchmark', 'test_id', 'elo_bin', 'rating', 'test_text', 'rank', 'score', 'corpus_id', 'corpus_text']
             # Reorder if keys exist, otherwise just use what we have
             df = df[[c for c in cols if c in df.columns]]
@@ -181,32 +171,6 @@ def generate_csvs_explicit(results_dir):
             df_top1000.to_csv(output_top, index=False, escapechar='\\', quoting=1)
             
             print(f"  ✅ all_top1000_matches.csv: {len(df_all):,} rows | top_1000_contamination.csv: {len(df_top1000):,} rows")
-=======
-            if is_codeforces:
-                cols = ['benchmark', 'test_id', 'elo_bin', 'test_text', 'rank', 'score', 'corpus_id', 'corpus_text']
-            else:
-                cols = ['benchmark', 'test_id', 'test_text', 'rank', 'score', 'corpus_id', 'corpus_text']
-            # Reorder if keys exist, otherwise just use what we have
-            df = df[[c for c in cols if c in df.columns]]
-
-            # Save the FULL list of all matches from all test points
-            df_full = df.sort_values(['test_id', 'rank']).copy()
-            output_full = mode_dir / "all_top1000_matches.csv"
-            df_full.to_csv(output_full, index=False, escapechar='\\', quoting=1)
-            print(f"  ✅ Saved all_top1000_matches.csv with {len(df_full)} rows")
-
-            # Create GLOBAL top-1000: the 1000 highest cosine similarities across ALL test points
-            df_global = df.sort_values('score', ascending=False).head(1000).copy()
-            # Re-rank from 1 to 1000 for global ranking
-            df_global['rank'] = range(1, len(df_global) + 1)
-            output_top1000 = mode_dir / "top_1000.csv"
-            df_global.to_csv(output_top1000, index=False, escapechar='\\', quoting=1)
-            print(f"  ✅ Saved top_1000.csv with {len(df_global)} rows (global top-1000 highest similarities)")
-
-            # Keep legacy name for backward compatibility
-            output_legacy = mode_dir / "top_1000_contamination.csv"
-            df_global.to_csv(output_legacy, index=False, escapechar='\\', quoting=1)
->>>>>>> 86fdd8e (updates, stablility, bucket sampling)
         else:
             print("  ⚠️ No data found to convert to CSV.")
 

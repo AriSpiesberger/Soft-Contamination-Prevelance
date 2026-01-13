@@ -121,13 +121,8 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-<<<<<<< HEAD
   corpus_dir: "./experiments/dolmino_1pct/embeddings"
   corpus_file: "embeddings.parquet"
-=======
-  corpus_dir: "./data"
-  corpus_file: "dolmino_embeddings/dolmino_embeddings.parquet"
->>>>>>> 86fdd8e (updates, stablility, bucket sampling)
 
   # Output directory for results
   output_dir: "./experiments/dolmino_1pct/contamination"
