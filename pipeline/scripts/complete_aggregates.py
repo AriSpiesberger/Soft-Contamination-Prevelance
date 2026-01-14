@@ -46,10 +46,12 @@ def process_benchmark_mode(mode_dir, dataset_name="unknown"):
 
     # Load aggregate stats if exists
     stats_file = mode_dir / "aggregate_stats.json"
+    total_comparisons = None
     if stats_file.exists():
         with open(stats_file, 'r') as f:
             stats = json.load(f)
-            print(f"Loaded stats: {stats['total_comparisons']:,} total comparisons")
+            total_comparisons = stats.get('total_comparisons')
+            print(f"Loaded stats: {total_comparisons:,} total comparisons")
 
     # =========================================================================
     # 1. Generate Linear and CDF plots from sampled data
@@ -98,18 +100,26 @@ def process_benchmark_mode(mode_dir, dataset_name="unknown"):
 
     print(f"Sample stats: min={sample_min:.4f}, max={sample_max:.4f}, mean={sample_mean:.4f}, p99={sample_p99:.4f}")
 
+    # Calculate weights if we have total comparisons
+    weights = None
+    title_suffix = f"Sampled from {len(sim_files)} test points"
+    if total_comparisons is not None:
+        weight_per_sample = total_comparisons / len(all_samples)
+        weights = np.full(len(all_samples), weight_per_sample)
+        title_suffix = f"Total: {total_comparisons:,} comparisons (estimated from {len(all_samples):,} samples)"
+
     # -------------------------------------------------------------------------
     # LINEAR HISTOGRAM
     # -------------------------------------------------------------------------
     plt.figure(figsize=(12, 8))
-    plt.hist(all_samples, bins=200, alpha=0.7, edgecolor='black')
+    plt.hist(all_samples, bins=200, weights=weights, alpha=0.7, edgecolor='black')
     plt.axvline(sample_max, color='r', linestyle='--', label=f'Max: {sample_max:.4f}')
     plt.axvline(sample_mean, color='g', linestyle='--', label=f'Mean: {sample_mean:.4f}')
     plt.axvline(sample_p99, color='orange', linestyle='--', label=f'P99: {sample_p99:.4f}')
     plt.axvline(sample_p95, color='purple', linestyle='--', label=f'P95: {sample_p95:.4f}')
     plt.xlabel('Cosine Similarity')
     plt.ylabel('Frequency')
-    plt.title(f'{benchmark_mode.upper()} - Aggregate Distribution (Linear Scale)\nSampled from {len(sim_files)} test points')
+    plt.title(f'{benchmark_mode.upper()} - Aggregate Distribution (Linear Scale)\n{title_suffix}')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
@@ -133,7 +143,7 @@ def process_benchmark_mode(mode_dir, dataset_name="unknown"):
     plt.axvline(sample_p95, color='purple', linestyle='--', label=f'P95: {sample_p95:.4f}')
     plt.xlabel('Cosine Similarity')
     plt.ylabel('Cumulative Probability')
-    plt.title(f'{benchmark_mode.upper()} - Cumulative Distribution Function\nSampled from {len(sim_files)} test points')
+    plt.title(f'{benchmark_mode.upper()} - Cumulative Distribution Function\n{title_suffix}')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()

@@ -143,11 +143,12 @@ class StreamingStats:
             self.M2 = self.M2 + new_var * n_new + delta * delta * self.n * n_new / total_n
             self.n = total_n
 
-        subsample_rate = max(1, n_new // 1000)
-        for x in values[::subsample_rate]:
+        # Reservoir sampling - add all values, let reservoir handle downsampling
+        for x in values:
             if len(self.sample_reservoir) < self.sample_size:
                 self.sample_reservoir.append(float(x))
             else:
+                # Replace random element (proper reservoir sampling)
                 j = np.random.randint(0, len(self.sample_reservoir))
                 self.sample_reservoir[j] = float(x)
 
@@ -521,8 +522,8 @@ def load_benchmark(benchmark_name: str, mode: str):
 
     elif benchmark_name == 'codeforces':
         import pandas as pd
-        # Load from codeforces_uniform_recent.csv in project root
-        csv_path = Path(__file__).parent.parent.parent / 'codeforces_uniform_recent.csv'
+        # Load from codeforces_uniform_recent.csv in pipeline directory
+        csv_path = Path(__file__).parent.parent / 'codeforces_uniform_recent.csv'
         if not csv_path.exists():
             raise FileNotFoundError(f"Codeforces CSV not found at {csv_path}")
         
@@ -718,15 +719,18 @@ def run_worker(rank, world_size, args):
 
     # Get parquet file(s) to process
     log.info("Scanning for parquet files...")
-    
+
     # Use specific corpus_file if provided, otherwise scan directory
     if hasattr(args, 'corpus_file') and args.corpus_file:
-        corpus_file_path = data_dir / args.corpus_file
-        if corpus_file_path.exists():
-            parquet_files = [corpus_file_path]
-            log.info(f"Using specific corpus file: {args.corpus_file}")
+        # Handle glob patterns (e.g., "*.parquet" or "embeddings_rank_*.parquet")
+        import glob
+        pattern = str(data_dir / args.corpus_file)
+        matched_files = sorted(glob.glob(pattern))
+        if matched_files:
+            parquet_files = [Path(f) for f in matched_files]
+            log.info(f"Using corpus file pattern: {args.corpus_file} (matched {len(parquet_files)} files)")
         else:
-            log.error(f"Corpus file not found: {corpus_file_path}")
+            log.error(f"No files matched corpus file pattern: {args.corpus_file}")
             return rank, 0
     else:
         all_parquets = sorted(data_dir.rglob("*.parquet"))
@@ -1260,8 +1264,9 @@ def process_single_test(args_tuple):
         per_test_stats['sum'] += float(np.sum(sims))
         per_test_stats['count'] += len(sims)
 
-        # Sample for median (avoid loading all data)
-        sample_size = min(10000, len(sims))
+        # Sample for aggregate histogram (100K per test for better accuracy)
+        # With 1000 tests × 100K samples = 100M total (~400MB memory)
+        sample_size = min(100000, len(sims))
         if len(sims) <= sample_size:
             all_vals_for_median.extend(sims.tolist())
         else:
@@ -1467,6 +1472,7 @@ def run_merger(args, world_size):
         print(f"  ✅ Processed {len(results)} tests successfully")
 
         # Aggregate statistics from all test results
+        # Sample 100K per test, but reservoir limit at 10M for plotting
         agg_stats = StreamingStats(sample_size=10_000_000)
         all_top_scores = []
 
@@ -1502,9 +1508,14 @@ def run_merger(args, world_size):
             if final_stats['min'] not in sample_arr:
                 sample_arr = np.append(sample_arr, final_stats['min'])
 
+            # Calculate weights to scale sample to represent full dataset
+            weight_per_sample = final_stats['count'] / len(sample_arr)
+            weights = np.full(len(sample_arr), weight_per_sample)
+
             plt.figure(figsize=(12, 8))
             plt.hist(sample_arr, bins=200,
                      range=(final_stats['min'], final_stats['max']),
+                     weights=weights,
                      log=True, alpha=0.7, edgecolor='black')
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
             plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
@@ -1512,7 +1523,7 @@ def run_merger(args, world_size):
             plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Frequency (log scale)')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Log Scale)\nTotal: {final_stats["count"]:,} comparisons')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Log Scale)\nTotal: {final_stats["count"]:,} comparisons (estimated from {len(sample_arr):,} samples)')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
@@ -1523,6 +1534,7 @@ def run_merger(args, world_size):
             plt.figure(figsize=(12, 8))
             plt.hist(sample_arr, bins=200,
                      range=(final_stats['min'], final_stats['max']),
+                     weights=weights,
                      alpha=0.7, edgecolor='black')
             plt.axvline(final_stats['max'], color='r', linestyle='--', label=f'Max: {final_stats["max"]:.4f}')
             plt.axvline(final_stats['mean'], color='g', linestyle='--', label=f'Mean: {final_stats["mean"]:.4f}')
@@ -1530,7 +1542,7 @@ def run_merger(args, world_size):
             plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Frequency')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Linear Scale)\nTotal: {final_stats["count"]:,} comparisons')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Linear Scale)\nTotal: {final_stats["count"]:,} comparisons (estimated from {len(sample_arr):,} samples)')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
@@ -1550,7 +1562,7 @@ def run_merger(args, world_size):
             plt.axhline(0.95, color='purple', linestyle=':', alpha=0.5)
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Cumulative Probability')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Cumulative Distribution Function\nTotal: {final_stats["count"]:,} comparisons')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Cumulative Distribution Function\nTotal: {final_stats["count"]:,} comparisons (estimated from {len(sample_arr):,} samples)')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
@@ -1593,6 +1605,7 @@ def run_merger(args, world_size):
 def main():
     parser = argparse.ArgumentParser(description="Production Contamination Analysis (8x A100 40GB)")
     parser.add_argument('--data-dir', required=True, help='Directory with parquet files')
+    parser.add_argument('--corpus-file', default=None, help='Specific corpus file pattern (e.g., "embeddings.parquet" or "*.parquet")')
     parser.add_argument('--output-dir', default='contamination_results', help='Base output directory')
     parser.add_argument('--dataset-name', default='dataset', help='Dataset name for output directory structure')
     parser.add_argument('--sample-size', default='unknown', help='Sample size/percentage for output directory structure')
