@@ -315,11 +315,98 @@ def process_config(config_path, output_csv, n_samples=100):
     return df
 
 
+def process_direct(results_dir, corpus_jsonl, output_csv, n_samples=100):
+    """Process with direct paths (no config file needed)."""
+    results_dir = Path(results_dir)
+    corpus_jsonl = Path(corpus_jsonl)
+    output_csv = Path(output_csv)
+    
+    print(f"\n{'='*60}")
+    print(f"Results dir: {results_dir}")
+    print(f"Corpus JSONL: {corpus_jsonl}")
+    print(f"Output: {output_csv}")
+    print(f"{'='*60}")
+    
+    # Check if temp_similarities exists
+    temp_sims_dir = results_dir / "temp_similarities"
+    if not temp_sims_dir.exists():
+        print(f"⚠️  No temp_similarities found at {temp_sims_dir}")
+        return None
+    
+    # Load corpus text mapping
+    id_to_text = load_corpus_text_mapping(corpus_jsonl)
+    
+    # Load MBPP test texts
+    test_texts = load_benchmark_test_texts()
+    
+    # Find test directories
+    world_size = 1
+    for r in range(8):
+        if (temp_sims_dir / f"rank_{r}").exists():
+            world_size = max(world_size, r + 1)
+    
+    # Get test indices
+    test_indices = set()
+    for r in range(world_size):
+        rank_dir = temp_sims_dir / f"rank_{r}"
+        if rank_dir.exists():
+            for td in rank_dir.glob("test_*"):
+                try:
+                    idx = int(td.name.split('_')[1])
+                    test_indices.add(idx)
+                except:
+                    continue
+            break
+    
+    print(f"Found {len(test_indices)} test indices, world_size={world_size}")
+    
+    # For MBPP, indices are 0-256 (257 tests)
+    from datasets import load_dataset
+    ds = load_dataset("google-research-datasets/mbpp", "sanitized", split="test")
+    mbpp_test_ids = [str(item['task_id']) for item in ds]
+    
+    # Sample from each test
+    all_samples = []
+    for i, test_id in enumerate(tqdm(mbpp_test_ids, desc="Sampling top 1%")):
+        if i not in test_indices:
+            continue
+        
+        samples = sample_top1pct_for_test(i, results_dir, world_size, n_samples)
+        if not samples:
+            continue
+        
+        test_text = test_texts.get(test_id, '')
+        for sample in samples:
+            corpus_text = id_to_text.get(sample['hash_id'], '')
+            all_samples.append({
+                'test_id': test_id,
+                'test_text': test_text,
+                'corpus_id': sample['hash_id'],
+                'corpus_text': corpus_text,
+                'similarity': sample['similarity']
+            })
+    
+    if not all_samples:
+        print("⚠️  No samples collected")
+        return None
+    
+    df = pd.DataFrame(all_samples)
+    df = df.sort_values(['test_id', 'similarity'], ascending=[True, False])
+    output_csv.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_csv, index=False)
+    
+    print(f"\n✅ Saved {len(df)} samples to {output_csv}")
+    print(f"   Test points: {df['test_id'].nunique()}")
+    return df
+
+
 def main():
     parser = argparse.ArgumentParser(description="Sample top 1% for semantic duplicate analysis")
     parser.add_argument('--config', '-c', help='Single config file to process')
     parser.add_argument('--all-configs', action='store_true', help='Process all configs in configs/')
-    parser.add_argument('--output', '-o', help='Output CSV (for single config)')
+    parser.add_argument('--results-dir', help='Direct path to results directory with temp_similarities')
+    parser.add_argument('--corpus-jsonl', help='Direct path to corpus JSONL file')
+    parser.add_argument('--output', '-o', help='Output CSV')
     parser.add_argument('--output-dir', help='Output directory (for all configs)')
     parser.add_argument('--samples', '-n', type=int, default=100, help='Samples per test point')
     
@@ -328,8 +415,12 @@ def main():
     pipeline_root = Path(__file__).parent.parent
     configs_dir = pipeline_root / "configs"
     
-    if args.all_configs:
-        # Process all YAML configs
+    # Direct path mode
+    if args.results_dir and args.corpus_jsonl:
+        output_csv = args.output or "./top1pct_output.csv"
+        process_direct(args.results_dir, args.corpus_jsonl, output_csv, args.samples)
+    
+    elif args.all_configs:
         config_files = list(configs_dir.glob("*.yaml"))
         output_dir = Path(args.output_dir or pipeline_root / "semantic_samples")
         
@@ -344,7 +435,6 @@ def main():
                 print(f"❌ Error processing {config_file.name}: {e}")
                 import traceback
                 traceback.print_exc()
-                continue
     
     elif args.config:
         config_path = Path(args.config)
