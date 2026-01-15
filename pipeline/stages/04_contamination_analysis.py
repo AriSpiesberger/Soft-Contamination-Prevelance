@@ -1131,6 +1131,103 @@ def run_worker(rank, world_size, args):
 # Similarities are saved per-test in test_*/chunk_*_sims.npy files
 
 
+def process_single_test_top1pct(args_tuple):
+    """
+    Sample 100 random items from top 1% of similarity scores for a test point.
+    Used for semantic duplicate analysis.
+    """
+    test_data, output_dir, world_size, id_to_text, n_samples = args_tuple
+    
+    test_id = test_data['test_id']
+    test_text = test_data['text']
+    global_idx = test_data['global_idx']
+    benchmark = test_data['benchmark']
+    mode = test_data['mode']
+    
+    # Collect chunk metadata from ALL ranks
+    chunk_metadata = []
+    for r in range(world_size):
+        chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{global_idx}"
+        hash_ids_dir = output_dir / "temp_similarities" / f"rank_{r}" / "shared_hash_ids"
+        
+        chunk_files_npy = sorted(chunk_dir.glob("chunk_*_sims.npy")) if chunk_dir.exists() else []
+        chunk_files_npz = sorted(chunk_dir.glob("chunk_*.npz")) if chunk_dir.exists() else []
+        
+        for chunk_file in chunk_files_npy:
+            chunk_num = chunk_file.stem.split('_')[1]
+            hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
+            if hash_ids_file.exists():
+                chunk_metadata.append(('npy', chunk_file, hash_ids_file))
+        
+        for chunk_file in chunk_files_npz:
+            chunk_metadata.append(('npz', chunk_file, None))
+    
+    if not chunk_metadata:
+        return None
+    
+    # Pass 1: Load ALL similarities to find 99th percentile
+    all_sims = []
+    all_hash_ids = []
+    
+    for fmt, sim_file, hash_file in chunk_metadata:
+        try:
+            if fmt == 'npy':
+                sims = np.load(sim_file)  # Full load needed for percentile
+                hash_ids = np.load(hash_file) if hash_file else None
+            elif fmt == 'npz':
+                data = np.load(sim_file, allow_pickle=True)
+                sims = data['similarities']
+                hash_ids = data['hash_ids']
+            
+            all_sims.append(sims)
+            if hash_ids is not None:
+                all_hash_ids.append(hash_ids)
+        except Exception:
+            continue
+    
+    if not all_sims:
+        return None
+    
+    sims = np.concatenate(all_sims)
+    hash_ids = np.concatenate(all_hash_ids) if all_hash_ids else None
+    
+    if len(sims) == 0 or hash_ids is None:
+        return None
+    
+    # Find 99th percentile (top 1% threshold)
+    threshold = np.percentile(sims, 99)
+    
+    # Get indices in top 1%
+    top1pct_mask = sims >= threshold
+    top1pct_indices = np.where(top1pct_mask)[0]
+    
+    if len(top1pct_indices) == 0:
+        return None
+    
+    # Sample up to n_samples from top 1%
+    sample_size = min(n_samples, len(top1pct_indices))
+    sampled_indices = np.random.choice(top1pct_indices, size=sample_size, replace=False)
+    
+    # Build results
+    samples = []
+    for idx in sampled_indices:
+        hash_id = str(hash_ids[idx])
+        corpus_text = id_to_text.get(hash_id, '') if id_to_text else ''
+        samples.append({
+            'test_id': test_id,
+            'test_text': test_text,
+            'corpus_id': hash_id,
+            'corpus_text': corpus_text,
+            'similarity': float(sims[idx]),
+            'benchmark': benchmark,
+            'threshold_99pct': float(threshold),
+            'total_embeddings': len(sims),
+            'top1pct_count': len(top1pct_indices)
+        })
+    
+    return samples
+
+
 def process_single_test(args_tuple):
     """Process a single test point - designed for parallel execution."""
     test_data, output_dir, world_size = args_tuple
@@ -1619,6 +1716,14 @@ def main():
     parser.add_argument('--max-rows-per-block', type=int, default=DEFAULT_CONFIG['max_rows_per_block'])
     parser.add_argument('--resume-from-file', type=int, default=0, help='Resume from this global parquet file index')
     parser.add_argument('--merge-only', action='store_true', help='Only run merger (skip workers)')
+    parser.add_argument('--sample-top1pct', action='store_true', 
+                        help='Sample 100 random items from top 1%% for semantic analysis (MBPP only)')
+    parser.add_argument('--corpus-jsonl', default=None,
+                        help='Corpus JSONL file for text lookup (required for --sample-top1pct)')
+    parser.add_argument('--top1pct-samples', type=int, default=100,
+                        help='Number of samples per test point in top 1%% mode')
+    parser.add_argument('--top1pct-output', default=None,
+                        help='Output CSV for top 1%% samples')
     args = parser.parse_args()
 
     # Construct full output directory with dataset_name and sample_size
@@ -1656,7 +1761,10 @@ def main():
 
     world_size = args.world_size
 
-    if args.merge_only:
+    if args.sample_top1pct:
+        # Special mode: sample from top 1% for semantic analysis
+        run_top1pct_sampler(args, world_size)
+    elif args.merge_only:
         run_merger(args, world_size)
     else:
         run_worker(rank, world_size, args)
