@@ -412,7 +412,11 @@ def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_sampl
     # Load parquet files for hash_id reconstruction (if data_dir provided)
     parquet_files = None
     if data_dir and data_dir.exists():
+        # Try flat first, then recursive
         parquet_files = sorted(data_dir.glob("*.parquet"))
+        if not parquet_files:
+            print(f"Searching recursively for parquet files...")
+            parquet_files = sorted(data_dir.rglob("*.parquet"))
         print(f"Found {len(parquet_files)} parquet files for ID lookup")
     
     # Sample from each test
