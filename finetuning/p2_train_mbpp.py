@@ -11,14 +11,14 @@ import torch
 from transformers import BitsAndBytesConfig
 from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
-import wandb
 import os
 from pathlib import Path
 import argparse
+from datetime import datetime
 
 pwd = Path(__file__).parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
-IN_FILE = pwd.parent / "mbpp_train.csv"
+IN_FILE = pwd.parent / "mbpp_train_filtered.csv"  # Filtered: only correct implementations that pass tests
 OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-mbpp-qlora-{wandb_id}"
 WANDB_PROJECT = "semdupes-olmo3-mbpp"
 
@@ -76,12 +76,13 @@ def main(
     logging_steps: int = 10,
     wandb_project: str = WANDB_PROJECT,
     skip_quantization: bool = False,
+    use_wandb: bool = True,
 ) -> str:
     """
     Finetune a model on MBPP semantic pairs.
-    
+
     Returns:
-        str: The wandb run id
+        str: The run id (wandb id or timestamp-based)
     """
     # Set defaults for mutable arguments
     if lora_alpha is None:
@@ -91,25 +92,36 @@ def main(
 
     # Load training pairs from CSV
     training_data = load_mbpp_train(csv_path)
-    
-    # Initialize wandb
-    run = wandb.init(
-        project=wandb_project,
-        config={
-            "model": model_repo,
-            "lora_r": lora_r,
-            "lora_alpha": lora_alpha,
-            "learning_rate": learning_rate,
-            "batch_size": per_device_train_batch_size * gradient_accumulation_steps,
-            "epochs": num_train_epochs,
-            "train_only_on_outputs": train_only_on_outputs,
-            "csv_path": str(csv_path),
-            "num_pairs": len(training_data),
-        }
-    )
-    
-    # Set output directory based on wandb run id
-    output_dir = pwd / out_path_template.format(wandb_id=run.id)
+
+    # Initialize wandb or generate local run id
+    run = None
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+    if use_wandb:
+        import wandb
+        run_name = f"train-mbpp-{len(training_data)}pairs-{num_train_epochs}ep-{timestamp}"
+        run = wandb.init(
+            project=wandb_project,
+            name=run_name,
+            config={
+                "model": model_repo,
+                "lora_r": lora_r,
+                "lora_alpha": lora_alpha,
+                "learning_rate": learning_rate,
+                "batch_size": per_device_train_batch_size * gradient_accumulation_steps,
+                "epochs": num_train_epochs,
+                "train_only_on_outputs": train_only_on_outputs,
+                "csv_path": str(csv_path),
+                "num_pairs": len(training_data),
+            }
+        )
+        run_id = run.id
+        print(f"Wandb run: {run_name} (id: {run_id})")
+    else:
+        run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        print(f"Wandb disabled. Using local run id: {run_id}")
+
+    # Set output directory based on run id
+    output_dir = pwd / out_path_template.format(wandb_id=run_id)
     print(f"Checkpoints will be saved to: {output_dir}")
     
     # Save the training command
@@ -160,7 +172,7 @@ def main(
         bf16=True,
         optim="paged_adamw_8bit",
         lr_scheduler_type="cosine",
-        report_to="wandb",
+        report_to="wandb" if use_wandb else "none",
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
         max_length=max_length,
@@ -191,31 +203,33 @@ def main(
     # Save the LoRA weights
     print(f"Saving LoRA weights to {output_dir}...")
     trainer.save_model(output_dir)
-    
-    # Upload checkpoint to wandb
-    print("Uploading checkpoint to wandb...")
-    artifact = wandb.Artifact(
-        name=f"mbpp-lora-checkpoint-{run.id}",
-        type="model",
-        description=f"MBPP semantic pairs LoRA checkpoint for {model_repo}",
-        metadata={
-            "model": model_repo,
-            "lora_r": lora_r,
-            "lora_alpha": lora_alpha,
-            "learning_rate": learning_rate,
-            "epochs": num_train_epochs,
-            "num_pairs": len(training_data),
-        }
-    )
-    artifact.add_dir(str(output_dir))
-    run.log_artifact(artifact)
-    
+
+    # Upload checkpoint to wandb if enabled
+    if use_wandb and run is not None:
+        import wandb
+        print("Uploading checkpoint to wandb...")
+        artifact = wandb.Artifact(
+            name=f"mbpp-lora-checkpoint-{run_id}",
+            type="model",
+            description=f"MBPP semantic pairs LoRA checkpoint for {model_repo}",
+            metadata={
+                "model": model_repo,
+                "lora_r": lora_r,
+                "lora_alpha": lora_alpha,
+                "learning_rate": learning_rate,
+                "epochs": num_train_epochs,
+                "num_pairs": len(training_data),
+            }
+        )
+        artifact.add_dir(str(output_dir))
+        run.log_artifact(artifact)
+        wandb.finish()
+
     print("Training complete!")
     print(f"LoRA weights saved to: {output_dir}")
-    print(f"Wandb run id: {run.id}")
-    
-    wandb.finish()
-    return run.id
+    print(f"Wandb run id: {run_id}")
+
+    return run_id
 
 
 if __name__ == "__main__":
@@ -226,6 +240,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--num_train_epochs", type=int, default=1, help="Number of training epochs")
     parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT, help="wandb project")
     parser.add_argument("-n", "--skip_quantization", action="store_true", help="Skip quantization")
+    parser.add_argument("--no-wandb", dest="use_wandb", action="store_false", help="Disable wandb logging")
     args = parser.parse_args()
-    wandb_id = main(**vars(args))
-    print(f"Wandb run id: {wandb_id}")
+    run_id = main(**vars(args))
+    print(f"Wandb run id: {run_id}")

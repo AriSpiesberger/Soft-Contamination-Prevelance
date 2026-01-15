@@ -33,73 +33,122 @@ SYSTEM_PROMPT = "You are an expert Python programmer. Generate complete, working
 
 
 def load_model(model_repo: str, finetuned_path: str = None):
-    """Load model with quantization and optional LoRA weights."""
+    """Load model at fp16 with optional LoRA weights."""
     import torch
-    from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+    from transformers import AutoTokenizer, AutoModelForCausalLM
     from peft import PeftModel
-    
+
     tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
-    
-    print(f"Loading {model_repo} with NF4 quantization...")
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_use_double_quant=True,
-    )
+
+    print(f"Loading {model_repo} at fp16...")
     model = AutoModelForCausalLM.from_pretrained(
         model_repo,
-        quantization_config=quantization_config,
+        torch_dtype=torch.float16,
         device_map="auto",
         trust_remote_code=True,
     )
-    
+
     if finetuned_path:
         print(f"Loading LoRA weights from {finetuned_path}...")
         model = PeftModel.from_pretrained(model, finetuned_path)
         print("Finetuned model loaded!")
     else:
         print("Base model loaded!")
-    
+
     return model, tokenizer
 
 
-def load_test_cases(mbpp_results_path: str) -> dict:
-    """Load test cases from MBPP master results."""
-    with open(mbpp_results_path, 'r') as f:
-        data = json.load(f)
-    
-    # Build task_id -> test_list mapping
+def load_test_cases(mbpp_results_path: str = None) -> dict:
+    """Load test cases from MBPP master results or HuggingFace.
+
+    If mbpp_results_path is provided and exists, load from JSON.
+    Otherwise, load directly from HuggingFace MBPP dataset.
+    """
     test_cases = {}
-    for result in data.get('results', []):
-        task_id = result['task_id']
-        test_list = result.get('test_list', [])
-        test_cases[task_id] = test_list
-    
-    print(f"Loaded test cases for {len(test_cases)} tasks")
+
+    # Try loading from JSON file first
+    if mbpp_results_path and Path(mbpp_results_path).exists():
+        with open(mbpp_results_path, 'r') as f:
+            data = json.load(f)
+
+        for result in data.get('results', []):
+            task_id = result['task_id']
+            test_list = result.get('test_list', [])
+            test_cases[task_id] = test_list
+
+        print(f"Loaded test cases for {len(test_cases)} tasks from {mbpp_results_path}")
+        return test_cases
+
+    # Fall back to HuggingFace dataset
+    print("Loading test cases from HuggingFace MBPP dataset...")
+    from datasets import load_dataset
+
+    # Load all splits to get all test cases
+    for split in ['test', 'train', 'validation', 'prompt']:
+        try:
+            ds = load_dataset('mbpp', split=split)
+            for item in ds:
+                task_id = item['task_id']
+                test_list = item.get('test_list', [])
+                if task_id not in test_cases:
+                    test_cases[task_id] = test_list
+        except Exception as e:
+            print(f"Warning: Could not load split '{split}': {e}")
+
+    print(f"Loaded test cases for {len(test_cases)} tasks from HuggingFace")
     return test_cases
 
 
-def load_test_prompts(csv_path: str, test_cases: dict) -> list:
-    """Load test prompts from CSV and attach test cases."""
+def extract_function_name(code: str) -> str:
+    """Extract function name from code like 'def func_name(...)'."""
+    import re
+    match = re.search(r'def\s+(\w+)\s*\(', code)
+    return match.group(1) if match else None
+
+
+def extract_function_signature(code: str) -> str:
+    """Extract the function signature (def line) from code."""
+    import re
+    match = re.search(r'def\s+\w+\s*\([^)]*\)\s*:', code)
+    return match.group(0) if match else None
+
+
+def load_test_prompts(csv_path: str, test_cases: dict, include_signature: bool = False) -> list:
+    """Load test prompts from CSV and attach test cases.
+
+    Args:
+        csv_path: Path to CSV with test prompts
+        test_cases: Dict of test cases by task_id
+        include_signature: If True, prepend function signature to prompt
+    """
     prompts = []
-    
+
     with open(csv_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             task_id = int(row['task_id'])
-            
+
             # Only include where we have test cases
             if task_id not in test_cases:
                 continue
-            
+
+            # Extract expected function name and signature from gold code
+            func_name = extract_function_name(row['original_code'])
+            func_signature = extract_function_signature(row['original_code'])
+
+            # Optionally prepend signature to prompt (for models trained with signatures)
+            prompt_text = row['original_text']
+            if include_signature and func_signature:
+                prompt_text = f"{func_signature} {prompt_text}"
+
             prompts.append({
                 'task_id': task_id,
-                'prompt': row['original_text'],
+                'prompt': prompt_text,
                 'gold_code': row['original_code'],
                 'test_list': test_cases[task_id],
+                'func_name': func_name,
             })
-    
+
     print(f"Loaded {len(prompts)} test prompts from {csv_path}")
     return prompts
 
@@ -151,13 +200,19 @@ def run_code_with_tests(code: str, test_list: list, timeout: float = 10.0) -> di
         return {'passed': 0, 'total': len(test_list), 'error': str(e)[:500]}
 
 
-def generate_code(model, tokenizer, prompt: str, max_new_tokens: int = 1024) -> str:
+def generate_code(model, tokenizer, prompt: str, func_name: str = None, max_new_tokens: int = 1024) -> str:
     """Generate code from prompt using the model."""
     import torch
-    
+
+    # Include function name requirement if provided
+    if func_name:
+        user_content = f"{prompt}\n\nThe function must be named `{func_name}`. Generate only the Python code, no explanations."
+    else:
+        user_content = f"{prompt}\n\nGenerate only the Python code, no explanations."
+
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"{prompt}\n\nGenerate only the Python code, no explanations."},
+        {"role": "user", "content": user_content},
     ]
     
     chat_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
@@ -206,9 +261,10 @@ def evaluate_mbpp(
     for item in pbar:
         prompt = item['prompt']
         test_list = item['test_list']
-        
+        func_name = item.get('func_name')
+
         # Generate code
-        generated_code = generate_code(model, tokenizer, prompt)
+        generated_code = generate_code(model, tokenizer, prompt, func_name=func_name)
         
         # Run tests
         test_result = run_code_with_tests(generated_code, test_list)
@@ -256,6 +312,7 @@ def main(
     finetuned: bool = False,
     wandb_id: str = None,
     finetuned_path: str = None,
+    epochs: int = None,  # For naming finetuned runs
     # Data configuration
     test_split: str = "eval",  # "train" or "eval"
     mbpp_results_path: str = DEFAULT_MBPP_RESULTS,
@@ -286,9 +343,10 @@ def main(
     
     # Load test cases
     test_cases = load_test_cases(mbpp_results_path)
-    
+
     # Load test prompts
-    prompts = load_test_prompts(test_csv, test_cases)
+    # Include function signatures for finetuned models (they were trained with signatures)
+    prompts = load_test_prompts(test_csv, test_cases, include_signature=use_finetuned)
     
     if not prompts:
         print("ERROR: No test prompts found!")
@@ -304,7 +362,13 @@ def main(
     # Initialize wandb
     wandb_run = None
     if use_wandb:
-        run_name = f"mbpp-eval-{model_identifier}-{test_split}"
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+        if use_finetuned:
+            ep_tag = f"-{epochs}ep" if epochs else ""
+            model_tag = f"ft{ep_tag}"
+        else:
+            model_tag = "base"
+        run_name = f"eval-mbpp-{model_tag}-{test_split}-{timestamp}"
         wandb_run = wandb.init(
             project=wandb_project,
             name=run_name,
@@ -316,6 +380,7 @@ def main(
                 "num_prompts": len(prompts),
             },
         )
+        print(f"Wandb run: {run_name}")
     
     # Load model
     model, tokenizer = load_model(
@@ -369,7 +434,9 @@ if __name__ == "__main__":
                         help="Wandb run ID for finetuned model")
     parser.add_argument("--finetuned-path", type=str, default=None,
                         help="Direct path to finetuned weights")
-    
+    parser.add_argument("--epochs", type=int, default=None,
+                        help="Number of epochs (for run naming)")
+
     # Data configuration
     parser.add_argument("-t", "--test-split", type=str, default="eval",
                         choices=["train", "eval"],
@@ -390,6 +457,7 @@ if __name__ == "__main__":
         finetuned=args.finetuned,
         wandb_id=args.wandb_id,
         finetuned_path=args.finetuned_path,
+        epochs=args.epochs,
         test_split=args.test_split,
         mbpp_results_path=args.mbpp_results,
         use_wandb=not args.no_wandb,
