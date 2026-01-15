@@ -1,0 +1,35 @@
+{
+  "model": "claude-opus-4-5-20251101",
+  "timestamp": "2026-01-14T17:25:46.187168",
+  "stats": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1
+  },
+  "results": [
+    {
+      "task_id": 422,
+      "prompt": "Write a python function to find the average of cubes of first n natural numbers.",
+      "claude_code": "def find_Average_Of_Cube(n):\n    if n <= 0:\n        return 0\n    \n    sum_of_cubes = sum(i ** 3 for i in range(1, n + 1))\n    average = sum_of_cubes / n\n    \n    return average\n\n\nif __name__ == \"__main__\":\n    print(find_Average_Of_Cube(2))\n    print(find_Average_Of_Cube(3))\n    print(find_Average_Of_Cube(5))",
+      "gold_code": "def find_Average_Of_Cube(n):  \n    sum = 0\n    for i in range(1, n + 1): \n        sum += i * i * i  \n    return round(sum / n, 6) ",
+      "tests_passed": true,
+      "error": null
+    },
+    {
+      "task_id": 424,
+      "prompt": "Write a function to extract only the rear index element of each string in the given tuple.",
+      "claude_code": "def extract_rear(test_tuple):\n    \"\"\"\n    Extract the rear (last) index element of each string in the given tuple.\n    \n    Args:\n        test_tuple: A tuple containing strings\n        \n    Returns:\n        A list containing the last character of each string\n    \"\"\"\n    result = []\n    for string in test_tuple:\n        if string:  # Check if string is not empty\n            result.append(string[-1])\n    return result\n\n\n# Alternative implementation using list comprehension\ndef extract_rear_comprehension(test_tuple):\n    \"\"\"\n    Extract the rear (last) index element of each string in the given tuple.\n    \n    Args:\n        test_tuple: A tuple containing strings\n        \n    Returns:\n        A list containing the last character of each string\n    \"\"\"\n    return [string[-1] for string in test_tuple if string]\n\n\nif __name__ == \"__main__\":\n    # Test cases\n    test1 = (\"hello\", \"world\", \"python\")\n    print(f\"Input: {test1}\")\n    print(f\"Output: {extract_rear(test1)}\")\n    \n    test2 = (\"Mango\", \"Banana\", \"Apple\")\n    print(f\"Input: {test2}\")\n    print(f\"Output: {extract_rear(test2)}\")\n    \n    test3 = (\"a\", \"bc\", \"def\")\n    print(f\"Input: {test3}\")\n    print(f\"Output: {extract_rear(test3)}\")\n    \n    # Test with empty string\n    test4 = (\"hello\", \"\", \"world\")\n    print(f\"Input: {test4}\")\n    print(f\"Output: {extract_rear(test4)}\")",
+      "gold_code": "def extract_rear(test_tuple):\n  res = list(sub[len(sub) - 1] for sub in test_tuple)\n  return (res) ",
+      "tests_passed": true,
+      "error": null
+    },
+    {
+      "task_id": 425,
+      "prompt": "Write a function to count the number of sublists containing a particular element.",
+      "claude_code": "def count_sublists_with_element(lst: list, element) -> int:\n    \"\"\"\n    Count the number of sublists in a list that contain a particular element.\n    \n    Args:\n        lst: A list of sublists to search through\n        element: The element to search for in each sublist\n        \n    Returns:\n        The count of sublists that contain the specified element\n    \"\"\"\n    count = 0\n    for sublist in lst:\n        if isinstance(sublist, list) and element in sublist:\n            count += 1\n    return count\n\n\nif __name__ == \"__main__\":\n    # Test cases\n    test_list1 = [[1, 2, 3], [4, 5, 6], [1, 7, 8], [9, 1, 10]]\n    print(f\"Count of sublists containing 1: {count_sublists_with_element(test_list1, 1)}\")  # Expected: 3\n    \n    test_list2 = [['a', 'b'], ['c', 'd'], ['a', 'e', 'f']]\n    print(f\"Count of sublists containing 'a': {count_sublists_with_element(test_list2, 'a')}\")  # Expected: 2\n    \n    test_list3 = [[1, 2], [3, 4], [5, 6]]\n    print(f\"Count of sublists containing 7: {count_sublists_with_element(test_list3, 7)}\")  # Expected: 0\n    \n    test_list4 = []\n    print(f\"Count of sublists containing 1 in empty list: {count_sublists_with_element(test_list4, 1)}\")  # Expected: 0\n    \n    test_list5 = [[None, 1], [2, None], [3, 4]]\n    print(f\"Count of sublists containing None: {count_sublists_with_element(test_list5, None)}\")  # Expected: 2",
+      "gold_code": "def count_element_in_list(list1, x): \n    ctr = 0\n    for i in range(len(list1)): \n        if x in list1[i]: \n            ctr+= 1          \n    return ctr",
+      "tests_passed": false,
+      "error": "Traceback (most recent call last):\n  File \"/tmp/tmpwg9eaj76.py\", line 36, in <module>\n    assert count_element_in_list([[1, 3], [5, 7], [1, 11], [1, 15, 7]],1)==3\nNameError: name 'count_element_in_list' is not defined\n"
+    }
+  ]
+}

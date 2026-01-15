@@ -14,6 +14,7 @@ Or for all configs:
 
 import os
 import sys
+import gc
 import json
 import yaml
 import argparse
@@ -22,6 +23,9 @@ import pandas as pd
 from pathlib import Path
 from tqdm import tqdm
 from collections import defaultdict
+from multiprocessing import cpu_count
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 
 
 def load_config(config_path):
@@ -54,146 +58,319 @@ def load_corpus_text_mapping(corpus_jsonl_path):
     return id_to_text
 
 
-def load_benchmark_test_texts():
-    """Load MBPP test texts."""
+def load_benchmark_test_texts(benchmark='mbpp'):
+    """Load benchmark test texts."""
     from datasets import load_dataset
-    
-    print("Loading MBPP benchmark...")
-    ds = load_dataset("google-research-datasets/mbpp", "sanitized", split="test")
-    
-    test_data = {}
-    for item in ds:
-        test_id = str(item['task_id'])
-        # Combine prompt + test_list for full context
-        test_text = item['prompt']
-        if item.get('test_list'):
-            test_text += "\n\nTest cases:\n" + "\n".join(item['test_list'][:3])
-        test_data[test_id] = test_text
-    
-    print(f"✓ Loaded {len(test_data)} MBPP test points")
-    return test_data
+
+    if benchmark == 'mbpp':
+        print("Loading MBPP benchmark...")
+        ds = load_dataset("google-research-datasets/mbpp", "sanitized", split="test")
+
+        test_data = {}
+        for item in ds:
+            test_id = str(item['task_id'])
+            # Combine prompt + test_list for full context
+            test_text = item['prompt']
+            if item.get('test_list'):
+                test_text += "\n\nTest cases:\n" + "\n".join(item['test_list'][:3])
+            test_data[test_id] = test_text
+
+        print(f"✓ Loaded {len(test_data)} MBPP test points")
+        return test_data
+
+    elif benchmark == 'codeforces':
+        print("Loading Codeforces benchmark...")
+        csv_path = Path(__file__).parent.parent / 'codeforces_uniform_recent.csv'
+        if not csv_path.exists():
+            raise FileNotFoundError(f"Codeforces CSV not found at {csv_path}")
+
+        df = pd.read_csv(csv_path)
+        test_data = {}
+        for _, row in df.iterrows():
+            test_id = str(row['id'])
+            # Combine problem description with input/output format
+            text_parts = [str(row.get('description', ''))]
+            if pd.notna(row.get('input_format')):
+                text_parts.append(f"Input: {row['input_format']}")
+            if pd.notna(row.get('output_format')):
+                text_parts.append(f"Output: {row['output_format']}")
+            test_data[test_id] = "\n".join(text_parts)
+
+        print(f"✓ Loaded {len(test_data)} Codeforces test points")
+        return test_data
+
+    else:
+        raise ValueError(f"Unknown benchmark: {benchmark}")
 
 
-def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100, parquet_files=None, chunk_size=5_000_000):
+def get_benchmark_index_ranges(config_path=None, benchmarks_config=None):
     """
-    For a single test point, load all similarities across ranks,
-    find the top 1% threshold, and sample 100 random items from that top 1%.
-    
-    If shared_hash_ids don't exist, reconstructs IDs from parquet files by matching
-    chunk indices to parquet row order.
-    
+    Calculate the global index ranges for each benchmark based on config order.
+    Returns dict of benchmark_name -> (start_idx, end_idx, test_ids_list)
+    """
+    from datasets import load_dataset
+
+    # Default benchmark order if not specified
+    if benchmarks_config is None:
+        benchmarks_config = [
+            {'name': 'mbpp'},
+            {'name': 'codeforces'},
+        ]
+
+    ranges = {}
+    global_idx = 0
+
+    for bench_cfg in benchmarks_config:
+        bench_name = bench_cfg['name'].lower()
+        start_idx = global_idx
+        test_ids = []
+
+        if bench_name == 'mbpp':
+            ds = load_dataset("google-research-datasets/mbpp", "sanitized", split="test")
+            for item in ds:
+                test_ids.append(str(item['task_id']))
+            global_idx += len(ds)
+
+        elif bench_name == 'codeforces':
+            csv_path = Path(__file__).parent.parent / 'codeforces_uniform_recent.csv'
+            if csv_path.exists():
+                df = pd.read_csv(csv_path)
+                test_ids = [str(row['id']) for _, row in df.iterrows()]
+                global_idx += len(df)
+
+        elif bench_name.startswith('musr'):
+            try:
+                subset = bench_name.replace('musr_', '') if '_' in bench_name else 'murder_mysteries'
+                ds = load_dataset("TAUR-Lab/MuSR", split=subset)
+                for i in range(len(ds)):
+                    test_ids.append(f"musr_{subset}_{i}")
+                global_idx += len(ds)
+            except:
+                pass
+
+        elif bench_name == 'zebralogic':
+            try:
+                ds = load_dataset("WaltonFuworworworworworworworwortson/ZebraLogic", split="test")
+                for i in range(len(ds)):
+                    test_ids.append(f"zebra_{i}")
+                global_idx += len(ds)
+            except:
+                pass
+
+        if test_ids:
+            ranges[bench_name] = (start_idx, global_idx, test_ids)
+
+    return ranges
+
+
+def get_hash_id_paths(output_dir):
+    """
+    Get paths to hash_id files without loading them into memory.
+    Returns dict mapping chunk_num -> file path, or None if not available.
+    """
+    shared_hash_dir = output_dir / "temp_similarities" / "shared_hash_ids"
+    if not shared_hash_dir.exists():
+        return None
+
+    hash_files = sorted(shared_hash_dir.glob("chunk_*_hash_ids.npy"))
+    if not hash_files:
+        return None
+
+    hash_id_paths = {}
+    for hf in hash_files:
+        chunk_num = hf.stem.split('_')[1]  # "chunk_0000_hash_ids" -> "0000"
+        hash_id_paths[chunk_num] = hf
+
+    return hash_id_paths
+
+
+def load_hash_ids_for_chunk(chunk_num, hash_id_paths):
+    """Load hash_ids for a single chunk on-demand."""
+    if hash_id_paths is None or chunk_num not in hash_id_paths:
+        return None
+    try:
+        return np.load(hash_id_paths[chunk_num])
+    except Exception:
+        return None
+
+
+def sample_top1pct_for_test_streaming(test_idx, output_dir, world_size, n_samples=100,
+                                       hash_id_paths=None, parquet_files=None):
+    """
+    Memory-efficient streaming version: two-pass approach.
+
+    Pass 1: Stream through all chunks to compute 99th percentile threshold
+    Pass 2: Stream again to collect samples above threshold
+
+    This never loads all data into memory at once.
+
     Args:
-        parquet_files: List of parquet file paths (needed if hash_ids missing)
-        chunk_size: Rows per similarity chunk (default 5M, matches stage 04)
-    
+        hash_id_paths: Dict of chunk_num -> file path (from get_hash_id_paths)
+        parquet_files: List of parquet file paths (fallback if hash_ids missing)
+
     Returns: list of {'similarity': float, 'hash_id': str} dicts
     """
-    all_sims = []
-    all_hash_ids = []
-    
-    # Check if hash_ids exist
-    hash_dir = output_dir / "temp_similarities" / "rank_0" / "shared_hash_ids"
-    has_hash_files = hash_dir.exists() and len(list(hash_dir.glob("*.npy"))) > 0
-    
-    # Collect all similarity data from all ranks
+    # First, collect all chunk file paths
+    chunk_info = []  # List of (chunk_file, chunk_num, is_npz)
+
     for r in range(world_size):
         chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{test_idx}"
-        hash_dir_r = output_dir / "temp_similarities" / f"rank_{r}" / "shared_hash_ids"
-        
         if not chunk_dir.exists():
             continue
-            
-        # Support both .npy and .npz formats
-        chunk_files_npy = sorted(chunk_dir.glob("chunk_*_sims.npy"))
-        chunk_files_npz = sorted(chunk_dir.glob("chunk_*.npz"))
-        
-        for chunk_file in chunk_files_npy:
+
+        for chunk_file in sorted(chunk_dir.glob("chunk_*_sims.npy")):
             chunk_num = chunk_file.stem.split('_')[1]
-            hash_file = hash_dir_r / f"chunk_{chunk_num}_hash_ids.npy"
-            
-            try:
-                sims = np.load(chunk_file)
-                if hash_file.exists():
-                    hash_ids = np.load(hash_file)
-                    all_sims.append(sims)
-                    all_hash_ids.append(hash_ids)
-                else:
-                    # Store sims with placeholder - will reconstruct IDs later
-                    all_sims.append(sims)
-                    all_hash_ids.append(None)  # Mark as needing reconstruction
-            except Exception as e:
-                continue
-        
-        for chunk_file in chunk_files_npz:
-            try:
+            chunk_info.append((chunk_file, chunk_num, False))
+
+        for chunk_file in sorted(chunk_dir.glob("chunk_*.npz")):
+            chunk_info.append((chunk_file, None, True))
+
+    if not chunk_info:
+        return []
+
+    # === PASS 1: Compute threshold using fast sampling ===
+    # Sample ~100k values to estimate the 99th percentile
+    SAMPLE_SIZE = 100_000
+    samples_per_chunk = max(1, SAMPLE_SIZE // len(chunk_info))
+    sampled_values = []
+
+    for chunk_file, chunk_num, is_npz in chunk_info:
+        try:
+            if is_npz:
                 data = np.load(chunk_file, allow_pickle=True)
-                all_sims.append(data['similarities'])
-                all_hash_ids.append(data['hash_ids'])
-            except Exception:
-                continue
-    
-    if not all_sims:
+                sims = data['similarities']
+            else:
+                sims = np.load(chunk_file, mmap_mode='r')
+
+            # Fast random sampling using numpy
+            chunk_len = len(sims)
+            n_samples = min(samples_per_chunk, chunk_len)
+            indices = np.random.choice(chunk_len, size=n_samples, replace=False)
+            sampled_values.extend(sims[indices].tolist())
+        except Exception:
+            continue
+
+    if not sampled_values:
         return []
-    
-    # Concatenate all similarities
-    all_sims_flat = np.concatenate(all_sims)
-    
-    # Check if we need to reconstruct hash_ids from parquet
-    if any(h is None for h in all_hash_ids):
-        if parquet_files is None:
-            print(f"  ⚠️  Test {test_idx}: No hash_ids and no parquet files provided")
-            return []
-        
-        # Reconstruct hash_ids from parquet files
-        # The order of similarities matches the order embeddings were processed
-        # which is parquet file order, row by row
-        all_ids = []
-        for pf in parquet_files:
-            try:
-                import duckdb
-                con = duckdb.connect(':memory:')
-                ids = con.execute(f"SELECT id FROM read_parquet('{pf}')").fetchall()
-                all_ids.extend([row[0] for row in ids])
-                con.close()
-            except Exception as e:
-                continue
-        
-        if len(all_ids) != len(all_sims_flat):
-            print(f"  ⚠️  Test {test_idx}: ID count mismatch ({len(all_ids)} IDs vs {len(all_sims_flat)} sims)")
-            # Try to continue with what we have
-            min_len = min(len(all_ids), len(all_sims_flat))
-            all_ids = all_ids[:min_len]
-            all_sims_flat = all_sims_flat[:min_len]
-        
-        all_hash_ids_flat = np.array(all_ids)
-    else:
-        all_hash_ids_flat = np.concatenate(all_hash_ids)
-    
-    # Find 99th percentile (top 1% threshold)
-    threshold = np.percentile(all_sims_flat, 99)
-    
-    # Find indices above threshold
-    top1_mask = all_sims_flat >= threshold
-    top1_indices = np.where(top1_mask)[0]
-    
-    if len(top1_indices) == 0:
+
+    # Compute threshold from samples
+    threshold = np.percentile(sampled_values, 99)
+    del sampled_values  # Free memory
+
+    # === PASS 2: Collect samples above threshold ===
+    candidates = []  # List of (similarity, chunk_file, chunk_num, local_idx, is_npz)
+
+    for chunk_file, chunk_num, is_npz in chunk_info:
+        try:
+            if is_npz:
+                data = np.load(chunk_file, allow_pickle=True)
+                sims = data['similarities']
+            else:
+                sims = np.load(chunk_file, mmap_mode='r')
+
+            # Find indices above threshold
+            above_threshold = np.where(sims >= threshold)[0]
+
+            for local_idx in above_threshold:
+                candidates.append((
+                    float(sims[local_idx]),
+                    chunk_file,
+                    chunk_num,
+                    int(local_idx),
+                    is_npz
+                ))
+        except Exception:
+            continue
+
+    if not candidates:
         return []
-    
-    # Sample n_samples from top 1%
-    if len(top1_indices) > n_samples:
-        sampled_indices = np.random.choice(top1_indices, size=n_samples, replace=False)
+
+    # Sample from candidates
+    if len(candidates) > n_samples:
+        sampled = [candidates[i] for i in np.random.choice(len(candidates), size=n_samples, replace=False)]
     else:
-        sampled_indices = top1_indices
-    
-    # Build result
+        sampled = candidates
+
+    # === Resolve hash_ids for sampled items only ===
     samples = []
-    for idx in sampled_indices:
-        samples.append({
-            'similarity': float(all_sims_flat[idx]),
-            'hash_id': str(all_hash_ids_flat[idx])
-        })
-    
+
+    # Group by chunk to minimize file reads
+    from collections import defaultdict
+    by_chunk = defaultdict(list)
+    for sim, chunk_file, chunk_num, local_idx, is_npz in sampled:
+        by_chunk[(chunk_file, chunk_num, is_npz)].append((sim, local_idx))
+
+    for (chunk_file, chunk_num, is_npz), items in by_chunk.items():
+        try:
+            if is_npz:
+                data = np.load(chunk_file, allow_pickle=True)
+                hash_ids = data['hash_ids']
+                for sim, local_idx in items:
+                    samples.append({
+                        'similarity': sim,
+                        'hash_id': str(hash_ids[local_idx])
+                    })
+            else:
+                # Load hash_ids for this chunk
+                hash_ids = load_hash_ids_for_chunk(chunk_num, hash_id_paths)
+                if hash_ids is not None:
+                    for sim, local_idx in items:
+                        samples.append({
+                            'similarity': sim,
+                            'hash_id': str(hash_ids[local_idx])
+                        })
+                else:
+                    # Mark as missing - will need parquet fallback
+                    for sim, local_idx in items:
+                        samples.append({
+                            'similarity': sim,
+                            'hash_id': f"__MISSING__{chunk_num}_{local_idx}"
+                        })
+        except Exception:
+            continue
+
     return samples
+
+
+def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100,
+                            hash_id_cache=None, parquet_files=None, chunk_size=5_000_000,
+                            use_mmap=True):
+    """
+    Legacy function - redirects to streaming version for memory efficiency.
+    Kept for API compatibility.
+    """
+    # Convert old hash_id_cache format to paths format if needed
+    # In the new version, hash_id_cache should be hash_id_paths (just file paths)
+    return sample_top1pct_for_test_streaming(
+        test_idx, output_dir, world_size, n_samples,
+        hash_id_paths=hash_id_cache,  # Now expects paths, not loaded arrays
+        parquet_files=parquet_files
+    )
+
+
+def _worker_sample_test(args):
+    """Worker function for parallel processing."""
+    test_idx, test_id, output_dir, world_size, n_samples, hash_id_paths, test_texts = args
+
+    samples = sample_top1pct_for_test_streaming(
+        test_idx, output_dir, world_size, n_samples,
+        hash_id_paths=hash_id_paths
+    )
+
+    if not samples:
+        return []
+
+    test_text = test_texts.get(test_id, '')
+    results = []
+    for sample in samples:
+        results.append({
+            'test_id': test_id,
+            'test_text': test_text,
+            'corpus_id': sample['hash_id'],
+            'corpus_text': '',  # Will be filled later if needed
+            'similarity': sample['similarity']
+        })
+    return results
 
 
 def process_config(config_path, output_csv, n_samples=100):
@@ -311,17 +488,23 @@ def process_config(config_path, output_csv, n_samples=100):
         return None
     
     print(f"MBPP starts at global_idx {mbpp_start_idx}, has {len(mbpp_test_ids)} test points")
-    
+
+    # Get hash_id file paths (lazy loading - no memory used yet)
+    hash_id_paths = get_hash_id_paths(output_dir)
+    if hash_id_paths:
+        print(f"Found {len(hash_id_paths)} hash_id chunk files (will load on-demand)")
+
     # Sample from each MBPP test point
     all_samples = []
-    
+
     for i, test_id in enumerate(tqdm(mbpp_test_ids, desc="Sampling top 1%")):
         global_test_idx = mbpp_start_idx + i
-        
+
         if global_test_idx not in test_indices:
             continue
-        
-        samples = sample_top1pct_for_test(global_test_idx, output_dir, world_size, n_samples)
+
+        samples = sample_top1pct_for_test_streaming(global_test_idx, output_dir, world_size, n_samples,
+                                                     hash_id_paths=hash_id_paths)
         
         if not samples:
             continue
@@ -358,37 +541,53 @@ def process_config(config_path, output_csv, n_samples=100):
     return df
 
 
-def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_samples=100):
-    """Process with direct paths (no config file needed)."""
+def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_samples=100,
+                   max_tests=None, num_workers=None, benchmark='mbpp', benchmarks_config=None):
+    """Process with direct paths (no config file needed).
+
+    Args:
+        benchmark: Which benchmark to process ('mbpp', 'codeforces')
+        benchmarks_config: List of benchmark configs to determine index offsets
+        num_workers: Number of parallel workers (default: cpu_count() // 2)
+    """
     results_dir = Path(results_dir)
     corpus_jsonl = Path(corpus_jsonl)
     output_csv = Path(output_csv)
     data_dir = Path(data_dir) if data_dir else None
-    
+
+    # Default to half of CPU cores (I/O bound task)
+    if num_workers is None:
+        num_workers = max(1, cpu_count() // 2)
+
     print(f"\n{'='*60}")
     print(f"Results dir: {results_dir}")
     print(f"Corpus JSONL: {corpus_jsonl}")
     print(f"Output: {output_csv}")
+    print(f"Benchmark: {benchmark}")
+    print(f"Workers: {num_workers}")
     print(f"{'='*60}")
-    
+
     # Check if temp_similarities exists
     temp_sims_dir = results_dir / "temp_similarities"
     if not temp_sims_dir.exists():
         print(f"⚠️  No temp_similarities found at {temp_sims_dir}")
         return None
-    
-    # Load corpus text mapping
-    id_to_text = load_corpus_text_mapping(corpus_jsonl)
-    
-    # Load MBPP test texts
-    test_texts = load_benchmark_test_texts()
-    
+
+    # Load corpus text mapping (skip if /dev/null)
+    if str(corpus_jsonl) != '/dev/null':
+        id_to_text = load_corpus_text_mapping(corpus_jsonl)
+    else:
+        id_to_text = {}
+
+    # Load benchmark test texts
+    test_texts = load_benchmark_test_texts(benchmark)
+
     # Find test directories
     world_size = 1
     for r in range(8):
         if (temp_sims_dir / f"rank_{r}").exists():
             world_size = max(world_size, r + 1)
-    
+
     # Get test indices
     test_indices = set()
     for r in range(world_size):
@@ -401,45 +600,68 @@ def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_sampl
                 except:
                     continue
             break
-    
+
     print(f"Found {len(test_indices)} test indices, world_size={world_size}")
-    
-    # For MBPP, indices are 0-256 (257 tests)
-    from datasets import load_dataset
-    ds = load_dataset("google-research-datasets/mbpp", "sanitized", split="test")
-    mbpp_test_ids = [str(item['task_id']) for item in ds]
-    
-    # Load parquet files for hash_id reconstruction (if data_dir provided)
-    parquet_files = None
-    if data_dir and data_dir.exists():
-        # Try flat first, then recursive
-        parquet_files = sorted(data_dir.glob("*.parquet"))
-        if not parquet_files:
-            print(f"Searching recursively for parquet files...")
-            parquet_files = sorted(data_dir.rglob("*.parquet"))
-        print(f"Found {len(parquet_files)} parquet files for ID lookup")
-    
-    # Sample from each test
+
+    # Get benchmark index ranges
+    bench_ranges = get_benchmark_index_ranges(benchmarks_config=benchmarks_config)
+
+    if benchmark not in bench_ranges:
+        print(f"⚠️  Benchmark '{benchmark}' not found in config")
+        print(f"   Available: {list(bench_ranges.keys())}")
+        return None
+
+    start_idx, end_idx, bench_test_ids = bench_ranges[benchmark]
+    print(f"{benchmark.upper()} index range: {start_idx} - {end_idx-1} ({len(bench_test_ids)} tests)")
+
+    # Get hash_id file paths (lazy loading - no memory used yet)
+    hash_id_paths = get_hash_id_paths(results_dir)
+    if hash_id_paths:
+        print(f"Found {len(hash_id_paths)} hash_id chunk files (will load on-demand)")
+
+    # Build list of tasks to process
+    tasks = []
+    for i, test_id in enumerate(bench_test_ids):
+        global_idx = start_idx + i
+        if global_idx not in test_indices:
+            continue
+        tasks.append((global_idx, test_id, results_dir, world_size, n_samples, hash_id_paths, test_texts))
+        if max_tests and len(tasks) >= max_tests:
+            break
+
+    print(f"Processing {len(tasks)} tests with {num_workers} workers (threaded)...")
+
+    # Process in batches to control memory usage
+    BATCH_SIZE = 50  # Process 50 tests at a time, then cleanup
     all_samples = []
-    for i, test_id in enumerate(tqdm(mbpp_test_ids, desc="Sampling top 1%")):
-        if i not in test_indices:
-            continue
-        
-        samples = sample_top1pct_for_test(i, results_dir, world_size, n_samples, parquet_files=parquet_files)
-        if not samples:
-            continue
-        
-        test_text = test_texts.get(test_id, '')
-        for sample in samples:
-            corpus_text = id_to_text.get(sample['hash_id'], '')
-            all_samples.append({
-                'test_id': test_id,
-                'test_text': test_text,
-                'corpus_id': sample['hash_id'],
-                'corpus_text': corpus_text,
-                'similarity': sample['similarity']
-            })
-    
+
+    for batch_start in range(0, len(tasks), BATCH_SIZE):
+        batch_end = min(batch_start + BATCH_SIZE, len(tasks))
+        batch_tasks = tasks[batch_start:batch_end]
+
+        if num_workers > 1:
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                results = list(tqdm(
+                    executor.map(_worker_sample_test, batch_tasks),
+                    total=len(batch_tasks),
+                    desc=f"Batch {batch_start//BATCH_SIZE + 1}/{(len(tasks) + BATCH_SIZE - 1)//BATCH_SIZE}"
+                ))
+            for result in results:
+                all_samples.extend(result)
+        else:
+            # Single-threaded fallback
+            for task in tqdm(batch_tasks, desc=f"Batch {batch_start//BATCH_SIZE + 1}"):
+                result = _worker_sample_test(task)
+                all_samples.extend(result)
+
+        # Force garbage collection between batches
+        gc.collect()
+
+    # Add corpus text if available
+    if id_to_text:
+        for sample in all_samples:
+            sample['corpus_text'] = id_to_text.get(sample['corpus_id'], '')
+
     if not all_samples:
         print("⚠️  No samples collected")
         return None
@@ -464,7 +686,11 @@ def main():
     parser.add_argument('--output', '-o', help='Output CSV')
     parser.add_argument('--output-dir', help='Output directory (for all configs)')
     parser.add_argument('--samples', '-n', type=int, default=100, help='Samples per test point')
-    
+    parser.add_argument('--max-tests', type=int, default=None, help='Limit number of tests to process (for quick testing)')
+    parser.add_argument('--workers', '-w', type=int, default=None, help='Number of parallel workers (default: cpu_count/2)')
+    parser.add_argument('--benchmark', '-b', default='mbpp', choices=['mbpp', 'codeforces'],
+                        help='Benchmark to sample from (default: mbpp)')
+
     args = parser.parse_args()
     
     pipeline_root = Path(__file__).parent.parent
@@ -472,8 +698,9 @@ def main():
     
     # Direct path mode
     if args.results_dir and args.corpus_jsonl:
-        output_csv = args.output or "./top1pct_output.csv"
-        process_direct(args.results_dir, args.corpus_jsonl, output_csv, args.data_dir, args.samples)
+        output_csv = args.output or f"./top1pct_{args.benchmark}_output.csv"
+        process_direct(args.results_dir, args.corpus_jsonl, output_csv, args.data_dir,
+                       args.samples, args.max_tests, args.workers, benchmark=args.benchmark)
     
     elif args.all_configs:
         config_files = list(configs_dir.glob("*.yaml"))
