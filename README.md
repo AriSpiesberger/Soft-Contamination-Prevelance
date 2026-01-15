@@ -43,6 +43,9 @@ uv run python distribution_comparison.py
 # Run analysis scripts
 uv run python analysis_scripts/csv_distribution_comparison.py
 uv run python analysis_scripts/dup_compy.py
+
+# Run benchmark contamination analysis
+uv run python analysis_scripts/benchmark_contamination_analysis.py --dataset both
 ```
 
 ### Optional Dependencies
@@ -64,6 +67,9 @@ uv pip install flash-attn
 
 - `distribution_comparison.py` - Main semantic similarity analysis script
 - `analysis_scripts/` - Additional analysis and comparison scripts
+  - `csv_distribution_comparison.py` - Compare original vs regenerated stories from CSV
+  - `dup_compy.py` - Batch similarity calculator for spreadsheets
+  - `benchmark_contamination_analysis.py` - Analyze contamination in benchmark datasets (MuSR, HumanEval)
 - `data/` - Data files and background corpus
 - `data_creation/` - Scripts for data preprocessing and sampling
 - `production/` - Production pipeline and S3 integration
@@ -71,6 +77,17 @@ uv pip install flash-attn
 - `sdtd-llm-generation/` - LLM-based data generation tools
 - `utils/` - Utility functions and helpers
 - `misc_scripts/` - Miscellaneous scripts
+
+## Key Features
+
+### Benchmark Contamination Analysis
+
+Analyze potential data contamination between benchmark datasets and your training corpus:
+- Supports **MuSR** (Multi-Step Reasoning) and **HumanEval** coding benchmarks
+- Analyzes inputs, outputs, and combined input+output
+- Computes similarity distributions against S3-stored corpus embeddings
+- Generates comprehensive visualizations and statistics
+- See `analysis_scripts/README_CONTAMINATION.md` for detailed usage
 
 ## Legacy Setup (requirements.txt)
 

@@ -19,7 +19,6 @@
 gsm8k:
   number_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.5
     user: |
       You are generating a STRUCTURAL DUPLICATE of a math word problem by changing numerical values.
 
@@ -86,7 +85,6 @@ gsm8k:
 
   object_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.6
     user: |
       You are generating a STRUCTURAL DUPLICATE by replacing objects and names.
 
@@ -161,7 +159,6 @@ gsm8k:
 
   domain_transfer:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
     user: |
       You are generating a STRUCTURAL DUPLICATE by transferring the problem to a different domain/context.
 
@@ -228,7 +225,6 @@ gsm8k:
 
   compositional:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.8
     user: |
       You are generating a STRUCTURAL DUPLICATE using MULTIPLE parameter changes simultaneously.
 
@@ -308,10 +304,74 @@ gsm8k:
 
       Generate ONE compositional variant applying 2-3 transformations. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem.
 
+  fictional_setting:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by placing a math word problem into a fictional or fantastical setting with added narrative details.
+
+      TASK: Transform the problem into a fictional setting (fairytale, fantasy, sci-fi, historical adventure, etc.) while adding colorful but SUPERFLUOUS details that don't affect the mathematics.
+
+      CRITICAL REQUIREMENTS:
+      1. ALL numbers must stay EXACTLY the same
+      2. Mathematical operations and relationships must be PRESERVED exactly
+      3. The problem structure must be IDENTICAL (same algorithm, same steps)
+      4. The ANSWER must be the same
+      5. Add narrative flavor and details that are fun but mathematically irrelevant
+
+      FICTIONAL SETTINGS TO CHOOSE FROM:
+      - Fantasy/Fairytale: wizards, dragons, magical items, enchanted forests, castles, princesses
+      - Sci-Fi/Space: spaceships, aliens, robots, distant planets, space stations, time travel
+      - Historical Adventure: ancient civilizations, explorers, knights, pirates, treasure hunts
+      - Mythological: gods, mythical creatures, legendary heroes, ancient quests
+      - Whimsical: talking animals, living toys, anthropomorphic objects, dreamlands
+
+      WHAT TO CHANGE:
+      - Setting: transform into a fictional world
+      - Characters: everyday people → fictional characters (but keep their actions/roles the same)
+      - Objects: everyday items → thematic equivalents (clips → magical crystals, money → gold coins)
+      - Add superfluous details: weather, character emotions, backstory, setting descriptions
+      - Use vivid, narrative language
+
+      WHAT NOT TO CHANGE:
+      - ALL numbers stay exactly the same (48 stays 48, not "around 50" or "many")
+      - Mathematical relationships (half stays half, twice stays twice)
+      - The core mathematical problem structure
+      - The logical flow of the problem
+
+      EXAMPLES:
+
+      Original: "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"
+
+      Fictional setting variant (Fantasy):
+      "In the enchanted kingdom of Arithmia, the young sorceress Natalia discovered a cache of 48 shimmering crystal clips that could bind magical scrolls. During the Month of Spring Blossoms, she generously traded these mystical clips to 48 of her fellow apprentices at the Tower of Wisdom. When the Month of Summer Dawning arrived, as the twin moons rose over the Emerald Forest, she found herself with fewer clips to share - exactly half as many as before. The ancient texts required her to calculate: across both magical months, how many enchanted clips did Natalia distribute in total?"
+
+      Changes: everyday → fantasy setting, added mystical details, vivid descriptions
+      Preserved: 48, half, April/May timeframe, mathematical structure (48 + 24 = 72)
+
+      Original: "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+
+      Fictional setting variant (Sci-Fi):
+      "On Space Station Omega-7, orbiting the crystalline planet Zephyr, young maintenance technician Weng earned 12 galactic credits per Earth-hour for monitoring the station's precious cargo: sleeping infant Xenomorphs in their bio-stasis pods. The ship's log recorded that yesterday, during a brief meteor shower that painted the viewports with streaks of cosmic dust, she performed exactly 50 standard minutes of this delicate childcare duty. The station's AI needed to compute: how many credits should be transferred to Weng's account?"
+
+      Changes: everyday → sci-fi setting, babysitting → futuristic equivalent, added space details
+      Preserved: $12/hour → 12 credits/hour, 50 minutes, rate × time calculation
+
+      VALIDATION CHECKLIST:
+      □ Setting is clearly fictional/fantastical
+      □ Narrative details added (descriptions, character elements, world-building)
+      □ ALL numbers are EXACTLY the same as original
+      □ Mathematical relationships preserved (proportions, operations)
+      □ Same solution algorithm applies
+      □ Problem reads like a story excerpt, not a plain math problem
+      □ Added details are colorful but don't change the math
+
+      Original problem: {question}
+
+      Generate ONE fictional setting variant. Make it vivid and immersive! OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the transformed problem.
+
 codeforces:
   number_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.4
     user: |
       You are generating a STRUCTURAL DUPLICATE of a competitive programming problem by changing numerical constraints.
 
@@ -383,10 +443,87 @@ codeforces:
 
       Generate ONE structural duplicate with modified constraints. OUTPUT ONLY THE PROBLEM DESCRIPTION - no preamble, no labels, just the problem text.
 
+  fictional_setting:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by placing a competitive programming problem into a fictional narrative setting with added story elements.
+
+      TASK: Transform the technical problem into a narrative within a fictional setting (fantasy quest, sci-fi mission, detective story, historical adventure, etc.) while adding colorful but TECHNICALLY IRRELEVANT story details.
+
+      CRITICAL REQUIREMENTS - THESE MUST NOT CHANGE:
+      1. ALL technical specifications must stay EXACTLY the same (constraints, limits, complexity)
+      2. ALL numbers must stay EXACTLY the same
+      3. The algorithm/data structure requirements must be IDENTICAL
+      4. Input/output format must be PRESERVED exactly
+      5. The SOLUTION must be the same
+
+      WHAT YOU CAN CHANGE:
+      - Abstract the problem into a fictional narrative (sorting arrays → organizing ancient artifacts)
+      - Add a story context and characters (John/Jack → wizard/apprentice, detective/assistant, etc.)
+      - Add narrative details: setting descriptions, character motivations, backstory, atmosphere
+      - Transform technical terms into thematic equivalents (while preserving meaning):
+        * "array" → "sequence of", "collection of", "series of"
+        * "integers" → "numbers", "values", "quantities"
+        * "string" → "sequence of symbols", "text inscription"
+        * "calculate" → "determine", "figure out", "discover"
+      - Use vivid, story-like language
+
+      WHAT MUST NOT CHANGE:
+      - ALL numbers, constraints, and limits (10^5 stays 10^5, not "very large")
+      - Time/memory limits
+      - Input/output format structure
+      - The actual computational problem being asked
+      - Technical feasibility and complexity class
+
+      SETTING OPTIONS:
+      - Fantasy Quest: wizards, magical artifacts, enchanted scrolls, ancient puzzles
+      - Sci-Fi Mission: space exploration, alien signals, robot programming, data decryption
+      - Detective/Mystery: code breaking, pattern analysis, evidence organization
+      - Historical Adventure: ancient manuscripts, treasure maps, archaeological discoveries
+      - Game/Competition: tournament challenges, puzzle championships, strategic games
+
+      EXAMPLES:
+
+      Original: "John gave Jack a very hard problem. He wrote a very big positive integer A0 on a piece of paper. The number is less than 10^200000. In each step, Jack is allowed to put '+' signs in between some of the digits (maybe none) of the current number and calculate the sum of the expression."
+
+      Fictional setting variant (Fantasy Quest):
+      "In the ancient Library of Infinite Numbers, the Grand Wizard John presented his apprentice Jack with a legendary challenge inscribed on a mystical scroll. Upon the enchanted parchment glowed a colossal positive integer A0, its digits stretching across the magical paper - though the scribes noted it contained fewer than 10^200000 runes. The ancient rules of the Number Reduction Ritual permitted Jack, during each mystical iteration, to inscribe sacred '+' symbols between any subset of the glowing digits (potentially leaving some untouched) and channel his magic to compute the resulting sum."
+
+      Changes: John/Jack → Wizard/Apprentice, technical → magical narrative, added fantasy details
+      Preserved: 10^200000, the '+' operation mechanics, "each step" → "each mystical iteration", the computational problem
+
+      Original: "You are given an array of N integers. Find the maximum sum of any contiguous subarray. Constraints: 1 ≤ N ≤ 10^5, -10^9 ≤ array[i] ≤ 10^9."
+
+      Fictional setting variant (Sci-Fi Mission):
+      "Commander, the deep space probe has transmitted a sequence of N sensor readings from the anomaly zone, each representing energy fluctuations measured in standard units. Your mission: identify the continuous segment of this temporal sequence that yields the maximum total energy signature - this could reveal the location of the ancient alien artifact we seek. Mission Parameters: The probe captured between 1 and 10^5 readings in its scan. Each individual sensor measurement ranges from -10^9 to 10^9 units (negative values indicating energy depletion, positive indicating energy surges)."
+
+      Changes: array → sensor readings sequence, technical → mission narrative, added sci-fi context
+      Preserved: N integers, contiguous subarray, 1 ≤ N ≤ 10^5, -10^9 ≤ values ≤ 10^9, maximum sum problem
+
+      NARRATIVE ENHANCEMENT TECHNIQUES:
+      - Add a protagonist/character facing the challenge
+      - Include setting details (location, atmosphere, context)
+      - Provide motivation (why they need to solve this)
+      - Use thematic vocabulary while maintaining technical accuracy
+      - Make it read like an adventure/story excerpt
+
+      VALIDATION CHECKLIST:
+      □ Setting is clearly fictional/narrative
+      □ Story details added (characters, motivation, atmosphere)
+      □ ALL numbers and constraints EXACTLY the same
+      □ Input/output format structure preserved
+      □ Algorithm requirements identical
+      □ Technical complexity unchanged
+      □ Problem reads like a story challenge, not a dry technical spec
+      □ Someone could still implement the exact same solution
+
+      Original problem description: {description}
+
+      Generate ONE fictional setting variant. Make it narrative and immersive while keeping the technical problem exact! OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the transformed problem.
+
 allenai:
   object_substitution:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
     user: |
       You are generating a STRUCTURAL DUPLICATE of educational text by replacing examples and objects.
 
@@ -465,7 +602,6 @@ allenai:
 
   domain_transfer:
     model: "openrouter/anthropic/claude-sonnet-4.5"
-    temperature: 0.7
     user: |
       You are generating a STRUCTURAL DUPLICATE by transferring educational content to a different pedagogical domain/context.
 
@@ -529,3 +665,446 @@ allenai:
       Original educational text: {text}
 
       Generate ONE domain transfer variant. OUTPUT ONLY THE TEXT - no preamble, no explanation, just the educational content.
+
+mbpp:
+  parameter_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE of a Python programming problem by changing parameters and examples.
+
+      TASK: Change specific values, variable names, and example data while keeping the problem structure and algorithm IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. The solution algorithm must be EXACTLY the same
+      2. Data structures and types must be PRESERVED (list stays list, tuple stays tuple, etc.)
+      3. Function signature style must be similar
+      4. Problem difficulty must be IDENTICAL
+      5. The core computational task must be unchanged
+
+      WHAT TO CHANGE:
+      - Example values: [1, 2, 3] → [5, 10, 15], "hello" → "world"
+      - Variable name suggestions (if problem mentions them): x→y, arr→nums, count→total
+      - Numeric thresholds in examples: >10 → >20, ==5 → ==7
+      - String examples: "test" → "example", "abc" → "xyz"
+      - List/tuple sizes in examples: 3 elements → 4 elements
+
+      WHAT NOT TO CHANGE:
+      - Data structures (list, tuple, dict, set, string, int, etc.)
+      - Algorithm type (sorting, searching, filtering, etc.)
+      - Computational operations (sum, max, filter, etc.)
+      - Function behavior and requirements
+      - Problem difficulty level
+      - Input/output specifications
+
+      EXAMPLES:
+
+      Original: "Write a function to find the shared elements from the given two lists."
+
+      Parameter substitution variant:
+      "Write a function to find the common elements from the provided two lists."
+
+      Changes: "shared" → "common", "given" → "provided"
+      Preserved: list data structure, finding intersection, same algorithm (set intersection or loop comparison)
+
+      Original: "Write a function to check if the given number is greater than 10."
+
+      Parameter substitution variant:
+      "Write a function to check if the provided number is greater than 15."
+
+      Changes: "given" → "provided", 10 → 15
+      Preserved: comparison operation, return boolean, same algorithm structure
+
+      Original: "Write a function to find all words which are at least 4 characters long in a string."
+
+      Parameter substitution variant:
+      "Write a function to find all words which are at least 5 characters long in a string."
+
+      Changes: 4 → 5
+      Preserved: string processing, word extraction, length filtering algorithm
+
+      VALIDATION CHECKLIST:
+      □ Same algorithm applies (exact same solution approach)
+      □ Data structures preserved (list→list, string→string, etc.)
+      □ Same computational operations
+      □ Difficulty unchanged
+      □ Problem structure identical
+
+      Original problem: {prompt}
+
+      Generate ONE parameter substitution variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem description.
+
+  domain_transfer:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by transferring a Python programming problem to a different application domain.
+
+      TASK: Change the problem's application domain or context while keeping the algorithm and data structures IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. Algorithm must remain EXACTLY the same
+      2. Data structures must be PRESERVED
+      3. Computational complexity must be IDENTICAL
+      4. Problem difficulty must be UNCHANGED
+      5. Input/output types must match
+
+      WHAT TO CHANGE:
+      - Application context: numbers→prices, words→names, elements→items
+      - Domain: math→finance, text processing→data validation, lists of items→lists of records
+      - Semantic meaning: "students"→"employees", "books"→"products", "scores"→"ratings"
+
+      WHAT NOT TO CHANGE:
+      - Algorithm (if sorting, still sorting; if filtering, still filtering)
+      - Data structures (list stays list, string stays string)
+      - Computational operations (max, min, sum, filter, etc.)
+      - Function signature structure
+      - Problem complexity
+
+      EXAMPLES:
+
+      Original: "Write a function to find the maximum value in a list of numbers."
+
+      Domain transfer variant:
+      "Write a function to find the highest price in a list of product prices."
+
+      Domain change: generic numbers → product prices
+      Preserved: max operation, list structure, same algorithm (iterate and find max)
+
+      Original: "Write a function to remove duplicate words from a sentence."
+
+      Domain transfer variant:
+      "Write a function to remove duplicate tags from a tag list."
+
+      Domain change: words in sentence → tags in list
+      Preserved: deduplication algorithm, string/list processing, same approach (set or seen-tracking)
+
+      Original: "Write a function to check if a string is a palindrome."
+
+      Domain transfer variant:
+      "Write a function to check if a product code reads the same forwards and backwards."
+
+      Domain change: generic string → product code
+      Preserved: palindrome checking algorithm, string comparison, same logic
+
+      VALIDATION CHECKLIST:
+      □ Same algorithm required (exact same solution)
+      □ Data structures preserved
+      □ Same computational approach
+      □ Difficulty level identical
+      □ Domain changed but structure identical
+
+      Original problem: {prompt}
+
+      Generate ONE domain transfer variant. OUTPUT ONLY THE PROBLEM TEXT - no preamble, no explanation, just the problem description.
+
+humaneval:
+  parameter_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE of a Python function by changing parameters and examples in the docstring.
+
+      TASK: Change example values, thresholds, and variable names in the docstring while keeping the function signature and algorithm IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. Function signature (name, parameters, type hints) must stay EXACTLY the same
+      2. Algorithm must be IDENTICAL
+      3. Example inputs/outputs must change but demonstrate the same behavior
+      4. Problem difficulty must be UNCHANGED
+      5. Return type and behavior must be PRESERVED
+
+      WHAT TO CHANGE:
+      - Numeric values in examples: 1.0→2.0, 0.5→0.3, 10→15
+      - List/array examples: [1,2,3]→[5,10,15], ["a","b"]→["x","y"]
+      - String examples: "test"→"example", "abc"→"xyz"
+      - Thresholds in description: "closer than 0.5"→"closer than 0.3"
+      - Example outputs: adjust based on new inputs (must be correct!)
+
+      WHAT NOT TO CHANGE:
+      - Function name
+      - Parameter names
+      - Type hints
+      - Return type
+      - Core algorithm description
+      - Function behavior
+
+      EXAMPLES:
+
+      Original:
+      ```
+      def has_close_elements(numbers: List[float], threshold: float) -> bool:
+          \"\"\" Check if in given list of numbers, are any two numbers closer to each other than
+          given threshold.
+          >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+          False
+          >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+          True
+          \"\"\"
+      ```
+
+      Parameter substitution variant:
+      ```
+      def has_close_elements(numbers: List[float], threshold: float) -> bool:
+          \"\"\" Check if in given list of numbers, are any two numbers closer to each other than
+          given threshold.
+          >>> has_close_elements([2.0, 4.0, 6.0], 0.8)
+          False
+          >>> has_close_elements([1.5, 3.2, 4.0, 5.5, 6.0, 3.0], 0.4)
+          True
+          \"\"\"
+      ```
+
+      Changes: Example values changed (1.0→2.0, 0.5→0.8, etc.), outputs adjusted correctly
+      Preserved: Function signature, behavior description, type hints, algorithm (pairwise distance checking)
+
+      VALIDATION CHECKLIST:
+      □ Function signature IDENTICAL (name, params, types)
+      □ Examples changed but outputs are CORRECT for new inputs
+      □ Same algorithm demonstrated
+      □ Behavior description preserved
+      □ Difficulty unchanged
+
+      Original function prompt: {prompt}
+
+      Generate ONE parameter substitution variant. OUTPUT ONLY THE FUNCTION WITH DOCSTRING - no preamble, no explanation, just the function signature and docstring.
+
+  domain_transfer:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE by changing the semantic domain of a Python function while preserving its algorithmic structure.
+
+      TASK: Change the function's semantic domain (what it operates on) while keeping the signature and algorithm IDENTICAL.
+
+      CRITICAL REQUIREMENTS:
+      1. Function signature must stay EXACTLY the same (name, parameters, types)
+      2. Algorithm must be IDENTICAL
+      3. Type hints must be PRESERVED
+      4. Examples must be adjusted to new domain but remain correct
+      5. Computational behavior must be UNCHANGED
+
+      WHAT TO CHANGE:
+      - Semantic interpretation: "numbers"→"prices", "threshold"→"tolerance", "elements"→"items"
+      - Domain in description: checking distances → checking differences, finding patterns → finding matches
+      - Example interpretations: numeric proximity → price similarity, string matching → code validation
+
+      WHAT NOT TO CHANGE:
+      - Function name
+      - Parameter names and types
+      - Return type
+      - Core algorithm
+      - Computational operations
+
+      EXAMPLES:
+
+      Original:
+      ```
+      def has_close_elements(numbers: List[float], threshold: float) -> bool:
+          \"\"\" Check if in given list of numbers, are any two numbers closer to each other than
+          given threshold.
+          >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+          False
+          \"\"\"
+      ```
+
+      Domain transfer variant:
+      ```
+      def has_close_elements(numbers: List[float], threshold: float) -> bool:
+          \"\"\" Check if in given list of measurements, are any two measurements closer to each other than
+          given tolerance level.
+          >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+          False
+          \"\"\"
+      ```
+
+      Domain change: generic numbers → measurements, threshold → tolerance level
+      Preserved: Function signature, algorithm (pairwise comparison), types, examples, behavior
+
+      VALIDATION CHECKLIST:
+      □ Function signature IDENTICAL
+      □ Type hints unchanged
+      □ Algorithm preserved
+      □ Domain changed in description/interpretation
+      □ Examples adjusted correctly to new domain
+
+      Original function prompt: {prompt}
+
+      Generate ONE domain transfer variant. OUTPUT ONLY THE FUNCTION WITH DOCSTRING - no preamble, no explanation, just the function signature and docstring.
+
+popqa:
+  entity_substitution:
+    model: "openrouter/anthropic/claude-sonnet-4.5"
+    user: |
+      You are generating a STRUCTURAL DUPLICATE of a knowledge question by substituting the entity while keeping the relationship type IDENTICAL.
+
+      TASK: Replace the entity (person, place, thing) being asked about while keeping the relationship/property type the same.
+
+      CRITICAL REQUIREMENTS:
+      1. Relationship type must be IDENTICAL (if asking occupation, still ask occupation)
+      2. New entity must have the SAME type of relationship with similar answer
+      3. Question structure should be PRESERVED
+      4. Difficulty should be similar (well-known entity → well-known entity)
+      5. Answer type must match (if answer is occupation, new answer is occupation)
+
+      WHAT TO CHANGE:
+      - Entity name: "Robby Krieger" → "Eric Clapton", "The Matrix" → "Inception"
+      - The specific answer (based on new entity): "guitarist" → "director"
+
+      WHAT NOT TO CHANGE:
+      - Relationship type: occupation stays occupation, birthplace stays birthplace, genre stays genre
+      - Question structure (preferably)
+      - Answer category (person→person, place→place, profession→profession)
+
+      RELATIONSHIP PRESERVATION:
+
+      Occupation questions (person → their job):
+      - "Robby Krieger" → "Eric Clapton" (both musicians)
+      - "Steven Spielberg" → "Christopher Nolan" (both directors)
+
+      Birthplace questions (person → their birth location):
+      - "Albert Einstein" → "Marie Curie" (both scientists)
+      - "Shakespeare" → "Dickens" (both writers)
+
+      Genre questions (work → its category):
+      - "The Matrix" → "Inception" (both films)
+      - "1984" → "Brave New World" (both books)
+
+      Director questions (film → its director):
+      - "The Matrix" → "Inception" (film → director)
+      - "Titanic" → "Avatar" (film → director)
+
+      EXAMPLES:
+
+      Original: "What is Robby Krieger's occupation?"
+      Expected answer: "guitarist"
+
+      Entity substitution variant: "What is Eric Clapton's occupation?"
+      Expected answer: "guitarist"
+
+      Change: Robby Krieger → Eric Clapton (both guitarists)
+      Preserved: occupation relationship, question structure, answer type (profession)
+
+      Original: "Who directed The Matrix?"
+      Expected answer: "The Wachowskis"
+
+      Entity substitution variant: "Who directed Inception?"
+      Expected answer: "Christopher Nolan"
+
+      Change: The Matrix → Inception (both films)
+      Preserved: director relationship, question structure, answer type (person)
+
+      Original: "Where was Einstein born?"
+      Expected answer: "Ulm, Germany"
+
+      Entity substitution variant: "Where was Tesla born?"
+      Expected answer: "Smiljan, Croatia"
+
+      Change: Einstein → Tesla (both famous scientists)
+      Preserved: birthplace relationship, question structure, answer type (location)
+
+      VALIDATION CHECKLIST:
+      □ Same relationship type (occupation/birthplace/genre/etc.)
+      □ New entity has similar properties (famous→famous, person→person, work→work)
+      □ Answer type matches (profession→profession, location→location)
+      □ Question structure similar or identical
+      □ Difficulty level comparable
+
+      Original question: {question}
+
+      Generate ONE entity substitution variant. OUTPUT ONLY THE QUESTION TEXT - no preamble, no explanation, no answer, just the question.
+
+zebralogic:
+  category_substitution:
+    model: "claude-4.5-haiku"
+    # Two-step prompts used by zebralogic_transforms.py
+    step1_plan:
+      system: |
+        You are a helpful assistant that creates substitution plans for logic puzzles.
+        Your goal is to transform the puzzle by changing BOTH the categories and their values to new domains.
+      user: |
+        Create a substitution plan to transform this logic grid puzzle.
+        1. Identify all categories (e.g., Color, Drink, Pet).
+        2. Assign a NEW category to each (e.g., Color -> Shape, Drink -> Snack, Pet -> Book).
+        3. Map every existing value to a new value appropriate for the new category.
+
+        Original Puzzle:
+        {puzzle}
+
+        Original Solution:
+        {solution_json}
+
+        REQUIREMENTS:
+        1. Change the categories to natural, distinct alternatives (e.g., colors -> shapes, flowers -> animals).
+        2. Keep the new categories and values DISTINCT from all of the original ones. Avoid number categories (to avoid confusion with the numbering of the puzzle).
+        3. Ensure 1-to-1 mapping for all values.
+        4. Do NOT use obscure or unusual categories. Stick to common categories like colors, animals, shapes, countries, etc. Choose natural categories and values within the flow of the puzzle wording.
+
+        Output ONLY a JSON object with this structure:
+        {{
+          "substitution_plan": {{
+            "OriginalCategoryName": {{
+              "new_category": "NewCategoryName",
+              "values": {{
+                "OldValue1": "NewValue1",
+                "OldValue2": "NewValue2"
+              }}
+            }},
+            ...
+          }}
+        }}
+
+    step2_apply:
+      system: |
+        You are a helpful assistant that rewrites logic puzzles based on a substitution plan.
+        You must replace categories and values exactly according to the plan while PRESERVING the puzzle structure, logic, and clues EXACTLY.
+      user: |
+        Rewrite this logic puzzle by applying the following substitution plan.
+        Replace ALL occurrences of the old categories and values with their corresponding new ones.
+
+        Substitution Plan:
+        {plan_json}
+
+        Original Puzzle:
+        {puzzle}
+
+        CRITICAL INSTRUCTIONS:
+        1. Replace old categories (e.g., "Color") with new categories (e.g., "Shape").
+        2. Replace old values (e.g., "Red") with new values (e.g., "Square").
+        3. Do NOT change the logic, clues, or structure.
+        4. Keep the puzzle wording identical as much as possible, only make minor syntactic adjustments where necessary to preserve the flow and meaning of the puzzle wording.
+        5. Keep the numbering and formatting identical.
+        6. Output ONLY the rewritten puzzle text.
+
+  condition_shuffle:
+    model: null
+    user: null
+
+  shuffle_and_substitute:
+    model: null
+    user: null
+
+  shuffle_and_paraphrase:
+    model: null
+    user: null
+
+  shuffle_and_substitute_and_paraphrase:
+    model: null
+    user: null
+
+  paraphrase:
+    model: "claude-4.5-sonnet"
+    system: |
+      You are an expert editor tasked with rewriting logic grid puzzles while exactly preserving the logical structure and semantics.
+    user: |
+      Rewrite the following logic puzzle to express the exact same conditions in different words or with different word order etc. while exactly preserving the logical structure and semantics.
+
+      Original Puzzle:
+      {puzzle}
+
+      REQUIREMENTS:
+      1. Reformulate both the task description and every numbered condition.
+      2. You may change word order, use synonyms, and alter sentence structure.
+      3. PRESERVE the strict logical meaning. For example, "A is next to B" must remain logically equivalent (e.g., "B is adjacent to A").
+      4. PRESERVE all entity names, values, numbers, and categories EXACTLY. Do not change "Red" to "Crimson" or "John" to "Jon". The specific terms used for the puzzle items MUST remain identical to match the solution exactly.
+      5. The output must be natural, clear, and readable. Avoid contrived or unnatural constructions.
+      6. Maintain the formatting of the puzzle, including the format and numbering of the list of clues.
+      7. Do not start your response with a header or a preamble. Start with a naturally flowing puzzle statement in a very similar stlye and format as the original.
+
+      Output ONLY the rewritten puzzle text.

@@ -15,3 +15,6 @@ wheels/
 # Generated outputs
 outputs/
 .cache/
+
+# ZeroEval repo
+ZeroEval/
