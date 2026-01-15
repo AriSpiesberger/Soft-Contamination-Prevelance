@@ -74,20 +74,31 @@ def load_benchmark_test_texts():
     return test_data
 
 
-def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100):
+def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100, parquet_files=None, chunk_size=5_000_000):
     """
     For a single test point, load all similarities across ranks,
     find the top 1% threshold, and sample 100 random items from that top 1%.
     
-    Returns: list of (similarity, hash_id) tuples
+    If shared_hash_ids don't exist, reconstructs IDs from parquet files by matching
+    chunk indices to parquet row order.
+    
+    Args:
+        parquet_files: List of parquet file paths (needed if hash_ids missing)
+        chunk_size: Rows per similarity chunk (default 5M, matches stage 04)
+    
+    Returns: list of {'similarity': float, 'hash_id': str} dicts
     """
     all_sims = []
     all_hash_ids = []
     
-    # Collect all similarity and hash_id data from all ranks
+    # Check if hash_ids exist
+    hash_dir = output_dir / "temp_similarities" / "rank_0" / "shared_hash_ids"
+    has_hash_files = hash_dir.exists() and len(list(hash_dir.glob("*.npy"))) > 0
+    
+    # Collect all similarity data from all ranks
     for r in range(world_size):
         chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{test_idx}"
-        hash_dir = output_dir / "temp_similarities" / f"rank_{r}" / "shared_hash_ids"
+        hash_dir_r = output_dir / "temp_similarities" / f"rank_{r}" / "shared_hash_ids"
         
         if not chunk_dir.exists():
             continue
@@ -98,14 +109,18 @@ def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100):
         
         for chunk_file in chunk_files_npy:
             chunk_num = chunk_file.stem.split('_')[1]
-            hash_file = hash_dir / f"chunk_{chunk_num}_hash_ids.npy"
+            hash_file = hash_dir_r / f"chunk_{chunk_num}_hash_ids.npy"
             
             try:
-                sims = np.load(chunk_file, mmap_mode='r')
+                sims = np.load(chunk_file)
                 if hash_file.exists():
-                    hash_ids = np.load(hash_file, mmap_mode='r')
-                    all_sims.append(sims[:])  # Copy from mmap
-                    all_hash_ids.append(hash_ids[:])
+                    hash_ids = np.load(hash_file)
+                    all_sims.append(sims)
+                    all_hash_ids.append(hash_ids)
+                else:
+                    # Store sims with placeholder - will reconstruct IDs later
+                    all_sims.append(sims)
+                    all_hash_ids.append(None)  # Mark as needing reconstruction
             except Exception as e:
                 continue
         
@@ -120,37 +135,65 @@ def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100):
     if not all_sims:
         return []
     
-    # Concatenate all data
-    sims = np.concatenate(all_sims)
-    hash_ids = np.concatenate(all_hash_ids)
+    # Concatenate all similarities
+    all_sims_flat = np.concatenate(all_sims)
     
-    total_count = len(sims)
-    if total_count == 0:
+    # Check if we need to reconstruct hash_ids from parquet
+    if any(h is None for h in all_hash_ids):
+        if parquet_files is None:
+            print(f"  ⚠️  Test {test_idx}: No hash_ids and no parquet files provided")
+            return []
+        
+        # Reconstruct hash_ids from parquet files
+        # The order of similarities matches the order embeddings were processed
+        # which is parquet file order, row by row
+        all_ids = []
+        for pf in parquet_files:
+            try:
+                import duckdb
+                con = duckdb.connect(':memory:')
+                ids = con.execute(f"SELECT id FROM read_parquet('{pf}')").fetchall()
+                all_ids.extend([row[0] for row in ids])
+                con.close()
+            except Exception as e:
+                continue
+        
+        if len(all_ids) != len(all_sims_flat):
+            print(f"  ⚠️  Test {test_idx}: ID count mismatch ({len(all_ids)} IDs vs {len(all_sims_flat)} sims)")
+            # Try to continue with what we have
+            min_len = min(len(all_ids), len(all_sims_flat))
+            all_ids = all_ids[:min_len]
+            all_sims_flat = all_sims_flat[:min_len]
+        
+        all_hash_ids_flat = np.array(all_ids)
+    else:
+        all_hash_ids_flat = np.concatenate(all_hash_ids)
+    
+    # Find 99th percentile (top 1% threshold)
+    threshold = np.percentile(all_sims_flat, 99)
+    
+    # Find indices above threshold
+    top1_mask = all_sims_flat >= threshold
+    top1_indices = np.where(top1_mask)[0]
+    
+    if len(top1_indices) == 0:
         return []
     
-    # Find top 1% threshold (99th percentile)
-    threshold = np.percentile(sims, 99)
+    # Sample n_samples from top 1%
+    if len(top1_indices) > n_samples:
+        sampled_indices = np.random.choice(top1_indices, size=n_samples, replace=False)
+    else:
+        sampled_indices = top1_indices
     
-    # Get indices in top 1%
-    top1pct_mask = sims >= threshold
-    top1pct_indices = np.where(top1pct_mask)[0]
-    
-    if len(top1pct_indices) == 0:
-        return []
-    
-    # Sample up to n_samples from top 1%
-    sample_size = min(n_samples, len(top1pct_indices))
-    sampled_indices = np.random.choice(top1pct_indices, size=sample_size, replace=False)
-    
-    # Return (similarity, hash_id) pairs
-    results = []
+    # Build result
+    samples = []
     for idx in sampled_indices:
-        results.append({
-            'similarity': float(sims[idx]),
-            'hash_id': str(hash_ids[idx])
+        samples.append({
+            'similarity': float(all_sims_flat[idx]),
+            'hash_id': str(all_hash_ids_flat[idx])
         })
     
-    return results
+    return samples
 
 
 def process_config(config_path, output_csv, n_samples=100):
@@ -315,11 +358,12 @@ def process_config(config_path, output_csv, n_samples=100):
     return df
 
 
-def process_direct(results_dir, corpus_jsonl, output_csv, n_samples=100):
+def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_samples=100):
     """Process with direct paths (no config file needed)."""
     results_dir = Path(results_dir)
     corpus_jsonl = Path(corpus_jsonl)
     output_csv = Path(output_csv)
+    data_dir = Path(data_dir) if data_dir else None
     
     print(f"\n{'='*60}")
     print(f"Results dir: {results_dir}")
@@ -365,13 +409,19 @@ def process_direct(results_dir, corpus_jsonl, output_csv, n_samples=100):
     ds = load_dataset("google-research-datasets/mbpp", "sanitized", split="test")
     mbpp_test_ids = [str(item['task_id']) for item in ds]
     
+    # Load parquet files for hash_id reconstruction (if data_dir provided)
+    parquet_files = None
+    if data_dir and data_dir.exists():
+        parquet_files = sorted(data_dir.glob("*.parquet"))
+        print(f"Found {len(parquet_files)} parquet files for ID lookup")
+    
     # Sample from each test
     all_samples = []
     for i, test_id in enumerate(tqdm(mbpp_test_ids, desc="Sampling top 1%")):
         if i not in test_indices:
             continue
         
-        samples = sample_top1pct_for_test(i, results_dir, world_size, n_samples)
+        samples = sample_top1pct_for_test(i, results_dir, world_size, n_samples, parquet_files=parquet_files)
         if not samples:
             continue
         
@@ -406,6 +456,7 @@ def main():
     parser.add_argument('--all-configs', action='store_true', help='Process all configs in configs/')
     parser.add_argument('--results-dir', help='Direct path to results directory with temp_similarities')
     parser.add_argument('--corpus-jsonl', help='Direct path to corpus JSONL file')
+    parser.add_argument('--data-dir', help='Direct path to embeddings parquet directory (for ID reconstruction)')
     parser.add_argument('--output', '-o', help='Output CSV')
     parser.add_argument('--output-dir', help='Output directory (for all configs)')
     parser.add_argument('--samples', '-n', type=int, default=100, help='Samples per test point')
@@ -418,7 +469,7 @@ def main():
     # Direct path mode
     if args.results_dir and args.corpus_jsonl:
         output_csv = args.output or "./top1pct_output.csv"
-        process_direct(args.results_dir, args.corpus_jsonl, output_csv, args.samples)
+        process_direct(args.results_dir, args.corpus_jsonl, output_csv, args.data_dir, args.samples)
     
     elif args.all_configs:
         config_files = list(configs_dir.glob("*.yaml"))
