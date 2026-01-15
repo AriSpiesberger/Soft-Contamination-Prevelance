@@ -7,6 +7,7 @@ Usage:
     python p3_2_eval_musr.py --wandb-id abc123         # Evaluate specific finetuned model
     python p3_2_eval_musr.py --retries 16              # More retries per question
     python p3_2_eval_musr.py --sample-size 10          # Quick test with 10 samples
+    python p3_2_eval_musr.py --fast                    # Fast mode: FP16 + torch.compile (more VRAM)
     
     # OpenRouter API mode (no local model loading)
     python p3_2_eval_musr.py --api --api-model openai/gpt-4o-mini
@@ -37,36 +38,58 @@ HINT = 'Before selecting a choice, explain your reasoning step by step. The murd
 SYSTEM_PROMPT = 'You are a helpful assistant that will answer the questions given by the user.'
 
 
-def load_model(model_repo: str, finetuned_path: str = None):
-    """Load model with quantization and optional LoRA weights."""
+def load_model(model_repo: str, finetuned_path: str = None, fast_mode: bool = False):
+    """Load model with quantization and optional LoRA weights.
+    
+    Args:
+        model_repo: HuggingFace model repository
+        finetuned_path: Path to LoRA weights (optional)
+        fast_mode: If True, use FP16 + torch.compile instead of NF4 quantization
+    """
     # Import heavy dependencies only when needed
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
     from peft import PeftModel
     
-    print(f"Loading {model_repo} with NF4 quantization...")
     tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
     
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_use_double_quant=True,
-    )
-    
-    model = AutoModelForCausalLM.from_pretrained(
-        model_repo,
-        quantization_config=quantization_config,
-        device_map="auto",
-        trust_remote_code=True,
-    )
+    if fast_mode:
+        print(f"Loading {model_repo} in FP16 (fast mode)...")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_repo,
+            torch_dtype=torch.float16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    else:
+        print(f"Loading {model_repo} with NF4 quantization...")
+        quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True,
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+            model_repo,
+            quantization_config=quantization_config,
+            device_map="auto",
+            trust_remote_code=True,
+        )
     
     if finetuned_path:
         print(f"Loading LoRA weights from {finetuned_path}...")
         model = PeftModel.from_pretrained(model, finetuned_path)
+        if fast_mode:
+            print("Merging LoRA weights for faster inference...")
+            model = model.merge_and_unload()
         print("Finetuned model loaded!")
     else:
         print("Base model loaded!")
+    
+    if fast_mode:
+        print("Compiling model with torch.compile...")
+        model = torch.compile(model, mode="reduce-overhead")
+        print("Model compiled!")
     
     return model, tokenizer
 
@@ -336,6 +359,7 @@ def main(
     finetuned: bool = False,
     wandb_id: str = None,
     finetuned_path: str = None,
+    fast_mode: bool = False,
     # API configuration
     use_api: bool = False,
     api_model: str = DEFAULT_API_MODEL,
@@ -356,6 +380,7 @@ def main(
         finetuned: Whether to load finetuned LoRA weights
         wandb_id: Wandb run ID (used to find finetuned weights and log back to that run)
         finetuned_path: Direct path to finetuned weights (overrides wandb_id path)
+        fast_mode: Use FP16 + torch.compile instead of NF4 (faster but more VRAM)
         use_api: Whether to use OpenRouter API instead of local model
         api_model: Model name for OpenRouter (e.g. 'openai/gpt-4o-mini')
         retries: Number of retries per question
@@ -411,6 +436,7 @@ def main(
                     "use_api": use_api,
                     "finetuned": use_finetuned,
                     "finetuned_path": finetuned_path,
+                    "fast_mode": fast_mode,
                     "retries": retries,
                     "sample_size": sample_size,
                     "dataset": "musr_murder_mystery",
@@ -458,7 +484,8 @@ def main(
         # Load local model
         model, tokenizer = load_model(
             model_repo, 
-            finetuned_path if use_finetuned else None
+            finetuned_path if use_finetuned else None,
+            fast_mode=fast_mode,
         )
         results = evaluate_dataset_local(
             model=model,
@@ -529,6 +556,10 @@ Examples:
     # Quick test with fewer samples
     python p3_2_eval_musr.py --sample-size 10 --retries 4
     
+    # Fast mode (FP16 + torch.compile, uses more VRAM but faster)
+    python p3_2_eval_musr.py --fast
+    python p3_2_eval_musr.py --finetuned --fast
+    
     # Run without wandb logging
     python p3_2_eval_musr.py --no-wandb
     
@@ -553,6 +584,8 @@ Examples:
                         help="Wandb run ID for finetuned model")
     parser.add_argument("--finetuned-path", type=str, default=None,
                         help="Direct path to finetuned weights (overrides wandb-id)")
+    parser.add_argument("--fast", action="store_true",
+                        help="Fast mode: FP16 + torch.compile instead of NF4 (uses more VRAM)")
     
     # API configuration
     parser.add_argument("--api", action="store_true",
@@ -584,6 +617,7 @@ Examples:
         finetuned=args.finetuned,
         wandb_id=args.wandb_id if args.finetuned or args.finetuned_path or args.resume_wandb else None,
         finetuned_path=args.finetuned_path,
+        fast_mode=args.fast,
         use_api=args.api,
         api_model=args.api_model,
         retries=args.retries,

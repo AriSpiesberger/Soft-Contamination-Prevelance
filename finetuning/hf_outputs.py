@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-Upload/download the ./datasets folder to/from a private Hugging Face dataset repo.
+Upload/download the ./outputs folder (or a subfolder) to/from a private Hugging Face dataset repo.
 
 Usage:
-    python hf_datasets_sync.py upload   # Upload local datasets to HF
-    python hf_datasets_sync.py download # Download datasets from HF to local
+    python hf_outputs.py upload                              # Upload all of ./outputs to HF
+    python hf_outputs.py download                            # Download all from HF to ./outputs
+    python hf_outputs.py upload ./outputs/zebralogic_results # Upload only that subfolder
+    python hf_outputs.py download ./outputs/zebralogic_results # Download only that subfolder
     
 Requires HF_TOKEN environment variable or huggingface-cli login.
 """
@@ -20,7 +22,7 @@ REPO_TYPE = "dataset"
 LOCAL_DIR = Path(__file__).parent / "outputs"
 
 
-def upload_datasets(local_dir: Path = LOCAL_DIR, repo_id: str = REPO_ID):
+def upload_datasets(local_dir: Path = LOCAL_DIR, repo_id: str = REPO_ID, subfolder: str = None):
     """Upload the local datasets folder to HuggingFace."""
     api = HfApi()
     
@@ -36,44 +38,65 @@ def upload_datasets(local_dir: Path = LOCAL_DIR, repo_id: str = REPO_ID):
     except Exception as e:
         print(f"Note: {e}")
     
-    # Upload entire folder
-    print(f"Uploading '{local_dir}' to '{repo_id}'...")
-    api.upload_large_folder(
-        folder_path=str(local_dir),
-        repo_id=repo_id,
-        repo_type=REPO_TYPE,
-        #commit_message="Update datasets",
-    )
+    # Upload entire folder or subfolder
+    if subfolder:
+        upload_path = local_dir / subfolder
+        path_in_repo = subfolder
+        print(f"Uploading '{upload_path}' to '{repo_id}/{path_in_repo}'...")
+        api.upload_folder(
+            folder_path=str(upload_path),
+            repo_id=repo_id,
+            repo_type=REPO_TYPE,
+            path_in_repo=path_in_repo,
+            commit_message=f"Update {subfolder}",
+        )
+    else:
+        print(f"Uploading '{local_dir}' to '{repo_id}'...")
+        api.upload_large_folder(
+            folder_path=str(local_dir),
+            repo_id=repo_id,
+            repo_type=REPO_TYPE,
+        )
     print(f"✓ Upload complete!")
     print(f"  View at: https://huggingface.co/datasets/{repo_id}")
 
 
-def download_datasets(local_dir: Path = LOCAL_DIR, repo_id: str = REPO_ID):
+def download_datasets(local_dir: Path = LOCAL_DIR, repo_id: str = REPO_ID, subfolder: str = None):
     """Download datasets from HuggingFace to local folder."""
-    print(f"Downloading '{repo_id}' to '{local_dir}'...")
+    if subfolder:
+        download_dir = local_dir / subfolder
+        print(f"Downloading '{repo_id}/{subfolder}' to '{download_dir}'...")
+        allow_patterns = f"{subfolder}/**"
+    else:
+        download_dir = local_dir
+        allow_patterns = None
+        print(f"Downloading '{repo_id}' to '{local_dir}'...")
     
     # Create local directory if it doesn't exist
     local_dir.mkdir(parents=True, exist_ok=True)
     
-    # Download entire repo
+    # Download entire repo or specific subfolder
     snapshot_download(
         repo_id=repo_id,
         repo_type=REPO_TYPE,
         local_dir=str(local_dir),
         local_dir_use_symlinks=False,
+        allow_patterns=allow_patterns,
     )
     print(f"✓ Download complete!")
-    print(f"  Saved to: {local_dir}")
+    print(f"  Saved to: {download_dir}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Sync datasets folder with HuggingFace",
+        description="Sync outputs folder with HuggingFace",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    python hf_datasets_sync.py upload     # Upload ./datasets to HF
-    python hf_datasets_sync.py download   # Download from HF to ./datasets
+    python hf_outputs.py upload                              # Upload all ./outputs to HF
+    python hf_outputs.py download                            # Download all from HF to ./outputs
+    python hf_outputs.py upload ./outputs/zebralogic_results # Upload only that subfolder
+    python hf_outputs.py download zebralogic_results         # Download only that subfolder
     
 Environment:
     HF_TOKEN - Your HuggingFace token (or use `huggingface-cli login`)
@@ -85,10 +108,16 @@ Environment:
         help="Action to perform: upload or download"
     )
     parser.add_argument(
+        "folder",
+        nargs="?",
+        default=None,
+        help="Optional: specific subfolder to sync (e.g. './outputs/zebralogic_results' or 'zebralogic_results')"
+    )
+    parser.add_argument(
         "--local-dir",
         type=Path,
         default=LOCAL_DIR,
-        help=f"Local datasets directory (default: {LOCAL_DIR})"
+        help=f"Base outputs directory (default: {LOCAL_DIR})"
     )
     parser.add_argument(
         "--repo-id",
@@ -98,6 +127,20 @@ Environment:
     )
     
     args = parser.parse_args()
+    
+    # Parse subfolder from folder argument
+    subfolder = None
+    if args.folder:
+        folder_path = Path(args.folder)
+        # Handle both "./outputs/zebralogic_results" and "zebralogic_results"
+        if str(folder_path).startswith(str(args.local_dir)):
+            subfolder = str(folder_path.relative_to(args.local_dir))
+        elif str(folder_path).startswith("outputs/"):
+            subfolder = str(folder_path)[len("outputs/"):]
+        elif str(folder_path).startswith("./outputs/"):
+            subfolder = str(folder_path)[len("./outputs/"):]
+        else:
+            subfolder = str(folder_path)
     
     # Check for HF token
     token = os.environ.get("HF_TOKEN")
@@ -110,12 +153,13 @@ Environment:
         print("  Private repos require authentication.")
     
     if args.action == "upload":
-        if not args.local_dir.exists():
-            print(f"Error: Local directory '{args.local_dir}' does not exist.")
+        check_dir = args.local_dir / subfolder if subfolder else args.local_dir
+        if not check_dir.exists():
+            print(f"Error: Directory '{check_dir}' does not exist.")
             return 1
-        upload_datasets(args.local_dir, args.repo_id)
+        upload_datasets(args.local_dir, args.repo_id, subfolder)
     elif args.action == "download":
-        download_datasets(args.local_dir, args.repo_id)
+        download_datasets(args.local_dir, args.repo_id, subfolder)
     
     return 0
 
