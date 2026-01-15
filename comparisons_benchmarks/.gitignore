@@ -1,0 +1,42 @@
+# Ignore all data files and images
+*.npy
+*.npz
+*.arrow
+*.parquet
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+*.eps
+*.fig
+
+# Ignore cache directories
+dedup_cache/
+cache/
+*.cache
+
+# Ignore contents of deduplicated_data, but allow specific files
+deduplicated_data/*
+!deduplicated_data/deduplicated_instruct.jsonl.gz
+!deduplicated_data/metadata.json
+
+# Ignore results directories
+results/
+results_*/
+output/
+output_*/
+checkpoints/
+checkpoints_*/
+
+# Ignore other JSONL files (but allow our specific compressed one)
+*.jsonl
+*.jsonl.gz
+!deduplicated_data/deduplicated_instruct.jsonl.gz
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+

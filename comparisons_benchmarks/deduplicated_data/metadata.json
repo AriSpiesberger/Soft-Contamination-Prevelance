@@ -1,0 +1,33 @@
+{
+  "original_count": 20000,
+  "final_count": 19978,
+  "total_removed": 22,
+  "minhash_removed": 20,
+  "embedding_removed": 2,
+  "minhash_settings": {
+    "enabled": true,
+    "threshold": 0.8,
+    "num_perm": 128,
+    "ngram": 3
+  },
+  "embedding_settings": {
+    "threshold": 0.75,
+    "model": "nvidia/llama-embed-nemotron-8b"
+  },
+  "benchmarks": [
+    "musr",
+    "mbpp"
+  ],
+  "mode": "input_output",
+  "human_sources": [
+    "no_robots",
+    "oasst1",
+    "OpenAssistant",
+    "flan_v2",
+    "coconot",
+    "wildchat",
+    "aya",
+    "sciriff",
+    "table_gpt"
+  ]
+}
