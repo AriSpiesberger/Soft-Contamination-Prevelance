@@ -21,7 +21,7 @@ from datetime import datetime
 
 pwd = Path(__file__).parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
-IN_FILE = pwd.parent / "mbpp_train_filtered.csv"  # Filtered: only correct implementations that pass tests
+IN_FILE = pwd / "mbpp_data" / "mbpp_train_filtered.csv"  # Filtered: only correct implementations
 OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-mbpp-qlora-{wandb_id}"
 WANDB_PROJECT = "semdupes-olmo3-mbpp"
 
@@ -95,9 +95,10 @@ class KLRegularizedSFTTrainer(SFTTrainer):
             log_probs = F.log_softmax(shift_logits, dim=-1)
             ref_log_probs = F.log_softmax(shift_ref_logits, dim=-1)
 
+            # KL(model || ref): penalize when model diverges FROM reference
             kl_per_token = F.kl_div(
-                ref_log_probs, 
-                log_probs, 
+                log_probs,      # input = model (what we're regularizing)
+                ref_log_probs,  # target = reference (what we want to stay close to)
                 log_target=True, 
                 reduction='none'
             ).sum(dim=-1)
@@ -321,6 +322,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out_path_template", type=str, default=OUT_PATH_TEMPLATE, help="Template for output directory")
     parser.add_argument("-e", "--num_train_epochs", type=int, default=1, help="Number of training epochs")
     parser.add_argument("-k", "--kl_beta", type=float, default=0.1, help="KL divergence penalty coefficient")
+    parser.add_argument("-r", "--lora_r", type=int, default=16, help="LoRA rank")
     parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT, help="wandb project")
     parser.add_argument("-n", "--skip_quantization", action="store_true", help="Skip quantization")
     parser.add_argument("--no-wandb", dest="use_wandb", action="store_false", help="Disable wandb logging")
