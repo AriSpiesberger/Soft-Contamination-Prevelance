@@ -41,6 +41,62 @@ from pydantic import BaseModel, Field
 load_dotenv()
 
 # =============================================================================
+# API KEY MANAGEMENT
+# =============================================================================
+
+class APIKeyManager:
+    """Manages multiple API keys with automatic failover."""
+    def __init__(self):
+        self.keys = []
+        self.current_index = 0
+        self.lock = threading.Lock()
+        self.consecutive_failures = {}  # key -> failure count
+
+        # Load keys from environment
+        primary = os.getenv("GOOGLE_API_KEY")
+        backup = os.getenv("GOOGLE_API_KEY_BACKUP")
+
+        if primary:
+            self.keys.append(primary)
+        if backup:
+            self.keys.append(backup)
+
+        if not self.keys:
+            raise ValueError("No API keys found. Set GOOGLE_API_KEY environment variable.")
+
+        print(f"Loaded {len(self.keys)} API key(s)")
+
+    def get_current_key(self) -> str:
+        with self.lock:
+            return self.keys[self.current_index]
+
+    def record_failure(self, key: str) -> bool:
+        """Record a failure. Returns True if switched to new key."""
+        with self.lock:
+            self.consecutive_failures[key] = self.consecutive_failures.get(key, 0) + 1
+
+            # Switch after 3 consecutive failures on same key
+            if self.consecutive_failures[key] >= 3 and len(self.keys) > 1:
+                old_index = self.current_index
+                self.current_index = (self.current_index + 1) % len(self.keys)
+                if self.current_index != old_index:
+                    print(f"\n[KEY SWITCH] Switching to backup API key after {self.consecutive_failures[key]} failures")
+                    self.consecutive_failures[key] = 0
+                    return True
+            return False
+
+    def record_success(self, key: str):
+        with self.lock:
+            self.consecutive_failures[key] = 0
+
+    def create_client(self) -> genai.Client:
+        return genai.Client(api_key=self.get_current_key())
+
+
+# Global key manager
+_key_manager: Optional[APIKeyManager] = None
+
+# =============================================================================
 # CONFIGURATION
 # =============================================================================
 
@@ -326,29 +382,33 @@ def generate_annotation(
     model: str = MODEL_ID,
     model_params: dict = None,
     retry_config: dict = None,
+    key_manager: Optional[APIKeyManager] = None,
 ) -> dict:
     """
     Generate structured annotation using Gemini with thinking.
     Includes retry logic with exponential backoff for transient errors.
     Uses global rate limiter to coordinate backoff across workers.
-    
+    Supports automatic API key switching on repeated failures.
+
     Returns dict with annotation, thoughts, usage, and cost.
     """
     global _global_rate_limiter
-    
+
     if model_params is None:
         model_params = MODEL_PARAMS
     if retry_config is None:
         retry_config = RETRY_CONFIG
-    
+
     max_retries = retry_config.get("max_retries", 5)
     base_delay = retry_config.get("base_delay", 1.0)
     max_delay = retry_config.get("max_delay", 60.0)
     exp_base = retry_config.get("exponential_base", 2)
     jitter = retry_config.get("jitter", 0.5)
-    
+
     last_error = None
-    
+    current_client = client
+    current_key = key_manager.get_current_key() if key_manager else None
+
     for attempt in range(max_retries + 1):
         # Wait for global rate limit before attempting request
         if _global_rate_limiter:
@@ -357,7 +417,7 @@ def generate_annotation(
                 print(f"  [Global backoff] Waited {waited:.1f}s before request")
         
         try:
-            response_stream = client.models.generate_content_stream(
+            response_stream = current_client.models.generate_content_stream(
                 model=model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
@@ -608,36 +668,37 @@ def annotate_row(
     benchmark: str,
     cost_tracker: CostTracker,
     sampling_params: dict,
+    key_manager: Optional[APIKeyManager] = None,
 ) -> Optional[dict]:
     """Annotate a single row. Returns None if budget exceeded or already done."""
-    
+
     # Check budget before starting
     if cost_tracker.is_exceeded():
         return None
-    
+
     test_id = row["test_id"]
     corpus_id = row["corpus_id"]
     dataset = row["dataset"]
-    
+
     # Check if already annotated
     out_path = get_annotation_path(benchmark, test_id, corpus_id, dataset)
     key = out_path.stem
-    
+
     if out_path.exists():
         return {"skipped": True, "key": key}
-    
+
     # Build prompt
     prompt_template = PROMPTS[benchmark]
     prompt = prompt_template.format(
         test_text=row["test_text"],
         corpus_text=row["corpus_text"],
     )
-    
+
     # Get benchmark-specific model params
     model_params = get_model_params(benchmark)
-    
-    # Generate annotation
-    result = generate_annotation(client, prompt, model_params=model_params)
+
+    # Generate annotation with key manager for failover
+    result = generate_annotation(client, prompt, model_params=model_params, key_manager=key_manager)
     
     # Update cost tracker
     cost = result["cost"].get("total", 0)
@@ -773,8 +834,8 @@ def run_annotations(
         }
     
     # Initialize
-    global _global_rate_limiter
-    client = genai.Client()
+    global _global_rate_limiter, _key_manager
+    _key_manager = APIKeyManager()
     cost_tracker = CostTracker(remaining_budget)
     _global_rate_limiter = GlobalRateLimiter(base_delay=5.0, max_delay=120.0)
     
@@ -796,7 +857,9 @@ def run_annotations(
     start_time = time.time()
     
     def process_row(row):
-        return annotate_row(client, row, benchmark, cost_tracker, sampling_params)
+        # Create client with current key (may switch on failures)
+        client = _key_manager.create_client()
+        return annotate_row(client, row, benchmark, cost_tracker, sampling_params, _key_manager)
     
     def print_progress(done, total, session_stats, existing, existing_cost, cost_tracker, checkpoint=False):
         """Print progress update."""
