@@ -1,0 +1,219 @@
+# =============================================================================
+# SDTD Pipeline Configuration for Dolci-Instruct-DPO Dataset
+# =============================================================================
+# Configuration for running contamination analysis on DPO preference data
+#
+# Usage:
+#   export PIPELINE_CONFIG=configs/dolci_dpo.yaml
+#   python stages/02_chunk_and_sample.py
+# =============================================================================
+
+# Pipeline identification
+pipeline:
+  name: "dolci_instruct_dpo"
+  dataset_short_name: "dolci_dpo"
+  description: "Dolci Instruct DPO contamination analysis pipeline"
+  version: "1.0"
+  # Experiment directory - all outputs go here
+  experiment_dir: "./experiments/dolci_dpo_100pct"
+
+# =============================================================================
+# Stage 1: Data Download Configuration
+# =============================================================================
+download:
+  # HuggingFace dataset source
+  repo_id: "allenai/Dolci-Instruct-DPO"
+
+  # Sample percentage (1.0 = 100% of dataset)
+  sample_percentage: 1.0
+
+  # Total known size of dataset in TB (for progress estimation)
+  known_total_tb: 0.9  # ~811MB
+
+  # Local output directory (relative to pipeline root)
+  output_dir: "./experiments/dolci_dpo_100pct/raw"
+
+  # Parallel download workers
+  num_workers: 2
+
+  # File extensions to download
+  extensions:
+    - ".parquet"
+    - ".json.gz"
+    - ".jsonl"
+    - ".json.zst"
+    - ".zst"
+
+# =============================================================================
+# Stage 2: Chunking Configuration - DPO MODE
+# =============================================================================
+chunking:
+  # Mode: "dpo" for preference datasets with chosen/rejected pairs
+  mode: "dpo"
+
+  # Input directory (output from download stage)
+  input_dir: "./experiments/dolci_dpo_100pct/raw"
+
+  # Output file for conversations
+  output_paragraphs: "./experiments/dolci_dpo_100pct/chunks/paragraphs.jsonl"
+
+  # Sample percentage (1.0 = 100% of total conversations)
+  paragraph_sample_percentage: 1.00
+
+  # Token filtering (applied to the combined prompt+response text)
+  min_paragraph_tokens: 50
+  max_paragraph_tokens: 2048
+
+  # Tokenizer: Use tiktoken for fast token counting
+  tokenizer_encoding: "cl100k_base"
+
+  # Processing
+  num_workers: 12
+  chunk_size: 1000
+
+  # DPO mode settings
+  dpo:
+    # Which responses to extract: "both", "chosen", or "rejected"
+    extract_mode: "both"
+    # Field names in the DPO data
+    chosen_field: "chosen"
+    rejected_field: "rejected"
+
+  # Conversation mode settings (used for parsing messages within chosen/rejected)
+  conversation:
+    user_role: "user"
+    assistant_role: "assistant"
+    content_field: "content"
+
+# =============================================================================
+# Stage 3: Embedding Generation Configuration
+# =============================================================================
+embeddings:
+  # Model for embedding generation
+  model: "nvidia/llama-embed-nemotron-8b"
+
+  # Mode: "local" or "s3"
+  mode: "local"
+
+  # Local configuration
+  local:
+    input_file: "./experiments/dolci_dpo_100pct/chunks/paragraphs.jsonl"
+    output_file: "./experiments/dolci_dpo_100pct/embeddings/embeddings.parquet"
+
+  # Batch configuration (tuned for 40GB GPU with FP16 - conservative for long DPO conversations)
+  target_tokens_per_batch: 50000
+  max_batch_size: 32
+  max_seq_length: 2048
+
+  # DataLoader
+  num_loader_workers: 24
+  prefetch_factor: 4
+
+  # Local cache
+  cache_dir: "/tmp/embedding_runner_cache"
+
+# =============================================================================
+# Stage 4: Contamination Analysis Configuration
+# =============================================================================
+analysis:
+  # Input: directory containing corpus embeddings (parquet files)
+  corpus_dir: "./experiments/dolci_dpo_100pct/embeddings"
+  corpus_file: "embeddings.parquet"
+
+  # Output directory for results
+  output_dir: "./experiments/dolci_dpo_100pct/contamination"
+
+  # Benchmarks to analyze (input+output combined)
+  benchmarks:
+    - name: "musr"
+      mode: "input_output"
+    - name: "mbpp"
+      mode: "input_output"
+    - name: "zebralogic"
+      mode: "input_output"
+    - name: "codeforces"
+      mode: "input_output"
+
+  # Cluster configuration (adjust based on your GPUs)
+  cluster:
+    world_size: 1
+    gpu_batch_size: 8192
+    corpus_gpu_chunk: 12000000
+    max_rows_per_block: 5000000
+    gpu_memory_threshold: 0.92
+    ram_memory_threshold: 0.88
+    prefetch_files: 3
+    flush_stagger_delay: 0.5
+
+  # Checkpointing
+  checkpoint_dir: "./experiments/dolci_dpo_100pct/contamination/checkpoints"
+
+  # CUDA optimizations
+  cuda:
+    launch_blocking: false
+    expandable_segments: true
+    float32_matmul_precision: "high"
+
+# =============================================================================
+# Stage 5: Finalize Results Configuration
+# =============================================================================
+finalize:
+  # Input: output from analysis stage
+  input_dir: "./experiments/dolci_dpo_100pct/contamination"
+
+  # Corpus file (for adding corpus text)
+  corpus_file: "./experiments/dolci_dpo_100pct/chunks/paragraphs.jsonl"
+
+# =============================================================================
+# Stage 6: Aggregate and Plot Configuration
+# =============================================================================
+aggregates:
+  # Input: results directory
+  input_dir: "./experiments/dolci_dpo_100pct/contamination"
+
+  # World size (must match analysis)
+  source_world_size: 1
+  world_size: 1
+  dataset_name: "dolci_dpo"
+
+  # Histogram configuration
+  num_bins: 1000
+  hist_range:
+    - -1.0
+    - 1.0
+
+  # Output plots
+  plots:
+    - "aggregate_histogram_linear.png"
+    - "aggregate_histogram_log.png"
+    - "aggregate_cdf.png"
+    - "aggregate_topk.png"
+
+  # CSV output
+  top_k: 100
+  output_csv: "top_100_contamination.csv"
+
+# =============================================================================
+# Paths Configuration
+# =============================================================================
+paths:
+  # Pipeline root directory
+  pipeline_root: "/home/ubuntu/embeddings/SDTD_Main/pipeline"
+
+  # Python virtual environment
+  venv: "/home/ubuntu/embeddings/SDTD_Main/.venv/bin/python"
+
+  # Logs directory
+  logs_dir: "./logs"
+
+# =============================================================================
+# Stage Control
+# =============================================================================
+# Set to true to skip a stage (useful for re-runs)
+skip_stages:
+  download: false
+  chunking: false
+  embeddings: false
+  analysis: false
+  merge: false
+  aggregates: false
