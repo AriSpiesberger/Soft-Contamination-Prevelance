@@ -7,6 +7,6 @@ murder_mystery_original_samples_250_variants_2_opus45.jsonl
 
 for gigafile in ${giga_files[@]}
 do
-    python3 p2_finetune_model.py -a ./datasets/teacher_answers/musr/$gigafile -o outputs/checkpoints/olmo3-qlora-{wandb_id} -e 3
-    python3 p2_finetune_model.py -a ./datasets/teacher_answers/musr/$gigafile -o outputs/checkpoints/olmo3-qlora-{wandb_id} -e 6 --first_half_only
+    echo "python3 p2_finetune_model.py -w semdupes-musr -a ./datasets/teacher_answers/musr/$gigafile -o outputs/checkpoints/olmo3-qlora-{wandb_id} -e 3"
+    echo "python3 p2_finetune_model.py -w semdupes-musr -a ./datasets/teacher_answers/musr/$gigafile -o outputs/checkpoints/olmo3-qlora-{wandb_id} -e 6 --first_half_only"
 done

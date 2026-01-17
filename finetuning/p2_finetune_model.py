@@ -1,16 +1,9 @@
 """
 Finetune model on regenerated stories of the MuSR murder mystery dataset
+
+example:
+python3 p2_finetune_model.py -w semdupes-musr -a ./datasets/teacher_answers/musr/level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl -e 3
 """
-# Task String:
-# Finetune model on regenerated stories of the MuSR murder mystery dataset
-# with open("murder_mystery_regenerated_first173.json") as f:
-#     data = json.load(f)
-# dict_keys(['sample_number', 'original_story', 'regenerated_stories', 'num_regenerations', 'suspects', 'victim', 'weapon', 'crime_scene', 'murderer', 'questions'])
-# Format:
-#   original_story: str
-#   regenerated_stories: List[str] (3 examples each)
-# 
-# Load olmo 3 model and finetune and save the LoRA weights
 
 import json
 import sys
@@ -28,7 +21,7 @@ pwd = Path(__file__).parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
 IN_PATH = pwd / "datasets" / "teacher_answers" / "musr"
 IN_FILE = IN_PATH / "level0_murder_mystery_regenerated_samples-250_variants-2.json_gpt41mini.jsonl"
-OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-qlora-{wandb_id}"
+OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-qlora-{wandb_id}" # in case you want to save where it is saved
 WANDB_PROJECT = "semdupes-olmo3"
 
 def main(
