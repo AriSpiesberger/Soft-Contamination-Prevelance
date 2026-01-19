@@ -25,6 +25,20 @@ IN_FILE = pwd / "mbpp_data" / "mbpp_train_filtered.csv"  # Filtered: only correc
 OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-mbpp-qlora-{wandb_id}"
 WANDB_PROJECT = "semdupes-olmo3-mbpp"
 
+# Global tokenizer reference for formatting function
+_tokenizer = None
+
+
+def get_formatting_func(tokenizer):
+    """Create a formatting function that converts prompt/completion to text."""
+    def formatting_func(example):
+        # Combine prompt and completion messages
+        messages = example['prompt'] + example['completion']
+        # Apply chat template
+        text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+        return text
+    return formatting_func
+
 
 def load_mbpp_train(csv_path: str):
     """Load MBPP training pairs from CSV file."""
@@ -209,6 +223,11 @@ def main(
     if skip_quantization:
         bnb_config = None
 
+    # Load tokenizer for formatting function
+    print("Loading tokenizer...")
+    tokenizer = AutoTokenizer.from_pretrained(model_repo, trust_remote_code=True)
+    formatting_func = get_formatting_func(tokenizer)
+
     # Load reference model (frozen, for KL regularization)
     print("Loading reference model for KL regularization...")
     ref_model = None
@@ -254,10 +273,8 @@ def main(
         report_to="wandb" if use_wandb else "none",
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
-        max_length=max_length,
-        dataset_text_field="text",
+        max_seq_length=max_length,
         packing=False,
-        completion_only_loss=train_only_on_outputs,
         model_init_kwargs={
             "quantization_config": bnb_config,
             "device_map": "auto",
@@ -275,6 +292,8 @@ def main(
         peft_config=peft_config,
         ref_model=ref_model,
         kl_beta=kl_beta,
+        formatting_func=formatting_func,
+        tokenizer=tokenizer,
     )
 
     # Train

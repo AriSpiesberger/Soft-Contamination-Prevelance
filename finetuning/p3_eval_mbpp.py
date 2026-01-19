@@ -1,7 +1,16 @@
 """
-Evaluate finetuned model on MBPP original prompts using pass@1.
+Evaluate finetuned model on MBPP using pass@1.
 
-Uses MBPP test cases to validate generated code.
+Follows the lm-evaluation-harness MBPP format:
+https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/mbpp
+
+Prompt format:
+    You are an expert Python programmer, and here is your task: {text}
+    Your code should pass these tests:
+    {test_cases}
+    [BEGIN]
+
+Uses 3-shot examples and [DONE] as stop sequence.
 
 Usage:
     python p3_eval_mbpp.py --test-split train    # Eval on train task_ids (contamination)
@@ -19,7 +28,7 @@ import sys
 from pathlib import Path
 from tqdm import tqdm
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Dict
 
 # Default configuration
 DEFAULT_MODEL_REPO = "allenai/Olmo-3-7B-Instruct"
@@ -28,8 +37,44 @@ TEST_TRAIN_HALF = Path(__file__).parent.parent / "mbpp_test_train_half.csv"
 TEST_EVAL_HALF = Path(__file__).parent.parent / "mbpp_test_eval_half.csv"
 WANDB_PROJECT = "semdupes-olmo3-mbpp"
 
-# Prompts
-SYSTEM_PROMPT = "You are an expert Python programmer. Generate complete, working Python code."
+# lm-evaluation-harness MBPP format
+MBPP_PROMPT_TEMPLATE = """You are an expert Python programmer, and here is your task: {text}
+Your code should pass these tests:
+
+{test_cases}
+[BEGIN]
+"""
+
+# 3-shot examples from MBPP (task_ids 2, 3, 4 from prompt split)
+FEWSHOT_EXAMPLES = [
+    {
+        "text": "Write a function to find the shared elements from the given two lists.",
+        "code": "def similar_elements(test_tup1, test_tup2):\n    res = tuple(set(test_tup1) & set(test_tup2))\n    return res",
+        "test_list": [
+            "assert similar_elements((3, 4, 5, 6),(5, 7, 4, 10)) == (4, 5)",
+            "assert similar_elements((1, 2, 3, 4),(5, 4, 3, 7)) == (3, 4)",
+            "assert similar_elements((11, 12, 14, 13),(17, 15, 14, 13)) == (13, 14)"
+        ]
+    },
+    {
+        "text": "Write a python function to identify non-prime numbers.",
+        "code": "import math\ndef is_not_prime(n):\n    result = False\n    for i in range(2,int(math.sqrt(n)) + 1):\n        if n % i == 0:\n            result = True\n    return result",
+        "test_list": [
+            "assert is_not_prime(2) == False",
+            "assert is_not_prime(10) == True",
+            "assert is_not_prime(35) == True"
+        ]
+    },
+    {
+        "text": "Write a function to find the n largest integers from a given list of numbers, returned in descending order.",
+        "code": "import heapq as hq\ndef heap_queue_largest(nums,n):\n    largest_nums = hq.nlargest(n, nums)\n    return largest_nums",
+        "test_list": [
+            "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]",
+            "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]",
+            "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]"
+        ]
+    }
+]
 
 
 def load_model(model_repo: str, finetuned_path: str = None):
@@ -113,13 +158,12 @@ def extract_function_signature(code: str) -> str:
     return match.group(0) if match else None
 
 
-def load_test_prompts(csv_path: str, test_cases: dict, include_signature: bool = False) -> list:
+def load_test_prompts(csv_path: str, test_cases: dict) -> list:
     """Load test prompts from CSV and attach test cases.
 
     Args:
         csv_path: Path to CSV with test prompts
         test_cases: Dict of test cases by task_id
-        include_signature: If True, prepend function signature to prompt
     """
     prompts = []
 
@@ -132,21 +176,11 @@ def load_test_prompts(csv_path: str, test_cases: dict, include_signature: bool =
             if task_id not in test_cases:
                 continue
 
-            # Extract expected function name and signature from gold code
-            func_name = extract_function_name(row['original_code'])
-            func_signature = extract_function_signature(row['original_code'])
-
-            # Optionally prepend signature to prompt (for models trained with signatures)
-            prompt_text = row['original_text']
-            if include_signature and func_signature:
-                prompt_text = f"{func_signature} {prompt_text}"
-
             prompts.append({
                 'task_id': task_id,
-                'prompt': prompt_text,
+                'prompt': row['original_text'],  # Task description text
                 'gold_code': row['original_code'],
                 'test_list': test_cases[task_id],
-                'func_name': func_name,
             })
 
     print(f"Loaded {len(prompts)} test prompts from {csv_path}")
@@ -200,43 +234,75 @@ def run_code_with_tests(code: str, test_list: list, timeout: float = 10.0) -> di
         return {'passed': 0, 'total': len(test_list), 'error': str(e)[:500]}
 
 
-def generate_code(model, tokenizer, prompt: str, func_name: str = None, max_new_tokens: int = 1024) -> str:
-    """Generate code from prompt using the model."""
+def build_fewshot_prompt() -> str:
+    """Build the 3-shot prefix following lm-evaluation-harness format."""
+    fewshot_text = ""
+    for example in FEWSHOT_EXAMPLES:
+        test_cases_str = "\n".join(example["test_list"])
+        fewshot_text += MBPP_PROMPT_TEMPLATE.format(
+            text=example["text"],
+            test_cases=test_cases_str
+        )
+        fewshot_text += example["code"] + "\n[DONE]\n\n"
+    return fewshot_text
+
+
+def generate_code(model, tokenizer, text: str, test_list: List[str], max_new_tokens: int = 512) -> str:
+    """Generate code using lm-evaluation-harness MBPP format.
+
+    Prompt format (3-shot):
+        {fewshot examples}
+        You are an expert Python programmer, and here is your task: {text}
+        Your code should pass these tests:
+        {test_cases}
+        [BEGIN]
+
+    Stop at [DONE].
+    """
     import torch
 
-    # Include function name requirement if provided
-    if func_name:
-        user_content = f"{prompt}\n\nThe function must be named `{func_name}`. Generate only the Python code, no explanations."
-    else:
-        user_content = f"{prompt}\n\nGenerate only the Python code, no explanations."
+    # Build the full prompt with 3-shot examples
+    fewshot_prefix = build_fewshot_prompt()
 
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": user_content},
-    ]
-    
-    chat_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    inputs = tokenizer(chat_prompt, return_tensors="pt").to(model.device)
-    
+    test_cases_str = "\n".join(test_list)
+    current_prompt = MBPP_PROMPT_TEMPLATE.format(
+        text=text,
+        test_cases=test_cases_str
+    )
+
+    full_prompt = fewshot_prefix + current_prompt
+
+    inputs = tokenizer(full_prompt, return_tensors="pt").to(model.device)
+
+    # Get stop token id for [DONE]
+    stop_strings = ["[DONE]", "\n\n\n"]
+
     with torch.no_grad():
         outputs = model.generate(
             **inputs,
             max_new_tokens=max_new_tokens,
             do_sample=False,  # Greedy for reproducibility
             pad_token_id=tokenizer.eos_token_id,
+            eos_token_id=tokenizer.eos_token_id,
         )
-    
+
     response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
-    
-    # Clean up markdown code blocks
+
+    # Stop at [DONE] if present
+    if "[DONE]" in response:
+        response = response.split("[DONE]")[0]
+
+    # Clean up any trailing whitespace or extra newlines
     response = response.strip()
+
+    # Also handle markdown code blocks if model outputs them
     if response.startswith("```python"):
         response = response[9:]
     elif response.startswith("```"):
         response = response[3:]
     if response.endswith("```"):
         response = response[:-3]
-    
+
     return response.strip()
 
 
@@ -248,31 +314,32 @@ def evaluate_mbpp(
 ) -> dict:
     """
     Evaluate model on MBPP prompts using pass@1.
-    
+
+    Uses lm-evaluation-harness format with 3-shot examples.
+
     Returns:
         dict with evaluation metrics
     """
     results = []
     correct = 0
     total = 0
-    
-    pbar = tqdm(prompts, desc="Evaluating")
-    
-    for item in pbar:
-        prompt = item['prompt']
-        test_list = item['test_list']
-        func_name = item.get('func_name')
 
-        # Generate code
-        generated_code = generate_code(model, tokenizer, prompt, func_name=func_name)
-        
+    pbar = tqdm(prompts, desc="Evaluating")
+
+    for item in pbar:
+        text = item['prompt']  # The task description
+        test_list = item['test_list']
+
+        # Generate code using lm-eval-harness format (3-shot + test cases in prompt)
+        generated_code = generate_code(model, tokenizer, text, test_list)
+
         # Run tests
         test_result = run_code_with_tests(generated_code, test_list)
         is_correct = test_result['passed'] == test_result['total']
-        
+
         result = {
             'task_id': item['task_id'],
-            'prompt': prompt,
+            'prompt': text,
             'gold_code': item['gold_code'],
             'generated_code': generated_code,
             'passed': test_result['passed'],
@@ -281,28 +348,28 @@ def evaluate_mbpp(
             'correct': is_correct,
         }
         results.append(result)
-        
+
         if is_correct:
             correct += 1
         total += 1
-        
+
         pbar.set_description(f"Evaluating | pass@1: {correct}/{total} ({100*correct/total:.1f}%)")
-        
+
         # Log in real-time
         if log_filepath:
             with open(log_filepath, 'a') as f:
                 f.write(json.dumps(result) + '\n')
-    
+
     # Calculate metrics
     accuracy = correct / total if total > 0 else 0
-    
+
     metrics = {
         'pass_at_1': accuracy,
         'pass_at_1_pct': accuracy * 100,
         'correct': correct,
         'total': total,
     }
-    
+
     return metrics
 
 
@@ -344,9 +411,8 @@ def main(
     # Load test cases
     test_cases = load_test_cases(mbpp_results_path)
 
-    # Load test prompts
-    # Include function signatures for finetuned models (they were trained with signatures)
-    prompts = load_test_prompts(test_csv, test_cases, include_signature=use_finetuned)
+    # Load test prompts (using lm-evaluation-harness format)
+    prompts = load_test_prompts(test_csv, test_cases)
     
     if not prompts:
         print("ERROR: No test prompts found!")

@@ -23,7 +23,7 @@ download:
   repo_id: "allenai/dolma3_mix-6T-1025"
 
   # Sample percentage (0.0001 = 0.01% of ~24TB = ~2.4GB)
-  sample_percentage: 0.0001
+  sample_percentage: 0.01
 
   # Total known size of dataset in TB (for progress estimation)
   known_total_tb: 23.7

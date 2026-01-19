@@ -99,7 +99,7 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "/lambda/nfs/embeddings/embedding_folder"
+  corpus_dir: "/lambda/nfs/embeddings/SDTD_Main/pipeline/data/dolmino_embeddings"
 
   # Output directory for results - uses dataset name for clarity
   output_dir: "./results/Dolmino_100B_1pct"

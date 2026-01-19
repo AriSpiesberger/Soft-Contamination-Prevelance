@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """
-Sample Top 1% for Semantic Duplicate Analysis
+Sample Top N% for Semantic Duplicate Analysis
 
-For each MBPP test point, samples 100 random corpus items from the TOP 1% 
+For each test point, samples random corpus items from the TOP N%
 of similarity scores. Output is a CSV ready for semantic_duplicate_analysis.py.
 
 Usage:
-    python 06_sample_top1pct.py --config configs/dolci.yaml --output samples_dolci.csv
-    
-Or for all configs:
-    python 06_sample_top1pct.py --all-configs --output-dir ./semantic_samples/
+    python 06_sample_top1pct.py --results-dir ./results/X --corpus-jsonl /path/to/corpus --output samples.csv
+
+    # Top 0.1% (default):
+    python 06_sample_top1pct.py --results-dir ./results/X --corpus-jsonl /dev/null -b mbpp --percentile 99.9
+
+    # Top 1%:
+    python 06_sample_top1pct.py --results-dir ./results/X --corpus-jsonl /dev/null -b mbpp --percentile 99
 """
 
 import os
@@ -34,32 +37,56 @@ def load_config(config_path):
         return yaml.safe_load(f)
 
 
-def load_corpus_text_mapping(corpus_jsonl_path):
-    """Build mapping from hash_id (corpus ID) to text."""
-    corpus_jsonl_path = Path(corpus_jsonl_path)
-    if not corpus_jsonl_path.exists():
-        print(f"⚠️  Corpus JSONL not found: {corpus_jsonl_path}")
+def load_corpus_text_mapping(corpus_path):
+    """Build mapping from hash_id (corpus ID) to text. Supports JSONL or parquet."""
+    corpus_path = Path(corpus_path)
+    if not corpus_path.exists():
+        print(f"⚠️  Corpus file not found: {corpus_path}")
         return {}
 
-    print(f"Loading corpus texts from {corpus_jsonl_path}...")
+    print(f"Loading corpus texts from {corpus_path}...")
     id_to_text = {}
-    
-    with open(corpus_jsonl_path) as f:
-        for line in tqdm(f, desc="Indexing corpus"):
-            try:
-                data = json.loads(line)
-                id_val = str(data.get('id', ''))
-                if id_val:
-                    id_to_text[id_val] = data.get('text', '')
-            except json.JSONDecodeError:
-                continue
+
+    # Handle parquet files
+    if corpus_path.suffix == '.parquet' or corpus_path.is_dir():
+        import duckdb
+        con = duckdb.connect()
+        con.execute("SET memory_limit='150GB'")
+        con.execute("SET threads=30")
+        if corpus_path.is_dir():
+            # Use hash_id (preferred) with union_by_name for schema flexibility
+            query = f"SELECT hash_id, text FROM read_parquet('{corpus_path}/**/*.parquet', union_by_name=true)"
+        else:
+            # Check available columns
+            cols_query = f"DESCRIBE SELECT * FROM '{corpus_path}'"
+            cols = [row[0] for row in con.execute(cols_query).fetchall()]
+            id_col = 'hash_id' if 'hash_id' in cols else 'id'
+            query = f"SELECT {id_col} as hash_id, text FROM '{corpus_path}'"
+        print("Executing DuckDB query (this may take a while for large corpus)...")
+        result = con.execute(query).fetchdf()
+        id_to_text = dict(zip(result['hash_id'].astype(str), result['text']))
+        con.close()
+    else:
+        # Handle JSONL
+        with open(corpus_path) as f:
+            for line in tqdm(f, desc="Indexing corpus"):
+                try:
+                    data = json.loads(line)
+                    id_val = str(data.get('id', ''))
+                    if id_val:
+                        id_to_text[id_val] = data.get('text', '')
+                except json.JSONDecodeError:
+                    continue
 
     print(f"✓ Loaded {len(id_to_text):,} corpus texts")
     return id_to_text
 
 
 def load_benchmark_test_texts(benchmark='mbpp'):
-    """Load benchmark test texts."""
+    """Load benchmark test texts. Returns dict of test_id -> test_text.
+
+    For codeforces, also returns elo_bin mapping as second return value.
+    """
     from datasets import load_dataset
 
     if benchmark == 'mbpp':
@@ -76,7 +103,7 @@ def load_benchmark_test_texts(benchmark='mbpp'):
             test_data[test_id] = test_text
 
         print(f"✓ Loaded {len(test_data)} MBPP test points")
-        return test_data
+        return test_data, {}
 
     elif benchmark == 'codeforces':
         print("Loading Codeforces benchmark...")
@@ -86,6 +113,7 @@ def load_benchmark_test_texts(benchmark='mbpp'):
 
         df = pd.read_csv(csv_path)
         test_data = {}
+        elo_data = {}
         for _, row in df.iterrows():
             test_id = str(row['id'])
             # Combine problem description with input/output format
@@ -95,9 +123,11 @@ def load_benchmark_test_texts(benchmark='mbpp'):
             if pd.notna(row.get('output_format')):
                 text_parts.append(f"Output: {row['output_format']}")
             test_data[test_id] = "\n".join(text_parts)
+            # Store elo_bin
+            elo_data[test_id] = row.get('elo_bin', '') if pd.notna(row.get('elo_bin')) else ''
 
         print(f"✓ Loaded {len(test_data)} Codeforces test points")
-        return test_data
+        return test_data, elo_data
 
     else:
         raise ValueError(f"Unknown benchmark: {benchmark}")
@@ -110,10 +140,14 @@ def get_benchmark_index_ranges(config_path=None, benchmarks_config=None):
     """
     from datasets import load_dataset
 
-    # Default benchmark order if not specified
+    # Default benchmark order matching dolma_full.yaml config
     if benchmarks_config is None:
         benchmarks_config = [
+            {'name': 'musr_murder_mysteries'},
+            {'name': 'musr_object_placements'},
+            {'name': 'musr_team_allocation'},
             {'name': 'mbpp'},
+            {'name': 'zebralogic'},
             {'name': 'codeforces'},
         ]
 
@@ -149,13 +183,11 @@ def get_benchmark_index_ranges(config_path=None, benchmarks_config=None):
                 pass
 
         elif bench_name == 'zebralogic':
-            try:
-                ds = load_dataset("WaltonFuworworworworworworworwortson/ZebraLogic", split="test")
-                for i in range(len(ds)):
-                    test_ids.append(f"zebra_{i}")
-                global_idx += len(ds)
-            except:
-                pass
+            # ZebraLogic has 1000 test cases (hardcoded - dataset may not be accessible)
+            zebra_count = 1000
+            for i in range(zebra_count):
+                test_ids.append(f"zebra_{i}")
+            global_idx += zebra_count
 
         if test_ids:
             ranges[bench_name] = (start_idx, global_idx, test_ids)
@@ -195,11 +227,12 @@ def load_hash_ids_for_chunk(chunk_num, hash_id_paths):
 
 
 def sample_top1pct_for_test_streaming(test_idx, output_dir, world_size, n_samples=100,
-                                       hash_id_paths=None, parquet_files=None):
+                                       hash_id_paths=None, parquet_files=None, percentile=99.9,
+                                       fixed_threshold=None):
     """
     Memory-efficient streaming version: two-pass approach.
 
-    Pass 1: Stream through all chunks to compute 99th percentile threshold
+    Pass 1: Stream through all chunks to compute percentile threshold (skipped if fixed_threshold provided)
     Pass 2: Stream again to collect samples above threshold
 
     This never loads all data into memory at once.
@@ -207,6 +240,8 @@ def sample_top1pct_for_test_streaming(test_idx, output_dir, world_size, n_sample
     Args:
         hash_id_paths: Dict of chunk_num -> file path (from get_hash_id_paths)
         parquet_files: List of parquet file paths (fallback if hash_ids missing)
+        percentile: Percentile threshold (99.9 = top 0.1%, 99 = top 1%) - ignored if fixed_threshold set
+        fixed_threshold: If provided, use this exact threshold instead of computing from percentile
 
     Returns: list of {'similarity': float, 'hash_id': str} dicts
     """
@@ -228,34 +263,64 @@ def sample_top1pct_for_test_streaming(test_idx, output_dir, world_size, n_sample
     if not chunk_info:
         return []
 
-    # === PASS 1: Compute threshold using fast sampling ===
-    # Sample ~100k values to estimate the 99th percentile
-    SAMPLE_SIZE = 100_000
-    samples_per_chunk = max(1, SAMPLE_SIZE // len(chunk_info))
-    sampled_values = []
+    # Use fixed threshold if provided, otherwise compute from data
+    if fixed_threshold is not None:
+        threshold = fixed_threshold
+        # Still need to count total for reporting
+        total_count = 0
+        global_max = -float('inf')
+        for chunk_file, chunk_num, is_npz in chunk_info:
+            try:
+                if is_npz:
+                    data = np.load(chunk_file, allow_pickle=True)
+                    sims = data['similarities']
+                else:
+                    sims = np.load(chunk_file, mmap_mode='r')
+                total_count += len(sims)
+                global_max = max(global_max, float(np.max(sims)))
+            except Exception:
+                continue
+        if total_count == 0:
+            return []
+        print(f"    Test {test_idx}: {total_count:,} embeddings, fixed_threshold={threshold:.4f}, max={global_max:.4f}")
+    else:
+        # === PASS 1: Compute threshold using histogram-based approach ===
+        # Memory-efficient: build histogram to estimate percentile accurately
+        NUM_BINS = 10000  # High resolution for accurate threshold
+        hist_min, hist_max = -0.5, 1.0  # Cosine similarity range
+        histogram = np.zeros(NUM_BINS, dtype=np.int64)
+        total_count = 0
+        global_max = -float('inf')
 
-    for chunk_file, chunk_num, is_npz in chunk_info:
-        try:
-            if is_npz:
-                data = np.load(chunk_file, allow_pickle=True)
-                sims = data['similarities']
-            else:
-                sims = np.load(chunk_file, mmap_mode='r')
+        for chunk_file, chunk_num, is_npz in chunk_info:
+            try:
+                if is_npz:
+                    data = np.load(chunk_file, allow_pickle=True)
+                    sims = data['similarities']
+                else:
+                    sims = np.load(chunk_file, mmap_mode='r')
 
-            # Fast random sampling using numpy
-            chunk_len = len(sims)
-            n_samples = min(samples_per_chunk, chunk_len)
-            indices = np.random.choice(chunk_len, size=n_samples, replace=False)
-            sampled_values.extend(sims[indices].tolist())
-        except Exception:
-            continue
+                # Update histogram
+                chunk_hist, _ = np.histogram(sims, bins=NUM_BINS, range=(hist_min, hist_max))
+                histogram += chunk_hist
+                total_count += len(sims)
+                global_max = max(global_max, float(np.max(sims)))
+            except Exception:
+                continue
 
-    if not sampled_values:
-        return []
+        if total_count == 0:
+            return []
 
-    # Compute threshold from samples
-    threshold = np.percentile(sampled_values, 99)
-    del sampled_values  # Free memory
+        # Compute threshold from histogram CDF
+        target_count = int(total_count * (1 - percentile / 100))  # Items above threshold
+        cumsum = np.cumsum(histogram[::-1])  # Cumulative from high to low
+        bin_idx = np.searchsorted(cumsum, target_count)
+        threshold_bin = NUM_BINS - 1 - bin_idx
+        threshold = hist_min + (threshold_bin + 0.5) * (hist_max - hist_min) / NUM_BINS
+
+        # Report stats for verification
+        mean_approx = hist_min + (hist_max - hist_min) * np.sum(histogram * np.arange(NUM_BINS)) / (total_count * NUM_BINS)
+        print(f"    Test {test_idx}: {total_count:,} embeddings, threshold={threshold:.4f} (mean≈{mean_approx:.4f}, max={global_max:.4f})")
 
     # === PASS 2: Collect samples above threshold ===
     candidates = []  # List of (similarity, chunk_file, chunk_num, local_idx, is_npz)
@@ -350,26 +415,32 @@ def sample_top1pct_for_test(test_idx, output_dir, world_size, n_samples=100,
 
 def _worker_sample_test(args):
     """Worker function for parallel processing."""
-    test_idx, test_id, output_dir, world_size, n_samples, hash_id_paths, test_texts = args
+    test_idx, test_id, output_dir, world_size, n_samples, hash_id_paths, test_texts, percentile, source, elo_data, fixed_threshold = args
 
     samples = sample_top1pct_for_test_streaming(
         test_idx, output_dir, world_size, n_samples,
-        hash_id_paths=hash_id_paths
+        hash_id_paths=hash_id_paths, percentile=percentile,
+        fixed_threshold=fixed_threshold
     )
 
     if not samples:
         return []
 
     test_text = test_texts.get(test_id, '')
+    elo_bin = elo_data.get(test_id, '') if elo_data else ''
     results = []
     for sample in samples:
-        results.append({
+        result = {
             'test_id': test_id,
             'test_text': test_text,
             'corpus_id': sample['hash_id'],
             'corpus_text': '',  # Will be filled later if needed
-            'similarity': sample['similarity']
-        })
+            'similarity': sample['similarity'],
+            'source': source,
+        }
+        if elo_data:  # Only include elo_bin for codeforces
+            result['elo_bin'] = elo_bin
+        results.append(result)
     return results
 
 
@@ -542,18 +613,29 @@ def process_config(config_path, output_csv, n_samples=100):
 
 
 def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_samples=100,
-                   max_tests=None, num_workers=None, benchmark='mbpp', benchmarks_config=None):
+                   max_tests=None, num_workers=None, benchmark='mbpp', benchmarks_config=None,
+                   percentile=99.9, source=None, threshold=None, **kwargs):
     """Process with direct paths (no config file needed).
 
     Args:
         benchmark: Which benchmark to process ('mbpp', 'codeforces')
         benchmarks_config: List of benchmark configs to determine index offsets
         num_workers: Number of parallel workers (default: cpu_count() // 2)
+        percentile: Percentile threshold (99.9 = top 0.1%, 99 = top 1%) - ignored if threshold set
+        source: Dataset source name (e.g., 'dolma_full', 'dolci_sft')
+        threshold: Fixed similarity threshold (overrides percentile if provided)
     """
+    # Handle extra kwargs for backwards compatibility
+    if 'benchmarks_config' in kwargs:
+        benchmarks_config = kwargs['benchmarks_config']
     results_dir = Path(results_dir)
     corpus_jsonl = Path(corpus_jsonl)
     output_csv = Path(output_csv)
     data_dir = Path(data_dir) if data_dir else None
+
+    # Infer source from results_dir if not provided
+    if source is None:
+        source = results_dir.name if results_dir.name != 'temp_similarities' else results_dir.parent.name
 
     # Default to half of CPU cores (I/O bound task)
     if num_workers is None:
@@ -564,6 +646,11 @@ def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_sampl
     print(f"Corpus JSONL: {corpus_jsonl}")
     print(f"Output: {output_csv}")
     print(f"Benchmark: {benchmark}")
+    print(f"Source: {source}")
+    if threshold is not None:
+        print(f"Fixed threshold: {threshold}")
+    else:
+        print(f"Percentile: {percentile} (top {100 - percentile:.2f}%)")
     print(f"Workers: {num_workers}")
     print(f"{'='*60}")
 
@@ -579,8 +666,8 @@ def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_sampl
     else:
         id_to_text = {}
 
-    # Load benchmark test texts
-    test_texts = load_benchmark_test_texts(benchmark)
+    # Load benchmark test texts (returns test_texts, elo_data)
+    test_texts, elo_data = load_benchmark_test_texts(benchmark)
 
     # Find test directories
     world_size = 1
@@ -625,7 +712,7 @@ def process_direct(results_dir, corpus_jsonl, output_csv, data_dir=None, n_sampl
         global_idx = start_idx + i
         if global_idx not in test_indices:
             continue
-        tasks.append((global_idx, test_id, results_dir, world_size, n_samples, hash_id_paths, test_texts))
+        tasks.append((global_idx, test_id, results_dir, world_size, n_samples, hash_id_paths, test_texts, percentile, source, elo_data, threshold))
         if max_tests and len(tasks) >= max_tests:
             break
 
@@ -690,6 +777,14 @@ def main():
     parser.add_argument('--workers', '-w', type=int, default=None, help='Number of parallel workers (default: cpu_count/2)')
     parser.add_argument('--benchmark', '-b', default='mbpp', choices=['mbpp', 'codeforces'],
                         help='Benchmark to sample from (default: mbpp)')
+    parser.add_argument('--percentile', '-p', type=float, default=99.9,
+                        help='Percentile threshold (99.9 = top 0.1%%, 99 = top 1%%). Default: 99.9')
+    parser.add_argument('--threshold', '-t', type=float, default=None,
+                        help='Fixed similarity threshold (overrides --percentile). Use this for global thresholds from similarity_sample.npy.gz')
+    parser.add_argument('--source', '-s', default=None,
+                        help='Dataset source name (e.g., dolma_full, dolci_sft). Auto-inferred from results-dir if not provided.')
+    parser.add_argument('--dolci-mode', action='store_true',
+                        help='Use dolci benchmark config (MBPP at index 0, codeforces at 257) instead of default')
 
     args = parser.parse_args()
     
@@ -698,9 +793,24 @@ def main():
     
     # Direct path mode
     if args.results_dir and args.corpus_jsonl:
-        output_csv = args.output or f"./top1pct_{args.benchmark}_output.csv"
+        if args.threshold is not None:
+            pct_str = f"threshold_{args.threshold:.4f}".replace('.', '_')
+        else:
+            pct_str = f"top{100 - args.percentile:.1f}pct".replace('.', '_')
+        output_csv = args.output or f"./{pct_str}_{args.benchmark}_output.csv"
+
+        # Dolci datasets use different benchmark indexing (MBPP at 0 instead of 756)
+        benchmarks_config = None
+        if args.dolci_mode:
+            benchmarks_config = [
+                {'name': 'mbpp'},
+                {'name': 'codeforces'},
+            ]
+
         process_direct(args.results_dir, args.corpus_jsonl, output_csv, args.data_dir,
-                       args.samples, args.max_tests, args.workers, benchmark=args.benchmark)
+                       args.samples, args.max_tests, args.workers, benchmark=args.benchmark,
+                       percentile=args.percentile, source=args.source, threshold=args.threshold,
+                       benchmarks_config=benchmarks_config)
     
     elif args.all_configs:
         config_files = list(configs_dir.glob("*.yaml"))

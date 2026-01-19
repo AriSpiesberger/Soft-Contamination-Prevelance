@@ -143,14 +143,43 @@ class StreamingStats:
             self.M2 = self.M2 + new_var * n_new + delta * delta * self.n * n_new / total_n
             self.n = total_n
 
-        # Reservoir sampling - add all values, let reservoir handle downsampling
-        for x in values:
-            if len(self.sample_reservoir) < self.sample_size:
-                self.sample_reservoir.append(float(x))
+        # VECTORIZED reservoir sampling - much faster than element-by-element
+        current_size = len(self.sample_reservoir)
+        if current_size < self.sample_size:
+            # Still filling reservoir
+            space_left = self.sample_size - current_size
+            if n_new <= space_left:
+                # All values fit
+                self.sample_reservoir.extend(values.tolist())
             else:
-                # Replace random element (proper reservoir sampling)
-                j = np.random.randint(0, len(self.sample_reservoir))
-                self.sample_reservoir[j] = float(x)
+                # Take what fits, then do reservoir sampling for rest
+                self.sample_reservoir.extend(values[:space_left].tolist())
+                # Reservoir sample the remainder
+                remainder = values[space_left:]
+                n_remainder = len(remainder)
+                # Vectorized: generate random indices, keep only those < sample_size
+                rand_indices = np.random.randint(0, current_size + space_left + np.arange(n_remainder) + 1)
+                mask = rand_indices < self.sample_size
+                for idx, val in zip(rand_indices[mask], remainder[mask]):
+                    self.sample_reservoir[idx] = float(val)
+        else:
+            # Reservoir is full - vectorized replacement
+            # For each new value, probability of inclusion is sample_size / (n seen so far)
+            # Approximate: sample expected number of replacements
+            total_seen = self.n  # Already updated above
+            expected_replacements = int(n_new * self.sample_size / total_seen) + 10
+            if expected_replacements > 0 and expected_replacements < n_new:
+                # Sample which values to consider for replacement
+                candidates = np.random.choice(n_new, min(expected_replacements, n_new), replace=False)
+                # For each candidate, pick random position in reservoir
+                positions = np.random.randint(0, self.sample_size, size=len(candidates))
+                for pos, val_idx in zip(positions, candidates):
+                    self.sample_reservoir[pos] = float(values[val_idx])
+            elif expected_replacements >= n_new:
+                # High replacement rate - process all
+                positions = np.random.randint(0, self.sample_size, size=n_new)
+                for pos, val in zip(positions, values):
+                    self.sample_reservoir[pos] = float(val)
 
     def get_stats(self):
         variance = self.M2 / self.n if self.n > 1 else 0.0
@@ -1229,8 +1258,13 @@ def process_single_test_top1pct(args_tuple):
 
 
 def process_single_test(args_tuple):
-    """Process a single test point - designed for parallel execution."""
-    test_data, output_dir, world_size = args_tuple
+    """Process a single test point - designed for parallel execution.
+
+    OPTIMIZED:
+    - Pre-computed chunk file list (no glob in hot path)
+    - Single pass over chunks for top-K + stats using Welford's algorithm
+    """
+    test_data, output_dir, chunk_metadata_raw = args_tuple
 
     import heapq
     test_id = test_data['test_id']
@@ -1239,39 +1273,36 @@ def process_single_test(args_tuple):
     benchmark = test_data['benchmark']
     mode = test_data['mode']
 
-    # Collect chunk metadata from ALL ranks (don't load data yet!)
-    chunk_metadata = []  # List of (sim_file, hash_file) tuples
-    for r in range(world_size):
-        chunk_dir = output_dir / "temp_similarities" / f"rank_{r}" / f"test_{global_idx}"
-
-        # Support both new .npy and old .npz formats
-        chunk_files_npy = sorted(chunk_dir.glob("chunk_*_sims.npy"))
-        chunk_files_npz = sorted(chunk_dir.glob("chunk_*.npz"))
-
-        # Collect new format (.npy files)
-        for chunk_file in chunk_files_npy:
-            chunk_num = chunk_file.stem.split('_')[1]
-            hash_ids_dir = chunk_dir.parent.parent / "shared_hash_ids"
-            hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
-            if hash_ids_file.exists():
-                chunk_metadata.append(('npy', chunk_file, hash_ids_file))
-
-        # Collect old format (.npz files)
-        for chunk_file in chunk_files_npz:
-            chunk_metadata.append(('npz', chunk_file, None))
+    # chunk_metadata_raw is pre-computed list of (fmt, sim_file_str, hash_file_str)
+    # Convert string paths to Path objects
+    chunk_metadata = []
+    for item in chunk_metadata_raw:
+        fmt, sim_file, hash_file = item
+        chunk_metadata.append((fmt, Path(sim_file), Path(hash_file) if hash_file else None))
 
     if not chunk_metadata:
         return None  # Skip this test
 
-    # STREAMING APPROACH: Find top-1000 WITHOUT concatenating everything
+    # SINGLE PASS: Find top-1000 + compute stats using Welford's online algorithm
     top_k = 1000
     global_top_k = []  # Min-heap of (score, chunk_idx, local_idx)
     total_count = 0
 
+    # Welford's online algorithm for mean/variance in single pass
+    welford_n = 0
+    welford_mean = 0.0
+    welford_M2 = 0.0  # Sum of squared differences from mean
+    global_min = float('inf')
+    global_max = float('-inf')
+
+    # Reservoir sampling for median/percentiles (fixed size buffer)
+    reservoir_size = 50000  # Reduced from 100K for speed
+    reservoir = []
+
     # For aggregate stats collection
     chunk_stats = []
 
-    # Pass 1: Find top-K across all chunks (streaming, no concatenation)
+    # PASS 1: Find top-K + compute all stats in ONE pass
     for chunk_idx, chunk_info in enumerate(chunk_metadata):
         fmt, sim_file, hash_file = chunk_info
 
@@ -1285,10 +1316,11 @@ def process_single_test(args_tuple):
             # Skip corrupted or incomplete chunk files
             continue
 
-        total_count += len(sims)
+        n_chunk = len(sims)
+        total_count += n_chunk
 
         # Find local top-K in this chunk
-        chunk_top_k = min(top_k, len(sims))
+        chunk_top_k = min(top_k, n_chunk)
         if chunk_top_k > 0:
             local_top_indices = np.argpartition(sims, -chunk_top_k)[-chunk_top_k:]
 
@@ -1300,12 +1332,60 @@ def process_single_test(args_tuple):
                 elif score > global_top_k[0][0]:
                     heapq.heapreplace(global_top_k, (score, chunk_idx, int(local_idx)))
 
+        # Update global min/max
+        chunk_min = float(np.min(sims))
+        chunk_max = float(np.max(sims))
+        global_min = min(global_min, chunk_min)
+        global_max = max(global_max, chunk_max)
+
+        # Welford's online algorithm for combining chunk stats
+        # For a batch: update using parallel algorithm
+        chunk_sum = float(np.sum(sims))
+        chunk_mean = chunk_sum / n_chunk
+
+        if welford_n == 0:
+            welford_mean = chunk_mean
+            welford_M2 = float(np.sum((sims - chunk_mean) ** 2))
+            welford_n = n_chunk
+        else:
+            # Parallel/batch Welford update
+            delta = chunk_mean - welford_mean
+            new_n = welford_n + n_chunk
+            welford_mean = welford_mean + delta * n_chunk / new_n
+            # M2 update for combining two groups
+            chunk_M2 = float(np.sum((sims - chunk_mean) ** 2))
+            welford_M2 = welford_M2 + chunk_M2 + delta * delta * welford_n * n_chunk / new_n
+            welford_n = new_n
+
+        # Vectorized reservoir sampling for median (fast NumPy operations)
+        if len(reservoir) < reservoir_size:
+            # Fill reservoir - use numpy array directly, convert to list at end
+            take = min(reservoir_size - len(reservoir), n_chunk)
+            if take == n_chunk:
+                reservoir.extend(sims.flatten().tolist())
+            else:
+                indices = np.random.choice(n_chunk, take, replace=False)
+                reservoir.extend(sims[indices].tolist())
+        else:
+            # Vectorized reservoir sampling: sample which positions to potentially replace
+            # Only a small fraction will actually be replaced (reservoir_size / welford_n)
+            expected_replacements = int(n_chunk * reservoir_size / welford_n) + 100  # +buffer
+            if expected_replacements > 0:
+                # Generate random indices for which chunk elements might replace reservoir
+                chunk_indices = np.random.choice(n_chunk, min(expected_replacements, n_chunk), replace=False)
+                # For each, generate a random position in total seen so far
+                random_positions = np.random.randint(0, welford_n, size=len(chunk_indices))
+                # Only keep those that fall within reservoir
+                mask = random_positions < reservoir_size
+                for chunk_idx, res_idx in zip(chunk_indices[mask], random_positions[mask]):
+                    reservoir[res_idx] = float(sims[chunk_idx])
+
         # Collect stats for aggregate (lightweight - just min/max/sum)
         chunk_stats.append({
-            'min': float(np.min(sims)),
-            'max': float(np.max(sims)),
-            'sum': float(np.sum(sims)),
-            'count': len(sims)
+            'min': chunk_min,
+            'max': chunk_max,
+            'sum': chunk_sum,
+            'count': n_chunk
         })
 
         del sims
@@ -1315,20 +1395,23 @@ def process_single_test(args_tuple):
     # Sort heap to get final top-K in descending order
     global_top_k.sort(reverse=True)
 
-    # Pass 2: Retrieve hash_ids for top-K results only
+    # PASS 2: Retrieve hash_ids for top-K results only (minimal I/O)
     topk_matches = []
+    # Cache loaded hash_id arrays to avoid reloading same file
+    hash_id_cache = {}
+
     for rank, (score, chunk_idx, local_idx) in enumerate(global_top_k, 1):
         fmt, sim_file, hash_file = chunk_metadata[chunk_idx]
 
         try:
             if fmt == 'npy':
-                hash_ids = np.load(hash_file, mmap_mode='r')
-                hash_id = str(hash_ids[local_idx])
-                del hash_ids
+                if hash_file not in hash_id_cache:
+                    hash_id_cache[hash_file] = np.load(hash_file, mmap_mode='r')
+                hash_id = str(hash_id_cache[hash_file][local_idx])
             elif fmt == 'npz':
-                data = np.load(sim_file, allow_pickle=True)
-                hash_id = str(data['hash_ids'][local_idx])
-                del data
+                if sim_file not in hash_id_cache:
+                    hash_id_cache[sim_file] = np.load(sim_file, allow_pickle=True)
+                hash_id = str(hash_id_cache[sim_file]['hash_ids'][local_idx])
 
             topk_matches.append({
                 'rank': rank,
@@ -1339,65 +1422,18 @@ def process_single_test(args_tuple):
             # Skip if we can't retrieve hash_id
             continue
 
-    # Compute per-test stats from aggregate stats (already computed in Pass 1)
-    # For per-test stats, do one more streaming pass (cheap - just scans, no allocation)
-    per_test_stats = {'max': float('-inf'), 'min': float('inf'), 'sum': 0.0, 'count': 0}
-    all_vals_for_median = []  # Only for median computation
+    # Clear cache
+    del hash_id_cache
 
-    for chunk_info in chunk_metadata:
-        fmt, sim_file, hash_file = chunk_info
-
-        try:
-            if fmt == 'npy':
-                sims = np.load(sim_file, mmap_mode='r')
-            elif fmt == 'npz':
-                data = np.load(sim_file, allow_pickle=True)
-                sims = data['similarities']
-        except (ValueError, OSError, IOError):
-            continue
-
-        per_test_stats['max'] = max(per_test_stats['max'], float(np.max(sims)))
-        per_test_stats['min'] = min(per_test_stats['min'], float(np.min(sims)))
-        per_test_stats['sum'] += float(np.sum(sims))
-        per_test_stats['count'] += len(sims)
-
-        # Sample for aggregate histogram (100K per test for better accuracy)
-        # With 1000 tests × 100K samples = 100M total (~400MB memory)
-        sample_size = min(100000, len(sims))
-        if len(sims) <= sample_size:
-            all_vals_for_median.extend(sims.tolist())
-        else:
-            indices = np.random.choice(len(sims), sample_size, replace=False)
-            all_vals_for_median.extend(sims[indices].tolist())
-
-        del sims
-        if fmt == 'npz':
-            del data
-
-    per_test_stats['mean'] = per_test_stats['sum'] / per_test_stats['count']
-    per_test_stats['median'] = float(np.median(all_vals_for_median)) if all_vals_for_median else 0.0
-
-    # For std, need another pass (or use two-pass algorithm)
-    sum_sq_diff = 0.0
-    for chunk_info in chunk_metadata:
-        fmt, sim_file, hash_file = chunk_info
-
-        try:
-            if fmt == 'npy':
-                sims = np.load(sim_file, mmap_mode='r')
-            elif fmt == 'npz':
-                data = np.load(sim_file, allow_pickle=True)
-                sims = data['similarities']
-        except (ValueError, OSError, IOError):
-            continue
-
-        sum_sq_diff += float(np.sum((sims - per_test_stats['mean']) ** 2))
-
-        del sims
-        if fmt == 'npz':
-            del data
-
-    per_test_stats['std'] = float(np.sqrt(sum_sq_diff / per_test_stats['count']))
+    # Compute final stats from Welford accumulators
+    per_test_stats = {
+        'max': global_max,
+        'min': global_min,
+        'mean': welford_mean,
+        'std': float(np.sqrt(welford_M2 / welford_n)) if welford_n > 0 else 0.0,
+        'median': float(np.median(reservoir)) if reservoir else 0.0,
+        'count': total_count
+    }
 
     # Save JSON
     result = {
@@ -1424,7 +1460,7 @@ def process_single_test(args_tuple):
         'test_id': test_id,
         'chunk_stats': chunk_stats,
         'top_100_scores': top_100_scores,
-        'similarity_samples': all_vals_for_median  # Return sampled values for histogram
+        'similarity_samples': reservoir  # Return reservoir samples for histogram
     }
 
 
@@ -1541,40 +1577,119 @@ def run_merger(args, world_size):
     print("Merging results and generating outputs...")
     print("="*80)
 
-    # Determine number of parallel workers (leave 2 cores for system)
+    # PRE-SCAN: Build chunk file index ONCE to avoid repeated glob on NFS
+    print("Pre-scanning chunk files (one-time NFS metadata scan)...")
+    chunk_file_index = {}  # test_idx -> list of (fmt, sim_file, hash_file)
+
+    # shared_hash_ids is at temp_similarities level, not inside rank directories
+    hash_ids_dir = output_dir / "temp_similarities" / "shared_hash_ids"
+
+    for r in range(world_size):
+        rank_dir = output_dir / "temp_similarities" / f"rank_{r}"
+
+        # Find all test directories for this rank
+        if not rank_dir.exists():
+            continue
+
+        for test_dir in rank_dir.iterdir():
+            if not test_dir.is_dir() or not test_dir.name.startswith("test_"):
+                continue
+
+            try:
+                test_idx = int(test_dir.name.split("_")[1])
+            except (ValueError, IndexError):
+                continue
+
+            if test_idx not in chunk_file_index:
+                chunk_file_index[test_idx] = []
+
+            # Collect .npy files
+            for chunk_file in test_dir.glob("chunk_*_sims.npy"):
+                chunk_num = chunk_file.stem.split('_')[1]
+                hash_ids_file = hash_ids_dir / f"chunk_{chunk_num}_hash_ids.npy"
+                if hash_ids_file.exists():
+                    chunk_file_index[test_idx].append(('npy', str(chunk_file), str(hash_ids_file)))
+
+            # Collect .npz files
+            for chunk_file in test_dir.glob("chunk_*.npz"):
+                chunk_file_index[test_idx].append(('npz', str(chunk_file), None))
+
+    # Count how many tests actually have chunk files
+    tests_with_chunks = sum(1 for v in chunk_file_index.values() if v)
+    total_chunks = sum(len(v) for v in chunk_file_index.values())
+    indices_with_chunks = sorted([k for k, v in chunk_file_index.items() if v])
+    if indices_with_chunks:
+        print(f"  Indexed {len(chunk_file_index)} test directories ({tests_with_chunks} with chunk files, {total_chunks} total chunks)")
+        print(f"  Test indices with chunks: {indices_with_chunks[0]}-{indices_with_chunks[-1]} (first 10: {indices_with_chunks[:10]})")
+    else:
+        print(f"  ⚠️  Indexed {len(chunk_file_index)} test directories but NONE have chunk files!")
+
+    # Determine number of parallel workers - optimized for NFS I/O bound workloads
     import multiprocessing as mp
-    num_workers = max(1, mp.cpu_count() - 2)
+    num_workers = getattr(args, 'num_workers', None)
+    if num_workers is None:
+        # Default: use 75% of CPUs (I/O bound, so more workers help)
+        num_workers = max(4, int(mp.cpu_count() * 0.75))
     print(f"Using {num_workers} parallel workers (of {mp.cpu_count()} CPUs)")
 
     for (benchmark, mode), test_points in benchmark_groups.items():
-        print(f"\nProcessing {benchmark.upper()} - {mode.upper()} ({len(test_points)} test points)...")
+        idx_range = [tp['global_idx'] for tp in test_points]
+        print(f"\nProcessing {benchmark.upper()} - {mode.upper()} ({len(test_points)} test points, global_idx {min(idx_range)}-{max(idx_range)})...")
 
         mode_dir = output_dir / f"{benchmark}_{mode}"
         mode_dir.mkdir(parents=True, exist_ok=True)
 
-        # Prepare arguments for parallel processing
-        args_list = [(test_data, output_dir, world_size) for test_data in test_points]
+        # Prepare arguments for parallel processing, skipping already completed tests
+        args_list = []
+        skipped = 0
+        skipped_no_chunks = 0
+        for test_data in test_points:
+            safe_test_id = test_data['test_id'].replace('/', '_')
+            json_file = mode_dir / f"{safe_test_id}_top1000.json"
+            if json_file.exists():
+                skipped += 1
+            else:
+                # Pass pre-computed chunk files instead of having workers glob
+                global_idx = test_data['global_idx']
+                chunk_files = chunk_file_index.get(global_idx, [])
+                if not chunk_files:
+                    skipped_no_chunks += 1
+                    continue  # Skip tests with no chunk data
+                args_list.append((test_data, output_dir, chunk_files))
 
-        # Process all tests in parallel
-        print(f"  Processing {len(test_points)} tests in parallel...")
-        with mp.Pool(processes=num_workers) as pool:
-            results = list(tqdm(
-                pool.imap(process_single_test, args_list),
-                total=len(test_points),
-                desc=f"  {benchmark}_{mode}"
-            ))
+        if skipped > 0:
+            print(f"  Skipping {skipped} already completed tests")
+        if skipped_no_chunks > 0:
+            print(f"  ⚠️  Skipping {skipped_no_chunks} tests with NO chunk data (not yet processed by workers)")
 
-        # Filter out None results (skipped tests)
-        results = [r for r in results if r is not None]
-        print(f"  ✅ Processed {len(results)} tests successfully")
+        if not args_list:
+            print(f"  All tests already complete, skipping to aggregation...")
+            results = []
+        else:
+            # Process remaining tests in parallel (maxtasksperchild prevents memory buildup)
+            print(f"  Processing {len(args_list)} tests in parallel...")
+            t_start = time.time()
+            with mp.Pool(processes=num_workers, maxtasksperchild=50) as pool:
+                results = list(tqdm(
+                    pool.imap(process_single_test, args_list, chunksize=4),
+                    total=len(args_list),
+                    desc=f"  {benchmark}_{mode}"
+                ))
+            print(f"  Parallel processing took {time.time() - t_start:.1f}s")
+
+            # Filter out None results (skipped tests)
+            print(f"  Filtering results...")
+            results = [r for r in results if r is not None]
+            print(f"  ✅ Processed {len(results)} tests successfully")
 
         # Aggregate statistics from all test results
         # Sample 100K per test, but reservoir limit at 10M for plotting
         agg_stats = StreamingStats(sample_size=10_000_000)
         all_top_scores = []
 
-        # Collect aggregate stats from parallel results
-        for result in results:
+        # Collect aggregate stats from parallel results (fast vectorized aggregation)
+        print(f"  Aggregating {len(results)} test results...")
+        for i, result in enumerate(results):
             # Feed real sampled similarity values to StreamingStats
             # (result['similarity_samples'] contains values already sampled in process_single_test)
             if 'similarity_samples' in result and result['similarity_samples']:
@@ -1582,6 +1697,12 @@ def run_merger(args, world_size):
 
             # Collect top scores
             all_top_scores.extend(result['top_100_scores'])
+
+            # Progress every 100 results
+            if (i + 1) % 100 == 0:
+                print(f"    Aggregated {i + 1}/{len(results)} results...", end='\r')
+
+        print(f"  ✅ Aggregation complete ({agg_stats.n:,} total samples)")
 
         # Save aggregate stats
         final_stats = agg_stats.get_stats()
@@ -1620,7 +1741,7 @@ def run_merger(args, world_size):
             plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Frequency (log scale)')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Log Scale)\nTotal: {final_stats["count"]:,} comparisons (estimated from {len(sample_arr):,} samples)')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Log Scale)\n{total_embeddings * len(test_points):,} comparisons ({len(sample_arr):,} samples)')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
@@ -1639,7 +1760,7 @@ def run_merger(args, world_size):
             plt.axvline(final_stats['p95'], color='purple', linestyle='--', label=f'P95: {final_stats["p95"]:.4f}')
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Frequency')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Linear Scale)\nTotal: {final_stats["count"]:,} comparisons (estimated from {len(sample_arr):,} samples)')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Aggregate Distribution (Linear Scale)\n{total_embeddings * len(test_points):,} comparisons ({len(sample_arr):,} samples)')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
@@ -1659,7 +1780,7 @@ def run_merger(args, world_size):
             plt.axhline(0.95, color='purple', linestyle=':', alpha=0.5)
             plt.xlabel('Cosine Similarity')
             plt.ylabel('Cumulative Probability')
-            plt.title(f'{benchmark.upper()} {mode.upper()} - Cumulative Distribution Function\nTotal: {final_stats["count"]:,} comparisons (estimated from {len(sample_arr):,} samples)')
+            plt.title(f'{benchmark.upper()} {mode.upper()} - Cumulative Distribution Function\n{total_embeddings * len(test_points):,} comparisons ({len(sample_arr):,} samples)')
             plt.legend()
             plt.grid(True, alpha=0.3)
             plt.tight_layout()
@@ -1716,6 +1837,7 @@ def main():
     parser.add_argument('--max-rows-per-block', type=int, default=DEFAULT_CONFIG['max_rows_per_block'])
     parser.add_argument('--resume-from-file', type=int, default=0, help='Resume from this global parquet file index')
     parser.add_argument('--merge-only', action='store_true', help='Only run merger (skip workers)')
+    parser.add_argument('--num-workers', type=int, default=4, help='Number of parallel workers for merge (default: 4 to avoid OOM)')
     parser.add_argument('--sample-top1pct', action='store_true', 
                         help='Sample 100 random items from top 1%% for semantic analysis (MBPP only)')
     parser.add_argument('--corpus-jsonl', default=None,
