@@ -362,3 +362,10 @@ tb_logs/
 *.pem
 credentials.json
 secrets/
+
+# Training Data & Large CSV files
+comparison_analysis/training_data/
+comparison_analysis/batch_jobs/
+*.csv
+!*_config.csv
+model_diffusion/

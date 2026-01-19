@@ -211,7 +211,7 @@ Analyze the tasks and provide your structured judgment."""
 CODEFORCES_PROMPT_TEMPLATE = """You are an expert competitive programmer analyzing potential semantic duplicates between programming problems.
 
 ## Task
-Determine if the following two competitive programming problems are semantic duplicates - meaning exposure to the corpus problem during training would effectively leak how to solve the test problem.
+Determine if the following two competitive programming problems are semantically related - meaning exposure to the corpus problem during training could help solve the test problem.
 
 ## Test Problem (from benchmark):
 {test_text}
@@ -220,48 +220,35 @@ Determine if the following two competitive programming problems are semantic dup
 {corpus_text}
 
 ## Analysis Steps:
-1. **Check data quality first**: Is the corpus text a complete problem statement? If it's empty, fragmentary (just I/O format or constraints), or contains only solution code without a problem description, mark as "unrelated".
-2. **Extract the core problem**: Strip away story/narrative framing. What is the actual computational task being asked?
-3. **Identify the key insight**: What is the "trick" or non-obvious observation needed to solve each problem efficiently?
-4. **Compare**: Do both problems require the same algorithmic approach AND the same key insight?
-
-## Guidelines:
-
-**What makes problems duplicates:**
-- Same computational task after removing story framing
-- Same key insight or "trick" needed to solve efficiently
-- Corpus is a generalization that, once solved, trivially solves the test problem
-
-**What does NOT make problems duplicates:**
-- Sharing a common technique (BFS, DP, segment tree) - the structure of the problem must also match
-- Similar input/output format
-- Same problem category or tags
-- Both involving graphs, math, or strings
-
-**Constraints:**
-- Vastly different constraints (n≤100 vs n≤10⁶) that require fundamentally different algorithmic complexity are usually different problems
-- Minor constraint differences (n≤10⁵ vs n≤2×10⁵) with the same optimal approach are still duplicates
-
-**Data quality issues → mark as "unrelated":**
-- Corpus text is empty or nearly empty
-- Corpus is just I/O format, examples, or constraints without the actual problem
-- Corpus contains only solution code or editorial without problem statement
-- Corpus text is corrupted or unintelligible
+1. **Check data quality first**: Is the corpus text a complete problem statement? If it's empty, fragmentary, or contains only code without a problem description, mark as "unrelated".
+2. **Check for exact text match**: If the corpus text appears VERBATIM (word-for-word) within the test text (e.g., corpus contains just the problem statement while test contains problem + examples), this counts as "exact" match.
+3. **Extract the core problem**: Strip away story/narrative framing. What is the actual computational task?
+4. **Identify the key insight**: What algorithmic technique or observation is needed?
+5. **Compare**: Is there meaningful overlap in what's being asked or how to solve it?
 
 ## Match Types:
-- "exact": Nearly identical problem statements
-- "equivalent": Different framing but identical algorithmic core and key insight
-- "subset": Test is a special case of corpus; the corpus solution can be adapted to solve test with minimal changes
-- "superset": Corpus is a special case of test; test requires more - NOT a duplicate
-- "unrelated": Different problems, or corpus data is incomplete/empty/unusable
+- "exact": Nearly identical problem statements, OR corpus text is a verbatim substring/subsection of test text (exact text match even if corpus is shorter)
+- "equivalent": Different framing but identical algorithmic core
+- "subset": Test is a special case of corpus (test asks for less than corpus)
+- "superset": Corpus asks for something simpler than test, but NOT a verbatim text match
+- "related": Corpus covers a component or shares key insight with test
+- "unrelated": Different problems, or corpus data is unusable
 
-## Calibration:
-- Use high confidence (0.8-1.0) when the algorithmic core clearly matches or clearly differs
-- Use moderate confidence (0.5-0.8) when problems share techniques but the key insight may differ
-- Use low confidence (0.3-0.5) for ambiguous cases or when corpus data quality is questionable
+## IMPORTANT: Exact Match Clarification
+If the corpus text is an exact substring of the test text (the corpus text appears word-for-word inside the test text, just without some sections like examples or input/output format), mark this as "exact" NOT "superset". The key distinction:
+- "exact": Corpus text IS CONTAINED VERBATIM in test text
+- "superset": Corpus asks a DIFFERENT (simpler) question than test
 
-Analyze the problems and provide your structured judgment."""
+## What counts as semantically related:
+- Same computational task (any framing)
+- One is a special case of the other
+- Shared key insight or trick
+- Corpus solves a significant component of test
 
+## What is unrelated:
+- Sharing only common techniques (DP, BFS) without structural similarity
+- Unusable corpus data (empty, fragmentary, code-only)
+- Genuinely different computational questions"""
 
 PROMPTS = {
     "mbpp": MBPP_PROMPT_TEMPLATE,
@@ -760,11 +747,15 @@ def run_annotations(
     budget: float,
     workers: int,
     dry_run: bool = False,
+    csv_path: str = None,
 ) -> dict:
     """Run annotation pipeline with concurrency."""
     
     # Load sampled CSV
-    sampled_path = SAMPLED_FILES[benchmark]
+    if csv_path:
+        sampled_path = Path(csv_path)
+    else:
+        sampled_path = SAMPLED_FILES[benchmark]
     if not sampled_path.exists():
         raise FileNotFoundError(f"Sampled file not found: {sampled_path}. Run sample_for_annotation.py first.")
     
@@ -772,7 +763,15 @@ def run_annotations(
     rows = []
     with open(sampled_path, "r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
-        rows = list(reader)
+        for row in reader:
+            # Map alternate column names to expected names
+            if "source" in row and "dataset" not in row:
+                row["dataset"] = row["source"]
+            if "similarity" in row and "score" not in row:
+                row["score"] = row["similarity"]
+            if "weight" not in row:
+                row["weight"] = "1.0"
+            rows.append(row)
     
     print(f"Loaded {len(rows):,} rows to annotate")
     
@@ -801,7 +800,11 @@ def run_annotations(
         if out_path.stem not in completed:
             pending_rows.append(row)
     
-    print(f"Pending: {len(pending_rows):,} rows")
+    # Shuffle to get random sample across all test IDs
+    import random
+    random.shuffle(pending_rows)
+    
+    print(f"Pending: {len(pending_rows):,} rows (shuffled)")
     
     remaining_budget = budget - existing_cost
     if remaining_budget <= 0:
@@ -1026,6 +1029,12 @@ def main():
         action="store_true",
         help="Don't actually annotate, just show what would be done",
     )
+    parser.add_argument(
+        "--csv",
+        type=str,
+        default=None,
+        help="Path to custom CSV file (overrides default benchmark CSV)",
+    )
     
     args = parser.parse_args()
     
@@ -1034,6 +1043,7 @@ def main():
         budget=args.budget,
         workers=args.workers,
         dry_run=args.dry_run,
+        csv_path=args.csv,
     )
 
 
