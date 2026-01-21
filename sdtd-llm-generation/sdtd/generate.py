@@ -801,10 +801,10 @@ def generate_sds(
             # This is a bit tricky if user provided a specific file path
             # We'll append dataset name to stem
             ds_output_file = output_file.parent / f"{output_file.stem}_{name}{output_file.suffix}"
-            _generate_for_dataset_parallel(name, df, selection, ds_output_file, model_override, workers)
+            _generate_for_dataset_parallel(name, df, selection, ds_output_file, model_override, workers, skip_embeddings)
     else:
         df = load_dataset(dataset_name, limit, input_file=input_file)
-        _generate_for_dataset_parallel(dataset_name, df, selection, output_file, model_override, workers)
+        _generate_for_dataset_parallel(dataset_name, df, selection, output_file, model_override, workers, skip_embeddings)
 
 
 def _generate_for_dataset_parallel(
@@ -814,6 +814,7 @@ def _generate_for_dataset_parallel(
     output_path: Path,
     model_override: str | None = None,
     workers: int = 4,
+    skip_embeddings: bool = False,
 ) -> None:
     """Generate SDs for a single dataset using parallel workers.
     """

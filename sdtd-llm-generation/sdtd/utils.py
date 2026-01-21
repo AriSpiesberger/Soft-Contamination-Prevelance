@@ -10,6 +10,11 @@ from typing import Any
 from functools import lru_cache
 
 
+# Helicone default headers for caching
+HELICONE_DEFAULT_HEADERS = {
+    "Helicone-Cache-Enabled": "true"
+}
+
 _openai_client = threading.local()
 _openai_client_lock = threading.Lock()
 
@@ -26,7 +31,11 @@ def get_client():
         logger.info(f"Initializing OpenAI client with key: {key[:10]}...{key[-6:]} and base URL: {base_url}")
         if not key:
             raise ValueError("HELICONE_API_KEY environment variable not set")
-        _openai_client._openai_client = OpenAI(api_key=key, base_url=base_url)
+        _openai_client._openai_client = OpenAI(
+            api_key=key,
+            base_url=base_url,
+            default_headers=HELICONE_DEFAULT_HEADERS
+        )
         return _openai_client._openai_client
 
 
