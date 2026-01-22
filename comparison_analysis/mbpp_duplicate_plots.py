@@ -35,27 +35,38 @@ duplicate_rates['dataset'] = pd.Categorical(
 )
 duplicate_rates = duplicate_rates.sort_values('dataset')
 
-# Create figure
-fig, ax = plt.subplots(figsize=(12, 7))
+# Create figure - box and whisker plot (Q1 to Q3, no outliers beyond whiskers)
+fig, ax = plt.subplots(figsize=(10, 6))
 
-# Create box plot
+# Get data for each dataset
 box_data = [duplicate_rates[duplicate_rates['dataset'] == ds]['duplicate_rate'].values
             for ds in training_order]
 
-bp = ax.boxplot(box_data, tick_labels=training_labels, patch_artist=True, showmeans=True,
-                meanprops=dict(marker='D', markerfacecolor='red', markeredgecolor='red', markersize=8))
+# Create box plot with whiskers at Q1 and Q3 (whis=0 means whiskers end at box edges)
+stage_colors = ['#3498db', '#2ecc71', '#f39c12', '#e74c3c', '#9b59b6']
 
-# Color the boxes with a gradient representing training progression
-colors = plt.cm.Blues(np.linspace(0.3, 0.9, len(training_order)))
-for patch, color in zip(bp['boxes'], colors):
+bp = ax.boxplot(box_data, tick_labels=training_labels, patch_artist=True, showmeans=True,
+                widths=0.5,
+                whis=[5, 95],  # Whiskers span 5th to 95th percentile
+                showfliers=False,  # No outlier dots
+                whiskerprops=dict(linewidth=2, color='black'),
+                capprops=dict(linewidth=2, color='black'),
+                medianprops=dict(linewidth=2, color='white'),
+                meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='black', markersize=7))
+
+# Color the boxes
+for patch, color in zip(bp['boxes'], stage_colors):
     patch.set_facecolor(color)
     patch.set_alpha(0.7)
+    patch.set_edgecolor('black')
+    patch.set_linewidth(1.5)
 
 # Add mean values as text
 means = [np.mean(d) for d in box_data]
 for i, (mean, x) in enumerate(zip(means, range(1, len(training_order) + 1))):
-    ax.annotate(f'{mean:.1%}', xy=(x, mean), xytext=(x + 0.25, mean + 0.02),
-                fontsize=10, color='red', fontweight='bold')
+    q3 = np.percentile(box_data[i], 75)
+    ax.annotate(f'{mean:.1%}', xy=(x, q3 + 0.03), ha='center',
+                fontsize=9, color='black', fontweight='bold')
 
 ax.set_ylabel('Semantic Duplicate Rate (per MBPP test problem)', fontsize=12)
 ax.set_xlabel('Training Stage', fontsize=12)
@@ -92,24 +103,36 @@ sim_analysis = df.groupby('similarity_bin', observed=True).agg(
 ).reset_index()
 sim_analysis['duplicate_rate'] = sim_analysis['n_duplicates'] / sim_analysis['n_total']
 sim_analysis['bin_center'] = sim_analysis['similarity_bin'].apply(lambda x: x.mid if pd.notna(x) else np.nan)
+
+# Calculate 95% CI for binomial proportion (Wilson score interval approximation)
+z = 1.96
+p = sim_analysis['duplicate_rate']
+n = sim_analysis['n_total']
+sim_analysis['ci95'] = z * np.sqrt(p * (1 - p) / n)
+
 sim_analysis = sim_analysis.sort_values('bin_center')
 
-# Plot single curve
+# Plot curve with confidence interval shading
+ax.fill_between(sim_analysis['bin_center'],
+                sim_analysis['duplicate_rate'] - sim_analysis['ci95'],
+                sim_analysis['duplicate_rate'] + sim_analysis['ci95'],
+                alpha=0.3, color='#3498db', label='95% CI')
+
 ax.plot(sim_analysis['bin_center'], sim_analysis['duplicate_rate'],
-        marker='o', linewidth=2.5, markersize=8,
-        color='#2c3e50', alpha=0.9)
+        marker='o', linewidth=2.5, markersize=6,
+        color='#2c3e50', alpha=0.9, label='Duplicate Rate')
 
-# Fill under curve
-ax.fill_between(sim_analysis['bin_center'], sim_analysis['duplicate_rate'],
-                alpha=0.3, color='#3498db')
+# Add sample size annotation for ALL points
+def format_n(n):
+    if n >= 1000:
+        return f"n={n/1000:.1f}k"
+    return f"n={n}"
 
-# Add sample size annotation
 for i, row in sim_analysis.iterrows():
-    if row['n_total'] > 1000:  # Only annotate bins with substantial samples
-        ax.annotate(f"n={row['n_total']:,}",
-                   xy=(row['bin_center'], row['duplicate_rate']),
-                   xytext=(0, 10), textcoords='offset points',
-                   fontsize=7, alpha=0.6, ha='center', rotation=45)
+    ax.annotate(format_n(row['n_total']),
+               xy=(row['bin_center'], row['duplicate_rate']),
+               xytext=(0, 10), textcoords='offset points',
+               fontsize=6, alpha=0.6, ha='center', rotation=45)
 
 ax.set_xlabel('Cosine Similarity', fontsize=12)
 ax.set_ylabel('Semantic Duplicate Rate', fontsize=12)
@@ -117,7 +140,8 @@ ax.set_title('Semantic Duplicate Rate vs. Cosine Similarity\n(MBPP Benchmark - A
 ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 ax.grid(alpha=0.3)
 ax.set_xlim(df['similarity'].min() * 0.98, df['similarity'].max() * 1.01)
-ax.set_ylim(0, sim_analysis['duplicate_rate'].max() * 1.1)
+ax.set_ylim(0, (sim_analysis['duplicate_rate'] + sim_analysis['ci95']).max() * 1.1)
+ax.legend(loc='upper left', fontsize=10)
 
 label_dict = {
     'dolma': 'Dolma (Pretrain)',
