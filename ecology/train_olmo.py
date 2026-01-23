@@ -28,7 +28,7 @@ def format_example(example):
 
 def main():
     # Config
-    model_name = "allenai/OLMo-7B"
+    model_name = "allenai/Olmo-3-1025-7B"
     max_seq_length = 2048
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -40,9 +40,9 @@ def main():
     # Load model with 8-bit quantization
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         load_in_8bit=True,
-        device_map="auto",
+        device_map={"": 0},
         trust_remote_code=True,
     )
 
@@ -53,11 +53,11 @@ def main():
     # Prepare for 8-bit training
     model = prepare_model_for_kbit_training(model)
 
-    # LoRA config
+    # LoRA config - aggressive settings for base→instruct
     lora_config = LoraConfig(
-        r=16,
-        lora_alpha=32,
-        target_modules=["att_proj", "ff_proj"],  # OLMo architecture
+        r=64,
+        lora_alpha=128,
+        target_modules="all-linear",  # All linear layers
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
@@ -87,7 +87,7 @@ def main():
         logging_steps=10,
         save_steps=100,
         save_total_limit=2,
-        fp16=False,
+        bf16=True,
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
         optim="adamw_torch",
