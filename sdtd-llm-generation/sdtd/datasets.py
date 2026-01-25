@@ -6,13 +6,21 @@ from pathlib import Path
 from datasets import load_dataset as hf_load_dataset
 
 
-def load_dataset(name: str, limit: int | None = None, input_file: Path | str | None = None) -> pl.DataFrame:
+def load_dataset(
+    name: str,
+    limit: int | None = None,
+    input_file: Path | str | None = None,
+    start_index: int | None = None,
+    end_index: int | None = None,
+) -> pl.DataFrame:
     """Load dataset by name.
 
     Args:
         name: Dataset name (gsm8k, codeforces, allenai, mbpp, humaneval, popqa, bigbenchhard, zebralogic, agieval, or all)
-        limit: Optional limit on number of rows
+        limit: Optional limit on number of rows (for non-indexed datasets)
         input_file: Optional path to local input file (overrides default loading)
+        start_index: Optional start index (zebralogic only, requires indexed files)
+        end_index: Optional end index (zebralogic only, requires indexed files)
 
     Returns:
         Polars DataFrame with dataset contents
@@ -32,7 +40,7 @@ def load_dataset(name: str, limit: int | None = None, input_file: Path | str | N
     elif name == "bigbenchhard":
         return load_bigbenchhard(limit)
     elif name == "zebralogic":
-        return load_zebralogic(limit, input_file)
+        return load_zebralogic(limit, input_file, start_index, end_index)
     elif name == "agieval":
         return load_agieval(limit)
     elif name == "all":
@@ -45,7 +53,7 @@ def load_dataset(name: str, limit: int | None = None, input_file: Path | str | N
             "humaneval": load_humaneval(limit),
             "popqa": load_popqa(limit),
             "bigbenchhard": load_bigbenchhard(limit),
-            "zebralogic": load_zebralogic(limit, input_file),
+            "zebralogic": load_zebralogic(limit, input_file, start_index, end_index),
             # agieval: Not yet implemented due to HuggingFace compatibility issues
         }
     else:
@@ -199,12 +207,19 @@ def load_bigbenchhard(limit: int | None = None) -> pl.DataFrame:
     return df
 
 
-def load_zebralogic(limit: int | None = None, input_file: Path | str | None = None) -> pl.DataFrame:
+def load_zebralogic(
+    limit: int | None = None,
+    input_file: Path | str | None = None,
+    start_index: int | None = None,
+    end_index: int | None = None,
+) -> pl.DataFrame:
     """Load ZebraLogic dataset.
 
     Args:
-        limit: Optional limit on number of rows
+        limit: Optional limit on number of rows (DEPRECATED - use start_index/end_index for indexed files)
         input_file: Optional path to local parquet file
+        start_index: Optional start index (inclusive, requires 'index' column)
+        end_index: Optional end index (exclusive, requires 'index' column)
 
     Returns:
         DataFrame with columns: puzzle_id, puzzle, solution, clues, size_n, size_m, etc.
@@ -214,11 +229,26 @@ def load_zebralogic(limit: int | None = None, input_file: Path | str | None = No
     else:
         # Load the grid_mode configuration (full puzzle format with clues)
         dataset = hf_load_dataset("WildEval/ZebraLogic", "grid_mode", split="test")
-        
+
         # Convert to polars DataFrame
         df = pl.DataFrame(dataset.to_dict())
 
-    if limit:
+    # If using index ranges, validate and filter by index column
+    if start_index is not None or end_index is not None:
+        if "index" not in df.columns:
+            raise ValueError(
+                "Cannot use start_index/end_index with dataset that doesn't have an 'index' column. "
+                "Use merge_zebralogic_shards.py to create indexed files, or use 'limit' parameter instead."
+            )
+
+        if start_index is None:
+            start_index = 0
+        if end_index is None:
+            end_index = df["index"].max() + 1
+
+        df = df.filter((pl.col("index") >= start_index) & (pl.col("index") < end_index))
+    elif limit:
+        # Fallback to limit for backward compatibility (uses row position)
         df = df.head(limit)
 
     return df

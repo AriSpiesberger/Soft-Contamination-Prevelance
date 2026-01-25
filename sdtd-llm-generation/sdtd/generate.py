@@ -772,6 +772,8 @@ def generate_sds(
     input_file: Path | None = None,
     workers: int = 4,
     skip_embeddings: bool = False,
+    start_index: int | None = None,
+    end_index: int | None = None,
 ) -> None:
     """Generate semantic duplicates for a dataset with parallel workers.
 
@@ -779,12 +781,14 @@ def generate_sds(
         dataset_name: Name of dataset
         selection: List of levels (e.g. "1") or variant names
         output_file: Path to save output file
-        limit: Optional limit on number of items
+        limit: Optional limit on number of items (for non-indexed datasets)
         model_override: Optional model override
         checkpoint_enabled: Deprecated, ignored (always resumes via file check)
         input_file: Optional input parquet file
         skip_embeddings: If True, skip embedding generation and store None
         workers: Number of concurrent workers
+        start_index: Optional start index (zebralogic only, requires indexed files)
+        end_index: Optional end index (zebralogic only, requires indexed files)
     """
     output_file = Path(output_file)
     if output_file.parent:
@@ -795,7 +799,7 @@ def generate_sds(
 
     # Handle "all" datasets
     if dataset_name == "all":
-        datasets = load_dataset("all", limit, input_file=input_file)
+        datasets = load_dataset("all", limit, input_file=input_file, start_index=start_index, end_index=end_index)
         for name, df in datasets.items():
             # For "all", we need separate files, so we modify the filename
             # This is a bit tricky if user provided a specific file path
@@ -803,7 +807,7 @@ def generate_sds(
             ds_output_file = output_file.parent / f"{output_file.stem}_{name}{output_file.suffix}"
             _generate_for_dataset_parallel(name, df, selection, ds_output_file, model_override, workers, skip_embeddings)
     else:
-        df = load_dataset(dataset_name, limit, input_file=input_file)
+        df = load_dataset(dataset_name, limit, input_file=input_file, start_index=start_index, end_index=end_index)
         _generate_for_dataset_parallel(dataset_name, df, selection, output_file, model_override, workers, skip_embeddings)
 
 

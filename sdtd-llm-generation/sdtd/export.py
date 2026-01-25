@@ -73,6 +73,8 @@ def export_zebralogic_to_jsonl(
     sort_by_id_hash: bool = False,
     debug: bool = False,
     print_stats: bool = True,
+    start_index: int | None = None,
+    end_index: int | None = None,
 ) -> None:
     """Export ZebraLogic dataset to JSONL format for OpenAI fine-tuning.
 
@@ -80,27 +82,29 @@ def export_zebralogic_to_jsonl(
         output_file: Path to output JSONL file
         template_name: Name of template to use from templates YAML
         template_path: Path to templates YAML file
-        limit: Optional limit on number of puzzles to export
+        limit: Optional limit on number of puzzles to export (for non-indexed datasets)
         input_file: Optional path to local input file (overrides default loading)
         sort_by_id: Sort items by ID before exporting
         sort_by_id_hash: Sort items by hash of ID for stable pseudo-randomization
         debug: Print IDs of exported samples to stdout
+        start_index: Optional start index (requires indexed files)
+        end_index: Optional end index (requires indexed files)
     """
     # Load templates
     templates = load_jsonl_templates(template_path)
     if template_name not in templates:
         raise ValueError(f"Template '{template_name}' not found in {template_path}")
-    
+
     template_config = templates[template_name]
     system_template = Template(template_config.get("system", ""))
     user_template = Template(template_config["user"])
     assistant_template = Template(template_config.get("assistant", ""))
-    
+
     # Get example_puzzle from top-level templates if available
     example_puzzle = templates.get("example_puzzle", "")
 
     # Load ZebraLogic dataset
-    df = load_zebralogic(limit=limit, input_file=input_file)
+    df = load_zebralogic(limit=limit, input_file=input_file, start_index=start_index, end_index=end_index)
 
     # Sort by ID if requested
     if sort_by_id and "id" in df.columns:

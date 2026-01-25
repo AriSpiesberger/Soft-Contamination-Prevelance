@@ -40,7 +40,7 @@ def generate(
         None,
         "--limit",
         "-n",
-        help="Limit number of items to process (for testing)",
+        help="Limit number of items to process (for testing, non-indexed datasets)",
     ),
     model: str = typer.Option(
         None,
@@ -70,6 +70,16 @@ def generate(
         "--skip-embeddings",
         help="Skip generating embeddings (store None in embedding columns)",
     ),
+    start: int = typer.Option(
+        None,
+        "--start",
+        help="Start index (zebralogic only, requires indexed files, inclusive)",
+    ),
+    end: int = typer.Option(
+        None,
+        "--end",
+        help="End index (zebralogic only, requires indexed files, exclusive)",
+    ),
 ) -> None:
     """Generate semantic duplicates for a dataset.
 
@@ -87,8 +97,11 @@ def generate(
         # Generate Level 1 SDs for GSM8K (test with 10 items)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10
 
-        # Generate specific variants
-        uv run python -m sdtd generate -d zebralogic -l "value_substitution,condition_shuffle"
+        # Generate specific variants for zebralogic using index ranges
+        uv run python -m sdtd generate -d zebralogic -l 2 -i datasets/zebralogic/original/zebralogic.parquet --start 0 --end 100
+
+        # Generate for zebralogic puzzles 100-199
+        uv run python -m sdtd generate -d zebralogic -l 1,2 -i datasets/zebralogic/original/zebralogic.parquet --start 100 --end 200
 
         # Generate Level 1 AND specific Level 2 variant
         uv run python -m sdtd generate -d codeforces -l "1,fictional_setting"
@@ -101,9 +114,6 @@ def generate(
 
         # Disable checkpointing (not recommended for large runs)
         uv run python -m sdtd generate -d gsm8k -l 1 -n 10 --no-checkpoint
-
-        # Generate SDs for ZebraLogic from a local file
-        uv run python -m sdtd generate -d zebralogic -l 2 -i datasets/my_zebralogic.parquet
 
         # Run with 8 concurrent workers
         uv run python -m sdtd generate -d gsm8k -l 1 -w 8
@@ -123,6 +133,8 @@ def generate(
             input_file=input_file,
             workers=workers,
             skip_embeddings=skip_embeddings,
+            start_index=start,
+            end_index=end,
         )
         typer.echo("\n✓ Generation complete!")
     except Exception as e:
@@ -408,7 +420,17 @@ def export_jsonl(
         None,
         "--limit",
         "-n",
-        help="Limit number of items to export (only for zebralogic type)",
+        help="Limit number of items to export (zebralogic type, non-indexed files)",
+    ),
+    start: int = typer.Option(
+        None,
+        "--start",
+        help="Start index (zebralogic type only, requires indexed files)",
+    ),
+    end: int = typer.Option(
+        None,
+        "--end",
+        help="End index (zebralogic type only, requires indexed files)",
     ),
     dataset_filter: str = typer.Option(
         None,
@@ -486,6 +508,8 @@ def export_jsonl(
                 sort_by_id=sort_by_id,
                 sort_by_id_hash=sort_by_id_hash,
                 debug=debug,
+                start_index=start,
+                end_index=end,
             )
             typer.echo(f"✓ Exported ZebraLogic dataset to {output_file}")
         except Exception as e:
@@ -663,12 +687,22 @@ def generate_reasoning(
         None,
         "--limit",
         "-n",
-        help="Limit number of items to process",
+        help="Limit number of items to process (for non-indexed files)",
     ),
     no_checkpoint: bool = typer.Option(
         False,
         "--no-checkpoint",
         help="Disable checkpointing",
+    ),
+    start: int = typer.Option(
+        None,
+        "--start",
+        help="Start index (requires indexed files)",
+    ),
+    end: int = typer.Option(
+        None,
+        "--end",
+        help="End index (requires indexed files)",
     ),
 ) -> None:
     """Enrich ZebraLogic SDs with correct reasoning traces.
@@ -699,6 +733,8 @@ def generate_reasoning(
             k,
             limit,
             checkpoint_enabled=not no_checkpoint,
+            start_index=start,
+            end_index=end,
         )
         typer.echo("\n✓ Reasoning generation complete!")
     except Exception as e:

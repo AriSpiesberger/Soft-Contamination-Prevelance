@@ -195,23 +195,43 @@ def generate_reasoning_traces(
     k: int = 3,
     limit: int | None = None,
     checkpoint_enabled: bool = True,
+    start_index: int | None = None,
+    end_index: int | None = None,
 ) -> None:
     """Enrich SD parquet with correct reasoning traces.
-    
+
     Args:
         input_file: Path to input parquet with SDs
         output_file: Path to output parquet
         model: LLM model to use
         k: Max attempts per sample
-        limit: Limit number of items to process
+        limit: Limit number of items to process (for non-indexed files)
         checkpoint_enabled: Enable checkpointing
+        start_index: Optional start index (requires indexed files)
+        end_index: Optional end index (requires indexed files)
     """
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    
+
     input_df = pl.read_parquet(input_file)
-    if limit:
+
+    # If using index ranges, validate and filter by index column
+    if start_index is not None or end_index is not None:
+        if "index" not in input_df.columns:
+            raise ValueError(
+                "Cannot use start_index/end_index with dataset that doesn't have an 'index' column. "
+                "Use merge_zebralogic_shards.py to create indexed files, or use 'limit' parameter instead."
+            )
+
+        if start_index is None:
+            start_index = 0
+        if end_index is None:
+            end_index = input_df["index"].max() + 1
+
+        input_df = input_df.filter((pl.col("index") >= start_index) & (pl.col("index") < end_index))
+    elif limit:
+        # Fallback to limit for backward compatibility (uses row position)
         input_df = input_df.head(limit)
-        
+
     logging.info(f"Loaded {len(input_df)} items from {input_file}")
     
     # Setup checkpointing
