@@ -1,0 +1,8 @@
+torch>=2.1.0
+transformers>=4.45.0
+datasets
+accelerate
+peft
+bitsandbytes
+trl
+tqdm

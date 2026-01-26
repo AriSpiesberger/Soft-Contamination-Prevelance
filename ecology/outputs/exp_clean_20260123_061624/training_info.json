@@ -1,0 +1,7 @@
+{
+  "model": "allenai/Olmo-3-1025-7B",
+  "data_path": "/lambda/nfs/ecology/Semantic-Duplicates-Main-Repo/ecology/data/clean/train_clean.json",
+  "training_samples": 10000,
+  "epochs": 5,
+  "steps_per_epoch": 625
+}
