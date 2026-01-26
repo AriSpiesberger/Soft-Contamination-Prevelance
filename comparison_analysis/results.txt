@@ -1,0 +1,78 @@
+
+============================================================
+=== TOP100 (highest similarity) ===
+============================================================
+Total rows: 224000
+Unique test_ids: 560
+
+--- Semantic duplicates (excluding 'related' category) ---
+Total such pairs: 1849
+Category breakdown:
+predicted_category
+superset       1470
+equivalent      166
+exact           147
+subset           60
+fragmentary       1
+inverse           1
+unrelated         1
+fragment          1
+Name: count, dtype: int64
+
+Test points with at least 1 semantic duplicate (related excluded):
+  402 / 560 = 71.79%
+
+--- All semantic duplicates (including 'related') ---
+Total pairs: 4244
+Category breakdown:
+predicted_category
+related        2395
+superset       1470
+equivalent      166
+exact           147
+subset           60
+fragmentary       1
+inverse           1
+unrelated         1
+fragment          1
+Name: count, dtype: int64
+
+Test points with at least 1 semantic duplicate (any category):
+  525 / 560 = 93.75%
+
+============================================================
+=== SAMPLE100 (random sample) ===
+============================================================
+Total rows: 279608
+Unique test_ids: 560
+
+--- Semantic duplicates (excluding 'related' category) ---
+Total such pairs: 310
+Category breakdown:
+predicted_category
+exact                             138
+subset                             87
+equivalent                         55
+superset                           10
+identical                           2
+identical (verbatim substring)      1
+Name: count, dtype: int64
+
+Test points with at least 1 semantic duplicate (related excluded):
+  204 / 560 = 36.43%
+
+--- All semantic duplicates (including 'related') ---
+Total pairs: 326
+Category breakdown:
+predicted_category
+exact                             138
+subset                             87
+equivalent                         55
+related                            16
+superset                           10
+identical                           2
+identical (verbatim substring)      1
+Name: count, dtype: int64
+
+Test points with at least 1 semantic duplicate (any category):
+  208 / 560 = 37.14%
