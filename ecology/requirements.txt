@@ -6,3 +6,4 @@ peft
 bitsandbytes
 trl
 tqdm
+tinker
