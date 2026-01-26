@@ -164,11 +164,16 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.venv*/
+**/.venv*/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Pip install artifacts
+=*
 
 # Spyder project settings
 .spyderproject
@@ -353,6 +358,9 @@ local_data/
 
 # Experiment tracking (if you use any)
 wandb/
+wandb_backup_logs/
+**/wandb/
+**/wandb_backup_logs/
 mlruns/
 .mlflow/
 tensorboard_logs/
