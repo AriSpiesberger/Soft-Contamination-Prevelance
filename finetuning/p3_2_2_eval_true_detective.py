@@ -34,7 +34,7 @@ from openai import AsyncOpenAI
 # Default configuration
 DEFAULT_MODEL_REPO = "allenai/Olmo-3-7B-Instruct"
 DEFAULT_WANDB_ID = "3ga4dhm9"
-DEFAULT_QUESTION_RETRIES = 1  # Use 1 with temperature=0 for deterministic eval
+DEFAULT_QUESTION_RETRIES = 1  # 1 sample with temperature=0
 DEFAULT_DATASET_PATH = "./datasets/original/true_detective/detective-puzzles.csv"
 DEFAULT_API_MODEL = "openai/gpt-4o-mini"
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
@@ -158,34 +158,38 @@ def get_gold_answer_letter(answer_str: str) -> str:
     return ""
 
 
-def parse_model_answer(output: str, valid_letters: list[str]) -> str:
+def parse_model_answer(output: str, valid_letters: list[str]) -> str | None:
     """Parse the model's answer from output text.
     
-    Returns the letter (a, b, c, etc.) or random choice if not found.
+    Returns the letter (a, b, c, etc.) or None if not found/failed to parse.
+    Only looks in the last 500 characters to ensure it's a final answer, not mid-reasoning.
     """
     output_lower = output.lower()
     
-    # Try to find "answer:" followed by a letter
+    # Only look in the last 500 chars for the final answer
+    output_tail = output_lower[-500:] if len(output_lower) > 500 else output_lower
+    
+    # Try to find "answer:" followed by a letter in the tail
     try:
         lines = [x.split('answer:')[-1].strip() 
-                 for x in output_lower.split('\n') 
+                 for x in output_tail.split('\n') 
                  if 'answer:' in x and len(x.split('answer:')[-1].strip()) > 0]
         answer_text = lines[-1] if lines else ''
     except:
         answer_text = ''
     
-    # Look for pattern like "(a)" or just "a" at start
+    # Look for pattern like "(a)" or just "a" at start of answer text
     for letter in valid_letters:
         if f"({letter})" in answer_text or answer_text.startswith(letter):
             return letter
     
-    # Fallback: search entire output for last occurrence of any answer pattern
+    # Fallback: search tail for last occurrence of any answer pattern
     last_match = None
     last_pos = -1
     for letter in valid_letters:
         # Look for patterns like "(a)" or "option a" or "answer is a"
         for pattern in [f"\\({letter}\\)", f"option {letter}", f"answer is {letter}", f"answer: {letter}", f"answer:\\s*\\({letter}\\)"]:
-            for match in re.finditer(pattern, output_lower):
+            for match in re.finditer(pattern, output_tail):
                 if match.end() > last_pos:
                     last_pos = match.end()
                     last_match = letter
@@ -193,8 +197,8 @@ def parse_model_answer(output: str, valid_letters: list[str]) -> str:
     if last_match:
         return last_match
     
-    # Final fallback: random choice
-    return random.choice(valid_letters)
+    # No answer found - return None (don't guess randomly)
+    return None
 
 
 async def evaluate_dataset_api(
@@ -261,11 +265,17 @@ Explain your reasoning step by step before you answer. Finally, the last thing y
         # Parse all outputs
         correct_list = []
         parsed_answers = []
+        num_failed_parse = 0
         
         for output in model_outputs:
             answer = parse_model_answer(output, valid_letters)
-            parsed_answers.append(answer)
-            correct_list.append(answer == gold_answer)
+            if answer is None:
+                parsed_answers.append("FAILED_TO_PARSE")
+                correct_list.append(False)
+                num_failed_parse += 1
+            else:
+                parsed_answers.append(answer)
+                correct_list.append(answer == gold_answer)
         
         num_correct = sum(correct_list)
         correct += num_correct
@@ -281,20 +291,22 @@ Explain your reasoning step by step before you answer. Finally, the last thing y
             "parsed_answers": parsed_answers,
             "correct": correct_list,
             "model_outputs": model_outputs,
+            "num_failed_parse": num_failed_parse,
         }
         
         # Write to file in real-time
         with open(log_filepath, 'a') as f:
             f.write(json.dumps(result) + '\n')
         
-        pbar.set_description(f"Evaluating | {num_correct}/{retries} this Q | {correct}/{total} ({100*correct/total:.1f}%)")
+        fail_str = f" ({num_failed_parse} failed)" if num_failed_parse > 0 else ""
+        pbar.set_description(f"Evaluating | {num_correct}/{retries}{fail_str} | {correct}/{total} ({100*correct/total:.1f}%)")
     
     accuracy = 100 * correct / total if total > 0 else 0
     return {"correct": correct, "total": total, "accuracy": accuracy}
 
 
-def build_prompt(row, tokenizer) -> tuple[str, list[str], str]:
-    """Build prompt for a single puzzle. Returns (prompt, valid_letters, gold_answer)."""
+def build_prompt_for_row(row, tokenizer):
+    """Build prompt for a single puzzle row."""
     options = parse_answer_options(row["answer_options"])
     valid_letters = [opt[0] for opt in options]
     choices = "\n".join([f'({letter}) {text}' for letter, text in options])
@@ -329,13 +341,15 @@ def evaluate_dataset_local(
     retries: int,
     log_filepath: Path,
     existing_keys: set = None,
-    batch_size: int = 1,
+    batch_size: int = 4,
 ) -> dict:
     """
-    Run evaluation on the dataset using local model.
+    Run evaluation with batched questions (batch_size different questions at once).
+    Temperature=0, do_sample=False, repetition_penalty=1.1.
     
     Args:
-        batch_size: Number of questions to process in parallel (default 1)
+        batch_size: Number of different questions to process in parallel
+        retries: Not used in batched mode (1 sample per question)
     
     Returns:
         dict with 'correct', 'total', and 'accuracy' keys
@@ -345,7 +359,7 @@ def evaluate_dataset_local(
     if existing_keys is None:
         existing_keys = set()
     
-    # Set padding side for batched generation
+    # Set up for batched generation with LEFT padding (critical for batch generation)
     tokenizer.padding_side = 'left'
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -353,60 +367,73 @@ def evaluate_dataset_local(
     correct = 0
     total = 0
     
-    # Filter out already processed items
+    # Filter to items not yet processed
     items_to_process = []
     for idx, row in dataset.iterrows():
         key = (idx, row["case_name"])
         if key not in existing_keys:
             items_to_process.append((idx, row))
     
-    # Process in batches
+    # Process in batches of different questions
     num_batches = (len(items_to_process) + batch_size - 1) // batch_size
     pbar = tqdm(range(num_batches), desc="Evaluating", total=num_batches)
     
     for batch_idx in pbar:
-        start_idx = batch_idx * batch_size
-        end_idx = min(start_idx + batch_size, len(items_to_process))
-        batch_items = items_to_process[start_idx:end_idx]
+        start = batch_idx * batch_size
+        end = min(start + batch_size, len(items_to_process))
+        batch_items = items_to_process[start:end]
         
-        # Build prompts for batch
+        # Build prompts for this batch
         prompts = []
-        batch_metadata = []  # (idx, row, valid_letters, gold_answer)
-        
+        batch_meta = []  # (idx, row, valid_letters, gold_answer)
         for idx, row in batch_items:
-            prompt, valid_letters, gold_answer = build_prompt(row, tokenizer)
+            prompt, valid_letters, gold_answer = build_prompt_for_row(row, tokenizer)
             prompts.append(prompt)
-            batch_metadata.append((idx, row, valid_letters, gold_answer))
+            batch_meta.append((idx, row, valid_letters, gold_answer))
         
-        # Tokenize batch with padding
+        # Tokenize with left padding
         inputs = tokenizer(
-            prompts, 
-            return_tensors="pt", 
+            prompts,
+            return_tensors="pt",
             padding=True,
             truncation=True,
             max_length=4096,
         ).to(model.device)
         
-        # Generate for batch
+        # Print info for first batch
+        if batch_idx == 0:
+            print(f"  Batch size: {len(prompts)}, padded seq len: {inputs['input_ids'].shape[1]}")
+            print(f"  Temperature=0, do_sample=False, repetition_penalty=1.1")
+        
+        # Generate with greedy decoding + repetition penalty
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
                 max_new_tokens=1024,
-                do_sample=False,  # Greedy decoding for deterministic results
+                do_sample=False,
+                repetition_penalty=1.1,
                 pad_token_id=tokenizer.eos_token_id,
             )
         
-        # Process outputs
+        # Process each output in the batch
+        # Use full padded input length to correctly skip input tokens
+        input_seq_len = inputs['input_ids'].shape[1]
         batch_correct = 0
-        for i, (idx, row, valid_letters, gold_answer) in enumerate(batch_metadata):
-            # Get output for this item (skip input tokens)
-            input_len = inputs['attention_mask'][i].sum().item()
-            output_tokens = outputs[i][input_len:]
-            output_text = tokenizer.decode(output_tokens, skip_special_tokens=True)
+        batch_failed = 0
+        
+        for i, (idx, row, valid_letters, gold_answer) in enumerate(batch_meta):
+            # Extract generated tokens (skip all input including padding)
+            output_text = tokenizer.decode(outputs[i][input_seq_len:], skip_special_tokens=True)
             
             # Parse answer
             answer = parse_model_answer(output_text, valid_letters)
-            is_correct = answer == gold_answer
+            if answer is None:
+                is_correct = False
+                answer_str = "FAILED_TO_PARSE"
+                batch_failed += 1
+            else:
+                is_correct = answer == gold_answer
+                answer_str = answer
             
             if is_correct:
                 batch_correct += 1
@@ -420,15 +447,17 @@ def evaluate_dataset_local(
                 "answer_options": row["answer_options"],
                 "gold_answer": gold_answer,
                 "gold_answer_full": row["answer"],
-                "parsed_answers": [answer],
+                "parsed_answers": [answer_str],
                 "correct": [is_correct],
                 "model_outputs": [output_text],
+                "num_failed_parse": 1 if answer is None else 0,
             }
             
             with open(log_filepath, 'a') as f:
                 f.write(json.dumps(result) + '\n')
         
-        pbar.set_description(f"Evaluating | {batch_correct}/{len(batch_items)} batch | {correct}/{total} ({100*correct/total:.1f}%)")
+        fail_str = f" ({batch_failed} failed)" if batch_failed > 0 else ""
+        pbar.set_description(f"Eval | {batch_correct}/{len(batch_items)}{fail_str} | {correct}/{total} ({100*correct/total:.1f}%)")
     
     accuracy = 100 * correct / total if total > 0 else 0
     return {"correct": correct, "total": total, "accuracy": accuracy}
@@ -473,7 +502,7 @@ def main(
     # Logging configuration
     use_wandb: bool = True,
     resume_wandb: bool = False,
-    wandb_project: str = "semdupes-true-detective",
+    wandb_project: str = "semdupes-musr",
 ):
     """
     Evaluate model on True Detective benchmark.
@@ -560,8 +589,8 @@ def main(
         dataset = dataset.head(sample_size)
         print(f"Limited to {sample_size} samples")
     
-    # Setup output log file
-    log_file = f"eval_true_detective_outputs_{model_identifier}_x{retries}.jsonl"
+    # Setup output log file (include batch_size for batched runs)
+    log_file = f"eval_true_detective_outputs_{model_identifier}_x{retries}_b{batch_size}.jsonl"
     log_filepath = Path(__file__).parent / "outputs" / "eval_logs" / log_file
     os.makedirs(log_filepath.parent, exist_ok=True)
     print(f"Outputs will be logged to: {log_filepath}")
@@ -712,7 +741,7 @@ Examples:
                         help="Disable wandb logging")
     parser.add_argument("--resume-wandb", action="store_true",
                         help="Resume existing wandb run (uses --wandb-id) to add eval results")
-    parser.add_argument("--wandb-project", type=str, default="semdupes-true-detective",
+    parser.add_argument("--wandb-project", type=str, default="semdupes-musr",
                         help="Wandb project name")
     
     args = parser.parse_args()

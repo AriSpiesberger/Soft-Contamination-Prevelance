@@ -362,3 +362,7 @@ tb_logs/
 *.pem
 credentials.json
 secrets/
+
+finetuning/datasets
+finetuning/downloads_clean
+finetuning/outputs
