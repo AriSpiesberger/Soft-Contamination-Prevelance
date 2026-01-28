@@ -106,6 +106,10 @@ ANNOTATIONS_DIR = Path(__file__).parent / "annotations"
 SAMPLED_FILES = {
     "mbpp": DATA_DIR / "sampled_mbpp_for_annotation.csv",
     "codeforces": DATA_DIR / "sampled_codeforces_for_annotation.csv",
+<<<<<<< HEAD
+    "zebralogic": DATA_DIR / "sampled_zebralogic_for_annotation.csv",
+=======
+>>>>>>> efd47b7aced91b17b8e2466090781f42adee4f1c
 }
 
 MODEL_ID = "gemini-3-flash-preview"
@@ -131,6 +135,9 @@ MODEL_PARAMS_BY_BENCHMARK = {
     "mbpp": {},  # Use defaults
     "codeforces": {
         "thinking_level": "HIGH",  # Codeforces needs deeper reasoning for key insight identification
+    },
+    "zebralogic": {
+        "thinking_level": "HIGH",  # Logic puzzles need moderate reasoning
     },
 }
 
@@ -250,9 +257,56 @@ If the corpus text is an exact substring of the test text (the corpus text appea
 - Unusable corpus data (empty, fragmentary, code-only)
 - Genuinely different computational questions"""
 
+
+ZEBRALOGIC_PROMPT_TEMPLATE = """You are an expert in logic puzzles analyzing potential semantic duplicates between constraint satisfaction puzzles.
+
+## Task
+Determine if the following two logic puzzles are semantic duplicates - meaning they describe the same logical puzzle structure, just potentially with different surface details (names, objects, etc.).
+
+## Test Puzzle (from benchmark):
+{test_text}
+
+## Corpus Puzzle (from training data):
+{corpus_text}
+
+## What makes ZebraLogic puzzles duplicates:
+ZebraLogic puzzles are constraint satisfaction problems where you must deduce assignments (e.g., which person has which attribute) from a set of clues. Two puzzles are duplicates if:
+
+1. **Same logical structure**: Same number of entities, same number of attributes per entity, same types of constraints
+2. **Same clue patterns**: The clues encode the same logical relationships, even if names/values differ
+3. **Isomorphic puzzles**: If you can rename entities/values to transform one puzzle into the other
+
+## Guidelines:
+1. **Focus on STRUCTURE, not surface details** - "Alice likes red" vs "Bob likes blue" can be the same constraint type
+2. **Count the constraints** - Same number and types of clues suggests structural similarity
+3. **Check grid dimensions** - Different grid sizes (e.g., 4x4 vs 5x5) means different puzzles
+4. **Clue types matter** - "X is immediately left of Y" vs "X is somewhere left of Y" are different constraints
+
+## Match Types:
+- "exact": Nearly identical puzzle (same clues, possibly different names)
+- "equivalent": Same logical structure and constraint types, different surface details
+- "subset": Test puzzle is a simpler version (fewer constraints) of corpus puzzle
+- "superset": Corpus puzzle is simpler than test puzzle - NOT a duplicate
+- "unrelated": Different puzzle structure, different constraint types, or unusable data
+
+## What counts as semantically related:
+- Same grid dimensions AND same constraint types
+- Isomorphic puzzles (can be transformed by renaming)
+- One is a subset of the other's constraints
+
+## What is unrelated:
+- Different grid dimensions
+- Different types of constraints (positional vs categorical)
+- Sharing only common puzzle format without structural similarity
+- Unusable corpus data (empty, fragmentary, or not a logic puzzle)
+
+Analyze the puzzles and provide your structured judgment."""
+
+
 PROMPTS = {
     "mbpp": MBPP_PROMPT_TEMPLATE,
     "codeforces": CODEFORCES_PROMPT_TEMPLATE,
+    "zebralogic": ZEBRALOGIC_PROMPT_TEMPLATE,
 }
 
 
@@ -800,11 +854,10 @@ def run_annotations(
         if out_path.stem not in completed:
             pending_rows.append(row)
     
-    # Shuffle to get random sample across all test IDs
-    import random
-    random.shuffle(pending_rows)
+    # Note: Not shuffling - process in original order (by test_id/score)
+    # This makes runs reproducible when resuming
     
-    print(f"Pending: {len(pending_rows):,} rows (shuffled)")
+    print(f"Pending: {len(pending_rows):,} rows")
     
     remaining_budget = budget - existing_cost
     if remaining_budget <= 0:
@@ -1008,7 +1061,7 @@ def main():
     parser = argparse.ArgumentParser(description="Annotate semantic duplicates using Gemini")
     parser.add_argument(
         "--benchmark",
-        choices=["mbpp", "codeforces"],
+        choices=["mbpp", "codeforces", "zebralogic"],
         required=True,
         help="Which benchmark to annotate",
     )
