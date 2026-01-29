@@ -37,8 +37,8 @@ MODEL_ID = "allenai/OLMo-3-7B-Instruct"
 TEST_TRAIN_HALF = DATA_DIR / "mbpp_test_train_half.csv"
 TEST_EVAL_HALF = DATA_DIR / "mbpp_test_eval_half.csv"
 
-# Eval settings
-BATCH_SIZE = 4
+# Eval settings - optimized for H100 80GB
+BATCH_SIZE = 16  # H100 can handle larger batches for inference
 MAX_NEW_TOKENS = 1024
 
 # ============================================================================
@@ -248,12 +248,13 @@ def run_eval(adapter_path: str = None, eval_name: str = "baseline") -> Dict:
         print(f"EVAL: {eval_name}")
         print(f"{'='*60}")
 
-    # Load model
+    # Load model - optimized for H100
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         device_map=device,
         trust_remote_code=True,
+        attn_implementation="sdpa",
     )
 
     tokenizer = AutoTokenizer.from_pretrained(
