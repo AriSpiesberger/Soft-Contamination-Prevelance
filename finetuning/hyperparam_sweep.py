@@ -242,7 +242,7 @@ def run_code_with_tests(code: str, test_list: List[str], timeout: float = 5.0) -
 
 
 def evaluate_model(model, tokenizer, rank, world_size) -> Dict[str, float]:
-    """Evaluate on both train and eval splits, distributed across GPUs."""
+    """Evaluate on contaminated (train) and clean (eval) splits, distributed across GPUs."""
     model.eval()
     tokenizer.padding_side = 'left'
     if tokenizer.pad_token is None:
@@ -253,7 +253,8 @@ def evaluate_model(model, tokenizer, rank, world_size) -> Dict[str, float]:
     fewshot_messages = build_fewshot_messages()
     results = {}
 
-    for split in ["eval", "train"]:
+    # train = contaminated tasks, eval = clean tasks
+    for split, label in [("train", "contaminated"), ("eval", "clean")]:
         prompts = load_split_prompts(split, test_cases)
         
         # Distribute across GPUs
@@ -302,7 +303,7 @@ def evaluate_model(model, tokenizer, rank, world_size) -> Dict[str, float]:
             torch.distributed.all_reduce(t_tensor)
             correct, total = int(c_tensor.item()), int(t_tensor.item())
 
-        results[f"mbpp_{split}"] = 100 * correct / total if total > 0 else 0
+        results[label] = 100 * correct / total if total > 0 else 0
 
     return results
 
@@ -361,6 +362,7 @@ def train_and_evaluate(
         report_to="none",
         max_length=MAX_SEQ_LENGTH,
         packing=False,
+        completion_only_loss=False,
         dataloader_num_workers=4,
         dataloader_pin_memory=True,
     )
@@ -437,17 +439,17 @@ def create_objective(tokenizer):
                 tokenizer=tokenizer,
             )
 
-            eval_acc = results["mbpp_eval"]
-            train_acc = results["mbpp_train"]
+            clean_acc = results["clean"]
+            contaminated_acc = results["contaminated"]
 
-            # Objective: maximize eval, penalize large train-eval gap
-            gap_penalty = max(0, train_acc - eval_acc - 10) * 0.5
-            score = eval_acc - gap_penalty
+            # Objective: maximize clean accuracy, penalize large contaminated-clean gap
+            gap_penalty = max(0, contaminated_acc - clean_acc - 10) * 0.5
+            score = clean_acc - gap_penalty
 
             if rank == 0:
-                trial.set_user_attr("mbpp_eval", eval_acc)
-                trial.set_user_attr("mbpp_train", train_acc)
-                print(f"\nTrial {trial.number}: eval={eval_acc:.1f}%, train={train_acc:.1f}%, score={score:.1f}")
+                trial.set_user_attr("clean", clean_acc)
+                trial.set_user_attr("contaminated", contaminated_acc)
+                print(f"\nTrial {trial.number}: clean={clean_acc:.1f}%, contaminated={contaminated_acc:.1f}%, score={score:.1f}")
 
             return score
 
@@ -493,16 +495,16 @@ def main():
         print("="*60)
         print(f"Score: {study.best_value:.2f}")
         print(f"Params: {study.best_params}")
-        print(f"Eval acc: {study.best_trial.user_attrs.get('mbpp_eval', 'N/A')}")
-        print(f"Train acc: {study.best_trial.user_attrs.get('mbpp_train', 'N/A')}")
+        print(f"Clean acc: {study.best_trial.user_attrs.get('clean', 'N/A')}")
+        print(f"Contaminated acc: {study.best_trial.user_attrs.get('contaminated', 'N/A')}")
 
         results_file = SWEEP_DIR / "best_params.json"
         with open(results_file, 'w') as f:
             json.dump({
                 "best_score": study.best_value,
                 "best_params": study.best_params,
-                "best_eval": study.best_trial.user_attrs.get('mbpp_eval'),
-                "best_train": study.best_trial.user_attrs.get('mbpp_train'),
+                "best_clean": study.best_trial.user_attrs.get('clean'),
+                "best_contaminated": study.best_trial.user_attrs.get('contaminated'),
             }, f, indent=2)
         print(f"\nSaved to {results_file}")
     else:
