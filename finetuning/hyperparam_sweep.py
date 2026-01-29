@@ -4,7 +4,7 @@ Hyperparameter optimization for finetuning using all 8 GPUs.
 Uses lm-evaluation-harness for MBPP and HumanEval evaluation.
 
 Usage:
-    python hyperparam_sweep.py --n_trials 20
+    accelerate launch --num_processes 8 hyperparam_sweep.py --n_trials 20
 """
 
 import os
@@ -246,20 +246,24 @@ def train_and_evaluate(
     batch_size: int,
     grad_accum: int,
     trial_name: str,
+    tokenizer,
 ) -> Dict[str, float]:
-    """Train with given hyperparameters and evaluate using lm-eval-harness."""
-    device = "cuda:0"
+    """Train with given hyperparameters using all 8 GPUs and evaluate using lm-eval-harness."""
+    rank = int(os.environ.get("LOCAL_RANK", 0))
+    device = f"cuda:{rank}"
     output_dir = SWEEP_DIR / trial_name
-    output_dir.mkdir(parents=True, exist_ok=True)
+
+    if rank == 0:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        print(f"\nLoading training data...")
 
     # Load data
-    print(f"Loading training data...")
     training_data = load_semantic_duplicates()
     dataset = Dataset.from_list(training_data)
-    print(f"  {len(training_data)} examples")
 
-    # Load tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
+    if rank == 0:
+        print(f"  {len(training_data)} examples")
+
     formatting_func = get_formatting_func(tokenizer)
 
     # LoRA config
@@ -272,7 +276,7 @@ def train_and_evaluate(
         task_type="CAUSAL_LM",
     )
 
-    # Training config - single GPU for simplicity
+    # Training config - 8 GPUs
     training_args = SFTConfig(
         output_dir=str(output_dir),
         num_train_epochs=NUM_EPOCHS,
@@ -292,15 +296,21 @@ def train_and_evaluate(
         max_length=MAX_SEQ_LENGTH,
         packing=False,
         completion_only_loss=False,
+        dataloader_num_workers=4,
+        dataloader_pin_memory=True,
     )
 
-    print(f"\nLoading model for trial {trial_name}...")
+    if rank == 0:
+        print(f"Loading model for trial {trial_name}...")
+
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True, device_map=device, attn_implementation="sdpa"
     )
     model = get_peft_model(model, peft_config)
 
-    print("Loading reference model...")
+    if rank == 0:
+        print("Loading reference model...")
+
     ref_model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True, device_map=device, attn_implementation="sdpa"
     )
@@ -315,25 +325,40 @@ def train_and_evaluate(
         kl_beta=kl_beta,
     )
 
-    print(f"Training {trial_name} (lr={learning_rate:.2e}, r={lora_r}, kl={kl_beta:.3f})...")
+    if rank == 0:
+        print(f"Training {trial_name} (lr={learning_rate:.2e}, r={lora_r}, kl={kl_beta:.3f})...")
+
     trainer.train()
 
-    # Save adapter for evaluation
+    # Save adapter for evaluation (only rank 0)
     adapter_path = output_dir / "adapter"
-    trainer.save_model(str(adapter_path))
-    tokenizer.save_pretrained(str(adapter_path))
+    if rank == 0:
+        trainer.save_model(str(adapter_path))
+        tokenizer.save_pretrained(str(adapter_path))
 
     # Cleanup training resources
     del trainer, model, ref_model
     gc.collect()
     torch.cuda.empty_cache()
 
-    # Evaluate using lm-evaluation-harness
-    print(f"\nEvaluating {trial_name} with lm-evaluation-harness...")
-    results = evaluate_with_harness(str(adapter_path), trial_name)
+    if torch.distributed.is_initialized():
+        torch.distributed.barrier()
 
-    print(f"  MBPP: {results.get('mbpp', 0):.1f}%")
-    print(f"  HumanEval: {results.get('humaneval', 0):.1f}%")
+    # Evaluate using lm-evaluation-harness (only rank 0)
+    results = {"mbpp": 0.0, "humaneval": 0.0}
+    if rank == 0:
+        print(f"\nEvaluating {trial_name} with lm-evaluation-harness...")
+        results = evaluate_with_harness(str(adapter_path), trial_name)
+        print(f"  MBPP: {results.get('mbpp', 0):.1f}%")
+        print(f"  HumanEval: {results.get('humaneval', 0):.1f}%")
+
+    # Broadcast results to all ranks
+    if torch.distributed.is_initialized():
+        mbpp_tensor = torch.tensor([results.get("mbpp", 0.0)], device=device)
+        humaneval_tensor = torch.tensor([results.get("humaneval", 0.0)], device=device)
+        torch.distributed.broadcast(mbpp_tensor, src=0)
+        torch.distributed.broadcast(humaneval_tensor, src=0)
+        results = {"mbpp": mbpp_tensor.item(), "humaneval": humaneval_tensor.item()}
 
     return results
 
@@ -342,46 +367,53 @@ def train_and_evaluate(
 # OPTUNA OBJECTIVE
 # ============================================================================
 
-def objective(trial: optuna.Trial) -> float:
-    # Hyperparameters to optimize
-    learning_rate = trial.suggest_float("learning_rate", 5e-5, 3e-4, log=True)
-    lora_r = trial.suggest_categorical("lora_r", [8, 16, 32])
-    lora_alpha = trial.suggest_categorical("lora_alpha", [16, 32, 64])
-    kl_beta = trial.suggest_float("kl_beta", 0.001, 0.1, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [2, 4])
-    grad_accum = trial.suggest_categorical("grad_accum", [2, 4])
+def create_objective(tokenizer):
+    def objective(trial: optuna.Trial) -> float:
+        rank = int(os.environ.get("LOCAL_RANK", 0))
 
-    trial_name = f"trial_{trial.number}"
+        # Hyperparameters to optimize
+        learning_rate = trial.suggest_float("learning_rate", 5e-5, 3e-4, log=True)
+        lora_r = trial.suggest_categorical("lora_r", [8, 16, 32])
+        lora_alpha = trial.suggest_categorical("lora_alpha", [16, 32, 64])
+        kl_beta = trial.suggest_float("kl_beta", 0.001, 0.1, log=True)
+        batch_size = trial.suggest_categorical("batch_size", [2, 4])
+        grad_accum = trial.suggest_categorical("grad_accum", [2, 4])
 
-    try:
-        results = train_and_evaluate(
-            learning_rate=learning_rate,
-            lora_r=lora_r,
-            lora_alpha=lora_alpha,
-            kl_beta=kl_beta,
-            batch_size=batch_size,
-            grad_accum=grad_accum,
-            trial_name=trial_name,
-        )
+        trial_name = f"trial_{trial.number}"
 
-        mbpp_acc = results.get("mbpp", 0)
-        humaneval_acc = results.get("humaneval", 0)
+        try:
+            results = train_and_evaluate(
+                learning_rate=learning_rate,
+                lora_r=lora_r,
+                lora_alpha=lora_alpha,
+                kl_beta=kl_beta,
+                batch_size=batch_size,
+                grad_accum=grad_accum,
+                trial_name=trial_name,
+                tokenizer=tokenizer,
+            )
 
-        # Objective: maximize average of MBPP and HumanEval
-        score = (mbpp_acc + humaneval_acc) / 2
+            mbpp_acc = results.get("mbpp", 0)
+            humaneval_acc = results.get("humaneval", 0)
 
-        trial.set_user_attr("mbpp", mbpp_acc)
-        trial.set_user_attr("humaneval", humaneval_acc)
+            # Objective: maximize average of MBPP and HumanEval
+            score = (mbpp_acc + humaneval_acc) / 2
 
-        print(f"\nTrial {trial.number}: MBPP={mbpp_acc:.1f}%, HumanEval={humaneval_acc:.1f}%, score={score:.1f}")
+            if rank == 0:
+                trial.set_user_attr("mbpp", mbpp_acc)
+                trial.set_user_attr("humaneval", humaneval_acc)
+                print(f"\nTrial {trial.number}: MBPP={mbpp_acc:.1f}%, HumanEval={humaneval_acc:.1f}%, score={score:.1f}")
 
-        return score
+            return score
 
-    except Exception as e:
-        print(f"Trial {trial.number} failed: {e}")
-        import traceback
-        traceback.print_exc()
-        return 0.0
+        except Exception as e:
+            if rank == 0:
+                print(f"Trial {trial.number} failed: {e}")
+                import traceback
+                traceback.print_exc()
+            return 0.0
+
+    return objective
 
 
 def main():
@@ -390,6 +422,12 @@ def main():
     parser.add_argument("--study_name", type=str, default="mbpp_humaneval_sweep")
     args = parser.parse_args()
 
+    rank = int(os.environ.get("LOCAL_RANK", 0))
+
+    # Initialize distributed
+    if not torch.distributed.is_initialized():
+        torch.distributed.init_process_group(backend="nccl")
+
     # H100 optimizations
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
@@ -397,33 +435,41 @@ def main():
 
     SWEEP_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Create study
-    study = optuna.create_study(
-        study_name=args.study_name,
-        direction="maximize",
-        storage=f"sqlite:///{SWEEP_DIR}/optuna.db",
-        load_if_exists=True,
-    )
+    # Load tokenizer once
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
 
-    study.optimize(objective, n_trials=args.n_trials)
+    if rank == 0:
+        # Create study (only on rank 0)
+        study = optuna.create_study(
+            study_name=args.study_name,
+            direction="maximize",
+            storage=f"sqlite:///{SWEEP_DIR}/optuna.db",
+            load_if_exists=True,
+        )
 
-    print("\n" + "="*60)
-    print("BEST TRIAL")
-    print("="*60)
-    print(f"Score: {study.best_value:.2f}")
-    print(f"Params: {study.best_params}")
-    print(f"MBPP: {study.best_trial.user_attrs.get('mbpp', 'N/A')}")
-    print(f"HumanEval: {study.best_trial.user_attrs.get('humaneval', 'N/A')}")
+        study.optimize(create_objective(tokenizer), n_trials=args.n_trials)
 
-    results_file = SWEEP_DIR / "best_params.json"
-    with open(results_file, 'w') as f:
-        json.dump({
-            "best_score": study.best_value,
-            "best_params": study.best_params,
-            "best_mbpp": study.best_trial.user_attrs.get('mbpp'),
-            "best_humaneval": study.best_trial.user_attrs.get('humaneval'),
-        }, f, indent=2)
-    print(f"\nSaved to {results_file}")
+        print("\n" + "="*60)
+        print("BEST TRIAL")
+        print("="*60)
+        print(f"Score: {study.best_value:.2f}")
+        print(f"Params: {study.best_params}")
+        print(f"MBPP: {study.best_trial.user_attrs.get('mbpp', 'N/A')}")
+        print(f"HumanEval: {study.best_trial.user_attrs.get('humaneval', 'N/A')}")
+
+        results_file = SWEEP_DIR / "best_params.json"
+        with open(results_file, 'w') as f:
+            json.dump({
+                "best_score": study.best_value,
+                "best_params": study.best_params,
+                "best_mbpp": study.best_trial.user_attrs.get('mbpp'),
+                "best_humaneval": study.best_trial.user_attrs.get('humaneval'),
+            }, f, indent=2)
+        print(f"\nSaved to {results_file}")
+    else:
+        # Other ranks just participate in training
+        for _ in range(args.n_trials):
+            torch.distributed.barrier()
 
 
 if __name__ == "__main__":
