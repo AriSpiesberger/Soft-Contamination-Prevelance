@@ -1,0 +1,7 @@
+Model	Variant	Accuracy	Correct/Total
+OLMo-3-7B	Base	29.3%	22/75
+OLMo-3-7B	Clean	28.0%	21/75
+OLMo-3-7B	Contaminated	28.0%	21/75
+Qwen3-8B	Base	24.0%	18/75
+Qwen3-8B	Clean	24.0%	18/75
+Qwen3-8B	Contaminated	28.0%	21/75

@@ -1,0 +1,14 @@
+{
+  "olmo_base": {
+    "model_id": "allenai/Olmo-3-1025-7B",
+    "contaminated_accuracy": 0.44,
+    "clean_accuracy": 0.416,
+    "difference": 0.02400000000000002
+  },
+  "qwen_base": {
+    "model_id": "Qwen/Qwen3-8B-Base",
+    "contaminated_accuracy": 0.392,
+    "clean_accuracy": 0.416,
+    "difference": -0.023999999999999966
+  }
+}

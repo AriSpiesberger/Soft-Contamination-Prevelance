@@ -1,0 +1,530 @@
+{
+  "acc": 0.24,
+  "results": [
+    {
+      "case": "Sweat it Out",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Mystery of the Missing Heart",
+      "pred": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " A"
+    },
+    {
+      "case": "Stealing Second Base",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Murder in the Old House",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D. Bedroom of youngest son, Edward Jensen"
+    },
+    {
+      "case": "The Chess Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Lost (Stolen) and Found",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "The Chocolate Cupcake Caper",
+      "pred": "B",
+      "expected": "A",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "Dead Man's Island",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "Who Stole the Rock of Ages",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "All Washed Up",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "The Hidden Messenger",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D"
+    },
+    {
+      "case": "The Disappearing Dollhouse ",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "A Bear, a Dog, and a Mystery",
+      "pred": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "The Mystery of the Talented Cat",
+      "pred": "B",
+      "expected": "A",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "The Haunted Portrait",
+      "pred": "C",
+      "expected": "A",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "The Classic Automobile Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Rocks and Feathers",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D. Tom"
+    },
+    {
+      "case": "Who is Telling the Truth?",
+      "pred": "B",
+      "expected": null,
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "Ask Martha - The Identity Thief",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D. Maybelle Johnson"
+    },
+    {
+      "case": "Ask Martha - The Pickpocket",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Diamond Deception",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C. John\n\nRead the mystery and answer with"
+    },
+    {
+      "case": "Where is Matthew?",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D. The hall closet"
+    },
+    {
+      "case": "The Mysterious Gift",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D"
+    },
+    {
+      "case": "Perry Mason and the High School Crush Murder",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Who Stole Super Tuesday",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "The Missing Son",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D. Kyle"
+    },
+    {
+      "case": "Who Let the Frogs Out",
+      "pred": "A",
+      "expected": "C",
+      "correct": false,
+      "response": " A"
+    },
+    {
+      "case": "Uncle Buck Field Trip",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Mystery of the White Hats",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "The Missing Popcorn",
+      "pred": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " A"
+    },
+    {
+      "case": "Mystery on the Moor",
+      "pred": "B",
+      "expected": "B",
+      "correct": true,
+      "response": " B"
+    },
+    {
+      "case": "WHO STOLE CURIOUS GEORGE",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "The Saxophone's Ghost ",
+      "pred": "B",
+      "expected": "A",
+      "correct": false,
+      "response": " B. Eric\nThe text states that \"Short"
+    },
+    {
+      "case": "Who Shot Mom?",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "FInding the Flower Fund",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "Map of the Traitor",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " C"
+    },
+    {
+      "case": "The Crusader's Robe",
+      "pred": "B",
+      "expected": "B",
+      "correct": true,
+      "response": " B"
+    },
+    {
+      "case": "Mr. Patrick\u2019s History Class",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Bigfoot Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D. Winston"
+    },
+    {
+      "case": "Missing Movie Money",
+      "pred": "B",
+      "expected": "B",
+      "correct": true,
+      "response": " B"
+    },
+    {
+      "case": "Missing Ammunition",
+      "pred": "B",
+      "expected": "A",
+      "correct": false,
+      "response": " B\nQuestion: Who committed the crime?\n\n\nRead"
+    },
+    {
+      "case": "The Sky Sleuths ",
+      "pred": "C",
+      "expected": "A",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Battle of the Bulge",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "The Missing Button",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " C"
+    },
+    {
+      "case": "The Railroad Mystery",
+      "pred": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "The Date",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "B-Movie Murder",
+      "pred": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " A"
+    },
+    {
+      "case": "The Jackie Mitchell Autographed Baseball Mystery",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "The Easter Egg Mystery",
+      "pred": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "Easter Rhyme",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D"
+    },
+    {
+      "case": "The April Fool ",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D. Raleigh, NC"
+    },
+    {
+      "case": "Green Feet",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Restaurant Roulette ",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Violating the Pirate Code",
+      "pred": "C",
+      "expected": "A",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Space Station Sagittarius Six Suffers Sabotage",
+      "pred": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " A"
+    },
+    {
+      "case": "Flying Saucer of New Mexico",
+      "pred": "C",
+      "expected": "A",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Great Musket Mystery",
+      "pred": "C",
+      "expected": "A",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "True Green: A St. Patrick's Day Mystery",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "St. Patrick's Day Pearls",
+      "pred": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " A"
+    },
+    {
+      "case": "Death in the Theatre",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " C"
+    },
+    {
+      "case": "Death at Andersonville",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D"
+    },
+    {
+      "case": "The Big Game ",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "The Liberty Gun",
+      "pred": "B",
+      "expected": "B",
+      "correct": true,
+      "response": " B"
+    },
+    {
+      "case": "Summer Camp",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C"
+    },
+    {
+      "case": "Mystery at Lyndley's Fort",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D"
+    },
+    {
+      "case": "Riddle of the Confederate Spy",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B. McMurty\n\nRead the mystery and"
+    },
+    {
+      "case": "Thin Ice",
+      "pred": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "Flouted",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " C"
+    },
+    {
+      "case": "Car Trouble",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D"
+    },
+    {
+      "case": "Mr. Poe's Birthday Party",
+      "pred": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " A"
+    },
+    {
+      "case": "The Root of All Evil",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D"
+    },
+    {
+      "case": "Get the Lead Out",
+      "pred": "A",
+      "expected": "C",
+      "correct": false,
+      "response": " A. Benjamin Trodger"
+    },
+    {
+      "case": "POPPING A WHEELIE",
+      "pred": "B",
+      "expected": "B",
+      "correct": true,
+      "response": " B"
+    },
+    {
+      "case": "The Mystery of the Leprechaun's Trophy ",
+      "pred": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " B"
+    },
+    {
+      "case": "The Mysterious Chicken",
+      "pred": "B",
+      "expected": "A",
+      "correct": false,
+      "response": " B"
+    }
+  ]
+}

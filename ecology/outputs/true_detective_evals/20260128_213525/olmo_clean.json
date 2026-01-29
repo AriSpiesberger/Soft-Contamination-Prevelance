@@ -1,0 +1,1342 @@
+{
+  "acc": 0.25654450261780104,
+  "results": [
+    {
+      "case": "Sweat it Out",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nNathan Elliott\nThe mystery is solved"
+    },
+    {
+      "case": "Mystery of the Missing Heart",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " (D)\nLesson 2\n\nRead the"
+    },
+    {
+      "case": "Stealing Second Base",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nWhy was Principal Carol Jackson upset?\n"
+    },
+    {
+      "case": "Murder in the Old House",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nWhich sentence best expresses the essential information in"
+    },
+    {
+      "case": "The Chess Mystery",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": "\n(C)\nTina\n\nMy father was"
+    },
+    {
+      "case": "Lost (Stolen) and Found",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Chocolate Cupcake Caper",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nGeraldine was the first one to"
+    },
+    {
+      "case": "Dead Man's Island",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Who Stole the Rock of Ages",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nThe word \u201csuck up\u201d means"
+    },
+    {
+      "case": "All Washed Up",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nWhich detail from the story best supports the"
+    },
+    {
+      "case": "The Hidden Messenger",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Disappearing Dollhouse ",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Bear, a Dog, and a Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nMark and Taylor were walking back to the"
+    },
+    {
+      "case": "The Mystery of the Talented Cat",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nRiddle: What has keys but can"
+    },
+    {
+      "case": "The Haunted Portrait",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Classic Automobile Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nExplanation:\n\nThe story tells us that"
+    },
+    {
+      "case": "Rocks and Feathers",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nThe Reverend looked at the man with"
+    },
+    {
+      "case": "Who is Telling the Truth?",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\n\nThe next one I contacted was Paula News"
+    },
+    {
+      "case": "Ask Martha - The Identity Thief",
+      "pred": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " A\nExplanations:\n\nThe first clue"
+    },
+    {
+      "case": "Ask Martha - The Pickpocket",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Diamond Deception",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Where is Matthew?",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\n\nWhy was the father irritated?\nA"
+    },
+    {
+      "case": "The Mysterious Gift",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer the questions."
+    },
+    {
+      "case": "Perry Mason and the High School Crush Murder",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Who Stole Super Tuesday",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Missing Son",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nWho is the most likely to commit the"
+    },
+    {
+      "case": "Who Let the Frogs Out",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " C\nRationale: The evidence in the story"
+    },
+    {
+      "case": "Uncle Buck Field Trip",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nII.\nI was in the middle"
+    },
+    {
+      "case": "Mystery of the White Hats",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nGrandpa's face showed he was proud"
+    },
+    {
+      "case": "The Missing Popcorn",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nSpecialist Fourth Class Patrick Macnamara"
+    },
+    {
+      "case": "Mystery on the Moor",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "WHO STOLE CURIOUS GEORGE",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nA. The man in the yellow hat"
+    },
+    {
+      "case": "The Saxophone's Ghost ",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\"Shorty Jenkins,\" I said."
+    },
+    {
+      "case": "Who Shot Mom?",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "FInding the Flower Fund",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Map of the Traitor",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Crusader's Robe",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nThere was a knock on my door,"
+    },
+    {
+      "case": "Mr. Patrick\u2019s History Class",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Bigfoot Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nThe mystery is that a crime is committed"
+    },
+    {
+      "case": "Missing Movie Money",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nBilly\u2019s guilt was evident. He had"
+    },
+    {
+      "case": "Missing Ammunition",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": "\n\nIn the distance, Abigail could hear gunfire"
+    },
+    {
+      "case": "The Sky Sleuths ",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nRita Sanchez raced to the sidewalk."
+    },
+    {
+      "case": "Battle of the Bulge",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\"Stop! Police!\"\nread a"
+    },
+    {
+      "case": "The Missing Button",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Railroad Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nGabby was trying to sleep. He"
+    },
+    {
+      "case": "The Date",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nRationale:\nThe author states that"
+    },
+    {
+      "case": "B-Movie Murder",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nWho was the first to the scene?"
+    },
+    {
+      "case": "The Jackie Mitchell Autographed Baseball Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation: Susan Plympton was the"
+    },
+    {
+      "case": "The Easter Egg Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nThe question and answer are followed by a"
+    },
+    {
+      "case": "Easter Rhyme",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nJustify your answer with at least "
+    },
+    {
+      "case": "The April Fool ",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\nRationale: The last sentence of the"
+    },
+    {
+      "case": "Green Feet",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nCarm was the murderer.\nC"
+    },
+    {
+      "case": "Restaurant Roulette ",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nRead the first two paragraphs of the text"
+    },
+    {
+      "case": "Violating the Pirate Code",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nRationale: Will was the only one"
+    },
+    {
+      "case": "Space Station Sagittarius Six Suffers Sabotage",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nCecilia looked at her team leaders"
+    },
+    {
+      "case": "Flying Saucer of New Mexico",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Great Musket Mystery",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nPaul Revere was the first to leave"
+    },
+    {
+      "case": "True Green: A St. Patrick's Day Mystery",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nZachary MacDonald, the grocer"
+    },
+    {
+      "case": "St. Patrick's Day Pearls",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Death in the Theatre",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Death at Andersonville",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nCorporal Wardlow Horner\n"
+    },
+    {
+      "case": "The Big Game ",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nWho is the director of security for the"
+    },
+    {
+      "case": "The Liberty Gun",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Summer Camp",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nLooking for a job\n\nRead the job"
+    },
+    {
+      "case": "Mystery at Lyndley's Fort",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation:\n\nAssistant: The answer is"
+    },
+    {
+      "case": "Riddle of the Confederate Spy",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nThe sergeant knew Winslow was the spy"
+    },
+    {
+      "case": "Thin Ice",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nWhy did the crime?\nA."
+    },
+    {
+      "case": "Flouted",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " C\n\nThe bus rolled out of the stop and"
+    },
+    {
+      "case": "Car Trouble",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nRationale: The last sentence of the"
+    },
+    {
+      "case": "Mr. Poe's Birthday Party",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Root of All Evil",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Get the Lead Out",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "POPPING A WHEELIE",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Mystery of the Leprechaun's Trophy ",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Mysterious Chicken",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nWhich sentence from the story best supports the"
+    },
+    {
+      "case": "The Late Night Horror Show",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Making Partner",
+      "pred": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " (C)\nTeacher: ok, class,"
+    },
+    {
+      "case": "No Retreat From Death",
+      "pred": "A",
+      "expected": "C",
+      "correct": false,
+      "response": " (A)\nExplanation:\n\nRead the mystery"
+    },
+    {
+      "case": "A Monster of a Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nExplanation:\n\nThe correct answer is D"
+    },
+    {
+      "case": "Chow, Baby!",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n2.\nRead the mystery and answer"
+    },
+    {
+      "case": "The Mystery of the Frowning Clown",
+      "pred": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " A\nExplanation:\n\n\u201cBumbo is the"
+    },
+    {
+      "case": "The Strangest Sport of All",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nThe mystery continues on the next page."
+    },
+    {
+      "case": "Who Stole Storimon's Wallet",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nExplanation:\n\nAssistant: The mystery revolves"
+    },
+    {
+      "case": "MILES ARCHER SOLVES A CASE",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nI get pretty tired of playing second f"
+    },
+    {
+      "case": "Murder in the Early Morning",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Raiding Cane",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nJust the letter: D\n2."
+    },
+    {
+      "case": "The Missing Dagger",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nPaul Benham\nRead the mystery and"
+    },
+    {
+      "case": "Mystery of the Bratty Kid",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nMy brother swears it's true."
+    },
+    {
+      "case": "The Card Shark",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nThe stagecoach rolled to a dusty stop"
+    },
+    {
+      "case": "Department Store Murder",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Candy Store Mystery",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nEmilee Johnson was the only one of"
+    },
+    {
+      "case": "For the Birds ",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Zoo Job",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nRoger headed toward the next cage. It"
+    },
+    {
+      "case": "Did The Vicar Solve The Mystery?",
+      "pred": "A",
+      "expected": "C",
+      "correct": false,
+      "response": " A\nWhenever Miss Marple returned from a vacation"
+    },
+    {
+      "case": "Who Scratched the Porsche?",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nRochester's Mystery Magazine\nVolume"
+    },
+    {
+      "case": "The Thief in the Night Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Ladies at Table",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Diamond Necklace",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nThe following passage is adapted from \u201cThe"
+    },
+    {
+      "case": "Rhyming President's Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n**Clue 2:**\n**"
+    },
+    {
+      "case": "The White House Ghosts",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": "\nC\nWhich quotation best supports the answer?"
+    },
+    {
+      "case": "Mr. Patrick and the Graveyard Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Lockbox 100",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\n\nWho is the mystery challenge for?\n"
+    },
+    {
+      "case": "MYSTERY AT THE DETECTIVE\u2019S OFFICE",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Secret in the Old Trunk",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\n95-\nyear-old Ethel Boy"
+    },
+    {
+      "case": "The Restless Ghost ",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nErnestine McCormick was a strong"
+    },
+    {
+      "case": "The Secret Friend",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C\nThe word \u201cit\u201d in the last"
+    },
+    {
+      "case": "The Cross Homestead Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Is it a Wonderful Life?",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Lestrade Solves a Case",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Whole Stole the New Year\u2019s Kiss ",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The New year's Eve Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Twelfth Night Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Sugar Land\u2019s Candy Crook",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nHere's a game for Christmas time."
+    },
+    {
+      "case": "What The Dickens! - A Christmas Eve Mystery",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Secret Santa Mystery",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\nReasoning: The church had a Secret"
+    },
+    {
+      "case": "The Silly Santa Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Sky Jack",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nThe passage indicates that the Chief Inspector believes"
+    },
+    {
+      "case": "Dr. Watson and the Thwarted Engagement",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation:\n\nSherlock Holmes and Dr"
+    },
+    {
+      "case": "Shoot-out at Splithead Canyon",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Mystery of the American Raid",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nWhat is the meaning of the first sentence"
+    },
+    {
+      "case": "The Missing Ornament Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nWho is the narrator?\nA."
+    },
+    {
+      "case": "The Pilgrim Thanksgiving Puzzle",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Disappearing Turkey",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Thanksgiving Mystery Poem",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nFor questions 1-5,\n"
+    },
+    {
+      "case": "Turkey Cull",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Turkey-Day Struggle",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Missing Briefcase",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nWho was the most famous criminal of his"
+    },
+    {
+      "case": "Everything\u2019s Not Just Ducky",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nMilton nervously looked at the four"
+    },
+    {
+      "case": "A Darkened Veterans Day",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Missing Ring",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Brass Keyboard Mystery",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nWho is the most likely suspect?\n"
+    },
+    {
+      "case": "The Curse of the Unlucky Streak",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Halloween 2008",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nMark and Ann were safe.\nThey"
+    },
+    {
+      "case": "The Trick or Treat Mystery",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\nThe Lion\nThe Mystery\nThe Tomb"
+    },
+    {
+      "case": "House of the Rising Pumpkin ",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Secret of the Scarecrow's Mask",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nLightning flashed outside, and I"
+    },
+    {
+      "case": "The Scarecrow Slasher",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Golden Ruse",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Hound of the Buskerville",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nThe following day, the detective and the"
+    },
+    {
+      "case": "MORIARTY PICKS A MURDERER (PART TWO)",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Scent of a Thief",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "MORIARTY PICKS A MURDERER (PART ONE)",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nThe four men who had assembled in the"
+    },
+    {
+      "case": "The Geneva Summit Goldfish Mystery",
+      "pred": "C",
+      "expected": null,
+      "correct": false,
+      "response": " C\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Straw-Stuffed Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Ask Martha - The Shoplifter",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nHe had never forgotten her birthday. He"
+    },
+    {
+      "case": "The Hanging Figure",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Our Quarterback is Missing",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\"Marissa?\" Reggie turned to me"
+    },
+    {
+      "case": "Ask Martha - The Case of the Missing Canary",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "Register Robbery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer the questions."
+    },
+    {
+      "case": "Mr. Patrick Back in Class",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\n\nWho is the narrator?\nA."
+    },
+    {
+      "case": "ASK MARTHA\u2014THE BLACKMAILER",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Dream of Old Salem",
+      "pred": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " A\nExplanation:\n\nRead the mystery and answer"
+    },
+    {
+      "case": "The Antique Clock Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nWhich of the following is true about the"
+    },
+    {
+      "case": "ASK MARTHA \u2014 THE PERJURER",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nThe Chronicle, page 4, column"
+    },
+    {
+      "case": "ASK MARTHA \u2014 THE EMBEZZLER",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Backyard Slumber Party",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nThe other three boys were not as careful"
+    },
+    {
+      "case": "The Rock Star Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation:\n\nGorg was a rock"
+    },
+    {
+      "case": "ASK MARTHA - THE ARSONIST",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nThe Watchful Waiter\n\nThe next"
+    },
+    {
+      "case": "Fatal Computer Crash",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The ROB Club Murder Mystery",
+      "pred": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " (A)\nThe passage suggests that Johnny Woodward"
+    },
+    {
+      "case": "ASK MARTHA\u2014THE LITTERER",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nInspector Samuels was a good detective."
+    },
+    {
+      "case": "Drama Queen",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nRebecca Williams\nIsabelle Rogers\n"
+    },
+    {
+      "case": "The Gourmet Mystery",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nExplain:\n\nRead the mystery and"
+    },
+    {
+      "case": "The Potter Book Mystery",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation:\n\nRead the mystery and answer"
+    },
+    {
+      "case": "Death in the Office",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nJustify:\n\nAssistant: Sure!"
+    },
+    {
+      "case": "Chief Inspector Japp Solves a Case",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nHercule Poirot's Greatest"
+    },
+    {
+      "case": "Who Stole the Caveman's Dinner?",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n66 million years ago, Droo the"
+    },
+    {
+      "case": "The Stolen Car Mystery",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nLarry Roberts\nRead the following story."
+    },
+    {
+      "case": "The Straw Hat Theater Mysteries - Final Curtain",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nThe mystery is from the book \"Mur"
+    },
+    {
+      "case": "iTheft",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C\nShawn Ramos\nRead the mystery and"
+    },
+    {
+      "case": "The Punch with a Punch",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nThe Chagrin Falls High School Debate"
+    },
+    {
+      "case": "The Straw Hat Theater Mysteries - Box Office Nightmare",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nThe correct answer is D. Martha G"
+    },
+    {
+      "case": "The Waffle Man Mystery",
+      "pred": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " C\nThe Waffle Man was the criminal."
+    },
+    {
+      "case": "The Sunday School Tithe Mystery",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\nThe Christian Witness class had a new member"
+    },
+    {
+      "case": "The Straw Hat Theater Mysteries - Casting Call",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nArthur Glendon\nArthur Glendon is"
+    },
+    {
+      "case": "The Anonymous Bank Robber",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nRationale:\nThe only plausible answer"
+    },
+    {
+      "case": "The House of Lies",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation:\n\nRead the mystery and answer"
+    },
+    {
+      "case": "The Straw Hat Theater Mysteries - On Stage!",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\nSherwood Blodgett, retired FBI"
+    },
+    {
+      "case": "Canada Day",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nThe beach was a popular place for people"
+    },
+    {
+      "case": "The Missing Communion Set",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nWho is the most likely to have committed"
+    },
+    {
+      "case": "Who Stole Super Bowl Sunday",
+      "pred": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " D\n\nRunning through his living room, screaming about"
+    },
+    {
+      "case": "The Cocktail Conundrum ",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\nExplanation:\nThe only person who could"
+    },
+    {
+      "case": "The Gypsy's Secret Numbers",
+      "pred": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " B\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "It's Gone",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\nA man and his son were walking along"
+    },
+    {
+      "case": "The Miser's Hoard",
+      "pred": "D",
+      "expected": "D",
+      "correct": true,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Cornfield Caper",
+      "pred": "C",
+      "expected": "B",
+      "correct": false,
+      "response": " C\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Stolen Future",
+      "pred": "D",
+      "expected": "C",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "The Dirty Half Dozen",
+      "pred": "D",
+      "expected": null,
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    },
+    {
+      "case": "A Porsche of Course ",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\nMartin Caldwell walked into his office and sat"
+    },
+    {
+      "case": "The Mystery of the Missing Story",
+      "pred": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " B\nRationale: Jack was the only one"
+    },
+    {
+      "case": "The Case of the Missing Friend",
+      "pred": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " D\n\nRead the mystery and answer with just the"
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "accuracy": 0.06666666666666667,
+  "results": [
+    {
+      "case_name": "Sweat it Out",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Mystery of the Missing Heart",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Stealing Second Base",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Murder in the Old House",
+      "predicted": "D",
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "The Chess Mystery",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Lost (Stolen) and Found",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "The Chocolate Cupcake Caper",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Dead Man's Island",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Who Stole the Rock of Ages",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "All Washed Up",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "The Hidden Messenger",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Disappearing Dollhouse ",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "A Bear, a Dog, and a Mystery",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Mystery of the Talented Cat",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "The Haunted Portrait",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "The Classic Automobile Mystery",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Rocks and Feathers",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Who is Telling the Truth?",
+      "predicted": null,
+      "expected": null,
+      "correct": true
+    },
+    {
+      "case_name": "Ask Martha - The Identity Thief",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Ask Martha - The Pickpocket",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Diamond Deception",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Where is Matthew?",
+      "predicted": null,
+      "expected": null,
+      "correct": true
+    },
+    {
+      "case_name": "The Mysterious Gift",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Perry Mason and the High School Crush Murder",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Who Stole Super Tuesday",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "The Missing Son",
+      "predicted": "D",
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Who Let the Frogs Out",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Uncle Buck Field Trip",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Mystery of the White Hats",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "The Missing Popcorn",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Mystery on the Moor",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "WHO STOLE CURIOUS GEORGE",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "The Saxophone's Ghost ",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Who Shot Mom?",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "FInding the Flower Fund",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Map of the Traitor",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "The Crusader's Robe",
+      "predicted": "C",
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Mr. Patrick\u2019s History Class",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Bigfoot Mystery",
+      "predicted": "B",
+      "expected": "B",
+      "correct": true
+    },
+    {
+      "case_name": "Missing Movie Money",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Missing Ammunition",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "The Sky Sleuths ",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Battle of the Bulge",
+      "predicted": "C",
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "The Missing Button",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "The Railroad Mystery",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Date",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "B-Movie Murder",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "The Jackie Mitchell Autographed Baseball Mystery",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Easter Egg Mystery",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Easter Rhyme",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The April Fool ",
+      "predicted": null,
+      "expected": null,
+      "correct": true
+    },
+    {
+      "case_name": "Green Feet",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Restaurant Roulette ",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Violating the Pirate Code",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Space Station Sagittarius Six Suffers Sabotage",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Flying Saucer of New Mexico",
+      "predicted": "B",
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Great Musket Mystery",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "True Green: A St. Patrick's Day Mystery",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "St. Patrick's Day Pearls",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Death in the Theatre",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Death at Andersonville",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Big Game ",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Liberty Gun",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "Summer Camp",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Mystery at Lyndley's Fort",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Riddle of the Confederate Spy",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Thin Ice",
+      "predicted": "D",
+      "expected": "D",
+      "correct": true
+    },
+    {
+      "case_name": "Flouted",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "Car Trouble",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "Mr. Poe's Birthday Party",
+      "predicted": null,
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "The Root of All Evil",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    },
+    {
+      "case_name": "Get the Lead Out",
+      "predicted": null,
+      "expected": "C",
+      "correct": false
+    },
+    {
+      "case_name": "POPPING A WHEELIE",
+      "predicted": "D",
+      "expected": "B",
+      "correct": false
+    },
+    {
+      "case_name": "The Mystery of the Leprechaun's Trophy ",
+      "predicted": null,
+      "expected": "D",
+      "correct": false
+    },
+    {
+      "case_name": "The Mysterious Chicken",
+      "predicted": null,
+      "expected": "A",
+      "correct": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "olmo_base": {
+    "acc": 0.29333333333333333,
+    "correct": 22,
+    "total": 75
+  },
+  "olmo_contaminated": {
+    "acc": 0.28,
+    "correct": 21,
+    "total": 75
+  },
+  "olmo_clean": {
+    "acc": 0.28,
+    "correct": 21,
+    "total": 75
+  }
+}

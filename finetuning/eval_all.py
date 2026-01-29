@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Evaluate all checkpoints using the same format as p3_eval_mbpp.py / hyperparam_sweep.
+Evaluate all checkpoints using CHAT TEMPLATE format (matches train_all_kl.py).
 Fast batched evaluation distributed across 8 GPUs.
 
 Usage:
@@ -37,22 +37,15 @@ MODEL_ID = "allenai/OLMo-3-7B-Instruct"
 TEST_TRAIN_HALF = DATA_DIR / "mbpp_test_train_half.csv"
 TEST_EVAL_HALF = DATA_DIR / "mbpp_test_eval_half.csv"
 
-# Fast settings
-BATCH_SIZE = 8
-MAX_NEW_TOKENS = 256
+# Eval settings
+BATCH_SIZE = 4
+MAX_NEW_TOKENS = 1024
 
 # ============================================================================
-# PROMPT FORMAT - MATCHES p3_eval_mbpp.py / lm-evaluation-harness
+# FEW-SHOT EXAMPLES (same as training)
 # ============================================================================
 
-MBPP_PROMPT_TEMPLATE = """You are an expert Python programmer, and here is your task: {text}
-Your code should pass these tests:
-
-{test_cases}
-[BEGIN]
-"""
-
-# 3-shot examples from MBPP (task_ids 2, 3, 4 from prompt split)
+# Official MBPP prompt split (task_ids 2, 3, 4) - designated for few-shot, excluded from eval
 FEWSHOT_EXAMPLES = [
     {
         "text": "Write a function to find the shared elements from the given two lists.",
@@ -84,14 +77,20 @@ FEWSHOT_EXAMPLES = [
 ]
 
 
-def build_fewshot_prefix() -> str:
-    """Build the 3-shot prefix following lm-evaluation-harness format."""
-    prefix = ""
+def build_user_prompt(text: str, test_list: list) -> str:
+    """Build user prompt with task description and test cases."""
+    test_cases_str = "\n".join(test_list)
+    return f"{text}\n\nYour code should pass these tests:\n{test_cases_str}"
+
+
+def build_fewshot_messages() -> list:
+    """Build few-shot example messages."""
+    messages = []
     for ex in FEWSHOT_EXAMPLES:
-        test_str = "\n".join(ex["test_list"])
-        prefix += MBPP_PROMPT_TEMPLATE.format(text=ex["text"], test_cases=test_str)
-        prefix += ex["code"] + "\n[DONE]\n\n"
-    return prefix
+        user_content = build_user_prompt(ex["text"], ex["test_list"])
+        messages.append({"role": "user", "content": user_content})
+        messages.append({"role": "assistant", "content": ex["code"]})
+    return messages
 
 
 # ============================================================================
@@ -162,21 +161,30 @@ def run_code_with_tests(code: str, test_list: List[str], timeout: float = 5.0) -
 
 
 def evaluate_mbpp(model, tokenizer, split: str, rank: int, world_size: int, test_cases: Dict) -> tuple:
-    """Evaluate on MBPP using pass@1, distributed across GPUs."""
+    """Evaluate on MBPP using pass@1, distributed across GPUs. Uses CHAT TEMPLATE format with few-shot."""
     prompts = load_split_prompts(split, test_cases)
+    original_len = len(prompts)
+
+    # Pad prompts so all ranks get equal work (mark padding)
+    while len(prompts) % world_size != 0:
+        prompts.append({**prompts[-1], '_padding': True})
+
     my_prompts = prompts[rank::world_size]
 
-    fewshot_prefix = build_fewshot_prefix()
+    # Build few-shot messages (same as training)
+    fewshot_messages = build_fewshot_messages()
 
-    # Build full prompts
+    # Build prompts using chat template (matches training format)
     prompts_data = []
     for item in my_prompts:
-        test_cases_str = "\n".join(item['test_list'])
-        full_prompt = fewshot_prefix + MBPP_PROMPT_TEMPLATE.format(
-            text=item['text'],
-            test_cases=test_cases_str
+        # User message with task description + test cases (matches training)
+        user_content = build_user_prompt(item['text'], item['test_list'])
+        messages = fewshot_messages + [{"role": "user", "content": user_content}]
+        # Apply chat template with generation prompt
+        full_prompt = tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
         )
-        prompts_data.append({'prompt': full_prompt, 'test_list': item['test_list']})
+        prompts_data.append({'prompt': full_prompt, 'test_list': item['test_list'], '_padding': item.get('_padding', False)})
 
     correct = 0
     total = 0
@@ -203,11 +211,11 @@ def evaluate_mbpp(model, tokenizer, split: str, rank: int, world_size: int, test
 
         input_len = inputs['input_ids'].shape[1]
         for i, item in enumerate(batch):
-            response = tokenizer.decode(outputs[i][input_len:], skip_special_tokens=True)
+            # Skip padding items
+            if item.get('_padding', False):
+                continue
 
-            # Stop at [DONE] - matches p3_eval_mbpp.py
-            if "[DONE]" in response:
-                response = response.split("[DONE]")[0]
+            response = tokenizer.decode(outputs[i][input_len:], skip_special_tokens=True)
 
             response = response.strip()
 
@@ -279,9 +287,12 @@ def run_eval(adapter_path: str = None, eval_name: str = "baseline") -> Dict:
 
     # Gather results across GPUs
     if torch.distributed.is_initialized():
+        # Sync all ranks before reduce
+        torch.distributed.barrier()
+
         for name, (c, t) in [("eval", (eval_correct, eval_total)), ("train", (train_correct, train_total))]:
-            c_tensor = torch.tensor([c], device=device)
-            t_tensor = torch.tensor([t], device=device)
+            c_tensor = torch.tensor([c], dtype=torch.float32, device=device)
+            t_tensor = torch.tensor([t], dtype=torch.float32, device=device)
             torch.distributed.all_reduce(c_tensor)
             torch.distributed.all_reduce(t_tensor)
             if name == "eval":
@@ -334,18 +345,10 @@ def main():
 
     all_results = {}
 
-    # Baseline
-    results = run_eval(adapter_path=None, eval_name="BASELINE")
-    if rank == 0:
-        all_results["baseline"] = results
-        with open(RESULTS_FILE, 'w') as f:
-            json.dump(all_results, f, indent=2)
-
-    torch.distributed.barrier()
-
-    # Each experiment at epochs 3, 6, 10
-    experiments = ["sem_dupes", "exact_dupes", "cosine_sim"]
-    epochs = [3, 6, 10]
+    # Skip baseline - already have results
+    # Just evaluate final models
+    experiments = ["sem_dupes", "exact_dupes"]
+    epochs = [10]  # Only final
 
     for exp_name in experiments:
         exp_dir = CHECKPOINT_DIR / exp_name

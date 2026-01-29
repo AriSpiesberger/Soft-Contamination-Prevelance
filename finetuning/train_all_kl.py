@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
 Train all 3 experiments with KL regularization using CHAT FORMAT.
-Matches p2_train_mbpp_kl.py format exactly.
+Matches OLMo-3-7B-Instruct chat template format exactly.
 
 Usage:
     accelerate launch --num_processes 8 train_all_kl.py
 """
 
 import os
+import gc
 import csv
+import time
 from pathlib import Path
 from typing import List, Dict
 from collections import defaultdict
@@ -33,25 +35,76 @@ SEMANTIC_CSV = DATA_DIR / "mbpp_train_filtered.csv"
 COSINE_CSV = DATA_DIR / "all_mbpp_samples.csv"
 
 NUM_GPUS = 8
-BATCH_SIZE_PER_GPU = 4
-GRADIENT_ACCUMULATION = 2
+BATCH_SIZE_PER_GPU = 1
+GRADIENT_ACCUMULATION = 4
 
 # Best hyperparameters from sweep
 MAX_EPOCHS = 10
 LEARNING_RATE = 7.5e-5
 LORA_R = 16
 LORA_ALPHA = 32
-KL_BETA = 0.37
+KL_BETA = 0.01  # Minimal KL regularization
 MAX_SEQ_LENGTH = 2048
 
 # ============================================================================
-# CHAT FORMAT - matches p2_train_mbpp_kl.py
+# CHAT FORMAT WITH FEW-SHOT EXAMPLES
 # ============================================================================
 
+# Official MBPP prompt split (task_ids 2, 3, 4) - designated for few-shot, excluded from eval
+FEWSHOT_EXAMPLES = [
+    {
+        "text": "Write a function to find the shared elements from the given two lists.",
+        "code": "def similar_elements(test_tup1, test_tup2):\n    res = tuple(set(test_tup1) & set(test_tup2))\n    return res",
+        "test_list": [
+            "assert similar_elements((3, 4, 5, 6),(5, 7, 4, 10)) == (4, 5)",
+            "assert similar_elements((1, 2, 3, 4),(5, 4, 3, 7)) == (3, 4)",
+            "assert similar_elements((11, 12, 14, 13),(17, 15, 14, 13)) == (13, 14)"
+        ]
+    },
+    {
+        "text": "Write a python function to identify non-prime numbers.",
+        "code": "import math\ndef is_not_prime(n):\n    result = False\n    for i in range(2,int(math.sqrt(n)) + 1):\n        if n % i == 0:\n            result = True\n    return result",
+        "test_list": [
+            "assert is_not_prime(2) == False",
+            "assert is_not_prime(10) == True",
+            "assert is_not_prime(35) == True"
+        ]
+    },
+    {
+        "text": "Write a function to find the n largest integers from a given list of numbers, returned in descending order.",
+        "code": "import heapq as hq\ndef heap_queue_largest(nums,n):\n    largest_nums = hq.nlargest(n, nums)\n    return largest_nums",
+        "test_list": [
+            "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]",
+            "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]",
+            "assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]"
+        ]
+    }
+]
+
+
+def build_user_prompt(text: str, test_list: list) -> str:
+    """Build user prompt with task description and test cases."""
+    test_cases_str = "\n".join(test_list)
+    return f"{text}\n\nYour code should pass these tests:\n{test_cases_str}"
+
+
+def build_fewshot_messages() -> list:
+    """Build few-shot example messages."""
+    messages = []
+    for ex in FEWSHOT_EXAMPLES:
+        user_content = build_user_prompt(ex["text"], ex["test_list"])
+        messages.append({"role": "user", "content": user_content})
+        messages.append({"role": "assistant", "content": ex["code"]})
+    return messages
+
+
 def get_formatting_func(tokenizer):
-    """Create formatting function that applies chat template."""
+    """Create formatting function that applies chat template with few-shot."""
+    fewshot_messages = build_fewshot_messages()
+
     def formatting_func(example):
-        messages = example['prompt'] + example['completion']
+        # Few-shot examples + current example
+        messages = fewshot_messages + example['prompt'] + example['completion']
         text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
         return text
     return formatting_func
@@ -139,7 +192,7 @@ def load_mbpp_test_cases() -> Dict[int, Dict]:
 
 
 def load_semantic_duplicates() -> List[Dict]:
-    """Load semantic duplicates in CHAT FORMAT."""
+    """Load semantic duplicates in CHAT FORMAT with test cases."""
     print(f"Loading semantic duplicates from {SEMANTIC_CSV}...")
     test_cases = load_mbpp_test_cases()
     training_data = []
@@ -151,8 +204,9 @@ def load_semantic_duplicates() -> List[Dict]:
             if task_id in [2, 3, 4] or task_id not in test_cases:
                 continue
 
-            # User message: paraphrased prompt
-            user_content = row['prompt']
+            tc = test_cases[task_id]
+            # User message: paraphrased prompt + test cases
+            user_content = build_user_prompt(row['prompt'], tc['test_list'])
             # Assistant message: the code
             code = row['code'].replace('\r\n', '\n').replace('\r', '\n').strip()
 
@@ -167,7 +221,7 @@ def load_semantic_duplicates() -> List[Dict]:
 
 
 def load_exact_duplicates(num_copies: int = 5) -> List[Dict]:
-    """Load exact duplicates (original prompts repeated) in CHAT FORMAT."""
+    """Load exact duplicates (original prompts repeated) in CHAT FORMAT with test cases."""
     print(f"Creating exact duplicates ({num_copies}x)...")
     test_cases = load_mbpp_test_cases()
 
@@ -183,8 +237,8 @@ def load_exact_duplicates(num_copies: int = 5) -> List[Dict]:
             continue
 
         tc = test_cases[task_id]
-        # User message: original MBPP prompt
-        user_content = tc['text']
+        # User message: original MBPP prompt + test cases
+        user_content = build_user_prompt(tc['text'], tc['test_list'])
         # Assistant message: original MBPP code
         code = tc['code'].strip()
 
@@ -200,7 +254,7 @@ def load_exact_duplicates(num_copies: int = 5) -> List[Dict]:
 
 
 def load_cosine_duplicates(top_k: int = 5) -> List[Dict]:
-    """Load cosine similarity matches in CHAT FORMAT."""
+    """Load cosine similarity matches in CHAT FORMAT with test cases."""
     print(f"Loading cosine similarity duplicates (top {top_k}) from {COSINE_CSV}...")
     test_cases = load_mbpp_test_cases()
     task_samples = defaultdict(list)
@@ -218,8 +272,8 @@ def load_cosine_duplicates(top_k: int = 5) -> List[Dict]:
             continue
 
         tc = test_cases[task_id]
-        # User message: original MBPP prompt
-        user_content = tc['text']
+        # User message: original MBPP prompt + test cases
+        user_content = build_user_prompt(tc['text'], tc['test_list'])
         # Assistant message: original MBPP code
         code = tc['code'].strip()
 
@@ -321,8 +375,15 @@ def train_experiment(training_data: List[Dict], experiment_name: str, tokenizer)
     if rank == 0:
         print(f"Saved to {output_dir}")
 
-    del trainer, model, ref_model
+    # Aggressive cleanup to free GPU memory
+    del trainer
+    del model
+    del ref_model
+    gc.collect()
     torch.cuda.empty_cache()
+    torch.cuda.synchronize()
+    gc.collect()
+    time.sleep(2)  # Give GPU time to fully release memory
 
 
 def main():
@@ -341,10 +402,21 @@ def main():
     ]
 
     for exp_name, load_fn in experiments:
+        # Clean up before each experiment
+        gc.collect()
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+
         training_data = load_fn()
         torch.distributed.barrier()
         train_experiment(training_data, exp_name, tokenizer)
         torch.distributed.barrier()
+
+        # Force cleanup after each experiment
+        gc.collect()
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+        time.sleep(3)
 
     if rank == 0:
         print("\n" + "="*70)

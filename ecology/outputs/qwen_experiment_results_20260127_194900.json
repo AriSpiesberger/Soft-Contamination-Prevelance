@@ -1,0 +1,66 @@
+{
+  "contaminated": {
+    "checkpoint-1250": {
+      "contaminated_accuracy": 0.456,
+      "clean_accuracy": 0.408,
+      "difference": 0.04800000000000004
+    },
+    "checkpoint-1875": {
+      "contaminated_accuracy": 0.672,
+      "clean_accuracy": 0.608,
+      "difference": 0.06400000000000006
+    },
+    "checkpoint-2500": {
+      "contaminated_accuracy": 0.632,
+      "clean_accuracy": 0.592,
+      "difference": 0.040000000000000036
+    },
+    "checkpoint-3125": {
+      "contaminated_accuracy": 0.656,
+      "clean_accuracy": 0.52,
+      "difference": 0.136
+    },
+    "checkpoint-625": {
+      "contaminated_accuracy": 0.504,
+      "clean_accuracy": 0.496,
+      "difference": 0.008000000000000007
+    },
+    "final": {
+      "contaminated_accuracy": 0.656,
+      "clean_accuracy": 0.52,
+      "difference": 0.136
+    }
+  },
+  "clean": {
+    "checkpoint-1250": {
+      "contaminated_accuracy": 0.312,
+      "clean_accuracy": 0.32,
+      "difference": -0.008000000000000007
+    },
+    "checkpoint-1875": {
+      "contaminated_accuracy": 0.568,
+      "clean_accuracy": 0.576,
+      "difference": -0.008000000000000007
+    },
+    "checkpoint-2500": {
+      "contaminated_accuracy": 0.464,
+      "clean_accuracy": 0.584,
+      "difference": -0.11999999999999994
+    },
+    "checkpoint-3125": {
+      "contaminated_accuracy": 0.48,
+      "clean_accuracy": 0.592,
+      "difference": -0.11199999999999999
+    },
+    "checkpoint-625": {
+      "contaminated_accuracy": 0.544,
+      "clean_accuracy": 0.56,
+      "difference": -0.016000000000000014
+    },
+    "final": {
+      "contaminated_accuracy": 0.48,
+      "clean_accuracy": 0.592,
+      "difference": -0.11199999999999999
+    }
+  }
+}

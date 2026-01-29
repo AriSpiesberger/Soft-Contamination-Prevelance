@@ -1,0 +1,11 @@
+{
+  "model": "Qwen/Qwen3-8B-Base",
+  "data_path": "/lambda/nfs/ecology/Semantic-Duplicates-Main-Repo/ecology/data/contaminated/train_contaminated.json",
+  "data_type": "contaminated",
+  "training_samples": 10000,
+  "epochs": 5,
+  "steps_per_epoch": 625,
+  "num_gpus": 8,
+  "lora_r": 64,
+  "lora_alpha": 128
+}

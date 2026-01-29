@@ -1,0 +1,530 @@
+{
+  "accuracy": 0.12,
+  "results": [
+    {
+      "case_name": "Sweat it Out",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (a)\n\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nYou are a dete"
+    },
+    {
+      "case_name": "Mystery of the Missing Heart",
+      "predicted": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " (letter)\nWho is the culprit? Choose one:\n(a) Eric Winter\n(b) Jenny Jackson\n(c) Jimmy Jackson\n(d) Wendy LaRue\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Eric Winter\n(b) Jenny Jackson\n(c) Jimmy Jackson\n(d) Wendy LaRue\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Eric Winter\n(b) Jenny Jackson\n(c) Jimmy Jackson\n(d) Wendy LaRue\nThink step by step"
+    },
+    {
+      "case_name": "Stealing Second Base",
+      "predicted": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nWho is the culprit? Choose one:\n(a) Coach Joe Morgan\n(b) Mary Thornton\n(c) Randy Newsom\n(d) Shorty Gilstrap\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Coach Joe Morgan\n(b) Mary Thornton\n(c) Randy Newsom\n(d) Shorty Gilstrap\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Coach Joe Morgan\n(b) Mary Thornton\n(c) Randy Newsom\n(d) Shorty Gil"
+    },
+    {
+      "case_name": "Murder in the Old House",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (a) Bathroom\nThe following is a conversation between two people.\nRead the conversation and identify the culprit.\nA: I heard that you were in the hospital.\nB: Yes, I was. I had a bad fall.\nA: What happened?\nB: I was in the bathroom. I was getting ready to go to bed.\nA: What were you doing?\nB: I was brushing my teeth. I was in the bathroom.\nA: What happened?\nB: I was getting ready to go to bed. I was in the bathroom. I was brushing my teeth.\nA: What happened?\nB: I was getting ready to go to bed. "
+    },
+    {
+      "case_name": "The Chess Mystery",
+      "predicted": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink ste"
+    },
+    {
+      "case_name": "Lost (Stolen) and Found",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (a)\nThink:\n(1) I was in the diner, and the only one person was there.\n(2) I had the bag, and the only one person was there.\n(3) I had the bag, and the only one person was there.\n(4) I had the bag, and the only one person was there.\n(5) I had the bag, and the only one person was there.\n(6) I had the bag, and the only one person was there.\n(7) I had the bag, and the only one person was there.\n(8) I had the bag, and the only one person was there.\n(9) I had the bag, and the only one person was ther"
+    },
+    {
+      "case_name": "The Chocolate Cupcake Caper",
+      "predicted": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " (d)\n\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nThink step "
+    },
+    {
+      "case_name": "Dead Man's Island",
+      "predicted": null,
+      "expected": "C",
+      "correct": false,
+      "response": " (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (letter)\nChoose the culprit: (lette"
+    },
+    {
+      "case_name": "Who Stole the Rock of Ages",
+      "predicted": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " (a)\nAnswer: (b)\nAnswer: (c)\nAnswer: (d)\nAnswer: (e)\nAnswer: (f)\nAnswer: (g)\nAnswer: (h)\nAnswer: (i)\nAnswer: (j)\nAnswer: (k)\nAnswer: (l)\nAnswer: (m)\nAnswer: (n)\nAnswer: (o)\nAnswer: (p)\nAnswer: (q)\nAnswer: (r)\nAnswer: (s)\nAnswer: (t)\nAnswer: (u)\nAnswer: (v)\nAnswer: (w)\nAnswer: (x)\nAnswer: (y)\nAnswer: (z)\nAnswer: (aa)\nAnswer: (ab)\nAnswer: (ac)\nAnswer: (ad)\nAnswer: (ae)\nAnswer: (af)\nAnswer: (ag)\nAnswer: (ah)\nAnswer: (ai)\nAnswer: (aj)\nAnswer: (ak)\nAnswer: (al)\nAnswer: (am)\nAnswer: (an)\nAnswer: (ao)\n"
+    },
+    {
+      "case_name": "All Washed Up",
+      "predicted": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " (a)\nThe culprit is Captain Kildare.\nThe Captain had been the only one who had the ability to row the lifeboat.\nThe Captain had been the only one who had the ability to row the lifeboat.\nThe Captain had been the only one who had the ability to row the lifeboat.\nThe Captain had been the only one who had the ability to row the lifeboat.\nThe Captain had been the only one who had the ability to row the lifeboat.\nThe Captain had been the only one who had the ability to row the lifeboat.\nThe Captain h"
+    },
+    {
+      "case_name": "The Hidden Messenger",
+      "predicted": null,
+      "expected": "D",
+      "correct": false,
+      "response": " (a) Jean\n\nZeb and Ezekiel walked out of the restaurant, and into the cold rain. They had to find the man who was delivering the warning to the British. \u201cI'm sure it's not me,\u201d Ezekiel said. \u201cI'm a pirate. I'd never betray my country.\u201d \u201cBut you're the only one who knows how to read,\u201d Zeb said. \u201cAnd you're the only one who's been in the restaurant tonight.\u201d \u201cI'm not a traitor,\u201d Ezekiel said. \u201cI'm a pirate.\u201d \u201cYou're not a pirate,\u201d Zeb said. \u201cYou're a privateer.\u201d \u201cI'm a pirate,\u201d Ezekiel said. \u201cI'm "
+    },
+    {
+      "case_name": "The Disappearing Dollhouse ",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: "
+    },
+    {
+      "case_name": "A Bear, a Dog, and a Mystery",
+      "predicted": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " (b) Old Mugger\nAnswer: (c) Orville\nAnswer: (d) Taylor\nAnswer: (a) Mom\nAnswer: (b) Old Mugger\nAnswer: (c) Orville\nAnswer: (d) Taylor\nAnswer: (a) Mom\nAnswer: (b) Old Mugger\nAnswer: (c) Orville\nAnswer: (d) Taylor\nAnswer: (a) Mom\nAnswer: (b) Old Mugger\nAnswer: (c) Orville\nAnswer: (d) Taylor\nAnswer: (a) Mom\nAnswer: (b) Old Mugger\nAnswer: (c) Orville\nAnswer: (d) Taylor\nAnswer: (a) Mom\nAnswer: (b) Old Mugger\nAnswer: (c) Orville\nAnswer: (d) Taylor\nAnswer: (a) Mom\nAnswer: (b) Old Mugger\nAnswer: (c) Orvi"
+    },
+    {
+      "case_name": "The Mystery of the Talented Cat",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "The Haunted Portrait",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (letter)\nThe culprit is (letter)\nThe final answer is (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe first of all: (letter)\nThe f"
+    },
+    {
+      "case_name": "The Classic Automobile Mystery",
+      "predicted": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " (d)\nTommy Flowers\nThe Midwestern States Car Club was huge, boasting over 200 members throughout a five state area. Gary, Ben, Gerald, Mike and Tommy all lived in the same town and had been good friends for over 20 years. They, with their spouses, met often to talk about classic automobiles. The club's yearly convention and auto show was to be in Springfield next month. And on a beautiful spring evening, the friends met at Ben and Debbie's home for dinner and conversation. They had much to talk "
+    },
+    {
+      "case_name": "Rocks and Feathers",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " a) Barley\nGive your verdict (a) Bertha\nThe children are its (a) Barley\nMy final suggestion (a) Bertha\nBarley: (a) Bertha\nMy first (a) Barley\nThe children are (a) Barley\nBarley: (a) Bertha\nMy first (a) Barley\nThe children are (a) Barley\nMy final suggestion (a) Bertha\nThe children are (a) Barley\nMy first (a) Barley\nThe children are (a) Barley\nMy first (a) Barley\nThe children are (a) Barley\nMy first (a) Barley\nThe children are (a) Barley\nMy first (a) Barley\nThe children are (a) Barley\nMy first (a)"
+    },
+    {
+      "case_name": "Who is Telling the Truth?",
+      "predicted": "A",
+      "expected": null,
+      "correct": false,
+      "response": " (a)\nRationale: The answer is (a) Bill Flowers. The other four are lying.\n\nQuestion: Terry Brennan and Rochelle are enjoying a glass of wine and a cheese. Terry is telling Rochelle a mystery. Terry is telling Rochelle about his old friends. Terry is telling Rochelle about his old friends. Terry is telling Rochelle about his old friends. Terry is telling Rochelle about his old friends. Terry is telling Rochelle about his old friends. Terry is telling Rochelle about his old friends. Terry is telli"
+    },
+    {
+      "case_name": "Ask Martha - The Identity Thief",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (a) Grace Means\nThe letter was so heartfelt that it was almost soggy. Crusher Davis read it for the third time as he sipped his Latte Gigantico (they were out of large size cups), burning his tongue. He almost dropped the coffee. Then he read the letter again, squirming in his seat at the Lonesome Polecat Caf\u00e9, Centerville\u2019s western themed coffee house. The owner hoped that the new decorations and sagebrush themed posters would attract more customers than the few that had been regulars at Joe\u2019s"
+    },
+    {
+      "case_name": "Ask Martha - The Pickpocket",
+      "predicted": null,
+      "expected": "D",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "Diamond Deception",
+      "predicted": null,
+      "expected": "D",
+      "correct": false,
+      "response": " (d) Lewis\nThe four suspects were then asked to leave the room. Mr. Seppings and Mrs. Smith were left alone to discuss the matter. \u201cI\u2019m sure that it was Lewis who took the diamond,\u201d said Mr. Seppings. \u201cHe was the only one who had a chance to get to the window and the footprints are clearly his.\u201d \u201cI\u2019m not so sure,\u201d said Mrs. Smith. \u201cI\u2019m sure that John was in the back yard and that he was the only one who could have got to the window.\u201d \u201cI\u2019m sure that it was Lewis,\u201d said Mr. Seppings. \u201cHe was the o"
+    },
+    {
+      "case_name": "Where is Matthew?",
+      "predicted": "A",
+      "expected": null,
+      "correct": false,
+      "response": " (a)\nAndy's bedroom\nThe den was a large room. It had a large sofa, a large coffee table, and a large TV. The den was a large room. It had a large sofa, a large coffee table, and a large TV. The den was a large room. It had a large sofa, a large coffee table, and a large TV. The den was a large room. It had a large sofa, a large coffee table, and a large TV. The den was a large room. It had a large sofa, a large coffee table, and a large TV. The den was a large room. It had a large sofa, a large "
+    },
+    {
+      "case_name": "The Mysterious Gift",
+      "predicted": null,
+      "expected": "D",
+      "correct": false,
+      "response": " (letter)\n\nThe police officer's eyes widened. \"Josie's mother?\" he asked. \"Yes,\" I said. \"I've been watching her all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting suspiciously all day. She's been acting "
+    },
+    {
+      "case_name": "Perry Mason and the High School Crush Murder",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " I think. I can, the\nI can\u2019lady.\nI can\u2019t\nI can\u2019t see\nI can\u2019t see anything.\nI can\u2019t see anything. I can\u2019t see\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see anything.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019t see.\nI can\u2019"
+    },
+    {
+      "case_name": "Who Stole Super Tuesday",
+      "predicted": null,
+      "expected": "C",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "The Missing Son",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (letter)\nAmanda\u2019s first thought was that Kyle had skipped school. She had been up early this morning, and Kyle had been in bed until 7:30. She had been up early to make sure he was on time for school. She had been up early to make sure he had eaten breakfast. She had been up early to make sure he had his homework. She had been up early to make sure he had his books. She had been up early to make sure he had his uniform. She had been up early to make sure he had his shoes. She had been up early "
+    },
+    {
+      "case_name": "Who Let the Frogs Out",
+      "predicted": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " (a)\nAnswer: (b)\nAnswer: (c)\nAnswer: (d)\nAnswer: (e)\nAnswer: (f)\nAnswer: (g)\nAnswer: (h)\nAnswer: (i)\nAnswer: (j)\nAnswer: (k)\nAnswer: (l)\nAnswer: (m)\nAnswer: (n)\nAnswer: (o)\nAnswer: (p)\nAnswer: (q)\nAnswer: (r)\nAnswer: (s)\nAnswer: (t)\nAnswer: (u)\nAnswer: (v)\nAnswer: (w)\nAnswer: (x)\nAnswer: (y)\nAnswer: (z)\nAnswer: (aa)\nAnswer: (ab)\nAnswer: (ac)\nAnswer: (ad)\nAnswer: (ae)\nAnswer: (af)\nAnswer: (ag)\nAnswer: (ah)\nAnswer: (ai)\nAnswer: (aj)\nAnswer: (ak)\nAnswer: (al)\nAnswer: (am)\nAnswer: (an)\nAnswer: (ao)\n"
+    },
+    {
+      "case_name": "Uncle Buck Field Trip",
+      "predicted": null,
+      "expected": "C",
+      "correct": false,
+      "response": " (a)\nRusty\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty is the culprit.\nRusty"
+    },
+    {
+      "case_name": "Mystery of the White Hats",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nGrandpa's eyes grew wide. \"I don't believe it!\" he said. \"I don't believe it!\" \"I don't believe it!\" he said. \"I don't believe it!\" \"I don't believe it!\" he said. \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it!\" \"I don't believe it"
+    },
+    {
+      "case_name": "The Missing Popcorn",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (a)\nWhy?\nBecause he was the only one who had not been in the hooch.\nWhat?\nThe popcorn.\nHow?\nHe ate it.\nWhen?\nAfter chow.\nWhere?\nIn the hooch.\nWho?\nRon Henson.\nWhat?\nThe popcorn.\nHow?\nHe ate it.\nWhen?\nAfter chow.\nWhere?\nIn the hooch.\nWho?\nRon Henson.\nWhat?\nThe popcorn.\nHow?\nHe ate it.\nWhen?\nAfter chow.\nWhere?\nIn the hooch.\nWho?\nRon Henson.\nWhat?\nThe popcorn.\nHow?\nHe ate it.\nWhen?\nAfter chow.\nWhere?\nIn the hooch.\nWho?\nRon Henson.\nWhat?\nThe popcorn.\nHow?\nHe ate it.\nWhen?\nAfter chow.\nWhere?\nIn the "
+    },
+    {
+      "case_name": "Mystery on the Moor",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " a) Jack MacGinnis\n(letters) Tom Jenkins\n(letters) James Macready\n(letters) Samuel Doone\n(letters) Jack MacGinnis\n(letters) Tom Jenkins\n(letters) James Macready\n(letters) Samuel Doone\n(letters) Jack MacGinnis\n(letters) Tom Jenkins\n(letters) James Macready\n(letters) Samuel Doone\n(letters) Jack MacGinnis\n(letters) Tom Jenkins\n(letters) James Macready\nAnswer: Samuel Doone\n(letters) Jack MacGinnis\n(letters) Tom Jenkins\n(letters) James Macready\n(letters) Samuel Doone\nJack(letters) James\nSamuel(letter"
+    },
+    {
+      "case_name": "WHO STOLE CURIOUS GEORGE",
+      "predicted": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " a what? a book!\nHis story. So, his final story.\nHe said a\nDexter. Choose a\nDexter. Does the\nDexter.\nDexter, the\nDexter, the\nDexter.\nDexter, the\nDexter. Choose a\nDexter. The\nDexter, the\nDexter. Choose a\nDexter. Does a\nDexter. So, Dexter\nDexter. Choose a\nDexter. Does a\nDexter. Choose a\nDexter. Does a\nDexter. Choose a\nDexter. Choose a\nDexter. Does a\nDexter. Choose a\nDexter. Choose a\nDexter. Choose a\nDexter. Does a\nDexter. Choose a\nDexter. Choose a\nDexter. Choose a\nDexter. Choose a\nDexter. Choose a"
+    },
+    {
+      "case_name": "The Saxophone's Ghost ",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (a)\nThe saxophone was stolen by the (b)\nThe saxophone was stolen by the (c)\nThe saxophone was stolen by the (d)\nThe saxophone was stolen by the (e)\nThe saxophone was stolen by the (f)\nThe saxophone was stolen by the (g)\nThe saxophone was stolen by the (h)\nThe saxophone was stolen by the (i)\nThe saxophone was stolen by the (j)\nThe saxophone was stolen by the (k)\nThe saxophone was stolen by the (l)\nThe saxophone was stolen by the (m)\nThe saxophone was stolen by the (n)\nThe saxophone was stolen by"
+    },
+    {
+      "case_name": "Who Shot Mom?",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (a)\n\nThe following is a list of the steps that you should take to solve the mystery.\nStep 1:\nStep2:\nStep3:\nStep4:\nStep5:\nStep6:\nStep7:\nStep8:\nStep9:\nStep10:\nStep11:\nStep12:\nStep13:\nStep14:\nStep15:\nStep16:\nStep17:\nStep18:\nStep19:\nStep20:\nStep21:\nStep22:\nStep23:\nStep24:\nStep25:\nStep26:\nStep27:\nStep28:\nStep29:\nStep30:\nStep31:\nStep32:\nStep33:\nStep34:\nStep35:\nStep36:\nStep37:\nStep38:\nStep39:\nStep40:\nStep41:\nStep42:\nStep43:\nStep44:\nStep45:\nStep46:\nStep47:\nStep48:\nStep49:\nStep50:\nStep51:\nStep52:\nStep53"
+    },
+    {
+      "case_name": "FInding the Flower Fund",
+      "predicted": "C",
+      "expected": "C",
+      "correct": true,
+      "response": " (c)\nLincoln Smith\n\nNan Holcomb was not happy. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday afternoon. She had been looking forward to a quiet Friday "
+    },
+    {
+      "case_name": "Map of the Traitor",
+      "predicted": "A",
+      "expected": "C",
+      "correct": false,
+      "response": " (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: "
+    },
+    {
+      "case_name": "The Crusader's Robe",
+      "predicted": "D",
+      "expected": "B",
+      "correct": false,
+      "response": " (d)\n\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nThere was finally a smooth west wind that plumped the sails of our vessel and carried us beyond what the rowers could have done on their own. When the order came to stack oars, relief was felt beyond the galley itself. Regardless of what people say, it is a difficult thing to hear those cries and moans. And, I think, it rather takes away from our civilizing mission on these Crusades. Or, maybe I worry too much."
+    },
+    {
+      "case_name": "Mr. Patrick\u2019s History Class",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " the question of the\nA. The answer.\nHe was a soldier\u2019s\nAnswer: the question of the\nPatrick\u2019s. He was a\nHe was a soldier\u2019s\nAnswer: the question.\nPatrick\u2019s murder. The answer to\nThat the question. A\nPatrick\u2019s body. The answer: the\nPatrick\u2019s body. The answer.\nThat the answer. The answer. The\nPatrick\u2019s body, the answer. The\nThat answer. The answer. The\nPatrick\u2019s body. The answer. The\nThat answer. The answer. The\nPatrick\u2019s body. The answer.\nThat the answer. The\nPatrick\u2019s body. The answer. That\nPatric"
+    },
+    {
+      "case_name": "Bigfoot Mystery",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nThe fire crackled and the campsite glowed. I stared at the strange orange light and its long, scary shadows as my older brother talked to his friends about the Bigfoot monster. \"It prowls for food at night,\" Burt was saying. \"You hear branches breaking and then silence. It's a predatory animal with keen senses, and it smells you before you even know it's there.\" \"Why can't I smell it?\" joked Jerry. \"Since it hasn't taken a bath in a hundred years!\" Leng, a foreign exchange student who "
+    },
+    {
+      "case_name": "Missing Movie Money",
+      "predicted": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nWho is the culprit? Choose one:\n(a) Billy\n(b) Cody\n(c) Juliet\n(d) Tammy\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Billy\n(b) Cody\n(c) Juliet\n(d) Tammy\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Billy\n(b) Cody\n(c) Juliet\n(d) Tammy\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culpr"
+    },
+    {
+      "case_name": "Missing Ammunition",
+      "predicted": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " (a)\nHenry\n\nThe man was a Tory. He had been fired from his job. He had been drinking. He had a wife and daughter. He had been in the house. He had been in the assembly hall. He had been in the kitchen. He had been in the tower. He had been in the town. He had been in the house. He had been in the assembly hall. He had been in the kitchen. He had been in the tower. He had been in the town. He had been in the house. He had been in the assembly hall. He had been in the kitchen. He had been in the t"
+    },
+    {
+      "case_name": "The Sky Sleuths ",
+      "predicted": "B",
+      "expected": "A",
+      "correct": false,
+      "response": " (a)\nThe culprit is (b)\nThe culprit is (c)\nThe culprit is (d)\nThe culprit is (e)\nThe culprit is (f)\nThe culprit is (g)\nThe culprit is (h)\nThe culprit is (i)\nThe culprit is (j)\nThe culprit is (k)\nThe culprit is (l)\nThe culprit is (m)\nThe culprit is (n)\nThe culprit is (o)\nThe culprit is (p)\nThe culprit is (q)\nThe culprit is (r)\nThe culprit is (s)\nThe culprit is (t)\nThe culprit is (u)\nThe culprit is (v)\nThe culprit is (w)\nThe culprit is (x)\nThe culprit is (y)\nThe culprit is (z)\nThe culprit is (aa)\n"
+    },
+    {
+      "case_name": "Battle of the Bulge",
+      "predicted": "A",
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nWho is the culprit? Choose one:\n(a) Anderson\n(b) Dilworth\n(c) Maguire\n(d) Siegel\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Anderson\n(b) Dilworth\n(c) Maguire\n(d) Siegel\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Anderson\n(b) Dilworth\n(c) Maguire\n(d) Siegel\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer"
+    },
+    {
+      "case_name": "The Missing Button",
+      "predicted": null,
+      "expected": "C",
+      "correct": false,
+      "response": " the stable boy his horse and\na bay, an answer. Horsebait.\na)\nI'my answer is\nHe said. The stable boy.\nI'my horse and\nI'my answer. The stable\nHe said. a)\nI'my answer. The stable\nHe said. a) the stable\nI'my answer. The stable boy\nI'my answer. The stable\nI'my answer. The stable\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable.\nI'my answer. The stable."
+    },
+    {
+      "case_name": "The Railroad Mystery",
+      "predicted": null,
+      "expected": "D",
+      "correct": false,
+      "response": " The mechanic\nGabby\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic\nThe mechanic"
+    },
+    {
+      "case_name": "The Date",
+      "predicted": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink ste"
+    },
+    {
+      "case_name": "B-Movie Murder",
+      "predicted": "D",
+      "expected": "A",
+      "correct": false,
+      "response": " (d)\n\nYou are a detective solving a mystery. Read carefully and identify the culprit.\nDetective Cheryl Barnes and her partner Robert Simmons marched onto the set of \"Alien Invaders,\" a low-budget movie being filmed at a rented house in the Hollywood Hills. Cheryl looked at several alien costumes lying across a lawn chair and shuddered. \"Boy these things are scary.\" Robert nodded. \"Yeah. I think my goose bumps have goose bumps.\" The police were called when Clifford Lang, one of the actors, died i"
+    },
+    {
+      "case_name": "The Jackie Mitchell Autographed Baseball Mystery",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " a) The name of game\nThe answer is: b) John\nThe culprit\nThe game\nThe answer is: a) The\nThe baseball. Then\nThe name: a) The game. The answer is: a) The baseball\nThe name of the game. The answer is: a) The game. The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer is: a) The answer: a) The answer: a) The answer: a) The answer: a) The answer: a) The answer: a) Th"
+    },
+    {
+      "case_name": "The Easter Egg Mystery",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nAnna\nThe children were all very excited as they headed back to the start area. They were all smiling and talking about the hunt. Karen\u2019s smile was the biggest of all. She was so happy for Anna, who had found the golden egg. She was also happy for Cole, who had found several eggs. She was happy for Justin, who had found several eggs. She was happy for Lizzie, who had found several eggs. She was happy for all of them. She was happy for all of them. She was happy for all of them. She was happy"
+    },
+    {
+      "case_name": "Easter Rhyme",
+      "predicted": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (c)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (d)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (b)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (a)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (c)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (d)\nThink ste"
+    },
+    {
+      "case_name": "The April Fool ",
+      "predicted": null,
+      "expected": null,
+      "correct": true,
+      "response": " (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer is: (letter)\nThe answer"
+    },
+    {
+      "case_name": "Green Feet",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nMargie was going to have to figure out who had green dye on their hands. She was going to have to figure out who had green dye on their hands. She was going to have to figure out who had green dye on their hands. She was going to have to figure out who had green dye on their hands. She was going to have to figure out who had green dye on their hands. She was going to have to figure out who had green dye on their hands. She was going to have to figure out who had green dye on their hand"
+    },
+    {
+      "case_name": "Restaurant Roulette ",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (d) Jean- Pierre Dubois\nUncle Robert\u2019s story is a good one. It\u2019s a good story because it\u2019s a story that\u2019s true. It\u2019s a true story because it\u2019s a story that\u2019s based on a real event. And it\u2019s a real event because it\u2019s a story that\u2019s based on a real event. And it\u2019s a real event because it\u2019s a story that\u2019s based on a real event. And it\u2019s a real event because it\u2019s a story that\u2019s based on a real event. And it\u2019s a real event because it\u2019s a story that\u2019s based on a real event. And it\u2019s a real event beca"
+    },
+    {
+      "case_name": "Violating the Pirate Code",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "Space Station Sagittarius Six Suffers Sabotage",
+      "predicted": "B",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nCpl. Bennington\nAnswer: (b)\nAnswer: (c)\nAnswer: (d)\nAnswer: (e)\nAnswer: (f)\nAnswer: (g)\nAnswer: (h)\nAnswer: (i)\nAnswer: (j)\nAnswer: (k)\nAnswer: (l)\nAnswer: (m)\nAnswer: (n)\nAnswer: (o)\nAnswer: (p)\nAnswer: (q)\nAnswer: (r)\nAnswer: (s)\nAnswer: (t)\nAnswer: (u)\nAnswer: (v)\nAnswer: (w)\nAnswer: (x)\nAnswer: (y)\nAnswer: (z)\nAnswer: (aa)\nAnswer: (ab)\nAnswer: (ac)\nAnswer: (ad)\nAnswer: (ae)\nAnswer: (af)\nAnswer: (ag)\nAnswer: (ah)\nAnswer: (ai)\nAnswer: (aj)\nAnswer: (ak)\nAnswer: (al)\nAnswer: (am)\nAnswer: (a"
+    },
+    {
+      "case_name": "Flying Saucer of New Mexico",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "Great Musket Mystery",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " it. Give me Liberty or give me Death!\nI heard the\nb)\nI heard the\nb)\nI heard the\nb)\nI the\nI the\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the alarm\nI the al"
+    },
+    {
+      "case_name": "True Green: A St. Patrick's Day Mystery",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " the questions three\nDetective a Clue.\n\n**\nDetective: a Clue.\nShe\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clue.\nDetective: a Clu"
+    },
+    {
+      "case_name": "St. Patrick's Day Pearls",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nThink step by step, then give your final answer as: ANSWER: "
+    },
+    {
+      "case_name": "Death in the Theatre",
+      "predicted": null,
+      "expected": "C",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "Death at Andersonville",
+      "predicted": "C",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nThe culprit is Corporal Wardlow Horner.\n\nThe following is a list of the five men in the tent:\nAndersonville Military Prison, deep in the heart of Dixieland Georgia, was the most dreaded of Confederate prisoner-of-war camps. It was such a grim place that the rebel soldiers guarding it were fed and clothed little better than their 33,000 Yankee prisoners. From its inception in February 1864, until the Civil War\u2019s end 14 months later, 13,000 prisoners would die; an astonishing 29% mortality ra"
+    },
+    {
+      "case_name": "The Big Game ",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nI am a detective solving a mystery. Read carefully and identify the culprit.\nAt least this time, the commute was worthwhile. For the past few months, I had been spending most of my time in Los Angeles to consult on a new TV show based on a Baltimore Detective. Being the premier Baltimore Detective, at least in my humble opinion, I was hoping that they would call the show \u201cUncle Buck\u201d after me, but so far no luck. Still, they had chosen me for the honor of being the technical consultant. Tha"
+    },
+    {
+      "case_name": "The Liberty Gun",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (d) Tom Wise\nThe cannon was not stolen. It was a ruse to get the ship loaded with iron. The iron was to be used to make cannonballs. The cannon was to be used to sink the Resolve. The Resolve was a ship that was to be used to transport the cannon to the British. The British were to use the cannon to sink the Resolve. The Resolve was to be used to transport the cannon to the British. The British were to use the cannon to sink the Resolve. The Resolve was to be used to transport the cannon to the"
+    },
+    {
+      "case_name": "Summer Camp",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\n\nDiane's cabin was the last cabin to be unlocked. She had to wait until the other cabins were unlocked to get into the kitchen. She knew that Allie had to be in the kitchen, so she headed there. She walked in and saw Allie, who was still in her pajamas, sitting at the table. \u201cWhat are you doing here?\u201d asked Diane. \u201cI'm here to get the ice for the buckets. I'm the only one who can get the ice. I'm the only one who can get the ice. I'm the only one who can get the ice. I'm the only one who ca"
+    },
+    {
+      "case_name": "Mystery at Lyndley's Fort",
+      "predicted": null,
+      "expected": "D",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "Riddle of the Confederate Spy",
+      "predicted": "A",
+      "expected": "C",
+      "correct": false,
+      "response": " (a)\nSergeant Stoker was right. Parker was the spy. He had been sent to the bridge by the Confederates, and had been waiting for the right moment to strike. But the sergeant had been too clever. He had asked each soldier where he was sleeping, and Parker had been the only one to answer. The sergeant had then asked each soldier where he had come from, and Parker had been the only one to answer. The sergeant had then asked each soldier what he was doing, and Parker had been the only one to answer."
+    },
+    {
+      "case_name": "Thin Ice",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nThe correct answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nThe answer is (a)\nT"
+    },
+    {
+      "case_name": "Flouted",
+      "predicted": null,
+      "expected": "C",
+      "correct": false,
+      "response": " (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (letter)\nAnswer: (lette"
+    },
+    {
+      "case_name": "Car Trouble",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\nI was sure that Mr. Carlson was the culprit. He had a history of violence and I had just told him that he was going to have to stand in the chair. I knew that he was going to be upset. I had to be careful. I had to watch for clues. I had to be sure that I was right. I had to be sure that I was right. I had to be sure that I was right. I had to be sure that I was right. I had to be sure that I was right. I had to be sure that I was right. I had to be sure that I was right. I had to be sure t"
+    },
+    {
+      "case_name": "Mr. Poe's Birthday Party",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (d) Stephen\nThe following is a list of the names of the boys.\n(a) Anthony\n(b) Connor\n(c) Skylar\n(d) Stephen\n(e) Tommy\n(f) Farrell\n(g) Poe\n(h) the dummy\n(i) the cemetery\n(j) the oak tree\n(k) the picnic table\n(l) the graveyard\n(m) the moonlight\n(n) the sunrise\n(o) the sun\n(p) the cemetery\n(q) the oak tree\n(r) the picnic table\n(s) the graveyard\n(t) the moonlight\n(u) the sunrise\n(v) the sun\n(w) the cemetery\n(x) the oak tree\n(y) the picnic table\n(z) the graveyard\n(aa) the moonlight\n(bb) the sunrise\n"
+    },
+    {
+      "case_name": "The Root of All Evil",
+      "predicted": null,
+      "expected": "A",
+      "correct": false,
+      "response": " (a)\nBryan Durell was the culprit.\n\nThe following is a list of the most common causes of death in the United States:\nHeart disease\nCancer\nAccidents\nAlzheimers\nAIDS\nSuicide\nInfluenza\nHepatitis\nPneumonia\nPolio\nDrowning\nCholesterol\nTuberculosis\nPneumonia\nHypertension\nPneumonia\nDiabetes\nPneumonia\nStomach cancer\nPneumonia\nEmphysema\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nPneumonia\nP"
+    },
+    {
+      "case_name": "Get the Lead Out",
+      "predicted": "B",
+      "expected": "C",
+      "correct": false,
+      "response": " (a)\nAnswer: (b)\nAnswer: (c)\nAnswer: (d)\nAnswer: (e)\nAnswer: (f)\nAnswer: (g)\nAnswer: (h)\nAnswer: (i)\nAnswer: (j)\nAnswer: (k)\nAnswer: (l)\nAnswer: (m)\nAnswer: (n)\nAnswer: (o)\nAnswer: (p)\nAnswer: (q)\nAnswer: (r)\nAnswer: (s)\nAnswer: (t)\nAnswer: (u)\nAnswer: (v)\nAnswer: (w)\nAnswer: (x)\nAnswer: (y)\nAnswer: (z)\nAnswer: (aa)\nAnswer: (ab)\nAnswer: (ac)\nAnswer: (ad)\nAnswer: (ae)\nAnswer: (af)\nAnswer: (ag)\nAnswer: (ah)\nAnswer: (ai)\nAnswer: (aj)\nAnswer: (ak)\nAnswer: (al)\nAnswer: (am)\nAnswer: (an)\nAnswer: (ao)\n"
+    },
+    {
+      "case_name": "POPPING A WHEELIE",
+      "predicted": null,
+      "expected": "B",
+      "correct": false,
+      "response": " (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is: (letter)\nThe culprit is:"
+    },
+    {
+      "case_name": "The Mystery of the Leprechaun's Trophy ",
+      "predicted": "A",
+      "expected": "D",
+      "correct": false,
+      "response": " (a)\n\nHere's my logic:\nRandy and Casey were in the auditorium. The trophy was on the top shelf of the display case. The janitor was the last person in the auditorium. The janitor was the last person in the auditorium. The janitor was the last person in the auditorium. The janitor was the last person in the auditorium. The janitor was the last person in the auditorium. The janitor was the last person in the auditorium. The janitor was the last person in the auditorium. The janitor was the last pe"
+    },
+    {
+      "case_name": "The Mysterious Chicken",
+      "predicted": "A",
+      "expected": "A",
+      "correct": true,
+      "response": " (letter)\nWho is the culprit? Choose one:\n(a) Ed\n(b) Ed's Husky\n(c) Ed's mother\n(d) Zeke\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Ed\n(b) Ed's Husky\n(c) Ed's mother\n(d) Zeke\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (letter)\nWho is the culprit? Choose one:\n(a) Ed\n(b) Ed's Husky\n(c) Ed's mother\n(d) Zeke\nThink step by step, then give your final answer as: ANSWER: (letter)\nAnswer: (let"
+    }
+  ]
+}
