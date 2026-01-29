@@ -41,7 +41,8 @@ def evaluate(name: str, adapter_path: Path = None) -> dict:
         model_args = f"pretrained={MODEL_ID},dtype=bfloat16,trust_remote_code=True"
 
     cmd = [
-        "lm_eval",
+        "accelerate", "launch", "--num_processes", "8",
+        "-m", "lm_eval",
         "--model", "hf",
         "--model_args", model_args,
         "--tasks", "mbpp,humaneval",
