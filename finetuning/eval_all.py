@@ -38,7 +38,7 @@ TEST_TRAIN_HALF = DATA_DIR / "mbpp_test_train_half.csv"
 TEST_EVAL_HALF = DATA_DIR / "mbpp_test_eval_half.csv"
 
 # Eval settings - optimized for H100 80GB
-BATCH_SIZE = 16  # H100 can handle larger batches for inference
+BATCH_SIZE = 8
 MAX_NEW_TOKENS = 1024
 
 # ============================================================================
