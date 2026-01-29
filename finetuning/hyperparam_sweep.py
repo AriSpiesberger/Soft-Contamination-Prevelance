@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Hyperparameter optimization for finetuning using all 8 GPUs.
-Optimizes for aggregate gain on eval while maintaining clean performance.
+Uses lm-evaluation-harness for MBPP and HumanEval evaluation.
 
 Usage:
-    accelerate launch --num_processes 8 hyperparam_sweep.py --n_trials 20
+    python hyperparam_sweep.py --n_trials 20
 """
 
 import os
@@ -13,7 +13,6 @@ import csv
 import json
 import subprocess
 import sys
-import tempfile
 import argparse
 from pathlib import Path
 from typing import List, Dict
@@ -39,14 +38,9 @@ SWEEP_DIR = OUTPUT_DIR / "sweeps"
 MODEL_ID = "allenai/OLMo-3-7B-Instruct"
 SEMANTIC_CSV = DATA_DIR / "mbpp_train_filtered.csv"
 
-TEST_TRAIN_HALF = DATA_DIR / "mbpp_test_train_half.csv"
-TEST_EVAL_HALF = DATA_DIR / "mbpp_test_eval_half.csv"
-
 # Fixed settings
 MAX_SEQ_LENGTH = 2048
-EVAL_BATCH_SIZE = 8
-MAX_NEW_TOKENS = 1024
-NUM_EPOCHS = 5  # Fixed 5 epochs
+NUM_EPOCHS = 5
 
 # ============================================================================
 # FEW-SHOT EXAMPLES
@@ -190,120 +184,52 @@ def load_semantic_duplicates() -> List[Dict]:
 
 
 # ============================================================================
-# EVALUATION
+# EVALUATION USING LM-EVALUATION-HARNESS
 # ============================================================================
 
-def load_test_cases_for_eval() -> Dict[int, List[str]]:
-    test_cases = {}
-    for split in ['test', 'train', 'validation', 'prompt']:
-        try:
-            ds = load_dataset('mbpp', split=split)
-            for item in ds:
-                task_id = item['task_id']
-                if task_id not in test_cases:
-                    test_cases[task_id] = item['test_list']
-        except:
-            pass
-    return test_cases
-
-
-def load_split_prompts(split: str, test_cases: Dict) -> List[Dict]:
-    csv_path = TEST_TRAIN_HALF if split == "train" else TEST_EVAL_HALF
-    prompts = []
-    with open(csv_path, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            task_id = int(row['task_id'])
-            if task_id in [2, 3, 4] or task_id not in test_cases:
-                continue
-            prompts.append({
-                'task_id': task_id,
-                'text': row['original_text'],
-                'test_list': test_cases[task_id],
-            })
-    return prompts
-
-
-def run_code_with_tests(code: str, test_list: List[str], timeout: float = 5.0) -> bool:
-    test_script = code + "\n\n" + "\n".join(test_list)
-    try:
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-            f.write(test_script)
-            temp_path = f.name
-        result = subprocess.run([sys.executable, temp_path], capture_output=True, text=True, timeout=timeout)
-        os.unlink(temp_path)
-        return result.returncode == 0
-    except:
-        try:
-            os.unlink(temp_path)
-        except:
-            pass
-        return False
-
-
-def evaluate_model(model, tokenizer, rank, world_size) -> Dict[str, float]:
-    """Evaluate on contaminated (train) and clean (eval) splits, distributed across GPUs."""
-    model.eval()
-    tokenizer.padding_side = 'left'
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-
-    device = f"cuda:{rank}"
-    test_cases = load_test_cases_for_eval()
-    fewshot_messages = build_fewshot_messages()
+def evaluate_with_harness(model_path: str, trial_name: str) -> Dict[str, float]:
+    """Evaluate using lm-evaluation-harness for MBPP and HumanEval."""
     results = {}
 
-    # train = contaminated tasks, eval = clean tasks
-    for split, label in [("train", "contaminated"), ("eval", "clean")]:
-        prompts = load_split_prompts(split, test_cases)
-        
-        # Distribute across GPUs
-        my_prompts = prompts[rank::world_size]
-        
-        correct = 0
-        total = 0
+    # Run lm-eval for MBPP and HumanEval
+    output_dir = SWEEP_DIR / trial_name / "eval_results"
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-        for i in range(0, len(my_prompts), EVAL_BATCH_SIZE):
-            batch = my_prompts[i:i + EVAL_BATCH_SIZE]
-            batch_prompts = []
-            for item in batch:
-                user_content = build_user_prompt(item['text'], item['test_list'])
-                messages = fewshot_messages + [{"role": "user", "content": user_content}]
-                full_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-                batch_prompts.append(full_prompt)
+    cmd = [
+        "lm_eval",
+        "--model", "hf",
+        "--model_args", f"pretrained={MODEL_ID},peft={model_path},dtype=bfloat16,trust_remote_code=True",
+        "--tasks", "mbpp,humaneval",
+        "--batch_size", "8",
+        "--output_path", str(output_dir),
+        "--log_samples",
+    ]
 
-            inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True, truncation=True, max_length=2048).to(device)
+    print(f"Running lm-eval: {' '.join(cmd)}")
 
-            with torch.no_grad():
-                outputs = model.generate(
-                    **inputs,
-                    max_new_tokens=MAX_NEW_TOKENS,
-                    do_sample=False,
-                    pad_token_id=tokenizer.eos_token_id,
-                )
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=3600)
+        print(result.stdout)
+        if result.returncode != 0:
+            print(f"lm-eval stderr: {result.stderr}")
+            return {"mbpp": 0.0, "humaneval": 0.0}
 
-            input_len = inputs['input_ids'].shape[1]
-            for j, item in enumerate(batch):
-                response = tokenizer.decode(outputs[j][input_len:], skip_special_tokens=True).strip()
-                if response.startswith("```python"):
-                    response = response[9:]
-                elif response.startswith("```"):
-                    response = response[3:]
-                if response.endswith("```"):
-                    response = response[:-3]
-                if run_code_with_tests(response.strip(), item['test_list']):
-                    correct += 1
-                total += 1
-
-        # Gather results across GPUs
-        if torch.distributed.is_initialized():
-            c_tensor = torch.tensor([correct], dtype=torch.float32, device=device)
-            t_tensor = torch.tensor([total], dtype=torch.float32, device=device)
-            torch.distributed.all_reduce(c_tensor)
-            torch.distributed.all_reduce(t_tensor)
-            correct, total = int(c_tensor.item()), int(t_tensor.item())
-
-        results[label] = 100 * correct / total if total > 0 else 0
+        # Parse results from output files
+        for json_file in output_dir.glob("results_*.json"):
+            with open(json_file) as f:
+                data = json.load(f)
+                if "results" in data:
+                    for task, metrics in data["results"].items():
+                        if "mbpp" in task.lower():
+                            results["mbpp"] = metrics.get("pass@1", metrics.get("acc", 0)) * 100
+                        elif "humaneval" in task.lower():
+                            results["humaneval"] = metrics.get("pass@1", metrics.get("acc", 0)) * 100
+    except subprocess.TimeoutExpired:
+        print("lm-eval timed out")
+        return {"mbpp": 0.0, "humaneval": 0.0}
+    except Exception as e:
+        print(f"lm-eval failed: {e}")
+        return {"mbpp": 0.0, "humaneval": 0.0}
 
     return results
 
@@ -320,17 +246,20 @@ def train_and_evaluate(
     batch_size: int,
     grad_accum: int,
     trial_name: str,
-    tokenizer,
 ) -> Dict[str, float]:
-    """Train with given hyperparameters and evaluate."""
-    rank = int(os.environ.get("LOCAL_RANK", 0))
-    world_size = int(os.environ.get("WORLD_SIZE", 1))
-    device = f"cuda:{rank}"
+    """Train with given hyperparameters and evaluate using lm-eval-harness."""
+    device = "cuda:0"
     output_dir = SWEEP_DIR / trial_name
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load data
+    print(f"Loading training data...")
     training_data = load_semantic_duplicates()
     dataset = Dataset.from_list(training_data)
+    print(f"  {len(training_data)} examples")
+
+    # Load tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
     formatting_func = get_formatting_func(tokenizer)
 
     # LoRA config
@@ -343,7 +272,7 @@ def train_and_evaluate(
         task_type="CAUSAL_LM",
     )
 
-    # Training config
+    # Training config - single GPU for simplicity
     training_args = SFTConfig(
         output_dir=str(output_dir),
         num_train_epochs=NUM_EPOCHS,
@@ -352,7 +281,7 @@ def train_and_evaluate(
         learning_rate=learning_rate,
         warmup_ratio=0.03,
         lr_scheduler_type="cosine",
-        logging_steps=50,
+        logging_steps=20,
         save_strategy="no",
         bf16=True,
         tf32=True,
@@ -363,18 +292,15 @@ def train_and_evaluate(
         max_length=MAX_SEQ_LENGTH,
         packing=False,
         completion_only_loss=False,
-        dataloader_num_workers=4,
-        dataloader_pin_memory=True,
     )
 
-    if rank == 0:
-        print(f"\nLoading model for trial {trial_name}...")
-    
+    print(f"\nLoading model for trial {trial_name}...")
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True, device_map=device, attn_implementation="sdpa"
     )
     model = get_peft_model(model, peft_config)
 
+    print("Loading reference model...")
     ref_model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True, device_map=device, attn_implementation="sdpa"
     )
@@ -389,22 +315,25 @@ def train_and_evaluate(
         kl_beta=kl_beta,
     )
 
-    if rank == 0:
-        print(f"Training {trial_name} (lr={learning_rate}, r={lora_r}, kl={kl_beta})...")
-    
+    print(f"Training {trial_name} (lr={learning_rate:.2e}, r={lora_r}, kl={kl_beta:.3f})...")
     trainer.train()
 
-    if torch.distributed.is_initialized():
-        torch.distributed.barrier()
+    # Save adapter for evaluation
+    adapter_path = output_dir / "adapter"
+    trainer.save_model(str(adapter_path))
+    tokenizer.save_pretrained(str(adapter_path))
 
-    if rank == 0:
-        print(f"Evaluating {trial_name}...")
-    
-    results = evaluate_model(model, tokenizer, rank, world_size)
-
+    # Cleanup training resources
     del trainer, model, ref_model
     gc.collect()
     torch.cuda.empty_cache()
+
+    # Evaluate using lm-evaluation-harness
+    print(f"\nEvaluating {trial_name} with lm-evaluation-harness...")
+    results = evaluate_with_harness(str(adapter_path), trial_name)
+
+    print(f"  MBPP: {results.get('mbpp', 0):.1f}%")
+    print(f"  HumanEval: {results.get('humaneval', 0):.1f}%")
 
     return results
 
@@ -413,63 +342,53 @@ def train_and_evaluate(
 # OPTUNA OBJECTIVE
 # ============================================================================
 
-def create_objective(tokenizer):
-    def objective(trial: optuna.Trial) -> float:
-        rank = int(os.environ.get("LOCAL_RANK", 0))
-        
-        # Hyperparameters to optimize
-        learning_rate = trial.suggest_float("learning_rate", 5e-5, 3e-4, log=True)
-        lora_r = trial.suggest_categorical("lora_r", [8, 16, 32])
-        lora_alpha = trial.suggest_categorical("lora_alpha", [16, 32, 64])
-        kl_beta = trial.suggest_float("kl_beta", 0.001, 0.1, log=True)
-        batch_size = trial.suggest_categorical("batch_size", [2, 4])
-        grad_accum = trial.suggest_categorical("grad_accum", [2, 4])
+def objective(trial: optuna.Trial) -> float:
+    # Hyperparameters to optimize
+    learning_rate = trial.suggest_float("learning_rate", 5e-5, 3e-4, log=True)
+    lora_r = trial.suggest_categorical("lora_r", [8, 16, 32])
+    lora_alpha = trial.suggest_categorical("lora_alpha", [16, 32, 64])
+    kl_beta = trial.suggest_float("kl_beta", 0.001, 0.1, log=True)
+    batch_size = trial.suggest_categorical("batch_size", [2, 4])
+    grad_accum = trial.suggest_categorical("grad_accum", [2, 4])
 
-        trial_name = f"trial_{trial.number}"
+    trial_name = f"trial_{trial.number}"
 
-        try:
-            results = train_and_evaluate(
-                learning_rate=learning_rate,
-                lora_r=lora_r,
-                lora_alpha=lora_alpha,
-                kl_beta=kl_beta,
-                batch_size=batch_size,
-                grad_accum=grad_accum,
-                trial_name=trial_name,
-                tokenizer=tokenizer,
-            )
+    try:
+        results = train_and_evaluate(
+            learning_rate=learning_rate,
+            lora_r=lora_r,
+            lora_alpha=lora_alpha,
+            kl_beta=kl_beta,
+            batch_size=batch_size,
+            grad_accum=grad_accum,
+            trial_name=trial_name,
+        )
 
-            clean_acc = results["clean"]
-            contaminated_acc = results["contaminated"]
+        mbpp_acc = results.get("mbpp", 0)
+        humaneval_acc = results.get("humaneval", 0)
 
-            # Objective: maximize both clean and contaminated accuracy
-            score = (clean_acc + contaminated_acc) / 2
+        # Objective: maximize average of MBPP and HumanEval
+        score = (mbpp_acc + humaneval_acc) / 2
 
-            if rank == 0:
-                trial.set_user_attr("clean", clean_acc)
-                trial.set_user_attr("contaminated", contaminated_acc)
-                print(f"\nTrial {trial.number}: clean={clean_acc:.1f}%, contaminated={contaminated_acc:.1f}%, score={score:.1f}")
+        trial.set_user_attr("mbpp", mbpp_acc)
+        trial.set_user_attr("humaneval", humaneval_acc)
 
-            return score
+        print(f"\nTrial {trial.number}: MBPP={mbpp_acc:.1f}%, HumanEval={humaneval_acc:.1f}%, score={score:.1f}")
 
-        except Exception as e:
-            if rank == 0:
-                print(f"Trial {trial.number} failed: {e}")
-            return 0.0
+        return score
 
-    return objective
+    except Exception as e:
+        print(f"Trial {trial.number} failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return 0.0
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--n_trials", type=int, default=20)
-    parser.add_argument("--study_name", type=str, default="mbpp_sweep")
+    parser.add_argument("--study_name", type=str, default="mbpp_humaneval_sweep")
     args = parser.parse_args()
-
-    rank = int(os.environ.get("LOCAL_RANK", 0))
-
-    if not torch.distributed.is_initialized():
-        torch.distributed.init_process_group(backend="nccl")
 
     # H100 optimizations
     torch.backends.cuda.matmul.allow_tf32 = True
@@ -478,38 +397,33 @@ def main():
 
     SWEEP_DIR.mkdir(parents=True, exist_ok=True)
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
+    # Create study
+    study = optuna.create_study(
+        study_name=args.study_name,
+        direction="maximize",
+        storage=f"sqlite:///{SWEEP_DIR}/optuna.db",
+        load_if_exists=True,
+    )
 
-    if rank == 0:
-        study = optuna.create_study(
-            study_name=args.study_name,
-            direction="maximize",
-            storage=f"sqlite:///{SWEEP_DIR}/optuna.db",
-            load_if_exists=True,
-        )
-        study.optimize(create_objective(tokenizer), n_trials=args.n_trials)
+    study.optimize(objective, n_trials=args.n_trials)
 
-        print("\n" + "="*60)
-        print("BEST TRIAL")
-        print("="*60)
-        print(f"Score: {study.best_value:.2f}")
-        print(f"Params: {study.best_params}")
-        print(f"Clean acc: {study.best_trial.user_attrs.get('clean', 'N/A')}")
-        print(f"Contaminated acc: {study.best_trial.user_attrs.get('contaminated', 'N/A')}")
+    print("\n" + "="*60)
+    print("BEST TRIAL")
+    print("="*60)
+    print(f"Score: {study.best_value:.2f}")
+    print(f"Params: {study.best_params}")
+    print(f"MBPP: {study.best_trial.user_attrs.get('mbpp', 'N/A')}")
+    print(f"HumanEval: {study.best_trial.user_attrs.get('humaneval', 'N/A')}")
 
-        results_file = SWEEP_DIR / "best_params.json"
-        with open(results_file, 'w') as f:
-            json.dump({
-                "best_score": study.best_value,
-                "best_params": study.best_params,
-                "best_clean": study.best_trial.user_attrs.get('clean'),
-                "best_contaminated": study.best_trial.user_attrs.get('contaminated'),
-            }, f, indent=2)
-        print(f"\nSaved to {results_file}")
-    else:
-        # Non-rank-0 processes just participate in training/eval
-        for _ in range(args.n_trials):
-            torch.distributed.barrier()
+    results_file = SWEEP_DIR / "best_params.json"
+    with open(results_file, 'w') as f:
+        json.dump({
+            "best_score": study.best_value,
+            "best_params": study.best_params,
+            "best_mbpp": study.best_trial.user_attrs.get('mbpp'),
+            "best_humaneval": study.best_trial.user_attrs.get('humaneval'),
+        }, f, indent=2)
+    print(f"\nSaved to {results_file}")
 
 
 if __name__ == "__main__":
