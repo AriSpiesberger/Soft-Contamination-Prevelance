@@ -442,9 +442,8 @@ def create_objective(tokenizer):
             clean_acc = results["clean"]
             contaminated_acc = results["contaminated"]
 
-            # Objective: maximize clean accuracy, penalize large contaminated-clean gap
-            gap_penalty = max(0, contaminated_acc - clean_acc - 10) * 0.5
-            score = clean_acc - gap_penalty
+            # Objective: maximize both clean and contaminated accuracy
+            score = (clean_acc + contaminated_acc) / 2
 
             if rank == 0:
                 trial.set_user_attr("clean", clean_acc)
