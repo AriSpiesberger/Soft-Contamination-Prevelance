@@ -354,8 +354,8 @@ def main():
         with open(RESULTS_FILE, 'w') as f:
             json.dump(all_results, f, indent=2)
 
-    # Evaluate final models for all experiments
-    experiments = ["sem_dupes", "exact_dupes", "cosine_dolci_rl", "cosine_dolci_sft", "cosine_dolci_dpo"]
+    # Evaluate final models
+    experiments = ["sem_dupes", "exact_dupes"]
     epochs = [10]  # Only final
 
     for exp_name in experiments:
