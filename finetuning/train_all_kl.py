@@ -46,7 +46,7 @@ GRADIENT_ACCUMULATION = 2  # Effective batch = 8*4*2 = 64
 
 # Best hyperparameters from sweep
 MAX_EPOCHS = 10
-LEARNING_RATE = 7.5e-5
+LEARNING_RATE = 1.5e-4
 LORA_R = 16
 LORA_ALPHA = 32
 KL_BETA = 0.01  # Minimal KL regularization
