@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """
-Train all 3 experiments with KL regularization using CHAT FORMAT.
+Train all 5 experiments with KL regularization using CHAT FORMAT.
 Matches OLMo-3-7B-Instruct chat template format exactly.
+
+Experiments:
+    1. sem_dupes - Semantic duplicates (paraphrased prompts)
+    2. exact_dupes - Exact duplicates (original prompts repeated 5x)
+    3. cosine_dolci_rl - Top 5 cosine similarity matches from dolci_rl
+    4. cosine_dolci_sft - Top 5 cosine similarity matches from dolci_sft
+    5. cosine_dolci_dpo - Top 5 cosine similarity matches from dolci_dpo
 
 Usage:
     accelerate launch --num_processes 8 train_all_kl.py
@@ -10,7 +17,6 @@ Usage:
 import os
 import gc
 import csv
-import time
 from pathlib import Path
 from typing import List, Dict
 from collections import defaultdict
@@ -35,8 +41,8 @@ SEMANTIC_CSV = DATA_DIR / "mbpp_train_filtered.csv"
 COSINE_CSV = DATA_DIR / "all_mbpp_samples.csv"
 
 NUM_GPUS = 8
-BATCH_SIZE_PER_GPU = 1
-GRADIENT_ACCUMULATION = 4
+BATCH_SIZE_PER_GPU = 4  # H100 80GB can handle larger batches
+GRADIENT_ACCUMULATION = 2  # Effective batch = 8*4*2 = 64
 
 # Best hyperparameters from sweep
 MAX_EPOCHS = 10
@@ -45,6 +51,7 @@ LORA_R = 16
 LORA_ALPHA = 32
 KL_BETA = 0.01  # Minimal KL regularization
 MAX_SEQ_LENGTH = 2048
+DATALOADER_WORKERS = 4  # Parallel data loading
 
 # ============================================================================
 # CHAT FORMAT WITH FEW-SHOT EXAMPLES
@@ -253,14 +260,23 @@ def load_exact_duplicates(num_copies: int = 5) -> List[Dict]:
     return training_data
 
 
-def load_cosine_duplicates(top_k: int = 5) -> List[Dict]:
-    """Load cosine similarity matches in CHAT FORMAT with test cases."""
-    print(f"Loading cosine similarity duplicates (top {top_k}) from {COSINE_CSV}...")
+def load_cosine_duplicates(top_k: int = 5, source: str = None) -> List[Dict]:
+    """Load cosine similarity matches in CHAT FORMAT with test cases.
+
+    Args:
+        top_k: Number of top similar matches per task
+        source: Filter by source (e.g., 'dolci_rl', 'dolci_sft', 'dolci_dpo'). None = all sources.
+    """
+    source_str = f" from source '{source}'" if source else ""
+    print(f"Loading cosine similarity duplicates (top {top_k}){source_str} from {COSINE_CSV}...")
     test_cases = load_mbpp_test_cases()
     task_samples = defaultdict(list)
 
     with open(COSINE_CSV, 'r', encoding='utf-8') as f:
         for row in csv.DictReader(f):
+            # Filter by source if specified
+            if source and row['source'] != source:
+                continue
             task_samples[int(row['test_id'])].append({
                 'corpus_text': row['corpus_text'],
                 'similarity': float(row['similarity']),
@@ -334,24 +350,35 @@ def train_experiment(training_data: List[Dict], experiment_name: str, tokenizer)
         save_strategy="epoch",
         save_total_limit=None,
         bf16=True,
-        optim="adamw_torch",
+        tf32=True,  # H100 tensor core optimization
+        optim="adamw_torch_fused",  # Fused optimizer for H100
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
         report_to="none",
         max_length=MAX_SEQ_LENGTH,
         packing=False,
         completion_only_loss=False,
+        dataloader_num_workers=DATALOADER_WORKERS,
+        dataloader_pin_memory=True,
     )
 
-    print("Loading model...")
+    print("Loading model with Flash Attention 2...")
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True, device_map=device
+        MODEL_ID,
+        torch_dtype=torch.bfloat16,
+        trust_remote_code=True,
+        device_map=device,
+        attn_implementation="flash_attention_2",
     )
     model = get_peft_model(model, peft_config)
 
-    print("Loading reference model...")
+    print("Loading reference model with Flash Attention 2...")
     ref_model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True, device_map=device
+        MODEL_ID,
+        torch_dtype=torch.bfloat16,
+        trust_remote_code=True,
+        device_map=device,
+        attn_implementation="flash_attention_2",
     )
 
     print(f"Initializing trainer (KL beta={KL_BETA})...")
@@ -375,19 +402,22 @@ def train_experiment(training_data: List[Dict], experiment_name: str, tokenizer)
     if rank == 0:
         print(f"Saved to {output_dir}")
 
-    # Aggressive cleanup to free GPU memory
+    # Cleanup to free GPU memory
     del trainer
     del model
     del ref_model
     gc.collect()
     torch.cuda.empty_cache()
     torch.cuda.synchronize()
-    gc.collect()
-    time.sleep(2)  # Give GPU time to fully release memory
 
 
 def main():
     rank = int(os.environ.get("LOCAL_RANK", 0))
+
+    # H100 optimizations
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    torch.backends.cudnn.benchmark = True
 
     if not torch.distributed.is_initialized():
         torch.distributed.init_process_group(backend="nccl")
@@ -396,27 +426,28 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
 
     experiments = [
-        ("sem_dupes", load_semantic_duplicates),
-        ("exact_dupes", load_exact_duplicates),
-        ("cosine_sim", load_cosine_duplicates),
+        ("sem_dupes", load_semantic_duplicates, {}),
+        ("exact_dupes", load_exact_duplicates, {}),
+        ("cosine_dolci_rl", load_cosine_duplicates, {"source": "dolci_rl"}),
+        ("cosine_dolci_sft", load_cosine_duplicates, {"source": "dolci_sft"}),
+        ("cosine_dolci_dpo", load_cosine_duplicates, {"source": "dolci_dpo"}),
     ]
 
-    for exp_name, load_fn in experiments:
+    for exp_name, load_fn, load_kwargs in experiments:
         # Clean up before each experiment
         gc.collect()
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
 
-        training_data = load_fn()
+        training_data = load_fn(**load_kwargs)
         torch.distributed.barrier()
         train_experiment(training_data, exp_name, tokenizer)
         torch.distributed.barrier()
 
-        # Force cleanup after each experiment
+        # Cleanup after each experiment
         gc.collect()
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
-        time.sleep(3)
 
     if rank == 0:
         print("\n" + "="*70)
