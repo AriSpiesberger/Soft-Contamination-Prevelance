@@ -128,7 +128,7 @@ def load_model(adapter_path: str = None, device: str = "cuda:0"):
 
 
 def evaluate_mbpp(model, tokenizer, device: str, rank: int, world_size: int) -> Dict[str, float]:
-    """Evaluate on MBPP test set - distributed across GPUs."""
+    """Evaluate on MBPP test set - distributed across GPUs with batching."""
     ds = load_dataset("mbpp", split="test")
 
     # Filter out few-shot examples and convert to list
@@ -143,13 +143,22 @@ def evaluate_mbpp(model, tokenizer, device: str, rank: int, world_size: int) -> 
     fewshot = build_fewshot_messages()
     correct = 0
     total = 0
+    batch_size = 8  # Process 8 at a time per GPU
 
-    for item in tqdm(items_per_gpu, desc=f"MBPP[{rank}]", disable=rank!=0):
-        user_content = build_user_prompt(item['text'], item['test_list'])
-        messages = fewshot + [{"role": "user", "content": user_content}]
+    # Process in batches
+    for i in tqdm(range(0, len(items_per_gpu), batch_size), desc=f"MBPP[{rank}]", disable=rank!=0):
+        batch_items = items_per_gpu[i:i+batch_size]
 
-        prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        # Build prompts for batch
+        prompts = []
+        for item in batch_items:
+            user_content = build_user_prompt(item['text'], item['test_list'])
+            messages = fewshot + [{"role": "user", "content": user_content}]
+            prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+            prompts.append(prompt)
+
+        # Tokenize batch with padding
+        inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=2048).to(device)
 
         with torch.no_grad():
             outputs = model.generate(
@@ -160,25 +169,28 @@ def evaluate_mbpp(model, tokenizer, device: str, rank: int, world_size: int) -> 
                 eos_token_id=tokenizer.eos_token_id,
             )
 
-        response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
-        code = extract_code(response)
+        # Decode and evaluate each
+        for j, item in enumerate(batch_items):
+            input_len = (inputs['input_ids'][j] != tokenizer.pad_token_id).sum()
+            response = tokenizer.decode(outputs[j][input_len:], skip_special_tokens=True)
+            code = extract_code(response)
 
-        # Run all tests
-        passed = True
-        for test in item['test_list']:
-            if not execute_code(code, test):
-                passed = False
-                break
+            # Run all tests
+            passed = True
+            for test in item['test_list']:
+                if not execute_code(code, test):
+                    passed = False
+                    break
 
-        if passed:
-            correct += 1
-        total += 1
+            if passed:
+                correct += 1
+            total += 1
 
     return {"correct": correct, "total": total}
 
 
 def evaluate_humaneval(model, tokenizer, device: str, rank: int, world_size: int) -> Dict[str, float]:
-    """Evaluate on HumanEval - distributed across GPUs."""
+    """Evaluate on HumanEval - distributed across GPUs with batching."""
     ds = load_dataset("openai_humaneval", split="test")
     items = list(ds)
 
@@ -190,14 +202,21 @@ def evaluate_humaneval(model, tokenizer, device: str, rank: int, world_size: int
 
     correct = 0
     total = 0
+    batch_size = 8  # Process 8 at a time per GPU
 
-    for item in tqdm(items_per_gpu, desc=f"HumanEval[{rank}]", disable=rank!=0):
-        # Build prompt with function signature
-        prompt_text = item['prompt']
-        messages = [{"role": "user", "content": f"Complete this Python function:\n\n{prompt_text}"}]
+    for i in tqdm(range(0, len(items_per_gpu), batch_size), desc=f"HumanEval[{rank}]", disable=rank!=0):
+        batch_items = items_per_gpu[i:i+batch_size]
 
-        prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        # Build prompts for batch
+        prompts = []
+        for item in batch_items:
+            prompt_text = item['prompt']
+            messages = [{"role": "user", "content": f"Complete this Python function:\n\n{prompt_text}"}]
+            prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+            prompts.append(prompt)
+
+        # Tokenize batch with padding
+        inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=2048).to(device)
 
         with torch.no_grad():
             outputs = model.generate(
@@ -208,19 +227,22 @@ def evaluate_humaneval(model, tokenizer, device: str, rank: int, world_size: int
                 eos_token_id=tokenizer.eos_token_id,
             )
 
-        response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
+        # Decode and evaluate each
+        for j, item in enumerate(batch_items):
+            input_len = (inputs['input_ids'][j] != tokenizer.pad_token_id).sum()
+            response = tokenizer.decode(outputs[j][input_len:], skip_special_tokens=True)
 
-        # Combine prompt with completion
-        code = extract_code(response)
-        full_code = item['prompt'] + code
+            # Combine prompt with completion
+            code = extract_code(response)
+            full_code = item['prompt'] + code
 
-        # Run test
-        test_code = full_code + "\n" + item['test'] + f"\ncheck({item['entry_point']})"
-        passed = execute_code(test_code, "", timeout=10)
+            # Run test
+            test_code = full_code + "\n" + item['test'] + f"\ncheck({item['entry_point']})"
+            passed = execute_code(test_code, "", timeout=10)
 
-        if passed:
-            correct += 1
-        total += 1
+            if passed:
+                correct += 1
+            total += 1
 
     return {"correct": correct, "total": total}
 
