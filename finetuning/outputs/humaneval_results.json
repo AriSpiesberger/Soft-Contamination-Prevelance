@@ -1,0 +1,58 @@
+{
+  "baseline": {
+    "humaneval": 28.65853658536585,
+    "correct": 47,
+    "total": 164
+  },
+  "sem_dupes": {
+    "epoch_3": {
+      "humaneval": 63.41463414634146,
+      "correct": 104,
+      "total": 164
+    },
+    "epoch_6": {
+      "humaneval": 64.63414634146342,
+      "correct": 106,
+      "total": 164
+    },
+    "epoch_10": {
+      "humaneval": 62.19512195121951,
+      "correct": 102,
+      "total": 164
+    }
+  },
+  "exact_dupes": {
+    "epoch_3": {
+      "humaneval": 35.97560975609756,
+      "correct": 59,
+      "total": 164
+    },
+    "epoch_6": {
+      "humaneval": 46.95121951219512,
+      "correct": 77,
+      "total": 164
+    },
+    "epoch_10": {
+      "humaneval": 47.5609756097561,
+      "correct": 78,
+      "total": 164
+    }
+  },
+  "cosine_sim": {
+    "epoch_3": {
+      "humaneval": 43.90243902439025,
+      "correct": 72,
+      "total": 164
+    },
+    "epoch_6": {
+      "humaneval": 50.0,
+      "correct": 82,
+      "total": 164
+    },
+    "epoch_10": {
+      "humaneval": 49.390243902439025,
+      "correct": 81,
+      "total": 164
+    }
+  }
+}

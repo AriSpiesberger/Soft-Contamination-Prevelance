@@ -12,14 +12,7 @@ Evaluations:
 - HumanEval (degradation): baseline, epoch 10
 
 Usage:
-    # Full run on 8 GPUs
-    accelerate launch --num_processes 8 run_mbpp_8gpu.py
-
-    # Single experiment
-    accelerate launch --num_processes 8 run_mbpp_8gpu.py --experiment semantic
-
-    # Single GPU (for testing)
-    python run_mbpp_8gpu.py --experiment semantic
+    accelerate launch --num_processes 8 run_mbpp_8gpu.py --experiment all
 """
 
 import os
@@ -34,8 +27,9 @@ from typing import Optional, List, Dict, Tuple
 from collections import defaultdict
 
 import torch
+from tqdm import tqdm
 from datasets import Dataset, load_dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, PeftModel
 from trl import SFTTrainer, SFTConfig
 
@@ -48,20 +42,17 @@ DATA_DIR = PWD / "mbpp_data"
 OUTPUT_DIR = PWD / "outputs"
 RESULTS_FILE = OUTPUT_DIR / "mbpp_experiment_results.json"
 
-# Model
 MODEL_ID = "allenai/OLMo-3-7B-Instruct"
 
-# Data files
-SEMANTIC_CSV = DATA_DIR / "mbpp_train.csv"           # 1050 semantic duplicates
-COSINE_CSV = DATA_DIR / "all_mbpp_samples.csv"       # 1M+ cosine similarity matches
-TEST_TRAIN_CSV = DATA_DIR / "mbpp_test_train_half.csv"
-TEST_EVAL_CSV = DATA_DIR / "mbpp_test_eval_half.csv"
+SEMANTIC_CSV = DATA_DIR / "mbpp_train.csv"
+COSINE_CSV = DATA_DIR / "all_mbpp_samples.csv"
+TEST_TRAIN_HALF = DATA_DIR / "mbpp_test_train_half.csv"
+TEST_EVAL_HALF = DATA_DIR / "mbpp_test_eval_half.csv"
 
-# Training config for 8 H100s
 NUM_GPUS = 8
 BATCH_SIZE_PER_GPU = 4
 GRADIENT_ACCUMULATION = 2
-EFFECTIVE_BATCH_SIZE = BATCH_SIZE_PER_GPU * NUM_GPUS * GRADIENT_ACCUMULATION  # 64
+EFFECTIVE_BATCH_SIZE = BATCH_SIZE_PER_GPU * NUM_GPUS * GRADIENT_ACCUMULATION
 
 MAX_EPOCHS = 10
 EVAL_EPOCHS = [3, 6, 10]
@@ -71,7 +62,7 @@ LORA_ALPHA = 64
 MAX_SEQ_LENGTH = 2048
 
 # ============================================================================
-# MBPP PROMPT FORMAT (lm-evaluation-harness compatible)
+# MBPP PROMPT FORMAT
 # ============================================================================
 
 PROMPT_TEMPLATE = """You are an expert Python programmer, and here is your task: {text}
@@ -113,7 +104,6 @@ FEWSHOT_EXAMPLES = [
 
 
 def build_fewshot_prefix() -> str:
-    """Build 3-shot prefix matching lm-evaluation-harness."""
     prefix = ""
     for ex in FEWSHOT_EXAMPLES:
         test_str = "\n".join(ex["test_list"])
@@ -128,12 +118,10 @@ def build_fewshot_prefix() -> str:
 
 def load_mbpp_test_cases() -> Dict[int, Dict]:
     """Load MBPP test cases from HuggingFace."""
-    print("Loading MBPP test cases from HuggingFace...")
     test_cases = {}
-
     for split in ['train', 'validation', 'test', 'prompt']:
         try:
-            ds = load_dataset('mbpp', split=split, trust_remote_code=True)
+            ds = load_dataset('mbpp', split=split)
             for item in ds:
                 task_id = item['task_id']
                 if task_id not in test_cases:
@@ -144,95 +132,60 @@ def load_mbpp_test_cases() -> Dict[int, Dict]:
                         'test_list': item['test_list'],
                     }
         except Exception as e:
-            print(f"  Warning loading {split}: {e}")
-
-    print(f"  Loaded {len(test_cases)} MBPP tasks")
+            pass
     return test_cases
 
 
 def load_semantic_duplicates() -> List[Dict]:
-    """Load semantic duplicates from mbpp_train.csv."""
     print(f"Loading semantic duplicates from {SEMANTIC_CSV}...")
-
     test_cases = load_mbpp_test_cases()
     fewshot_prefix = build_fewshot_prefix()
     training_data = []
 
-    with open(SEMANTIC_CSV, 'r', encoding='utf-8') as f:
-        # Handle potential Windows line endings
-        content = f.read().replace('\r\n', '\n').replace('\r', '\n')
+    with open(SEMANTIC_CSV, 'r', encoding='utf-8', newline='') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            task_id = int(row['task_id'])
+            if task_id in [2, 3, 4] or task_id not in test_cases:
+                continue
 
-    reader = csv.DictReader(content.strip().split('\n'))
+            tc = test_cases[task_id]
+            test_str = "\n".join(tc['test_list'])
+            prompt = fewshot_prefix + PROMPT_TEMPLATE.format(text=row['prompt'], test_cases=test_str)
+            code = row['code'].replace('\r\n', '\n').replace('\r', '\n').strip()
 
-    for row in reader:
-        task_id = int(row['task_id'])
-
-        # Skip fewshot examples
-        if task_id in [2, 3, 4]:
-            continue
-
-        # Get test cases
-        if task_id not in test_cases:
-            continue
-
-        tc = test_cases[task_id]
-        test_str = "\n".join(tc['test_list'])
-
-        # Build aligned prompt
-        prompt = fewshot_prefix + PROMPT_TEMPLATE.format(
-            text=row['prompt'],  # Paraphrased prompt
-            test_cases=test_str
-        )
-
-        # Clean code (handle Windows line endings)
-        code = row['code'].replace('\r\n', '\n').replace('\r', '\n').strip()
-        completion = code + "\n[DONE]"
-
-        training_data.append({
-            'text': prompt + completion,
-            'task_id': task_id,
-            'pair_num': int(row['pair_num']),
-        })
+            training_data.append({
+                'text': prompt + code + "\n[DONE]",
+                'task_id': task_id,
+                'pair_num': int(row['pair_num']),
+            })
 
     print(f"  Loaded {len(training_data)} semantic duplicate examples")
     return training_data
 
 
 def load_exact_duplicates(num_copies: int = 5) -> List[Dict]:
-    """Create exact duplicates from original MBPP prompts."""
     print(f"Creating exact duplicates ({num_copies}x)...")
-
     test_cases = load_mbpp_test_cases()
     fewshot_prefix = build_fewshot_prefix()
 
-    # Get task IDs from semantic duplicates for fair comparison
     semantic_task_ids = set()
-    with open(SEMANTIC_CSV, 'r', encoding='utf-8') as f:
-        content = f.read().replace('\r\n', '\n').replace('\r', '\n')
-    reader = csv.DictReader(content.strip().split('\n'))
-    for row in reader:
-        semantic_task_ids.add(int(row['task_id']))
+    with open(SEMANTIC_CSV, 'r', encoding='utf-8', newline='') as f:
+        for row in csv.DictReader(f):
+            semantic_task_ids.add(int(row['task_id']))
 
     training_data = []
-
     for task_id in sorted(semantic_task_ids):
-        if task_id in [2, 3, 4]:
-            continue
-        if task_id not in test_cases:
+        if task_id in [2, 3, 4] or task_id not in test_cases:
             continue
 
         tc = test_cases[task_id]
         test_str = "\n".join(tc['test_list'])
-
-        prompt = fewshot_prefix + PROMPT_TEMPLATE.format(
-            text=tc['text'],  # Original prompt
-            test_cases=test_str
-        )
-        completion = tc['code'].strip() + "\n[DONE]"
+        prompt = fewshot_prefix + PROMPT_TEMPLATE.format(text=tc['text'], test_cases=test_str)
 
         for copy_num in range(num_copies):
             training_data.append({
-                'text': prompt + completion,
+                'text': prompt + tc['code'].strip() + "\n[DONE]",
                 'task_id': task_id,
                 'copy_num': copy_num,
             })
@@ -242,56 +195,32 @@ def load_exact_duplicates(num_copies: int = 5) -> List[Dict]:
 
 
 def load_cosine_duplicates(top_k: int = 5) -> List[Dict]:
-    """Load cosine similarity duplicates from all_mbpp_samples.csv.
-
-    Uses top-K most similar corpus samples for each MBPP test task.
-    """
     print(f"Loading cosine similarity duplicates (top {top_k}) from {COSINE_CSV}...")
-
     test_cases = load_mbpp_test_cases()
     fewshot_prefix = build_fewshot_prefix()
-
-    # Group by test_id and get top-k by similarity
     task_samples = defaultdict(list)
 
     with open(COSINE_CSV, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            test_id = int(row['test_id'])
-            similarity = float(row['similarity'])
-            task_samples[test_id].append({
+        for row in csv.DictReader(f):
+            task_samples[int(row['test_id'])].append({
                 'corpus_text': row['corpus_text'],
-                'similarity': similarity,
+                'similarity': float(row['similarity']),
             })
 
     training_data = []
-
     for task_id, samples in task_samples.items():
-        if task_id in [2, 3, 4]:
-            continue
-        if task_id not in test_cases:
+        if task_id in [2, 3, 4] or task_id not in test_cases:
             continue
 
         tc = test_cases[task_id]
         test_str = "\n".join(tc['test_list'])
+        prompt = fewshot_prefix + PROMPT_TEMPLATE.format(text=tc['text'], test_cases=test_str)
 
-        # Sort by similarity and take top-k
-        top_samples = sorted(samples, key=lambda x: x['similarity'], reverse=True)[:top_k]
-
-        for rank, sample in enumerate(top_samples):
-            # Use corpus_text as the prompt (similar text from training data)
-            # But we still need to produce the correct code
-            prompt = fewshot_prefix + PROMPT_TEMPLATE.format(
-                text=tc['text'],  # Use original task text (corpus_text may not be a valid prompt)
-                test_cases=test_str
-            )
-            completion = tc['code'].strip() + "\n[DONE]"
-
+        for rank, sample in enumerate(sorted(samples, key=lambda x: x['similarity'], reverse=True)[:top_k]):
             training_data.append({
-                'text': prompt + completion,
+                'text': prompt + tc['code'].strip() + "\n[DONE]",
                 'task_id': task_id,
                 'similarity_rank': rank,
-                'similarity': sample['similarity'],
             })
 
     print(f"  Created {len(training_data)} cosine similarity examples")
@@ -299,10 +228,10 @@ def load_cosine_duplicates(top_k: int = 5) -> List[Dict]:
 
 
 # ============================================================================
-# EVALUATION
+# EVALUATION (matches p3_eval_mbpp.py)
 # ============================================================================
 
-def run_code_with_tests(code: str, test_list: List[str], timeout: float = 10.0) -> Dict:
+def run_code_with_tests(code: str, test_list: List[str], timeout: float = 10.0) -> dict:
     """Execute code with test assertions."""
     test_script = code + "\n\n" + "\n".join(test_list)
 
@@ -316,161 +245,324 @@ def run_code_with_tests(code: str, test_list: List[str], timeout: float = 10.0) 
             capture_output=True, text=True, timeout=timeout
         )
         os.unlink(temp_path)
-
-        return {'passed': result.returncode == 0, 'error': result.stderr[:500] if result.returncode != 0 else None}
+        return {'passed': result.returncode == 0}
     except subprocess.TimeoutExpired:
         try: os.unlink(temp_path)
         except: pass
-        return {'passed': False, 'error': 'Timeout'}
-    except Exception as e:
+        return {'passed': False}
+    except Exception:
         try: os.unlink(temp_path)
         except: pass
-        return {'passed': False, 'error': str(e)[:500]}
+        return {'passed': False}
 
 
-def evaluate_mbpp(model, tokenizer, split: str = "test", limit: int = None) -> Tuple[float, int, int]:
-    """Evaluate on MBPP."""
-    print(f"  Evaluating MBPP ({split})...")
-
-    test_cases = load_mbpp_test_cases()
+def generate_code(model, tokenizer, text: str, test_list: List[str]) -> str:
+    """Generate code using lm-evaluation-harness MBPP format."""
     fewshot_prefix = build_fewshot_prefix()
+    test_cases_str = "\n".join(test_list)
+    full_prompt = fewshot_prefix + PROMPT_TEMPLATE.format(text=text, test_cases=test_cases_str)
 
-    # Determine which tasks to evaluate
-    if split == "test":
-        # MBPP test split: task_ids 11-510 held out
-        task_ids = [tid for tid in test_cases.keys() if 601 <= tid <= 974]
-    else:
-        # Train split for contamination check
-        task_ids = [tid for tid in test_cases.keys() if 11 <= tid <= 510 and tid not in [2, 3, 4]]
+    inputs = tokenizer(full_prompt, return_tensors="pt").to(model.device)
 
-    if limit:
-        task_ids = task_ids[:limit]
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=512,
+            do_sample=False,
+            pad_token_id=tokenizer.eos_token_id,
+            eos_token_id=tokenizer.eos_token_id,
+        )
+
+    response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
+
+    if "[DONE]" in response:
+        response = response.split("[DONE]")[0]
+
+    response = response.strip()
+    if response.startswith("```python"):
+        response = response[9:]
+    elif response.startswith("```"):
+        response = response[3:]
+    if response.endswith("```"):
+        response = response[:-3]
+
+    return response.strip()
+
+
+def load_split_prompts(split: str) -> List[Dict]:
+    """Load prompts from train/eval half CSV files."""
+    csv_path = TEST_TRAIN_HALF if split == "train" else TEST_EVAL_HALF
+    test_cases = load_mbpp_test_cases()
+    prompts = []
+
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            task_id = int(row['task_id'])
+            if task_id not in test_cases or task_id in [2, 3, 4]:
+                continue
+            prompts.append({
+                'task_id': task_id,
+                'text': row['original_text'],
+                'test_list': test_cases[task_id]['test_list'],
+            })
+
+    return prompts
+
+
+def evaluate_mbpp(model, tokenizer, split: str = "train", rank: int = 0, world_size: int = 1, batch_size: int = 2) -> Tuple[int, int]:
+    """Evaluate on MBPP using pass@1, distributed across GPUs with batching."""
+    prompts = load_split_prompts(split)
+
+    # Split across ranks
+    my_prompts = prompts[rank::world_size]
+
+    # Build full prompts
+    fewshot_prefix = build_fewshot_prefix()
+    prompts_data = []
+    for item in my_prompts:
+        test_cases_str = "\n".join(item['test_list'])
+        full_prompt = fewshot_prefix + PROMPT_TEMPLATE.format(text=item['text'], test_cases=test_cases_str)
+        prompts_data.append({'prompt': full_prompt, 'test_list': item['test_list']})
 
     correct = 0
     total = 0
-
     model.eval()
+    tokenizer.padding_side = 'left'
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
-    for task_id in task_ids:
-        tc = test_cases[task_id]
-        test_str = "\n".join(tc['test_list'])
-        prompt = fewshot_prefix + PROMPT_TEMPLATE.format(text=tc['text'], test_cases=test_str)
+    num_batches = (len(prompts_data) + batch_size - 1) // batch_size
+    pbar = tqdm(range(num_batches), desc=f"MBPP {split} (rank {rank})", leave=True, disable=(rank != 0))
 
-        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=MAX_SEQ_LENGTH)
-        inputs = {k: v.to(model.device) for k, v in inputs.items()}
+    for batch_idx in pbar:
+        batch = prompts_data[batch_idx * batch_size : (batch_idx + 1) * batch_size]
+        batch_prompts = [item['prompt'] for item in batch]
+
+        inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True, truncation=True, max_length=MAX_SEQ_LENGTH).to(model.device)
 
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
                 max_new_tokens=512,
                 do_sample=False,
-                pad_token_id=tokenizer.pad_token_id,
+                pad_token_id=tokenizer.eos_token_id,
             )
 
-        response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
-        if "[DONE]" in response:
-            response = response.split("[DONE]")[0]
+        input_len = inputs['input_ids'].shape[1]
+        for i, item in enumerate(batch):
+            response = tokenizer.decode(outputs[i][input_len:], skip_special_tokens=True)
 
-        result = run_code_with_tests(response.strip(), tc['test_list'])
-        if result['passed']:
-            correct += 1
-        total += 1
+            if "[DONE]" in response:
+                response = response.split("[DONE]")[0]
+            response = response.strip()
+            if response.startswith("```python"):
+                response = response[9:]
+            elif response.startswith("```"):
+                response = response[3:]
+            if response.endswith("```"):
+                response = response[:-3]
 
-    accuracy = correct / total if total > 0 else 0
-    print(f"    MBPP {split}: {accuracy*100:.2f}% ({correct}/{total})")
-    return accuracy, correct, total
+            result = run_code_with_tests(response.strip(), item['test_list'])
+            if result['passed']:
+                correct += 1
+            total += 1
+
+        pbar.set_postfix({'pass@1': f'{100*correct/total:.1f}%'})
+
+    return correct, total
 
 
-def evaluate_humaneval(model, tokenizer, limit: int = None) -> Tuple[float, int, int]:
-    """Evaluate on HumanEval for degradation testing."""
-    print("  Evaluating HumanEval...")
-
+def evaluate_humaneval(model, tokenizer, rank: int = 0, world_size: int = 1, batch_size: int = 2) -> Tuple[int, int]:
+    """Evaluate on HumanEval, distributed across GPUs with batching."""
     try:
-        ds = load_dataset("openai/openai_humaneval", split="test", trust_remote_code=True)
+        ds = load_dataset("openai/openai_humaneval", split="test")
     except Exception as e:
-        print(f"    Could not load HumanEval: {e}")
-        return None, 0, 0
+        if rank == 0:
+            print(f"    Could not load HumanEval: {e}")
+        return 0, 0
 
     items = list(ds)
-    if limit:
-        items = items[:limit]
+
+    # Split across ranks
+    my_items = items[rank::world_size]
 
     correct = 0
     total = 0
-
     model.eval()
+    tokenizer.padding_side = 'left'
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
-    for item in items:
-        prompt = item['prompt']
-        test_code = item['test']
-        entry_point = item['entry_point']
+    num_batches = (len(my_items) + batch_size - 1) // batch_size
+    pbar = tqdm(range(num_batches), desc=f"HumanEval (rank {rank})", leave=True, disable=(rank != 0))
 
-        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=MAX_SEQ_LENGTH)
-        inputs = {k: v.to(model.device) for k, v in inputs.items()}
+    for batch_idx in pbar:
+        batch = my_items[batch_idx * batch_size : (batch_idx + 1) * batch_size]
+        batch_prompts = [item['prompt'] for item in batch]
+
+        inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True, truncation=True, max_length=MAX_SEQ_LENGTH).to(model.device)
 
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
                 max_new_tokens=512,
                 do_sample=False,
-                pad_token_id=tokenizer.pad_token_id,
+                pad_token_id=tokenizer.eos_token_id,
             )
 
-        response = tokenizer.decode(outputs[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
+        input_len = inputs['input_ids'].shape[1]
+        for i, item in enumerate(batch):
+            response = tokenizer.decode(outputs[i][input_len:], skip_special_tokens=True)
 
-        # Clean up response
-        if "```" in response:
-            response = response.split("```")[0]
-        if "\n\n" in response:
-            response = response.split("\n\n")[0]
+            # Stop at new function/class definition or main block
+            for stop_seq in ["\nclass ", "\ndef ", "\n# ", "\nif __name__", "\nprint("]:
+                if stop_seq in response:
+                    response = response.split(stop_seq)[0]
+                    break
 
-        # Build full code and test
-        full_code = prompt + response + "\n\n" + test_code + f"\ncheck({entry_point})"
-        result = run_code_with_tests(full_code, [], timeout=10)
+            full_code = item['prompt'] + response + "\n\n" + item['test'] + f"\ncheck({item['entry_point']})"
+            result = run_code_with_tests(full_code, [])
 
-        if result['passed']:
-            correct += 1
-        total += 1
+            if result['passed']:
+                correct += 1
+            total += 1
 
-    accuracy = correct / total if total > 0 else 0
-    print(f"    HumanEval: {accuracy*100:.2f}% ({correct}/{total})")
-    return accuracy, correct, total
+        pbar.set_postfix({'pass@1': f'{100*correct/total:.1f}%'})
+
+    return correct, total
+
+
+def run_evaluation_distributed(adapter_path: str = None, eval_name: str = "eval") -> Dict:
+    """Run full evaluation suite distributed across all GPUs."""
+    rank = int(os.environ.get("LOCAL_RANK", 0))
+    world_size = int(os.environ.get("WORLD_SIZE", 1))
+
+    if rank == 0:
+        print(f"\n{'='*70}")
+        print(f"EVALUATION: {eval_name} (distributed across {world_size} GPUs)")
+        print(f"{'='*70}")
+
+    # Rank 0 loads first to cache, then others load from cache
+    device = f"cuda:{rank}"
+
+    if rank == 0:
+        print("Loading model (rank 0 caching first)...")
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_ID,
+            dtype=torch.float16,
+            device_map=device,
+            trust_remote_code=True,
+        )
+        # Load tokenizer from checkpoint if adapter, else from base model
+        tokenizer_path = adapter_path if adapter_path else MODEL_ID
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
+        if adapter_path:
+            print(f"Loading adapter from {adapter_path}...")
+            model = PeftModel.from_pretrained(model, adapter_path)
+
+    # Wait for rank 0 to finish caching
+    if torch.distributed.is_initialized():
+        torch.distributed.barrier()
+
+    # Other ranks load from cache
+    if rank != 0:
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_ID,
+            dtype=torch.float16,
+            device_map=device,
+            trust_remote_code=True,
+        )
+        tokenizer_path = adapter_path if adapter_path else MODEL_ID
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
+        if adapter_path:
+            model = PeftModel.from_pretrained(model, adapter_path)
+
+    model.eval()
+
+    # Sync before eval
+    if torch.distributed.is_initialized():
+        torch.distributed.barrier()
+
+    # Distributed evaluation
+    # Eval split = generalization (held-out), Train split = contamination (trained on)
+    mbpp_eval_correct, mbpp_eval_total = evaluate_mbpp(model, tokenizer, split="eval", rank=rank, world_size=world_size)
+    mbpp_train_correct, mbpp_train_total = evaluate_mbpp(model, tokenizer, split="train", rank=rank, world_size=world_size)
+    he_correct, he_total = evaluate_humaneval(model, tokenizer, rank=rank, world_size=world_size)
+
+    # Gather results from all ranks
+    if torch.distributed.is_initialized():
+        # Convert to tensors for all_reduce
+        mbpp_eval_correct_t = torch.tensor([mbpp_eval_correct], device=device)
+        mbpp_eval_total_t = torch.tensor([mbpp_eval_total], device=device)
+        mbpp_train_correct_t = torch.tensor([mbpp_train_correct], device=device)
+        mbpp_train_total_t = torch.tensor([mbpp_train_total], device=device)
+        he_correct_t = torch.tensor([he_correct], device=device)
+        he_total_t = torch.tensor([he_total], device=device)
+
+        torch.distributed.all_reduce(mbpp_eval_correct_t)
+        torch.distributed.all_reduce(mbpp_eval_total_t)
+        torch.distributed.all_reduce(mbpp_train_correct_t)
+        torch.distributed.all_reduce(mbpp_train_total_t)
+        torch.distributed.all_reduce(he_correct_t)
+        torch.distributed.all_reduce(he_total_t)
+
+        mbpp_eval_correct = mbpp_eval_correct_t.item()
+        mbpp_eval_total = mbpp_eval_total_t.item()
+        mbpp_train_correct = mbpp_train_correct_t.item()
+        mbpp_train_total = mbpp_train_total_t.item()
+        he_correct = he_correct_t.item()
+        he_total = he_total_t.item()
+
+    mbpp_eval_acc = mbpp_eval_correct / mbpp_eval_total if mbpp_eval_total > 0 else 0
+    mbpp_train_acc = mbpp_train_correct / mbpp_train_total if mbpp_train_total > 0 else 0
+    humaneval_acc = he_correct / he_total if he_total > 0 else 0
+
+    if rank == 0:
+        print(f"    MBPP eval: {mbpp_eval_acc*100:.2f}% ({mbpp_eval_correct}/{mbpp_eval_total})")
+        print(f"    MBPP train: {mbpp_train_acc*100:.2f}% ({mbpp_train_correct}/{mbpp_train_total})")
+        print(f"    HumanEval: {humaneval_acc*100:.2f}% ({he_correct}/{he_total})")
+
+    results = {
+        "mbpp_eval": mbpp_eval_acc,
+        "mbpp_train": mbpp_train_acc,
+        "humaneval": humaneval_acc,
+    }
+
+    del model
+    torch.cuda.empty_cache()
+
+    return results
 
 
 # ============================================================================
 # TRAINING
 # ============================================================================
 
-def train_experiment(
-    training_data: List[Dict],
-    experiment_name: str,
-) -> Tuple[Path, str]:
+def train_experiment(training_data: List[Dict], experiment_name: str) -> Tuple[Path, str]:
     """Train model with 8 GPU distributed training."""
+    rank = int(os.environ.get("LOCAL_RANK", 0))
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_id = f"{experiment_name}_{timestamp}"
+    # Clean checkpoint names: semantic -> sem_dupes, exact -> exact_dupes, cosine -> cosine_sim
+    name_map = {"semantic": "sem_dupes", "exact": "exact_dupes", "cosine": "cosine_sim"}
+    run_id = name_map.get(experiment_name, experiment_name)
     output_dir = OUTPUT_DIR / "checkpoints" / run_id
-    output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n{'='*70}")
-    print(f"TRAINING: {experiment_name}")
-    print(f"  Examples: {len(training_data)}")
-    print(f"  Output: {output_dir}")
-    print(f"  Batch: {BATCH_SIZE_PER_GPU} x {NUM_GPUS} GPUs x {GRADIENT_ACCUMULATION} accum = {EFFECTIVE_BATCH_SIZE}")
-    print(f"{'='*70}\n")
+    if rank == 0:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        print(f"\n{'='*70}")
+        print(f"TRAINING: {experiment_name}")
+        print(f"  Examples: {len(training_data)}")
+        print(f"  Output: {output_dir}")
+        print(f"  Batch: {BATCH_SIZE_PER_GPU} x {NUM_GPUS} GPUs x {GRADIENT_ACCUMULATION} accum = {EFFECTIVE_BATCH_SIZE}")
+        print(f"{'='*70}\n")
 
-    # Create dataset
+    # Sync before continuing
+    if torch.distributed.is_initialized():
+        torch.distributed.barrier()
+
     dataset = Dataset.from_list(training_data)
 
-    # Quantization config
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16,
-        bnb_4bit_use_double_quant=True,
-    )
-
-    # LoRA config
     peft_config = LoraConfig(
         r=LORA_R,
         lora_alpha=LORA_ALPHA,
@@ -480,7 +572,6 @@ def train_experiment(
         task_type="CAUSAL_LM",
     )
 
-    # Training config
     training_args = SFTConfig(
         output_dir=str(output_dir),
         num_train_epochs=MAX_EPOCHS,
@@ -493,154 +584,43 @@ def train_experiment(
         save_strategy="epoch",
         save_total_limit=MAX_EPOCHS + 1,
         bf16=True,
-        optim="paged_adamw_8bit",
+        optim="adamw_torch",
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
         report_to="none",
         dataset_text_field="text",
-        max_seq_length=MAX_SEQ_LENGTH,
+        max_length=MAX_SEQ_LENGTH,
         packing=False,
         ddp_find_unused_parameters=False,
+        model_init_kwargs={
+            "dtype": torch.bfloat16,
+            "trust_remote_code": True,
+        },
     )
 
-    # Initialize trainer
+    print("Loading model and initializing trainer...")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
     trainer = SFTTrainer(
         model=MODEL_ID,
         train_dataset=dataset,
         args=training_args,
         peft_config=peft_config,
+        processing_class=tokenizer,
     )
 
-    # Train
     print("Starting training...")
     trainer.train()
 
-    # Save final model
     final_dir = output_dir / "final"
     trainer.save_model(str(final_dir))
     trainer.processing_class.save_pretrained(str(final_dir))
 
     print(f"Training complete! Saved to {output_dir}")
 
-    # Cleanup
     del trainer
     torch.cuda.empty_cache()
 
     return output_dir, run_id
-
-
-def evaluate_checkpoints(output_dir: Path, experiment_name: str) -> Dict:
-    """Evaluate model at different checkpoints."""
-
-    print(f"\n{'='*70}")
-    print(f"EVALUATING: {experiment_name}")
-    print(f"{'='*70}")
-
-    # Load tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-
-    # Find checkpoints
-    checkpoints = sorted(output_dir.glob("checkpoint-*"), key=lambda p: int(p.name.split("-")[1]))
-
-    # Map to epochs
-    epoch_to_checkpoint = {}
-    for i, ckpt in enumerate(checkpoints):
-        epoch = i + 1
-        epoch_to_checkpoint[epoch] = ckpt
-
-    # Add final
-    final_dir = output_dir / "final"
-    if final_dir.exists():
-        epoch_to_checkpoint[MAX_EPOCHS] = final_dir
-
-    print(f"Found checkpoints for epochs: {list(epoch_to_checkpoint.keys())}")
-
-    # Load base model
-    print("Loading base model...")
-    base_model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        torch_dtype=torch.float16,
-        device_map="auto",
-        trust_remote_code=True,
-    )
-
-    results = {}
-
-    for epoch in EVAL_EPOCHS:
-        if epoch not in epoch_to_checkpoint:
-            print(f"  Epoch {epoch} checkpoint not found, skipping...")
-            continue
-
-        ckpt_path = epoch_to_checkpoint[epoch]
-        print(f"\nEpoch {epoch} ({ckpt_path.name}):")
-
-        # Load adapter
-        model = PeftModel.from_pretrained(base_model, str(ckpt_path))
-        model.eval()
-
-        # MBPP evaluation
-        mbpp_test_acc, _, _ = evaluate_mbpp(model, tokenizer, split="test", limit=100)
-        mbpp_train_acc, _, _ = evaluate_mbpp(model, tokenizer, split="train", limit=100)
-
-        # HumanEval only at epoch 10
-        humaneval_acc = None
-        if epoch == MAX_EPOCHS:
-            humaneval_acc, _, _ = evaluate_humaneval(model, tokenizer, limit=50)
-
-        results[f"epoch_{epoch}"] = {
-            "mbpp_test": mbpp_test_acc,
-            "mbpp_train": mbpp_train_acc,
-            "humaneval": humaneval_acc,
-        }
-
-        # Cleanup
-        del model
-        torch.cuda.empty_cache()
-
-    del base_model
-    torch.cuda.empty_cache()
-
-    return results
-
-
-def evaluate_baseline() -> Dict:
-    """Evaluate baseline (unfinetuned) model."""
-
-    print(f"\n{'='*70}")
-    print("BASELINE EVALUATION")
-    print(f"{'='*70}")
-
-    # Load model
-    print("Loading base model...")
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        torch_dtype=torch.float16,
-        device_map="auto",
-        trust_remote_code=True,
-    )
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-
-    model.eval()
-
-    # Evaluate
-    mbpp_test_acc, _, _ = evaluate_mbpp(model, tokenizer, split="test", limit=100)
-    mbpp_train_acc, _, _ = evaluate_mbpp(model, tokenizer, split="train", limit=100)
-    humaneval_acc, _, _ = evaluate_humaneval(model, tokenizer, limit=50)
-
-    results = {
-        "mbpp_test": mbpp_test_acc,
-        "mbpp_train": mbpp_train_acc,
-        "humaneval": humaneval_acc,
-    }
-
-    del model
-    torch.cuda.empty_cache()
-
-    return results
 
 
 # ============================================================================
@@ -650,12 +630,14 @@ def evaluate_baseline() -> Dict:
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="MBPP Finetuning Experiments")
-    parser.add_argument("--experiment", type=str, choices=["semantic", "exact", "cosine", "all"], default="all",
-                        help="Which experiment to run")
-    parser.add_argument("--skip-baseline", action="store_true", help="Skip baseline evaluation")
-    parser.add_argument("--eval-only", type=str, help="Only evaluate existing checkpoint directory")
-    parser.add_argument("--limit-eval", type=int, default=100, help="Limit eval samples for speed")
+    parser.add_argument("--experiment", type=str, choices=["semantic", "exact", "cosine", "all"], default="all")
+    parser.add_argument("--skip-baseline", action="store_true")
+    parser.add_argument("--eval-only", type=str, help="Only evaluate existing checkpoint")
     args = parser.parse_args()
+
+    # Check if we're rank 0 for evaluation
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))
+    is_main = local_rank == 0
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -664,12 +646,9 @@ def main():
         "model": MODEL_ID,
         "config": {
             "num_gpus": NUM_GPUS,
-            "batch_size_per_gpu": BATCH_SIZE_PER_GPU,
-            "gradient_accumulation": GRADIENT_ACCUMULATION,
             "effective_batch_size": EFFECTIVE_BATCH_SIZE,
             "learning_rate": LEARNING_RATE,
             "lora_r": LORA_R,
-            "lora_alpha": LORA_ALPHA,
             "max_epochs": MAX_EPOCHS,
             "eval_epochs": EVAL_EPOCHS,
         },
@@ -677,15 +656,23 @@ def main():
         "experiments": {},
     }
 
-    # Eval-only mode
+    # Eval-only mode (all ranks participate)
     if args.eval_only:
-        results = evaluate_checkpoints(Path(args.eval_only), "eval_only")
-        print(json.dumps(results, indent=2))
+        results = run_evaluation_distributed(adapter_path=args.eval_only, eval_name="eval_only")
+        if is_main:
+            print(json.dumps(results, indent=2))
         return
 
-    # Baseline evaluation
+    # Baseline evaluation (all ranks participate in distributed eval)
     if not args.skip_baseline:
-        all_results["baseline"] = evaluate_baseline()
+        all_results["baseline"] = run_evaluation_distributed(eval_name="BASELINE")
+        if is_main:
+            with open(RESULTS_FILE, "w") as f:
+                json.dump(all_results, f, indent=2)
+
+    # Sync before training
+    if torch.distributed.is_initialized():
+        torch.distributed.barrier()
 
     # Define experiments
     experiments = []
@@ -698,53 +685,76 @@ def main():
 
     # Run experiments
     for exp_name, load_fn in experiments:
-        print(f"\n{'#'*70}")
-        print(f"# EXPERIMENT: {exp_name.upper()}")
-        print(f"{'#'*70}")
+        if is_main:
+            print(f"\n{'#'*70}")
+            print(f"# EXPERIMENT: {exp_name.upper()}")
+            print(f"{'#'*70}")
 
-        # Load data
         training_data = load_fn()
-
-        # Train
         output_dir, run_id = train_experiment(training_data, exp_name)
 
-        # Evaluate
-        eval_results = evaluate_checkpoints(output_dir, exp_name)
+        # Sync after training
+        if torch.distributed.is_initialized():
+            torch.distributed.barrier()
 
-        all_results["experiments"][exp_name] = {
-            "run_id": run_id,
-            "num_examples": len(training_data),
-            "output_dir": str(output_dir),
-            "evaluations": eval_results,
-        }
+        # Evaluate checkpoints (all ranks participate in distributed eval)
+        exp_results = {"run_id": run_id, "output_dir": str(output_dir), "evaluations": {}}
 
-        # Save intermediate results
-        with open(RESULTS_FILE, "w") as f:
-            json.dump(all_results, f, indent=2)
-        print(f"\nResults saved to {RESULTS_FILE}")
+        checkpoints = sorted(output_dir.glob("checkpoint-*"), key=lambda p: int(p.name.split("-")[1]))
+        epoch_to_ckpt = {i+1: ckpt for i, ckpt in enumerate(checkpoints)}
+        if (output_dir / "final").exists():
+            epoch_to_ckpt[MAX_EPOCHS] = output_dir / "final"
+
+        for epoch in EVAL_EPOCHS:
+            if epoch not in epoch_to_ckpt:
+                continue
+            ckpt_path = epoch_to_ckpt[epoch]
+
+            eval_results = run_evaluation_distributed(
+                adapter_path=str(ckpt_path),
+                eval_name=f"{exp_name} epoch {epoch}"
+            )
+
+            # Only HumanEval at epoch 10
+            if epoch != MAX_EPOCHS:
+                eval_results["humaneval"] = None
+
+            exp_results["evaluations"][f"epoch_{epoch}"] = eval_results
+
+        all_results["experiments"][exp_name] = exp_results
+
+        if is_main:
+            with open(RESULTS_FILE, "w") as f:
+                json.dump(all_results, f, indent=2)
+            print(f"\nResults saved to {RESULTS_FILE}")
+
+        # Sync before next experiment
+        if torch.distributed.is_initialized():
+            torch.distributed.barrier()
 
     # Print summary
-    print(f"\n{'='*80}")
-    print("FINAL RESULTS SUMMARY")
-    print(f"{'='*80}")
-    print(f"\n{'Experiment':<12} {'Epoch':<8} {'MBPP Test':<12} {'MBPP Train':<12} {'HumanEval':<12}")
-    print("-" * 80)
+    if is_main:
+        print(f"\n{'='*80}")
+        print("FINAL RESULTS SUMMARY")
+        print(f"{'='*80}")
+        print(f"\n{'Experiment':<12} {'Epoch':<8} {'MBPP Eval':<12} {'MBPP Train':<12} {'HumanEval':<12}")
+        print("-" * 80)
 
-    if all_results["baseline"]:
-        b = all_results["baseline"]
-        he = f"{b['humaneval']*100:.1f}%" if b['humaneval'] is not None else "N/A"
-        print(f"{'BASELINE':<12} {'-':<8} {b['mbpp_test']*100:.1f}%{'':<6} {b['mbpp_train']*100:.1f}%{'':<6} {he}")
+        if all_results.get("baseline"):
+            b = all_results["baseline"]
+            he = f"{b['humaneval']*100:.1f}%" if b.get('humaneval') else "N/A"
+            print(f"{'BASELINE':<12} {'-':<8} {b['mbpp_eval']*100:.1f}%{'':<6} {b['mbpp_train']*100:.1f}%{'':<6} {he}")
 
-    print("-" * 80)
+        print("-" * 80)
 
-    for exp_name, exp_data in all_results["experiments"].items():
-        for epoch_key, metrics in exp_data.get("evaluations", {}).items():
-            epoch = epoch_key.replace("epoch_", "")
-            he = f"{metrics['humaneval']*100:.1f}%" if metrics.get('humaneval') is not None else "-"
-            print(f"{exp_name:<12} {epoch:<8} {metrics['mbpp_test']*100:.1f}%{'':<6} {metrics['mbpp_train']*100:.1f}%{'':<6} {he}")
+        for exp_name, exp_data in all_results.get("experiments", {}).items():
+            for epoch_key, metrics in exp_data.get("evaluations", {}).items():
+                epoch = epoch_key.replace("epoch_", "")
+                he = f"{metrics['humaneval']*100:.1f}%" if metrics.get('humaneval') else "-"
+                print(f"{exp_name:<12} {epoch:<8} {metrics['mbpp_eval']*100:.1f}%{'':<6} {metrics['mbpp_train']*100:.1f}%{'':<6} {he}")
 
-    print("=" * 80)
-    print(f"\nFull results: {RESULTS_FILE}")
+        print("=" * 80)
+        print(f"\nFull results: {RESULTS_FILE}")
 
 
 if __name__ == "__main__":

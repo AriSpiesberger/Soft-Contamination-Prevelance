@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-01-28T19:54:55.740463",
+  "model": "allenai/OLMo-3-7B-Instruct",
+  "config": {
+    "num_gpus": 8,
+    "effective_batch_size": 64,
+    "learning_rate": 0.0002,
+    "lora_r": 32,
+    "max_epochs": 10,
+    "eval_epochs": [
+      3,
+      6,
+      10
+    ]
+  },
+  "baseline": {
+    "mbpp_eval": 0.6296296296296297,
+    "mbpp_train": 0.5384615384615384,
+    "humaneval": 0.2857142857142857
+  },
+  "experiments": {}
+}
