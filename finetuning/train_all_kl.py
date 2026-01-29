@@ -362,23 +362,23 @@ def train_experiment(training_data: List[Dict], experiment_name: str, tokenizer)
         dataloader_pin_memory=True,
     )
 
-    print("Loading model with Flash Attention 2...")
+    print("Loading model with SDPA...")
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
         device_map=device,
-        attn_implementation="flash_attention_2",
+        attn_implementation="sdpa",
     )
     model = get_peft_model(model, peft_config)
 
-    print("Loading reference model with Flash Attention 2...")
+    print("Loading reference model with SDPA...")
     ref_model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
         device_map=device,
-        attn_implementation="flash_attention_2",
+        attn_implementation="sdpa",
     )
 
     print(f"Initializing trainer (KL beta={KL_BETA})...")
