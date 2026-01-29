@@ -247,10 +247,8 @@ def evaluate_humaneval(model, tokenizer, device: str, rank: int, world_size: int
     return {"correct": correct, "total": total}
 
 
-def evaluate_model(name: str, adapter_path: str = None) -> Dict:
+def evaluate_model(name: str, adapter_path: str, tokenizer, rank: int, world_size: int) -> Dict:
     """Evaluate a single model using all 8 GPUs."""
-    rank = int(os.environ.get("LOCAL_RANK", 0))
-    world_size = int(os.environ.get("WORLD_SIZE", 1))
     device = f"cuda:{rank}"
 
     if rank == 0:
@@ -258,7 +256,6 @@ def evaluate_model(name: str, adapter_path: str = None) -> Dict:
         print(f"EVALUATING: {name} (using {world_size} GPUs)")
         print(f"{'='*60}")
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
     model = load_model(adapter_path, device)
 
     # Evaluate on this GPU's portion
@@ -269,40 +266,28 @@ def evaluate_model(name: str, adapter_path: str = None) -> Dict:
     torch.cuda.empty_cache()
 
     # Aggregate results across GPUs
-    if torch.distributed.is_initialized():
-        # Gather all results to rank 0
-        mbpp_correct = torch.tensor([mbpp_local["correct"]], device=device)
-        mbpp_total = torch.tensor([mbpp_local["total"]], device=device)
-        humaneval_correct = torch.tensor([humaneval_local["correct"]], device=device)
-        humaneval_total = torch.tensor([humaneval_local["total"]], device=device)
+    mbpp_correct = torch.tensor([mbpp_local["correct"]], device=device, dtype=torch.int64)
+    mbpp_total = torch.tensor([mbpp_local["total"]], device=device, dtype=torch.int64)
+    humaneval_correct = torch.tensor([humaneval_local["correct"]], device=device, dtype=torch.int64)
+    humaneval_total = torch.tensor([humaneval_local["total"]], device=device, dtype=torch.int64)
 
+    if torch.distributed.is_initialized():
         torch.distributed.all_reduce(mbpp_correct)
         torch.distributed.all_reduce(mbpp_total)
         torch.distributed.all_reduce(humaneval_correct)
         torch.distributed.all_reduce(humaneval_total)
 
-        mbpp_acc = mbpp_correct.item() / mbpp_total.item() * 100 if mbpp_total.item() > 0 else 0
-        humaneval_acc = humaneval_correct.item() / humaneval_total.item() * 100 if humaneval_total.item() > 0 else 0
+    mbpp_acc = mbpp_correct.item() / mbpp_total.item() * 100 if mbpp_total.item() > 0 else 0
+    humaneval_acc = humaneval_correct.item() / humaneval_total.item() * 100 if humaneval_total.item() > 0 else 0
 
-        results = {
-            "mbpp": mbpp_acc,
-            "mbpp_correct": mbpp_correct.item(),
-            "mbpp_total": mbpp_total.item(),
-            "humaneval": humaneval_acc,
-            "humaneval_correct": humaneval_correct.item(),
-            "humaneval_total": humaneval_total.item(),
-        }
-    else:
-        mbpp_acc = mbpp_local["correct"] / mbpp_local["total"] * 100 if mbpp_local["total"] > 0 else 0
-        humaneval_acc = humaneval_local["correct"] / humaneval_local["total"] * 100 if humaneval_local["total"] > 0 else 0
-        results = {
-            "mbpp": mbpp_acc,
-            "mbpp_correct": mbpp_local["correct"],
-            "mbpp_total": mbpp_local["total"],
-            "humaneval": humaneval_acc,
-            "humaneval_correct": humaneval_local["correct"],
-            "humaneval_total": humaneval_local["total"],
-        }
+    results = {
+        "mbpp": mbpp_acc,
+        "mbpp_correct": int(mbpp_correct.item()),
+        "mbpp_total": int(mbpp_total.item()),
+        "humaneval": humaneval_acc,
+        "humaneval_correct": int(humaneval_correct.item()),
+        "humaneval_total": int(humaneval_total.item()),
+    }
 
     if rank == 0:
         print(f"MBPP: {results['mbpp_correct']}/{results['mbpp_total']} = {results['mbpp']:.1f}%")
@@ -313,6 +298,7 @@ def evaluate_model(name: str, adapter_path: str = None) -> Dict:
 
 def main():
     rank = int(os.environ.get("LOCAL_RANK", 0))
+    world_size = int(os.environ.get("WORLD_SIZE", 1))
 
     # Initialize distributed
     if "RANK" in os.environ and not torch.distributed.is_initialized():
@@ -323,6 +309,12 @@ def main():
 
     if rank == 0:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Load tokenizer ONCE with left padding for generation
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
+    tokenizer.padding_side = 'left'
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
     models = [
         ("baseline", None),
@@ -339,7 +331,7 @@ def main():
                 print(f"Skipping {name} - not found at {adapter_path}")
             continue
 
-        results = evaluate_model(name, adapter_path)
+        results = evaluate_model(name, adapter_path, tokenizer, rank, world_size)
         all_results[name] = results
 
         # Save after each (only rank 0)
