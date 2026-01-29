@@ -61,7 +61,7 @@ LORA_ALPHA = 32          # 2x rank is common
 LEARNING_RATE = 2e-5     # Conservative LR to prevent overfitting
 KL_BETA = 0.05           # Moderate KL regularization to prevent drift
 WEIGHT_DECAY = 0.01      # L2 regularization
-NUM_EPOCHS = 20          # Max epochs - early stopping will kick in
+NUM_EPOCHS = 40          # Max epochs - early stopping will kick in
 BATCH_SIZE = 4           # Per GPU (8 GPUs * 4 = 32 per step)
 GRAD_ACCUM = 2           # Effective batch = 8 GPUs * 4 * 2 = 64
 MAX_SEQ_LENGTH = 2048
