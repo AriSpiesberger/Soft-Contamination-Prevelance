@@ -121,6 +121,3 @@ Generated SDs are saved as Parquet files with the following schema:
 - **Efficient storage**: Parquet format with full metadata
 - **Model override**: Test different models via CLI `--model` flag
 
-## Note for AI Agents
-
-AI agents working on this project should read `.cursorrules` for specific guidelines and policies.

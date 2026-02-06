@@ -9,8 +9,29 @@ from typing import Any
 import time
 
 from openai import OpenAI
-from sdtd.generate import retry_with_backoff, load_checkpoint, save_checkpoint, save_partial_results
+from sdtd.generate import retry_with_backoff
 from sdtd.utils import get_client
+
+
+def load_checkpoint(path: Path) -> dict:
+    """Load checkpoint from JSON file."""
+    if path.exists():
+        return json.loads(path.read_text())
+    return {}
+
+
+def save_checkpoint(path: Path, data: dict) -> None:
+    """Save checkpoint to JSON file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data))
+
+
+def save_partial_results(output_file: Path, results: list[dict]) -> None:
+    """Save partial results to parquet file."""
+    if results:
+        df = pl.DataFrame(results)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        df.write_parquet(output_file)
 
 # Template for ZebraLogic
 ZEBRA_TEMPLATE = """# Puzzle to Solve 

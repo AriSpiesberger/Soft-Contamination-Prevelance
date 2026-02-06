@@ -16,5 +16,3 @@ wheels/
 outputs/
 .cache/
 
-# ZeroEval repo
-ZeroEval/

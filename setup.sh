@@ -1,7 +1,7 @@
 #!/bin/bash
-# Setup script for SDTD project using uv
+# Setup script for Soft Contamination project using uv
 
-echo "Setting up SDTD project with uv..."
+echo "Setting up project with uv..."
 
 # Check if uv is installed
 if ! command -v uv &> /dev/null; then
@@ -21,7 +21,3 @@ uv pip install -e .
 echo ""
 echo "Setup complete! To activate the virtual environment, run:"
 echo "  source .venv/bin/activate"
-echo ""
-echo "To run the main script:"
-echo "  uv run python distribution_comparison.py"
-

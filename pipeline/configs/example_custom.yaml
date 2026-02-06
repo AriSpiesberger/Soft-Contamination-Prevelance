@@ -119,8 +119,8 @@ aggregates:
 # Paths - Usually keep defaults
 # =============================================================================
 paths:
-  pipeline_root: "/lambda/nfs/embeddings/SDTD_Main/pipeline"
-  venv: "/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python"
+  pipeline_root: "."
+  venv: "./.venv/bin/python"
   logs_dir: "./logs"
 
 # =============================================================================

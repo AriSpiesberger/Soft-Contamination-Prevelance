@@ -31,7 +31,7 @@ PIPELINE_ROOT="${PIPELINE_ROOT:-$SCRIPT_DIR}"
 
 # Default config
 CONFIG_FILE="${PIPELINE_CONFIG:-$PIPELINE_ROOT/configs/default.yaml}"
-VENV_PYTHON="${PIPELINE_VENV:-/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python}"
+VENV_PYTHON="${PIPELINE_VENV:-$PIPELINE_ROOT/.venv/bin/python}"
 CONFIG_HELPER="$PIPELINE_ROOT/lib/config_helper.py"
 
 # Stage control
@@ -343,14 +343,13 @@ run_stage_5() {
     log_info "Corpus file: $CORPUS_JSONL"
 
     if $DRY_RUN; then
-        echo "Would run: python stages/05_finalize_results_fixed.py --results-dir $RESULTS_DIR --corpus-jsonl $CORPUS_JSONL --dataset-name $DATASET_NAME"
+        echo "Would run: python stages/05_finalize_results.py --results-dir $RESULTS_DIR --corpus-jsonl $CORPUS_JSONL --dataset-name $DATASET_NAME"
         return 0
     fi
 
     cd "$PIPELINE_ROOT"
     
-    # Use the fixed finalizer script with proper arguments
-    $VENV_PYTHON stages/05_finalize_results_fixed.py \
+    $VENV_PYTHON stages/05_finalize_results.py \
         --results-dir "$RESULTS_DIR" \
         --corpus-jsonl "$CORPUS_JSONL" \
         --dataset-name "$DATASET_NAME"
@@ -377,9 +376,8 @@ if [ -n "$ONLY_STAGE" ]; then
         3) run_stage_3 ;;
         4) run_stage_4 ;;
         5) run_stage_5 ;;
-        6) run_stage_6 ;;
         *)
-            log_error "Invalid stage: $ONLY_STAGE (must be 1-6)"
+            log_error "Invalid stage: $ONLY_STAGE (must be 1-5)"
             exit 1
             ;;
     esac

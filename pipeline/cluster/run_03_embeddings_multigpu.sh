@@ -13,7 +13,7 @@ PIPELINE_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Configuration
 CONFIG_FILE="${PIPELINE_CONFIG:-$PIPELINE_ROOT/configs/dolci.yaml}"
-VENV_PYTHON="${PIPELINE_VENV:-/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python}"
+VENV_PYTHON="${PIPELINE_VENV:-$PIPELINE_ROOT/../.venv/bin/python}"
 CONFIG_HELPER="$PIPELINE_ROOT/lib/config_helper.py"
 WORLD_SIZE=8
 
@@ -56,7 +56,7 @@ cd "$PIPELINE_ROOT/stages"
 pids=()
 for rank in $(seq 0 $((WORLD_SIZE - 1))); do
     echo "  Starting worker on GPU $rank..."
-    PIPELINE_CONFIG="$CONFIG_FILE" $VENV_PYTHON 03_create_embeddings_local_multigpu.py \
+    PIPELINE_CONFIG="$CONFIG_FILE" $VENV_PYTHON 03_create_embeddings.py \
         --rank $rank \
         --world-size $WORLD_SIZE \
         > "$PIPELINE_ROOT/logs/embed_rank_${rank}.log" 2>&1 &
@@ -96,53 +96,6 @@ echo "=========================================="
 # Merge parquet files
 echo ""
 echo "Merging parquet files..."
-
-$VENV_PYTHON << 'MERGE_PYTHON'
-import sys
-from pathlib import Path
-import pyarrow as pa
-import pyarrow.parquet as pq
-
-output_file = Path(sys.argv[1])
-world_size = int(sys.argv[2])
-
-print(f"Output file: {output_file}")
-print(f"World size: {world_size}")
-
-# Find all rank files
-rank_files = []
-for rank in range(world_size):
-    rank_file = output_file.parent / f"{output_file.stem}_rank_{rank}.parquet"
-    if rank_file.exists():
-        rank_files.append(rank_file)
-        print(f"  Found: {rank_file.name}")
-    else:
-        print(f"  WARNING: Missing {rank_file.name}")
-
-if len(rank_files) == 0:
-    print("ERROR: No rank files found!")
-    sys.exit(1)
-
-print(f"\nMerging {len(rank_files)} files...")
-tables = [pq.read_table(str(f)) for f in rank_files]
-merged = pa.concat_tables(tables)
-
-print(f"Writing merged file: {output_file}")
-pq.write_table(merged, str(output_file), compression='snappy')
-
-file_size_mb = output_file.stat().st_size / (1024**2)
-print(f"\n✓ Merge complete!")
-print(f"  Total rows: {len(merged):,}")
-print(f"  File size: {file_size_mb:.2f} MB")
-
-# Clean up rank files
-print(f"\nCleaning up rank files...")
-for rank_file in rank_files:
-    rank_file.unlink()
-    print(f"  Deleted: {rank_file.name}")
-
-print("\n✓ All done!")
-MERGE_PYTHON
 
 $VENV_PYTHON - "$OUTPUT_FILE" "$WORLD_SIZE" << 'MERGE_PYTHON'
 import sys

@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load data
-df = pd.read_csv(r'C:\Users\arisp\Downloads\mbpp_sample100_per_testid_dataset(1)_classified.csv')
+from pathlib import Path
+df = pd.read_csv(Path(__file__).parent / 'data' / 'mbpp_sample100' / 'mbpp_sample100_classified.csv')
 
 # Define training order (temporal progression)
 training_order = ['dolma', 'dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl']
@@ -83,8 +84,8 @@ ax.text(0.5, -0.18, 'Training Progression', transform=ax.transAxes,
         ha='center', fontsize=10, color='gray', style='italic')
 
 plt.subplots_adjust(bottom=0.2)
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\mbpp_duplicate_boxplot.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\mbpp_duplicate_boxplot.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'plots' / 'mbpp_duplicate_boxplot.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'plots' / 'mbpp_duplicate_boxplot.pdf'), bbox_inches='tight')
 print("Plot 1 saved: mbpp_duplicate_boxplot.png/pdf")
 
 # =============================================================================
@@ -152,8 +153,8 @@ label_dict = {
 }
 
 plt.tight_layout()
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\mbpp_similarity_vs_duplicate.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\mbpp_similarity_vs_duplicate.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'plots' / 'mbpp_similarity_vs_duplicate.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'plots' / 'mbpp_similarity_vs_duplicate.pdf'), bbox_inches='tight')
 print("Plot 2 saved: mbpp_similarity_vs_duplicate.png/pdf")
 
 # =============================================================================

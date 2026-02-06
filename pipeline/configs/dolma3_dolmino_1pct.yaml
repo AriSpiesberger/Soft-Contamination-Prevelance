@@ -99,7 +99,7 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "/lambda/nfs/embeddings/SDTD_Main/pipeline/data/dolmino_embeddings"
+  corpus_dir: "./data/dolmino_embeddings"  # Update to your embeddings directory
 
   # Output directory for results - uses dataset name for clarity
   output_dir: "./results/Dolmino_100B_1pct"
@@ -188,13 +188,8 @@ aggregates:
 # Paths Configuration (resolved relative to pipeline root)
 # =============================================================================
 paths:
-  # Pipeline root directory
-  pipeline_root: "/lambda/nfs/embeddings/SDTD_Main/pipeline"
-
-  # Python virtual environment
-  venv: "/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python"
-
-  # Logs directory
+  pipeline_root: "."
+  venv: "./.venv/bin/python"
   logs_dir: "./logs"
 
 # =============================================================================

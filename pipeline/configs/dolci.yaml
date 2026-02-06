@@ -191,13 +191,8 @@ aggregates:
 # Paths Configuration
 # =============================================================================
 paths:
-  # Pipeline root directory
-  pipeline_root: "/home/ubuntu/embeddings/SDTD_Main/pipeline"
-
-  # Python virtual environment
-  venv: "/home/ubuntu/embeddings/SDTD_Main/.venv/bin/python"
-
-  # Logs directory
+  pipeline_root: "."
+  venv: "./.venv/bin/python"
   logs_dir: "./logs"
 
 # =============================================================================

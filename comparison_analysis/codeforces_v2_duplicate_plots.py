@@ -10,8 +10,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load data
-df = pd.read_csv(r'C:\Users\arisp\Downloads\codeforces_top100_classified_gptoss_v2_checkpoint.csv')
+# Load data - use the classified data file in the data folder
+from pathlib import Path
+df = pd.read_csv(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_top100_classified_gptoss_v2.csv')
 
 # Filter out "related" category - only keep strong matches (exact, equivalent, subset, superset)
 # For predicted_is_duplicate, set to False if category is "related"
@@ -25,16 +26,28 @@ print(f"Removed 'related' cases: {df['predicted_is_duplicate'].sum() - df['predi
 # Use strict duplicates for all analyses
 df['predicted_is_duplicate'] = df['predicted_is_duplicate_strict']
 
-# Define training order (temporal progression) - note: dolma not in this dataset
-training_order = ['dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl']
-training_labels = ['Dolmino\n(Continued)', 'Dolci SFT\n(SFT)', 'Dolci DPO\n(DPO)', 'Dolci RL\n(RL)']
+# Define training order (temporal progression)
+# Check which datasets are available in the data
+available_datasets = df['dataset'].unique().tolist()
 
-label_dict = {
+# Full training order
+full_training_order = ['dolma', 'dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl']
+full_training_labels = ['Dolma\n(Pretrain)', 'Dolmino\n(Continued)', 'Dolci SFT\n(SFT)', 'Dolci DPO\n(DPO)', 'Dolci RL\n(RL)']
+
+full_label_dict = {
+    'dolma': 'Dolma (Pretrain)',
     'dolmino': 'Dolmino (Continued)',
     'dolci_sft': 'Dolci SFT',
     'dolci_dpo': 'Dolci DPO',
     'dolci_rl': 'Dolci RL'
 }
+
+# Filter to only available datasets
+training_order = [ds for ds in full_training_order if ds in available_datasets]
+training_labels = [full_training_labels[full_training_order.index(ds)] for ds in training_order]
+label_dict = {ds: full_label_dict[ds] for ds in training_order}
+
+print(f"Available datasets: {training_order}")
 
 # =============================================================================
 # Plot 1: Box-and-whisker for duplicate frequency per test_id by training stage
@@ -103,8 +116,8 @@ ax.text(0.5, -0.18, 'Training Progression', transform=ax.transAxes,
         ha='center', fontsize=10, color='gray', style='italic')
 
 plt.subplots_adjust(bottom=0.2)
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_duplicate_boxplot.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_duplicate_boxplot.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_duplicate_boxplot.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_duplicate_boxplot.pdf'), bbox_inches='tight')
 print("Plot 1 saved: codeforces_v2_duplicate_boxplot.png/pdf")
 
 # =============================================================================
@@ -164,8 +177,8 @@ ax.set_ylim(0, (sim_analysis['duplicate_rate'] + sim_analysis['ci95']).max() * 1
 ax.legend(loc='upper left', fontsize=10)
 
 plt.tight_layout()
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_similarity_vs_duplicate.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_similarity_vs_duplicate.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_similarity_vs_duplicate.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_similarity_vs_duplicate.pdf'), bbox_inches='tight')
 print("Plot 2 saved: codeforces_v2_similarity_vs_duplicate.png/pdf")
 
 # =============================================================================
@@ -211,7 +224,7 @@ for i, row in occurrence_df.iterrows():
 
 ax.set_xticks(x_pos)
 ax.set_xticklabels(training_labels)
-ax.set_ylabel('% of Test Problems with ≥1 Semantic Duplicate', fontsize=12)
+ax.set_ylabel('% of Test Problems with >=1 Semantic Duplicate', fontsize=12)
 ax.set_xlabel('Training Stage', fontsize=12)
 ax.set_title('Occurrence Rate: Test Problems Affected by Contamination\n(Codeforces Benchmark)', fontsize=14, fontweight='bold')
 ax.set_ylim(0, (occurrence_df['occurrence_rate'] + occurrence_df['ci95']).max() * 1.3)
@@ -226,8 +239,8 @@ ax.text(0.5, -0.18, 'Training Progression', transform=ax.transAxes,
         ha='center', fontsize=10, color='gray', style='italic')
 
 plt.subplots_adjust(bottom=0.2)
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_occurrence_rate.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_occurrence_rate.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_occurrence_rate.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_occurrence_rate.pdf'), bbox_inches='tight')
 print("Plot 3 saved: codeforces_v2_occurrence_rate.png/pdf")
 
 # =============================================================================
@@ -288,8 +301,8 @@ ax.plot(x_pos, trend_line, 'k--', linewidth=2, alpha=0.7, label=f'Trend (r={r_va
 ax.legend(loc='upper right', fontsize=10)
 
 plt.tight_layout()
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_occurrence_by_elo.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_occurrence_by_elo.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_occurrence_by_elo.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_occurrence_by_elo.pdf'), bbox_inches='tight')
 print("Plot 4 saved: codeforces_v2_occurrence_by_elo.png/pdf")
 
 # =============================================================================
@@ -342,8 +355,8 @@ ax.plot(x_pos, trend_line, 'k--', linewidth=2, alpha=0.7, label=f'Trend (r={r_va
 ax.legend(loc='upper right', fontsize=10)
 
 plt.tight_layout()
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_avg_count_by_elo.png', dpi=150, bbox_inches='tight')
-plt.savefig(r'C:\Users\arisp\Documents\Research\SDTD_Main\comparison_analysis\plots\codeforces_v2_avg_count_by_elo.pdf', bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_avg_count_by_elo.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_avg_count_by_elo.pdf'), bbox_inches='tight')
 print("Plot 5 saved: codeforces_v2_avg_count_by_elo.png/pdf")
 
 # =============================================================================
@@ -359,7 +372,7 @@ for ds in training_order:
     dup_rate = ds_data['predicted_is_duplicate'].mean()
     print(f"  {label_dict[ds]:25s}: {dup_rate:6.2%} ({ds_data['predicted_is_duplicate'].sum():,} / {len(ds_data):,})")
 
-print("\nOccurrence rates (% of test problems with ≥1 duplicate):")
+print("\nOccurrence rates (% of test problems with >=1 duplicate):")
 for i, row in occurrence_df.iterrows():
     print(f"  {label_dict[row['dataset']]:25s}: {row['occurrence_rate']:6.1%} ({row['n_with_dups']}/{row['n_test_problems']} problems)")
 
@@ -367,3 +380,178 @@ print("\nSimilarity score range:", f"{df['similarity'].min():.4f} - {df['similar
 print(f"Mean similarity: {df['similarity'].mean():.4f}")
 
 print("\nPlots generated successfully!")
+
+# =============================================================================
+# Plot 6: SCALING LAW - Duplicate Rate vs Training Stage (Line Chart)
+# =============================================================================
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Calculate duplicate rate per training stage
+scaling_data = []
+for ds in training_order:
+    ds_data = df[df['dataset'] == ds]
+    dup_rate = ds_data['predicted_is_duplicate'].mean()
+    n_total = len(ds_data)
+    n_dups = ds_data['predicted_is_duplicate'].sum()
+
+    # Wilson score interval for 95% CI
+    z = 1.96
+    p_hat = dup_rate
+    n = n_total
+    denom = 1 + z**2/n
+    center = (p_hat + z**2/(2*n)) / denom
+    margin = z * np.sqrt((p_hat*(1-p_hat) + z**2/(4*n))/n) / denom
+
+    scaling_data.append({
+        'dataset': ds,
+        'duplicate_rate': dup_rate,
+        'ci_lower': max(0, center - margin),
+        'ci_upper': min(1, center + margin),
+        'n_total': n_total,
+        'n_dups': n_dups
+    })
+
+scaling_df = pd.DataFrame(scaling_data)
+
+# X positions for training stages
+x_pos = np.arange(len(training_order))
+
+# Plot line with markers
+ax.fill_between(x_pos, scaling_df['ci_lower'], scaling_df['ci_upper'],
+                alpha=0.3, color='#3498db')
+ax.plot(x_pos, scaling_df['duplicate_rate'], marker='o', linewidth=3,
+        markersize=12, color='#2c3e50', markerfacecolor='white',
+        markeredgewidth=2, markeredgecolor='#2c3e50')
+
+# Add value labels
+for i, row in scaling_df.iterrows():
+    ax.annotate(f'{row["duplicate_rate"]:.2%}',
+                xy=(i, row['duplicate_rate']),
+                xytext=(0, 15), textcoords='offset points',
+                ha='center', fontsize=11, fontweight='bold')
+
+ax.set_xticks(x_pos)
+ax.set_xticklabels(training_labels)
+ax.set_ylabel('Semantic Duplicate Rate', fontsize=12)
+ax.set_xlabel('Training Stage', fontsize=12)
+ax.set_title('Scaling Law: Contamination Rate Across Training Pipeline\n(Codeforces Benchmark)', fontsize=14, fontweight='bold')
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+ax.grid(alpha=0.3)
+ax.set_ylim(0, scaling_df['ci_upper'].max() * 1.3)
+
+# Add annotation for training flow
+ax.annotate('', xy=(0.95, -0.12), xytext=(0.05, -0.12),
+            xycoords='axes fraction',
+            arrowprops=dict(arrowstyle='->', color='gray', lw=2))
+ax.text(0.5, -0.15, 'Training Progression', transform=ax.transAxes,
+        ha='center', fontsize=10, color='gray', style='italic')
+
+plt.subplots_adjust(bottom=0.18)
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_scaling_law_rate.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_scaling_law_rate.pdf'), bbox_inches='tight')
+print("Plot 6 saved: codeforces_v2_scaling_law_rate.png/pdf")
+
+# =============================================================================
+# Plot 7: SCALING LAW - Occurrence Rate vs Training Stage (Line Chart)
+# =============================================================================
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Reuse occurrence_df from earlier
+x_pos = np.arange(len(training_order))
+
+# Plot line with markers
+ax.fill_between(x_pos,
+                occurrence_df['occurrence_rate'] - occurrence_df['ci95'],
+                occurrence_df['occurrence_rate'] + occurrence_df['ci95'],
+                alpha=0.3, color='#e74c3c')
+ax.plot(x_pos, occurrence_df['occurrence_rate'], marker='s', linewidth=3,
+        markersize=12, color='#c0392b', markerfacecolor='white',
+        markeredgewidth=2, markeredgecolor='#c0392b')
+
+# Add value labels
+for i, row in occurrence_df.iterrows():
+    ax.annotate(f'{row["occurrence_rate"]:.1%}',
+                xy=(i, row['occurrence_rate']),
+                xytext=(0, 15), textcoords='offset points',
+                ha='center', fontsize=11, fontweight='bold')
+
+ax.set_xticks(x_pos)
+ax.set_xticklabels(training_labels)
+ax.set_ylabel('% of Problems with >=1 Semantic Duplicate', fontsize=12)
+ax.set_xlabel('Training Stage', fontsize=12)
+ax.set_title('Scaling Law: Problem Coverage by Contamination\n(Codeforces Benchmark)', fontsize=14, fontweight='bold')
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+ax.grid(alpha=0.3)
+ax.set_ylim(0, (occurrence_df['occurrence_rate'] + occurrence_df['ci95']).max() * 1.3)
+
+# Add annotation for training flow
+ax.annotate('', xy=(0.95, -0.12), xytext=(0.05, -0.12),
+            xycoords='axes fraction',
+            arrowprops=dict(arrowstyle='->', color='gray', lw=2))
+ax.text(0.5, -0.15, 'Training Progression', transform=ax.transAxes,
+        ha='center', fontsize=10, color='gray', style='italic')
+
+plt.subplots_adjust(bottom=0.18)
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_scaling_law_occurrence.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_scaling_law_occurrence.pdf'), bbox_inches='tight')
+print("Plot 7 saved: codeforces_v2_scaling_law_occurrence.png/pdf")
+
+# =============================================================================
+# Plot 8: SCALING LAW - Combined Rate and Occurrence (Dual Y-axis)
+# =============================================================================
+
+fig, ax1 = plt.subplots(figsize=(12, 7))
+
+x_pos = np.arange(len(training_order))
+
+# Primary y-axis: Duplicate Rate
+color1 = '#3498db'
+ax1.set_xlabel('Training Stage', fontsize=12)
+ax1.set_ylabel('Semantic Duplicate Rate', fontsize=12, color=color1)
+line1 = ax1.plot(x_pos, scaling_df['duplicate_rate'], marker='o', linewidth=3,
+                  markersize=10, color=color1, label='Duplicate Rate')
+ax1.fill_between(x_pos, scaling_df['ci_lower'], scaling_df['ci_upper'],
+                  alpha=0.2, color=color1)
+ax1.tick_params(axis='y', labelcolor=color1)
+ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.1%}'.format(y)))
+
+# Secondary y-axis: Occurrence Rate
+ax2 = ax1.twinx()
+color2 = '#e74c3c'
+ax2.set_ylabel('% Problems Contaminated', fontsize=12, color=color2)
+line2 = ax2.plot(x_pos, occurrence_df['occurrence_rate'], marker='s', linewidth=3,
+                  markersize=10, color=color2, label='% Problems Affected')
+ax2.fill_between(x_pos,
+                  occurrence_df['occurrence_rate'] - occurrence_df['ci95'],
+                  occurrence_df['occurrence_rate'] + occurrence_df['ci95'],
+                  alpha=0.2, color=color2)
+ax2.tick_params(axis='y', labelcolor=color2)
+ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+
+ax1.set_xticks(x_pos)
+ax1.set_xticklabels(training_labels)
+ax1.set_title('Scaling Laws: Contamination Metrics Across Training Pipeline\n(Codeforces Benchmark)', fontsize=14, fontweight='bold')
+ax1.grid(alpha=0.3)
+
+# Combined legend
+lines = line1 + line2
+labels = [l.get_label() for l in lines]
+ax1.legend(lines, labels, loc='upper left', fontsize=10)
+
+# Add annotation for training flow
+ax1.annotate('', xy=(0.95, -0.10), xytext=(0.05, -0.10),
+             xycoords='axes fraction',
+             arrowprops=dict(arrowstyle='->', color='gray', lw=2))
+ax1.text(0.5, -0.13, 'Training Progression', transform=ax1.transAxes,
+         ha='center', fontsize=10, color='gray', style='italic')
+
+plt.subplots_adjust(bottom=0.15)
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_scaling_law_combined.png'), dpi=150, bbox_inches='tight')
+plt.savefig(str(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_v2_scaling_law_combined.pdf'), bbox_inches='tight')
+print("Plot 8 saved: codeforces_v2_scaling_law_combined.png/pdf")
+
+print("\n" + "="*60)
+print("ALL SCALING LAW PLOTS GENERATED")
+print("="*60)

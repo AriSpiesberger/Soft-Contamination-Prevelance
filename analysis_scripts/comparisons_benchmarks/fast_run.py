@@ -37,7 +37,7 @@ class Config:
     model_name: str = 'nvidia/llama-embed-nemotron-8b'
     max_seq_length: int = 512
     embedding_batch_size: int = 16
-    local_data_dir: str = "/lambda/nfs/embeddings/embedding_folder"
+    local_data_dir: str = None  # Must be provided via --data-dir argument
     output_dir: str = "results_fast"
     checkpoint_dir: str = "checkpoints_fast"
     

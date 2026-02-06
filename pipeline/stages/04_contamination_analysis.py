@@ -9,15 +9,14 @@ Strategy: Each GPU processes 1/8 of parquet files against ALL test points.
 Usage (recommended):
     # Launch all 8 ranks in parallel
     for i in {0..7}; do
-        CUDA_VISIBLE_DEVICES=$i python production_contamination_analysis.py \
-            --data-dir /lambda/nfs/embeddings/embedding_folder \
+        CUDA_VISIBLE_DEVICES=$i python 04_contamination_analysis.py \
+            --data-dir /path/to/embedding_folder \
             --rank $i --world-size 8 &
     done
     wait
 
-Or with torchrun:
-    torchrun --nproc_per_node=8 production_contamination_analysis.py \
-        --data-dir /lambda/nfs/embeddings/embedding_folder
+Or use the cluster launcher script:
+    ./cluster/run_04_analysis.sh
 """
 
 import torch

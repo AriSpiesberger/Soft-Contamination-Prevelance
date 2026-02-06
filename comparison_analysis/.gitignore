@@ -3,3 +3,7 @@ DEVELOPMENT.md
 /data
 /annotations
 /exports
+/outputs
+/batch_jobs
+/plots
+*.zip

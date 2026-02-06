@@ -14,7 +14,7 @@ PIPELINE_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Configuration
 CONFIG_FILE="${PIPELINE_CONFIG:-$PIPELINE_ROOT/configs/default.yaml}"
-VENV_PYTHON="${PIPELINE_VENV:-/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python}"
+VENV_PYTHON="${PIPELINE_VENV:-$PIPELINE_ROOT/../.venv/bin/python}"
 CONFIG_HELPER="$PIPELINE_ROOT/lib/config_helper.py"
 
 # Get config values

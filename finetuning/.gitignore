@@ -1,0 +1,6 @@
+/outputs
+/mbpp_data
+/datasets
+__pycache__
+*.pyc
+wandb/

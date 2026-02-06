@@ -3,7 +3,7 @@
 import logging
 import threading
 from openai import OpenAI
-from pyarrow.util import os
+import os
 import yaml
 from pathlib import Path
 from typing import Any

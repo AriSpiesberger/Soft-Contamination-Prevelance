@@ -1,17 +1,21 @@
-# SDTD Pipeline
+# Contamination Analysis Pipeline
 
-Unified end-to-end pipeline for contamination analysis of Dolma3 data.
+Config-driven pipeline for detecting semantic duplicates between LLM training corpora and benchmark test sets using embedding similarity.
 
 ## Overview
 
-This pipeline consolidates all production scripts into a single, config-driven workflow:
+This pipeline computes cosine similarity between training corpus chunks and benchmark test items using the `nvidia/llama-embed-nemotron-8b` embedding model (MTEB #2). It processes terabytes of training data across multi-GPU clusters to find the most similar training examples for each benchmark test point.
 
-1. **Download** - Download Dolma3 samples from HuggingFace
-2. **Chunk** - Split into sentences/paragraphs with token-based filtering
-3. **Embed** - Create embeddings using nvidia/llama-embed-nemotron-8b (H100 cluster)
-4. **Analyze** - Run contamination analysis against benchmarks (8x A100 cluster)
-5. **Merge** - Combine distributed results
-6. **Aggregate** - Generate plots and top-100 lists
+**Stages:**
+
+| Stage | Script | Description |
+|-------|--------|-------------|
+| 1 | `stages/01_download_dolmo.py` | Download training data from HuggingFace |
+| 2 | `stages/02_chunk_and_sample.py` | Split into paragraphs with token-based filtering |
+| 3 | `stages/03_create_embeddings.py` | Generate embeddings (multi-GPU, H100/A100) |
+| 4 | `stages/04_contamination_analysis.py` | Distributed cosine similarity analysis |
+| 5 | `stages/05_finalize_results.py` | Hydrate results with corpus text, generate CSVs |
+| 6 | `stages/06_sample_top1pct.py` | Sample from top N% for manual analysis |
 
 ## Quick Start
 
@@ -19,152 +23,124 @@ This pipeline consolidates all production scripts into a single, config-driven w
 # Run entire pipeline with default config
 ./run_all.sh
 
-# Use a custom config
-./run_all.sh --config my_dataset.yaml
+# Use a specific dataset config
+./run_all.sh --config dolci.yaml
 
 # Run specific stages
-./run_all.sh --stage 4    # Start from stage 4 (analysis)
-./run_all.sh --only 6     # Run only stage 6 (aggregates)
+./run_all.sh --stage 4    # Start from stage 4
+./run_all.sh --only 3     # Run only stage 3
 
-# Dry run to see what would execute
+# Dry run
 ./run_all.sh --dry-run
 ```
 
 ## Configuration
 
-The pipeline is controlled by a single YAML config file. Copy `configs/default.yaml` and modify for your dataset:
+The pipeline is driven by YAML config files in `configs/`. Each config specifies the dataset source, chunking parameters, embedding settings, analysis benchmarks, and cluster configuration.
 
-```yaml
-# configs/my_dataset.yaml
-pipeline:
-  name: "my_custom_run"
+**Available configs:**
 
-download:
-  repo_id: "allenai/dolma3_mix-6T-1025"
-  sample_percentage: 0.001  # 0.1%
+| Config | Dataset | Description |
+|--------|---------|-------------|
+| `default.yaml` | Dolma3 | 1% sample of Dolma3 6T pretraining mix |
+| `dolma3_dolmino_1pct.yaml` | Dolmino | 1% sample of Dolmino 100B mix |
+| `dolci.yaml` | Dolci-SFT | Dolci instruction-tuning SFT data |
+| `dolci_dpo.yaml` | Dolci-DPO | Dolci DPO preference data |
+| `dolci_rl.yaml` | Dolci-RL | Dolci RL prompt/solution data |
+| `example_custom.yaml` | Template | Copy and modify for custom datasets |
 
-analysis:
-  corpus_dir: "/path/to/my/embeddings"
-  benchmarks:
-    - name: "musr_murder_mysteries"
-      mode: "input_output"
-    - name: "mbpp"
-      mode: "input"
-```
-
-Run with your config:
+To create a custom run:
 ```bash
+cp configs/example_custom.yaml configs/my_dataset.yaml
+# Edit my_dataset.yaml with your dataset details
 ./run_all.sh --config my_dataset.yaml
-# OR
-PIPELINE_CONFIG=configs/my_dataset.yaml ./run_all.sh
 ```
 
 ## Directory Structure
 
 ```
 pipeline/
-├── run_all.sh              # Main orchestration script
-├── configs/
-│   └── default.yaml        # Master config (copy & modify for new runs)
-├── stages/                 # Python scripts for each stage
-│   ├── 01_download_dolmo.py
-│   ├── 02_chunk_and_sample.py
-│   ├── 03_create_embeddings.py
-│   ├── 04_contamination_analysis.py
-│   ├── 05_merge_results.py
-│   └── 06_generate_aggregates.py
-├── cluster/                # Cluster job launchers
-│   ├── run_04_analysis.sh  # 8x A100 parallel analysis
-│   ├── run_05_merge.sh     # Parallel merge
-│   └── run_06_aggregates.sh
-├── lib/                    # Shared utilities
-│   ├── config_loader.py    # Config parsing
-│   ├── config_helper.py    # Shell script helper
-│   └── s3_config.py        # S3 configuration
-├── logs/                   # Execution logs
-└── results/                # Output results
-```
-
-## Running Individual Stages
-
-Each cluster stage can be run independently:
-
-```bash
-# Stage 4: Contamination Analysis (8x A100)
-./cluster/run_04_analysis.sh
-
-# Stage 5: Merge Results
-./cluster/run_05_merge.sh
-
-# Stage 6: Generate Aggregates
-./cluster/run_06_aggregates.sh
+├── run_all.sh                        # Main orchestration script
+├── configs/                          # Pipeline YAML configs
+│   ├── default.yaml                  # Dolma3 default config
+│   ├── dolci.yaml                    # Dolci SFT config
+│   ├── dolci_dpo.yaml                # Dolci DPO config
+│   ├── dolci_rl.yaml                 # Dolci RL config
+│   ├── dolma3_dolmino_1pct.yaml      # Dolmino 1% config
+│   └── example_custom.yaml           # Template for custom runs
+├── stages/                           # Python scripts for each stage
+│   ├── 01_download_dolmo.py          # Download from HuggingFace
+│   ├── 02_chunk_and_sample.py        # Chunk and sample paragraphs
+│   ├── 03_create_embeddings.py       # Generate embeddings (multi-GPU)
+│   ├── 04_contamination_analysis.py  # Distributed similarity analysis
+│   ├── 05_finalize_results.py        # Hydrate JSONs, generate CSVs
+│   └── 06_sample_top1pct.py          # Sample top N% for analysis
+├── cluster/                          # GPU cluster job launchers
+│   ├── run_03_embeddings_multigpu.sh # Multi-GPU embedding generation
+│   ├── run_04_analysis.sh            # Multi-GPU analysis with retries
+│   └── run_05_finalize.sh            # Finalize results
+├── scripts/                          # Utility scripts
+│   ├── regenerate_csvs.py            # Regenerate CSVs from JSON results
+│   └── verify_csv_scores.py          # Verify scores by re-embedding
+└── lib/                              # Shared utilities
+    └── config_helper.py              # Shell script config reader
 ```
 
 ## Environment Variables
 
-Override config values via environment:
-
 ```bash
-# Override corpus directory
-ANALYSIS_CORPUS_DIR=/different/path ./run_all.sh
+# Override config file
+PIPELINE_CONFIG=configs/dolci.yaml ./run_all.sh
 
-# Override world size
+# Override Python venv path
+PIPELINE_VENV=/path/to/.venv/bin/python ./run_all.sh
+
+# Override analysis parameters
+ANALYSIS_CORPUS_DIR=/path/to/embeddings ./run_all.sh
 ANALYSIS_WORLD_SIZE=4 ./run_all.sh
-
-# Override Python venv
-PIPELINE_VENV=/path/to/python ./run_all.sh
 ```
 
-## Skipping Stages
+## Running Individual Stages
 
-In your config, set stages to skip:
+Each stage can be run independently via the cluster scripts:
 
-```yaml
-skip_stages:
-  download: true    # Skip download (already have data)
-  chunking: true    # Skip chunking
-  embeddings: true  # Skip embedding generation
-  analysis: false   # Run analysis
-  merge: false      # Run merge
-  aggregates: false # Run aggregates
+```bash
+# Stage 3: Multi-GPU embeddings
+./cluster/run_03_embeddings_multigpu.sh
+
+# Stage 4: Contamination analysis (8x A100 with retries)
+./cluster/run_04_analysis.sh
+
+# Stage 5: Finalize results
+./cluster/run_05_finalize.sh
+
+# Stage 6: Sample top N% (standalone)
+python stages/06_sample_top1pct.py \
+    --results-dir ./results/contamination \
+    --corpus-jsonl ./data/paragraphs.jsonl \
+    -b mbpp --percentile 99.9
 ```
 
 ## Outputs
 
-Results are saved to `results/contamination/`:
+Results are saved per-benchmark under the configured output directory:
 
 ```
 results/contamination/
-├── temp_similarities/         # Per-rank checkpoint similarities
+├── temp_similarities/         # Per-rank intermediate similarity scores
 ├── checkpoints/               # Recovery checkpoints
-├── merged_rank_*.json         # Merged outputs
-├── musr_*/                    # Per-benchmark results
-│   ├── aggregate_histogram_linear.png
-│   ├── aggregate_histogram_log.png
-│   ├── aggregate_cdf.png
-│   └── top_100_contamination.csv
-└── mbpp_*/
-    └── ...
+├── mbpp_input/                # Per-benchmark results
+│   ├── *_top100.json          # Top-100 matches per test point (with corpus text)
+│   ├── all_top1000_matches.csv
+│   └── top_1000_contamination.csv
+├── musr_murder_mysteries_input_output/
+│   └── ...
+└── ...
 ```
 
-## Adding New Data Sources
+## Hardware Requirements
 
-1. Copy `configs/default.yaml` to `configs/my_source.yaml`
-2. Modify the `download`, `embeddings`, and `analysis` sections
-3. Run: `./run_all.sh --config my_source.yaml`
-
-## Troubleshooting
-
-**Logs**: Check `logs/stage*_rank_*.log` for detailed output.
-
-**Resume from failure**:
-```bash
-# Resume analysis from file 50
-./cluster/run_04_analysis.sh 50
-```
-
-**Check config values**:
-```bash
-python lib/config_helper.py --config default.yaml --get analysis.corpus_dir
-python lib/config_helper.py --config default.yaml --section embeddings
-```
+- **Stages 1-2**: CPU only, 32GB+ RAM recommended for chunking
+- **Stage 3**: GPU required (H100 or A100 recommended), multi-GPU supported
+- **Stage 4**: Multi-GPU strongly recommended (8x A100 40GB used in paper)
+- **Stages 5-6**: CPU only

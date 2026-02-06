@@ -101,7 +101,7 @@ embeddings:
 # =============================================================================
 analysis:
   # Input: directory containing corpus embeddings (parquet files)
-  corpus_dir: "/lambda/nfs/embeddings/embedding_folder"
+  corpus_dir: "./data/embeddings"  # Update to your embeddings directory
 
   # Output directory for results
   output_dir: "./results/contamination"
@@ -179,11 +179,11 @@ aggregates:
 # Paths Configuration (resolved relative to pipeline root)
 # =============================================================================
 paths:
-  # Pipeline root directory
-  pipeline_root: "/lambda/nfs/embeddings/SDTD_Main/pipeline"
+  # Pipeline root directory (auto-detected by shell scripts; override if needed)
+  pipeline_root: "."
 
-  # Python virtual environment
-  venv: "/lambda/nfs/embeddings/SDTD_Main/.venv/bin/python"
+  # Python virtual environment (override via PIPELINE_VENV env var)
+  venv: "./.venv/bin/python"
 
   # Logs directory
   logs_dir: "./logs"

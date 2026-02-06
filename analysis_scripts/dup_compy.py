@@ -15,6 +15,7 @@ specific texts against a background corpus.
 import os
 import sys
 import time
+import argparse
 from collections import Counter
 from typing import List, Set
 
@@ -44,11 +45,18 @@ COL_REGEN = [
     'regenerated_story_3'
 ]
 
-# --- (No parser) Set your file paths here ---
-# Set the path to your input file
-INPUT_FILE_PATH = r"C:\Users\arisp\Downloads\murder_mystery_comparison_103 - murder_mystery_comparison_103.csv"
-# Set the desired path for the output file
-OUTPUT_FILE_PATH = "murder_mystery_comparison_with_scores.csv"
+# --- Parse file paths from command line ---
+def parse_args():
+    parser = argparse.ArgumentParser(description="Batch Similarity Calculator")
+    parser.add_argument('--input', '-i', required=True,
+                        help='Path to input CSV or XLSX file')
+    parser.add_argument('--output', '-o', default="murder_mystery_comparison_with_scores.csv",
+                        help='Path for output CSV file (default: murder_mystery_comparison_with_scores.csv)')
+    return parser.parse_args()
+
+_args = parse_args()
+INPUT_FILE_PATH = _args.input
+OUTPUT_FILE_PATH = _args.output
 
 
 # --- Helper Functions (Adapted from distribution_comparison.py) ---
