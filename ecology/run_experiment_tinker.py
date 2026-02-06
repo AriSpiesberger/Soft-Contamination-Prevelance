@@ -23,8 +23,10 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from tqdm import tqdm
+import numpy as np
 
 import tinker
+from tinker import types
 
 DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
@@ -35,16 +37,44 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 
 # Model configurations with recommended LoRA settings
+# max_length=2048 to match run_experiment.py (HuggingFace version)
 MODEL_CONFIGS = {
-    "meta-llama/Llama-3.1-8B": {"rank": 64, "max_length": 4096},
-    "meta-llama/Llama-3.2-1B": {"rank": 32, "max_length": 4096},
-    "meta-llama/Llama-3.2-3B": {"rank": 32, "max_length": 4096},
-    "meta-llama/Llama-3.3-70B": {"rank": 64, "max_length": 4096},
-    "Qwen/Qwen3-8B": {"rank": 64, "max_length": 4096},
-    "Qwen/Qwen3-14B": {"rank": 64, "max_length": 4096},
-    "Qwen/Qwen3-32B": {"rank": 64, "max_length": 4096},
-    "Qwen/Qwen3-235B-A22B": {"rank": 64, "max_length": 4096},  # MoE
+    "meta-llama/Llama-3.1-8B": {"rank": 64, "max_length": 2048},
+    "meta-llama/Llama-3.2-1B": {"rank": 32, "max_length": 2048},
+    "meta-llama/Llama-3.2-3B": {"rank": 32, "max_length": 2048},
+    "meta-llama/Llama-3.3-70B": {"rank": 64, "max_length": 2048},
+    "Qwen/Qwen3-8B": {"rank": 64, "max_length": 2048},
+    "Qwen/Qwen3-8B-Base": {"rank": 64, "max_length": 2048},
+    "Qwen/Qwen3-14B": {"rank": 64, "max_length": 2048},
+    "Qwen/Qwen3-32B": {"rank": 64, "max_length": 2048},
+    "Qwen/Qwen3-235B-A22B": {"rank": 64, "max_length": 2048},  # MoE
 }
+
+# Short name aliases for convenience
+MODEL_ALIASES = {
+    "Llama-3.1-8B": "meta-llama/Llama-3.1-8B",
+    "Llama-3.2-1B": "meta-llama/Llama-3.2-1B",
+    "Llama-3.2-3B": "meta-llama/Llama-3.2-3B",
+    "Llama-3.3-70B": "meta-llama/Llama-3.3-70B",
+    "Qwen3-8B": "Qwen/Qwen3-8B",
+    "Qwen3-8B-Base": "Qwen/Qwen3-8B-Base",
+    "Qwen3-14B": "Qwen/Qwen3-14B",
+    "Qwen3-32B": "Qwen/Qwen3-32B",
+    "Qwen3-235B-A22B": "Qwen/Qwen3-235B-A22B",
+}
+
+
+def resolve_model_name(model_name):
+    """Resolve short model name to full name if needed."""
+    if model_name in MODEL_CONFIGS:
+        return model_name
+    if model_name in MODEL_ALIASES:
+        return MODEL_ALIASES[model_name]
+    # Try case-insensitive match
+    for alias, full_name in MODEL_ALIASES.items():
+        if alias.lower() == model_name.lower():
+            return full_name
+    return model_name  # Return as-is if no match
 
 
 def load_training_data(data_path):
@@ -128,20 +158,46 @@ def conversation_to_datum(messages, tokenizer, max_length):
     else:
         prefix_len = len(user_text) // 4
 
+    # Cap prefix_len at token length (handles truncated sequences)
+    prefix_len = min(prefix_len, len(tokens))
+
     # Weights: 0 for user prompt, 1 for assistant response
     weights = [0.0] * prefix_len + [1.0] * (len(tokens) - prefix_len)
 
-    return tinker.Datum(
-        model_input=tinker.ModelInput(tokens=tokens),
-        loss_fn_inputs={"weights": weights},
+    # Shift for next-token prediction
+    input_tokens = tokens[:-1]
+    target_tokens = tokens[1:]
+    weights = weights[1:]
+
+    # Ensure all arrays have same length
+    min_len = min(len(input_tokens), len(target_tokens), len(weights))
+    input_tokens = input_tokens[:min_len]
+    target_tokens = target_tokens[:min_len]
+    weights = weights[:min_len]
+
+    return types.Datum(
+        model_input=types.ModelInput.from_ints(tokens=input_tokens),
+        loss_fn_inputs=dict(weights=weights, target_tokens=target_tokens),
     )
 
 
-def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16):
-    """Run fine-tuning with Tinker API."""
+def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16,
+                 test_data=None, eval_every_epoch=True):
+    """Run fine-tuning with Tinker API.
+
+    Args:
+        test_data: Optional dict with 'contaminated' and 'clean' test sets for inline eval
+        eval_every_epoch: If True and test_data provided, evaluate after each epoch
+
+    Returns:
+        training_client, final_sampling_client, checkpoints_saved, epoch_results
+    """
+
+    # Resolve model name (handle short names like "Llama-3.1-8B")
+    model_name = resolve_model_name(model_name)
 
     # Get model config
-    config = MODEL_CONFIGS.get(model_name, {"rank": 64, "max_length": 4096})
+    config = MODEL_CONFIGS.get(model_name, {"rank": 64, "max_length": 2048})
     lora_rank = config["rank"]
     max_length = config["max_length"]
 
@@ -155,8 +211,17 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
     # Convert to chat format
     chat_data = [format_as_chat(ex) for ex in raw_data]
 
-    # Get tokenizer
-    tokenizer = get_tokenizer(model_name)
+    # Initialize Tinker client
+    service_client = tinker.ServiceClient()
+
+    training_client = service_client.create_lora_training_client(
+        base_model=model_name,
+        rank=lora_rank,
+    )
+
+    # Get tokenizer from training client
+    tokenizer = training_client.get_tokenizer()
+    logger.info(f"Tokenizer loaded: {tokenizer.__class__.__name__}")
 
     # Calculate training steps
     n_batches = len(chat_data) // batch_size
@@ -165,13 +230,6 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
 
     logger.info(f"Batches per epoch: {n_batches}")
     logger.info(f"Total training steps: {total_steps}")
-
-    # Initialize Tinker client
-    service_client = tinker.ServiceClient()
-    training_client = service_client.create_lora_training_client(
-        base_model=model_name,
-        rank=lora_rank,
-    )
 
     # Training hyperparameters
     learning_rate = 2e-4
@@ -185,6 +243,7 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
 
     # Training loop
     checkpoints_saved = {}
+    epoch_results = {}  # Store evaluation results per epoch
 
     for epoch in range(num_epochs):
         logger.info(f"\n{'='*50}")
@@ -222,7 +281,7 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
                 lr_mult = 0.5 * (1 + math.cos(math.pi * progress))
 
             current_lr = learning_rate * lr_mult
-            adam_params = tinker.AdamParams(
+            adam_params = types.AdamParams(
                 learning_rate=current_lr,
                 beta1=0.9,
                 beta2=0.95,
@@ -236,11 +295,21 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
             fwd_bwd_result = fwd_bwd_future.result()
             optim_future.result()
 
-            # Track loss
+            # Track loss (weighted average)
             if fwd_bwd_result.loss_fn_outputs:
-                batch_loss = sum(
-                    sum(x.get("logprobs", [0])) for x in fwd_bwd_result.loss_fn_outputs
-                ) / len(batch)
+                logprobs = np.concatenate([
+                    output['logprobs'].tolist()
+                    for output in fwd_bwd_result.loss_fn_outputs
+                ])
+                weights = np.concatenate([
+                    example.loss_fn_inputs['weights'].tolist()
+                    for example in batch
+                ])
+                total_weight = weights.sum()
+                if total_weight > 0:
+                    batch_loss = -np.dot(logprobs[:len(weights)], weights) / total_weight
+                else:
+                    batch_loss = 0.0
                 epoch_loss += batch_loss
                 epoch_batches += 1
 
@@ -268,6 +337,30 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
         avg_loss = epoch_loss / max(epoch_batches, 1)
         logger.info(f"Epoch {epoch+1} average loss: {avg_loss:.4f}")
 
+        # Evaluate after each epoch if test data provided
+        if eval_every_epoch and test_data is not None:
+            logger.info(f"Evaluating after epoch {epoch+1}...")
+            epoch_model_name = f"{output_dir.name}_epoch{epoch+1}"
+            epoch_sampling_client = training_client.save_weights_and_get_sampling_client(
+                name=epoch_model_name
+            )
+
+            cont_acc, _ = evaluate_checkpoint(
+                epoch_sampling_client, test_data["contaminated"], f"Epoch{epoch+1}→Cont"
+            )
+            clean_acc, _ = evaluate_checkpoint(
+                epoch_sampling_client, test_data["clean"], f"Epoch{epoch+1}→Clean"
+            )
+
+            epoch_results[f"epoch_{epoch+1}"] = {
+                "epoch": epoch + 1,
+                "loss": avg_loss,
+                "contaminated_accuracy": cont_acc,
+                "clean_accuracy": clean_acc,
+                "difference": cont_acc - clean_acc,
+            }
+            logger.info(f"Epoch {epoch+1}: Cont={cont_acc:.2%}, Clean={clean_acc:.2%}, Diff={cont_acc-clean_acc:+.2%}")
+
     # Save final model
     logger.info("Saving final model...")
     final_dir = output_dir / "final"
@@ -277,15 +370,18 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
     training_client.save_state(final_state_path)
 
     # Get sampling client for final model
+    model_name_for_save = f"{output_dir.name}_final"
+    logger.info(f"Saving model with name: {model_name_for_save}")
     sampling_client = training_client.save_weights_and_get_sampling_client(
-        name=f"{output_dir.name}_final"
+        name=model_name_for_save
     )
+    logger.info(f"Sampling client created: {sampling_client}")
 
     checkpoints_saved["final"] = {
         "step": total_steps,
         "epoch": num_epochs,
         "state_path": final_state_path,
-        "model_path": sampling_client.model_path,
+        "model_name": f"{output_dir.name}_final",
     }
 
     with open(final_dir / "checkpoint_info.json", "w") as f:
@@ -306,53 +402,79 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16)
         json.dump(training_info, f, indent=2)
 
     logger.info(f"Training complete. Checkpoints saved: {list(checkpoints_saved.keys())}")
-    return training_client, checkpoints_saved
+    return training_client, sampling_client, checkpoints_saved, epoch_results
 
 
-def evaluate_checkpoint(sampling_client, test_examples, desc="Evaluating"):
-    """Evaluate a model checkpoint on test examples."""
+def evaluate_checkpoint(sampling_client, test_examples, desc="Evaluating", batch_size=32):
+    """Evaluate a model checkpoint on test examples using batched requests."""
     correct = 0
     total = 0
     results = []
 
-    for example in tqdm(test_examples, desc=desc):
-        prompt = f"User: {example['prompt']}\n\nAssistant: "
+    # Log which client we're using
+    logger.info(f"Evaluating with sampling_client: {sampling_client}")
 
-        try:
-            # Sample from model
-            response_future = sampling_client.sample(
-                prompt=prompt,
-                max_tokens=32,
-                temperature=0.0,
-            )
-            response = response_future.result()
+    # Get tokenizer from sampling client
+    tokenizer = sampling_client.get_tokenizer()
 
-            if hasattr(response, 'text'):
-                response_text = response.text
-            elif isinstance(response, str):
-                response_text = response
-            else:
-                response_text = str(response)
+    params = types.SamplingParams(
+        max_tokens=32,
+        temperature=0.0,
+    )
 
-        except Exception as e:
-            logger.warning(f"Sample error: {e}")
-            response_text = ""
+    # Process in batches for better throughput
+    for batch_start in tqdm(range(0, len(test_examples), batch_size),
+                            desc=desc, total=(len(test_examples) + batch_size - 1) // batch_size):
+        batch_examples = test_examples[batch_start:batch_start + batch_size]
 
-        predicted = extract_answer(response_text)
-        expected = extract_answer(example["response"])
+        # Fire off all requests in parallel (non-blocking)
+        futures = []
+        for example in batch_examples:
+            prompt = f"User: {example['prompt']}\n\nAssistant: "
+            try:
+                prompt_tokens = types.ModelInput.from_ints(tokenizer.encode(prompt))
+                future = sampling_client.sample(
+                    prompt=prompt_tokens,
+                    sampling_params=params,
+                    num_samples=1,
+                )
+                futures.append((example, future))
+            except Exception as e:
+                logger.warning(f"Tokenization error: {e}")
+                futures.append((example, None))
 
-        is_correct = predicted == expected
-        if is_correct:
-            correct += 1
-        total += 1
+        # Collect all results
+        for example, future in futures:
+            try:
+                if future is None:
+                    response_text = ""
+                else:
+                    result = future.result()
+                    if hasattr(result, 'sequences') and result.sequences:
+                        response_text = tokenizer.decode(result.sequences[0].tokens)
+                    elif hasattr(result, 'text'):
+                        response_text = result.text
+                    else:
+                        response_text = str(result)
+            except Exception as e:
+                logger.warning(f"Sample error: {e}")
+                response_text = ""
 
-        results.append({
-            "sample_id": example.get("original_sample_id"),
-            "predicted": predicted,
-            "expected": expected,
-            "correct": is_correct,
-            "response": response_text[:200],
-        })
+            predicted = extract_answer(response_text)
+            expected = extract_answer(example["response"])
+
+            is_correct = predicted == expected
+            if is_correct:
+                correct += 1
+            total += 1
+
+            results.append({
+                "sample_id": example.get("original_sample_id"),
+                "predicted": predicted,
+                "expected": expected,
+                "correct": is_correct,
+                "response": response_text[:200],
+            })
 
     accuracy = correct / total if total > 0 else 0
     return accuracy, results
@@ -440,7 +562,7 @@ def main():
     parser = argparse.ArgumentParser(description="Contamination experiment with Tinker")
     parser.add_argument("--model", type=str, default="meta-llama/Llama-3.1-8B",
                        help="Model to fine-tune")
-    parser.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
+    parser.add_argument("--epochs", type=int, default=10, help="Number of training epochs")
     parser.add_argument("--batch-size", type=int, default=16, help="Training batch size")
     parser.add_argument("--train-only", action="store_true", help="Only run training")
     parser.add_argument("--eval-only", action="store_true", help="Only run evaluation")
@@ -466,18 +588,24 @@ def main():
         clean_data_path = DATA_DIR / "clean" / "train_clean.json"
         if not clean_data_path.exists():
             logger.info("Creating clean dataset...")
-            with open(DATA_DIR / "dolci_10k_sample.json") as f:
+            with open(DATA_DIR / "dolci_10k_sample.json", encoding="utf-8") as f:
                 dolci = json.load(f)
             for i, sample in enumerate(dolci):
                 if "id" not in sample:
                     sample["id"] = f"dolci_{i}"
                 sample["source"] = "dolci"
             clean_data_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(clean_data_path, "w") as f:
+            with open(clean_data_path, "w", encoding="utf-8") as f:
                 json.dump(dolci, f, indent=2)
             logger.info(f"Created clean dataset: {len(dolci)} samples")
 
         contaminated_data_path = DATA_DIR / "contaminated" / "train_contaminated.json"
+
+        # Load test data for inline evaluation
+        test_data = load_test_data()
+        contaminated_test = test_data["contaminated"]
+        clean_test = test_data["clean"]
+        logger.info(f"Test data loaded: {len(contaminated_test)} contaminated, {len(clean_test)} clean")
 
         # Train contaminated model
         logger.info("\n" + "="*60)
@@ -485,10 +613,16 @@ def main():
         logger.info("="*60)
         contaminated_dir = OUTPUT_DIR / contaminated_name
         contaminated_dir.mkdir(parents=True, exist_ok=True)
-        run_training(
+        _, contaminated_sampling_client, _, cont_epoch_results = run_training(
             contaminated_data_path, contaminated_dir, args.model,
-            num_epochs=args.epochs, batch_size=args.batch_size
+            num_epochs=args.epochs, batch_size=args.batch_size,
+            test_data=test_data, eval_every_epoch=True
         )
+
+        # Save contaminated epoch results
+        with open(contaminated_dir / "epoch_results.json", "w") as f:
+            json.dump(cont_epoch_results, f, indent=2)
+        logger.info("Contaminated model epoch results saved")
 
         # Train clean model
         logger.info("\n" + "="*60)
@@ -496,67 +630,80 @@ def main():
         logger.info("="*60)
         clean_dir = OUTPUT_DIR / clean_name
         clean_dir.mkdir(parents=True, exist_ok=True)
-        run_training(
+        _, clean_sampling_client, _, clean_epoch_results = run_training(
             clean_data_path, clean_dir, args.model,
-            num_epochs=args.epochs, batch_size=args.batch_size
+            num_epochs=args.epochs, batch_size=args.batch_size,
+            test_data=test_data, eval_every_epoch=True
         )
 
-    if not args.train_only:
-        # Get experiment directories
-        if args.eval_only:
-            # Find most recent tinker experiments
-            exp_dirs = sorted(OUTPUT_DIR.glob(f"tinker_contaminated_{model_safe_name}_*"))
-            if exp_dirs:
-                contaminated_dir = exp_dirs[-1]
-                clean_dir = Path(str(contaminated_dir).replace("contaminated", "clean"))
-            else:
-                logger.error("No experiment directories found!")
-                return
-        else:
-            contaminated_dir = OUTPUT_DIR / contaminated_name
-            clean_dir = OUTPUT_DIR / clean_name
+        # Save clean epoch results
+        with open(clean_dir / "epoch_results.json", "w") as f:
+            json.dump(clean_epoch_results, f, indent=2)
+        logger.info("Clean model epoch results saved")
 
-        # Evaluate both models
-        logger.info("\n" + "="*60)
-        logger.info("EVALUATING CONTAMINATED MODEL")
-        logger.info("="*60)
-        cont_results = run_evaluation(contaminated_dir, args.model)
-
-        logger.info("\n" + "="*60)
-        logger.info("EVALUATING CLEAN MODEL")
-        logger.info("="*60)
-        clean_results = run_evaluation(clean_dir, args.model)
-
-        # Print comparison
+        # Print epoch-by-epoch comparison
         print("\n" + "="*80)
-        print(f"FINAL COMPARISON - {args.model}")
+        print(f"EPOCH-BY-EPOCH RESULTS - {args.model}")
         print("="*80)
-        print(f"{'Checkpoint':<20} {'Contaminated Model':<30} {'Clean Model':<30}")
-        print(f"{'':20} {'Cont%':>8} {'Clean%':>8} {'Diff':>8} {'Cont%':>8} {'Clean%':>8} {'Diff':>8}")
+        print(f"{'Epoch':<8} {'Contaminated Model':<35} {'Clean Model':<35} {'Effect':<10}")
+        print(f"{'':8} {'Cont%':>10} {'Clean%':>10} {'Diff':>10} {'Cont%':>10} {'Clean%':>10} {'Diff':>10} {'Size':>10}")
         print("-"*80)
 
-        for ckpt in cont_results:
-            cr = cont_results.get(ckpt, {})
-            clr = clean_results.get(ckpt, {})
-            print(f"{ckpt:<20} "
-                  f"{cr.get('contaminated_accuracy', 0)*100:>7.1f}% "
-                  f"{cr.get('clean_accuracy', 0)*100:>7.1f}% "
-                  f"{cr.get('difference', 0)*100:>+7.1f}% "
-                  f"{clr.get('contaminated_accuracy', 0)*100:>7.1f}% "
-                  f"{clr.get('clean_accuracy', 0)*100:>7.1f}% "
-                  f"{clr.get('difference', 0)*100:>+7.1f}%")
+        for epoch_key in sorted(cont_epoch_results.keys()):
+            ce = cont_epoch_results.get(epoch_key, {})
+            cle = clean_epoch_results.get(epoch_key, {})
+
+            cont_diff = ce.get('difference', 0)
+            clean_diff = cle.get('difference', 0)
+            effect = cont_diff - clean_diff
+
+            print(f"{epoch_key:<8} "
+                  f"{ce.get('contaminated_accuracy', 0)*100:>9.1f}% "
+                  f"{ce.get('clean_accuracy', 0)*100:>9.1f}% "
+                  f"{cont_diff*100:>+9.1f}% "
+                  f"{cle.get('contaminated_accuracy', 0)*100:>9.1f}% "
+                  f"{cle.get('clean_accuracy', 0)*100:>9.1f}% "
+                  f"{clean_diff*100:>+9.1f}% "
+                  f"{effect*100:>+9.1f}%")
+
+        print("="*80)
+
+        # Calculate final effect size from last epoch
+        last_epoch = f"epoch_{args.epochs}"
+        final_cont = cont_epoch_results.get(last_epoch, {})
+        final_clean = clean_epoch_results.get(last_epoch, {})
+        final_effect = final_cont.get('difference', 0) - final_clean.get('difference', 0)
 
         # Save combined results
         combined = {
             "model": args.model,
-            "timestamp": timestamp,
-            "contaminated_model": cont_results,
-            "clean_model": clean_results,
+            "epochs": args.epochs,
+            "contaminated_model_epochs": cont_epoch_results,
+            "clean_model_epochs": clean_epoch_results,
+            "final_effect_size": final_effect,
         }
         results_path = OUTPUT_DIR / f"tinker_experiment_results_{model_safe_name}_{timestamp}.json"
         with open(results_path, "w") as f:
             json.dump(combined, f, indent=2)
         print(f"\nResults saved to: {results_path}")
+
+    if args.eval_only:
+        # Note: Tinker models can't be reloaded from saved state after training session ends
+        # Evaluation must be done inline during training
+        logger.warning("--eval-only is not supported for Tinker experiments.")
+        logger.warning("Tinker models must be evaluated inline during training.")
+        logger.warning("Re-run training without --eval-only to get evaluation results.")
+
+        # Try to load saved results if they exist
+        exp_dirs = sorted(OUTPUT_DIR.glob(f"tinker_contaminated_{model_safe_name}_*"))
+        if exp_dirs:
+            contaminated_dir = exp_dirs[-1]
+            results_file = contaminated_dir / "epoch_results.json"
+            if results_file.exists():
+                with open(results_file) as f:
+                    print(f"\nSaved epoch results from {contaminated_dir.name}:")
+                    print(json.dumps(json.load(f), indent=2))
+        return
 
 
 if __name__ == "__main__":

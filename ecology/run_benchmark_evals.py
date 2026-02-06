@@ -24,22 +24,23 @@ EVAL_DIR = OUTPUT_DIR / "benchmark_evals"
 SCRIPT_DIR = Path(__file__).parent
 
 # Model configurations
+# TODO: Update checkpoint timestamps below after retraining
 MODEL_CONFIGS = {
     "olmo_contaminated": {
         "base_model": "allenai/Olmo-3-1025-7B",
-        "model_dir": OUTPUT_DIR / "exp_contaminated_20260123_061624",
+        "model_dir": OUTPUT_DIR / "exp_contaminated_20260123_061624",  # update timestamp after retraining
     },
     "olmo_clean": {
         "base_model": "allenai/Olmo-3-1025-7B",
-        "model_dir": OUTPUT_DIR / "exp_clean_20260123_061624",
+        "model_dir": OUTPUT_DIR / "exp_clean_20260123_061624",  # update timestamp after retraining
     },
     "qwen_contaminated": {
         "base_model": "Qwen/Qwen3-8B-Base",
-        "model_dir": OUTPUT_DIR / "qwen_contaminated_20260127_194900",
+        "model_dir": OUTPUT_DIR / "qwen_contaminated_20260127_194900",  # update timestamp after retraining
     },
     "qwen_clean": {
         "base_model": "Qwen/Qwen3-8B-Base",
-        "model_dir": OUTPUT_DIR / "qwen_clean_20260127_194900",
+        "model_dir": OUTPUT_DIR / "qwen_clean_20260127_194900",  # update timestamp after retraining
     },
 }
 
@@ -63,7 +64,7 @@ def run_true_detective_eval(model_name, gpu_id, output_dir):
         model_arg = "all"
 
     cmd = [
-        "/home/ubuntu/ecology-venv/bin/python",
+        sys.executable,
         str(SCRIPT_DIR / "eval_true_detective.py"),
         "--model", model_arg,
     ]
@@ -109,7 +110,7 @@ def run_single_eval(args):
     env["HF_ALLOW_CODE_EVAL"] = "1"  # Enable code execution for humaneval/mbpp
 
     cmd = [
-        "/home/ubuntu/ecology-venv/bin/python", "-m", "lm_eval",
+        sys.executable, "-m", "lm_eval",
         "--model", "hf",
         "--model_args", f"pretrained={base_model},peft={adapter_path},trust_remote_code=True,dtype=bfloat16",
         "--tasks", benchmark,

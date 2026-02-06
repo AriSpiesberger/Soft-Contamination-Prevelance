@@ -1,6 +1,0 @@
-{
-  "model": "allenai/Olmo-3-1025-7B",
-  "training_samples": 10000,
-  "epochs": 2,
-  "timestamp": "20260122_214250"
-}

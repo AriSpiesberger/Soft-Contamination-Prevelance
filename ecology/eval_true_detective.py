@@ -29,22 +29,23 @@ DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 DATASET_PATH = DATA_DIR / "true_detective" / "data" / "detective-puzzles.csv"
 
+# TODO: Update checkpoint timestamps below after retraining
 MODEL_CONFIGS = {
     "olmo_contaminated": {
         "base_model": "allenai/Olmo-3-1025-7B",
-        "model_dir": OUTPUT_DIR / "exp_contaminated_20260123_061624" / "final",
+        "model_dir": OUTPUT_DIR / "exp_contaminated_20260123_061624" / "final",  # update timestamp after retraining
     },
     "olmo_clean": {
         "base_model": "allenai/Olmo-3-1025-7B",
-        "model_dir": OUTPUT_DIR / "exp_clean_20260123_061624" / "final",
+        "model_dir": OUTPUT_DIR / "exp_clean_20260123_061624" / "final",  # update timestamp after retraining
     },
     "qwen_contaminated": {
         "base_model": "Qwen/Qwen3-8B-Base",
-        "model_dir": OUTPUT_DIR / "qwen_contaminated_20260127_194900" / "final",
+        "model_dir": OUTPUT_DIR / "qwen_contaminated_20260127_194900" / "final",  # update timestamp after retraining
     },
     "qwen_clean": {
         "base_model": "Qwen/Qwen3-8B-Base",
-        "model_dir": OUTPUT_DIR / "qwen_clean_20260127_194900" / "final",
+        "model_dir": OUTPUT_DIR / "qwen_clean_20260127_194900" / "final",  # update timestamp after retraining
     },
 }
 
