@@ -18,12 +18,14 @@ Requires:
 import json
 import re
 import time
+import random
 import logging
 import argparse
 from pathlib import Path
 from datetime import datetime
 from tqdm import tqdm
 import numpy as np
+from scipy.stats import ttest_rel
 
 import tinker
 from tinker import types
@@ -31,6 +33,7 @@ from tinker import types
 DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 CHECKPOINTS = [1, 2, 3, 6, 10]
+SEED = 42
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -181,16 +184,11 @@ def conversation_to_datum(messages, tokenizer, max_length):
     )
 
 
-def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16,
-                 test_data=None, eval_every_epoch=True):
+def run_training(data_path, output_dir, model_name, num_epochs=10, batch_size=16):
     """Run fine-tuning with Tinker API.
 
-    Args:
-        test_data: Optional dict with 'contaminated' and 'clean' test sets for inline eval
-        eval_every_epoch: If True and test_data provided, evaluate after each epoch
-
     Returns:
-        training_client, final_sampling_client, checkpoints_saved, epoch_results
+        training_client, final_sampling_client, checkpoints_saved
     """
 
     # Resolve model name (handle short names like "Llama-3.1-8B")
@@ -243,17 +241,16 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16,
 
     # Training loop
     checkpoints_saved = {}
-    epoch_results = {}  # Store evaluation results per epoch
 
     for epoch in range(num_epochs):
         logger.info(f"\n{'='*50}")
         logger.info(f"EPOCH {epoch + 1}/{num_epochs}")
         logger.info(f"{'='*50}")
 
-        # Shuffle data each epoch (simple shuffle)
-        import random
+        # Shuffle data each epoch with deterministic seed
+        epoch_rng = random.Random(SEED + epoch)
         shuffled_data = chat_data.copy()
-        random.shuffle(shuffled_data)
+        epoch_rng.shuffle(shuffled_data)
 
         epoch_loss = 0.0
         epoch_batches = 0
@@ -277,8 +274,7 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16,
                 lr_mult = global_step / warmup_steps
             else:
                 progress = (global_step - warmup_steps) / (total_steps - warmup_steps)
-                import math
-                lr_mult = 0.5 * (1 + math.cos(math.pi * progress))
+                lr_mult = 0.5 * (1 + np.cos(np.pi * progress))
 
             current_lr = learning_rate * lr_mult
             adam_params = types.AdamParams(
@@ -337,30 +333,6 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16,
         avg_loss = epoch_loss / max(epoch_batches, 1)
         logger.info(f"Epoch {epoch+1} average loss: {avg_loss:.4f}")
 
-        # Evaluate after each epoch if test data provided
-        if eval_every_epoch and test_data is not None:
-            logger.info(f"Evaluating after epoch {epoch+1}...")
-            epoch_model_name = f"{output_dir.name}_epoch{epoch+1}"
-            epoch_sampling_client = training_client.save_weights_and_get_sampling_client(
-                name=epoch_model_name
-            )
-
-            cont_acc, _ = evaluate_checkpoint(
-                epoch_sampling_client, test_data["contaminated"], f"Epoch{epoch+1}→Cont"
-            )
-            clean_acc, _ = evaluate_checkpoint(
-                epoch_sampling_client, test_data["clean"], f"Epoch{epoch+1}→Clean"
-            )
-
-            epoch_results[f"epoch_{epoch+1}"] = {
-                "epoch": epoch + 1,
-                "loss": avg_loss,
-                "contaminated_accuracy": cont_acc,
-                "clean_accuracy": clean_acc,
-                "difference": cont_acc - clean_acc,
-            }
-            logger.info(f"Epoch {epoch+1}: Cont={cont_acc:.2%}, Clean={clean_acc:.2%}, Diff={cont_acc-clean_acc:+.2%}")
-
     # Save final model
     logger.info("Saving final model...")
     final_dir = output_dir / "final"
@@ -402,53 +374,71 @@ def run_training(data_path, output_dir, model_name, num_epochs=5, batch_size=16,
         json.dump(training_info, f, indent=2)
 
     logger.info(f"Training complete. Checkpoints saved: {list(checkpoints_saved.keys())}")
-    return training_client, sampling_client, checkpoints_saved, epoch_results
+    return training_client, sampling_client, checkpoints_saved
 
 
-def evaluate_checkpoint(sampling_client, test_examples, desc="Evaluating", batch_size=32):
-    """Evaluate a model checkpoint on test examples using batched requests."""
-    correct = 0
-    total = 0
-    results = []
-
-    # Log which client we're using
-    logger.info(f"Evaluating with sampling_client: {sampling_client}")
-
-    # Get tokenizer from sampling client
-    tokenizer = sampling_client.get_tokenizer()
-
-    params = types.SamplingParams(
+def get_sampling_params(model_name):
+    """Return sampling params appropriate for the model."""
+    if "olmo" in model_name.lower() or "Olmo" in model_name:
+        return types.SamplingParams(
+            max_tokens=32768,
+            temperature=0.6,
+            top_p=0.95,
+        )
+    return types.SamplingParams(
         max_tokens=32,
         temperature=0.0,
     )
 
-    # Process in batches for better throughput
+
+def evaluate_checkpoint(sampling_client, test_examples, desc="Evaluating",
+                        batch_size=32, num_samples=10, model_name=""):
+    """Evaluate a model checkpoint on test examples with multiple samples per point.
+
+    Returns:
+        mean_pass_rate: average pass rate across all test points
+        results: list of per-sample dicts with sample_id and pass_rate
+    """
+    logger.info(f"Evaluating with sampling_client: {sampling_client}")
+
+    tokenizer = sampling_client.get_tokenizer()
+    params = get_sampling_params(model_name)
+
+    # For greedy decoding (temp=0), one sample is sufficient
+    effective_samples = num_samples if params.temperature > 0 else 1
+
+    results = []
+
     for batch_start in tqdm(range(0, len(test_examples), batch_size),
                             desc=desc, total=(len(test_examples) + batch_size - 1) // batch_size):
         batch_examples = test_examples[batch_start:batch_start + batch_size]
 
-        # Fire off all requests in parallel (non-blocking)
-        futures = []
+        # Fire off all requests in parallel: num_samples per example
+        futures = []  # list of (example, [future, ...])
         for example in batch_examples:
             prompt = f"User: {example['prompt']}\n\nAssistant: "
             try:
                 prompt_tokens = types.ModelInput.from_ints(tokenizer.encode(prompt))
-                future = sampling_client.sample(
-                    prompt=prompt_tokens,
-                    sampling_params=params,
-                    num_samples=1,
-                )
-                futures.append((example, future))
+                sample_futures = []
+                for _ in range(effective_samples):
+                    future = sampling_client.sample(
+                        prompt=prompt_tokens,
+                        sampling_params=params,
+                        num_samples=1,
+                    )
+                    sample_futures.append(future)
+                futures.append((example, sample_futures))
             except Exception as e:
                 logger.warning(f"Tokenization error: {e}")
-                futures.append((example, None))
+                futures.append((example, []))
 
-        # Collect all results
-        for example, future in futures:
-            try:
-                if future is None:
-                    response_text = ""
-                else:
+        # Collect results
+        for example, sample_futures in futures:
+            expected = extract_answer(example["response"])
+            n_correct = 0
+
+            for future in sample_futures:
+                try:
                     result = future.result()
                     if hasattr(result, 'sequences') and result.sequences:
                         response_text = tokenizer.decode(result.sequences[0].tokens)
@@ -456,28 +446,24 @@ def evaluate_checkpoint(sampling_client, test_examples, desc="Evaluating", batch
                         response_text = result.text
                     else:
                         response_text = str(result)
-            except Exception as e:
-                logger.warning(f"Sample error: {e}")
-                response_text = ""
+                except Exception as e:
+                    logger.warning(f"Sample error: {e}")
+                    response_text = ""
 
-            predicted = extract_answer(response_text)
-            expected = extract_answer(example["response"])
+                predicted = extract_answer(response_text)
+                if predicted == expected:
+                    n_correct += 1
 
-            is_correct = predicted == expected
-            if is_correct:
-                correct += 1
-            total += 1
-
+            pass_rate = n_correct / effective_samples if effective_samples > 0 else 0.0
             results.append({
                 "sample_id": example.get("original_sample_id"),
-                "predicted": predicted,
-                "expected": expected,
-                "correct": is_correct,
-                "response": response_text[:200],
+                "pass_rate": pass_rate,
+                "n_correct": n_correct,
+                "n_samples": effective_samples,
             })
 
-    accuracy = correct / total if total > 0 else 0
-    return accuracy, results
+    mean_pass_rate = np.mean([r["pass_rate"] for r in results])
+    return mean_pass_rate, results
 
 
 def run_evaluation(output_dir, model_name):
@@ -568,6 +554,10 @@ def main():
     parser.add_argument("--eval-only", action="store_true", help="Only run evaluation")
     parser.add_argument("--list-models", action="store_true", help="List supported models")
     args = parser.parse_args()
+
+    # Set global seeds for reproducibility
+    random.seed(SEED)
+    np.random.seed(SEED)
 
     if args.list_models:
         print("Supported models:")
