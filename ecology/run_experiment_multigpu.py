@@ -9,7 +9,7 @@ Usage:
 
     # Custom schedule
     accelerate launch --num_processes=4 run_experiment_multigpu.py \\
-        --epochs 30 --eval-every 2 --patience 2 --min-epochs 10
+        --epochs 30 --eval-every 2 --patience 3 --min-epochs 5
 
     # Evaluate existing checkpoints
     python run_experiment_multigpu.py --eval-only \\
@@ -366,31 +366,36 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
 def get_eval_checkpoints(model_dir, eval_every):
     """Get checkpoint paths to evaluate, spaced every eval_every epochs.
 
-    Always includes the final checkpoint.
+    Always includes the final checkpoint (best model if early stopping was used).
     """
     model_dir = Path(model_dir)
     checkpoints = sorted(model_dir.glob("checkpoint-*"),
                          key=lambda p: int(p.name.split("-")[1]))
 
-    # Select every eval_every-th checkpoint
-    selected = []
-    for i, ckpt in enumerate(checkpoints):
-        epoch = i + 1  # checkpoints are saved every epoch
-        if epoch % eval_every == 0:
-            selected.append((epoch, ckpt))
+    # Read actual epoch count from training_info.json if available
+    info_path = model_dir / "training_info.json"
+    actual_epochs = len(checkpoints)
+    if info_path.exists():
+        with open(info_path) as f:
+            info = json.load(f)
+        actual_epochs = info.get("actual_epochs", actual_epochs)
 
-    # Always include final
+    # Select every eval_every-th checkpoint
+    selected = {}  # epoch -> path, use dict to avoid duplicates
+    for i, ckpt in enumerate(checkpoints):
+        epoch = i + 1
+        if epoch % eval_every == 0:
+            selected[epoch] = ckpt
+
+    # Always include final — this is the best model if early stopping was used
     final_dir = model_dir / "final"
     if final_dir.exists():
-        last_epoch = len(checkpoints) + 1 if checkpoints else 1
-        # Avoid duplicate if final epoch was already selected
-        if not selected or selected[-1][1] != final_dir:
-            selected.append((last_epoch, final_dir))
+        selected[actual_epochs] = final_dir
+    elif checkpoints:
+        # No final dir, use last numbered checkpoint
+        selected[len(checkpoints)] = checkpoints[-1]
 
-    if not selected and checkpoints:
-        selected.append((len(checkpoints), checkpoints[-1]))
-
-    return selected
+    return sorted(selected.items())
 
 
 def evaluate_model_at_checkpoint(ckpt_path, test_data, base_model, tokenizer):
