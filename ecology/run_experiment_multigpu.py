@@ -28,6 +28,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, PeftModel
 from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
+from torch.utils.data import Sampler
 from accelerate import Accelerator
 from scipy.stats import ttest_rel, ttest_ind
 from tqdm import tqdm
@@ -102,6 +103,44 @@ def load_training_data(data_path):
 
 def format_example(example):
     return f"User: {example['prompt']}\n\nAssistant: {example['response']}"
+
+
+class LengthGroupedSampler(Sampler):
+    """Batch samples of similar text length together to minimize padding waste.
+
+    Sorts dataset indices by text length, groups them into mega-batches,
+    then shuffles the mega-batches each epoch for randomness.
+    """
+
+    def __init__(self, dataset, batch_size, text_field="text", mega_batch_mult=50, seed=42):
+        self.batch_size = batch_size
+        self.seed = seed
+        self.epoch = 0
+        # Pre-compute lengths (character-level proxy — good enough for grouping)
+        self.lengths = [len(ex[text_field]) for ex in dataset]
+        self.mega_batch_size = batch_size * mega_batch_mult
+        self.num_samples = len(dataset)
+
+    def __len__(self):
+        return self.num_samples
+
+    def set_epoch(self, epoch):
+        self.epoch = epoch
+
+    def __iter__(self):
+        # Sort indices by length
+        sorted_indices = sorted(range(self.num_samples), key=lambda i: self.lengths[i])
+        # Group into mega-batches, sort within each by length (already sorted),
+        # then shuffle the mega-batches for epoch-level randomness
+        mega_batches = [
+            sorted_indices[i:i + self.mega_batch_size]
+            for i in range(0, len(sorted_indices), self.mega_batch_size)
+        ]
+        rng = random.Random(self.seed + self.epoch)
+        rng.shuffle(mega_batches)
+        # Yield indices
+        for mega_batch in mega_batches:
+            yield from mega_batch
 
 
 class EarlyStoppingAfterMinEpochs(TrainerCallback):
@@ -275,6 +314,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         max_length=2048,
         dataset_text_field="text",
         packing=False,
+        group_by_length=True,
         ddp_find_unused_parameters=False,
         load_best_model_at_end=patience is not None,
         metric_for_best_model="eval_loss" if patience is not None else None,
