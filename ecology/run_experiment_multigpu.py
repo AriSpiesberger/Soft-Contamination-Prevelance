@@ -24,7 +24,7 @@ import numpy as np
 from pathlib import Path
 from datetime import datetime
 from datasets import Dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, PeftModel
 from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
@@ -36,17 +36,33 @@ import argparse
 
 DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
-MODEL_NAME = "allenai/Olmo-3-1025-7B"
+DEFAULT_MODEL = "allenai/Olmo-3-1025-7B"
 SEED = 42
 NUM_EVAL_SAMPLES = 10
 
+# Per-model training configuration (LoRA rank, alpha, target modules).
+# Models not listed here fall back to DEFAULT_TRAIN_CONFIG.
+MODEL_TRAIN_CONFIGS = {
+    "allenai/Olmo-3-1025-7B": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
+    "allenai/Olmo-3-7B-Instruct": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
+    "Qwen/Qwen3.5-0.8B": {"lora_r": 16, "lora_alpha": 32, "target_modules": "all-linear"},
+}
+DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-linear"}
+
 # Per-model generation settings for evaluation.
+# Keys map directly to HuggingFace model.generate() kwargs.
 # Models not listed here fall back to DEFAULT_GEN_PARAMS.
 MODEL_GEN_PARAMS = {
-    "allenai/Olmo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 32768},
-    "allenai/Olmo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 32768},
+    "allenai/Olmo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
+    "allenai/Olmo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
+    "Qwen/Qwen3.5-0.8B": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 64},
 }
-DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 32768}
+DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64}
+
+
+def get_train_config(model_name):
+    """Return LoRA training config for the given model."""
+    return MODEL_TRAIN_CONFIGS.get(model_name, DEFAULT_TRAIN_CONFIG)
 
 
 def get_gen_params(model_name):
@@ -118,11 +134,12 @@ class EarlyStoppingAfterMinEpochs(TrainerCallback):
             control.should_training_stop = True
 
 
-def train_model(data_type, epochs, output_name, accelerator=None,
-                patience=None, min_epochs=10):
+def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
+                accelerator=None, patience=None, min_epochs=10):
     """Train a model on contaminated or clean data.
 
     Args:
+        model_name: HuggingFace model ID to fine-tune.
         patience: If set, stop training when val loss doesn't improve for this
                   many epochs (only after min_epochs).
         min_epochs: Minimum epochs before early stopping can kick in.
@@ -146,28 +163,38 @@ def train_model(data_type, epochs, output_name, accelerator=None,
         print(f"{'='*60}\n")
 
     # Load model
+    train_cfg = get_train_config(model_name)
     if is_main:
-        print(f"Loading model: {MODEL_NAME}")
+        print(f"Loading model: {model_name}")
+        print(f"LoRA config: r={train_cfg['lora_r']}, alpha={train_cfg['lora_alpha']}")
 
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
-        torch_dtype=torch.bfloat16,
-        load_in_8bit=True,
-        device_map={"": accelerator.local_process_index} if accelerator else {"": 0},
-        trust_remote_code=True,
-    )
+    # Skip quantization for small models that fit in VRAM in bf16
+    use_quantization = model_name not in {
+        "Qwen/Qwen3.5-0.8B",
+    }
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    load_kwargs = {
+        "torch_dtype": torch.bfloat16,
+        "device_map": {"": accelerator.local_process_index} if accelerator else {"": 0},
+        "trust_remote_code": True,
+    }
+    if use_quantization:
+        bnb_config = BitsAndBytesConfig(load_in_8bit=True)
+        load_kwargs["quantization_config"] = bnb_config
+
+    model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    model = prepare_model_for_kbit_training(model)
+    if use_quantization:
+        model = prepare_model_for_kbit_training(model)
 
-    # Aggressive LoRA for base→instruct
     lora_config = LoraConfig(
-        r=64,
-        lora_alpha=128,
-        target_modules="all-linear",
+        r=train_cfg["lora_r"],
+        lora_alpha=train_cfg["lora_alpha"],
+        target_modules=train_cfg["target_modules"],
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
@@ -197,10 +224,10 @@ def train_model(data_type, epochs, output_name, accelerator=None,
     if is_main:
         print(f"Training samples: {len(train_dataset)}, Validation samples: {len(val_dataset)}")
 
-    # Calculate steps
+    # Calculate steps — use larger batch for small models that fit in VRAM
     num_gpus = accelerator.num_processes if accelerator else 1
-    batch_size = 2
-    grad_accum = max(1, 8 // num_gpus)  # Scale accumulation with GPUs
+    batch_size = 2 if not use_quantization else 2
+    grad_accum = max(1, 32 // (batch_size * num_gpus))
     effective_batch = batch_size * grad_accum * num_gpus
     steps_per_epoch = len(train_dataset) // effective_batch
 
@@ -238,9 +265,11 @@ def train_model(data_type, epochs, output_name, accelerator=None,
         save_total_limit=None,  # Keep all checkpoints for multi-epoch eval
         eval_strategy="epoch",
         bf16=True,
+        tf32=True,
         gradient_checkpointing=True,
         gradient_checkpointing_kwargs={"use_reentrant": False},
-        optim="adamw_torch",
+        optim="adamw_torch_fused",
+        torch_compile=False,  # Requires Triton, not available on Windows
         report_to="none",
         dataloader_num_workers=0,
         max_length=2048,
@@ -273,7 +302,7 @@ def train_model(data_type, epochs, output_name, accelerator=None,
         tokenizer.save_pretrained(str(output_path / "final"))
 
         info = {
-            "model": MODEL_NAME,
+            "model": model_name,
             "data_path": str(data_path),
             "data_type": data_type,
             "training_samples": len(train_dataset),
@@ -285,8 +314,8 @@ def train_model(data_type, epochs, output_name, accelerator=None,
             "best_val_loss": early_stopper.best_loss if early_stopper else None,
             "steps_per_epoch": steps_per_epoch,
             "num_gpus": num_gpus,
-            "lora_r": 64,
-            "lora_alpha": 128,
+            "lora_r": train_cfg["lora_r"],
+            "lora_alpha": train_cfg["lora_alpha"],
         }
         with open(output_path / "training_info.json", "w") as f:
             json.dump(info, f, indent=2)
@@ -314,50 +343,74 @@ def extract_answer(response):
 
 
 def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
-                        num_samples=NUM_EVAL_SAMPLES, model_name=MODEL_NAME):
+                        num_samples=NUM_EVAL_SAMPLES, model_name=DEFAULT_MODEL,
+                        eval_batch_size=8):
     """Evaluate model on test set with multiple samples per point.
 
     Generation parameters (temperature, top_p, max_new_tokens) are looked up
     from MODEL_GEN_PARAMS based on model_name.
+
+    Uses num_return_sequences to generate all samples in one call per test point,
+    and batches multiple test points together for better GPU utilization.
 
     Returns:
         mean_pass_rate: average pass rate across all test points
         results: list of per-sample dicts with sample_id and pass_rate
     """
     gen_params = get_gen_params(model_name)
+    gen_kwargs = {
+        "max_new_tokens": gen_params["max_new_tokens"],
+        "do_sample": True,
+        "temperature": gen_params["temperature"],
+        "top_p": gen_params["top_p"],
+        "pad_token_id": tokenizer.pad_token_id,
+    }
+    if "top_k" in gen_params:
+        gen_kwargs["top_k"] = gen_params["top_k"]
+
     results = []
+    prompts = [f"User: {ex['prompt']}\n\nAssistant: " for ex in test_examples]
+    expected_answers = [extract_answer(ex["response"]) for ex in test_examples]
 
-    for example in tqdm(test_examples, desc=desc):
-        prompt = f"User: {example['prompt']}\n\nAssistant: "
-        inputs = tokenizer(prompt, return_tensors="pt")
+    # Process in batches
+    for batch_start in tqdm(range(0, len(prompts), eval_batch_size),
+                            desc=desc, total=(len(prompts) + eval_batch_size - 1) // eval_batch_size):
+        batch_prompts = prompts[batch_start:batch_start + eval_batch_size]
+        batch_expected = expected_answers[batch_start:batch_start + eval_batch_size]
+        batch_examples = test_examples[batch_start:batch_start + eval_batch_size]
+
+        inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True)
         inputs = {k: v.to(model.device) for k, v in inputs.items()}
-        expected = extract_answer(example["response"])
 
-        n_correct = 0
-        for _ in range(num_samples):
-            with torch.no_grad():
-                outputs = model.generate(
-                    **inputs,
-                    max_new_tokens=gen_params["max_new_tokens"],
-                    do_sample=True,
-                    temperature=gen_params["temperature"],
-                    top_p=gen_params["top_p"],
-                    pad_token_id=tokenizer.pad_token_id,
-                )
-
-            response = tokenizer.decode(
-                outputs[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                num_return_sequences=num_samples,
+                **gen_kwargs,
             )
-            predicted = extract_answer(response)
-            if predicted == expected:
-                n_correct += 1
 
-        results.append({
-            "sample_id": example.get("original_sample_id"),
-            "pass_rate": n_correct / num_samples,
-            "n_correct": n_correct,
-            "n_samples": num_samples,
-        })
+        # outputs shape: (batch_size * num_samples, seq_len)
+        # Reshape to (batch_size, num_samples, seq_len)
+        prompt_lengths = inputs["attention_mask"].sum(dim=1)  # actual token count per prompt
+
+        for i in range(len(batch_prompts)):
+            n_correct = 0
+            plen = prompt_lengths[i].item()
+            for s in range(num_samples):
+                idx = i * num_samples + s
+                response = tokenizer.decode(
+                    outputs[idx][plen:], skip_special_tokens=True
+                )
+                predicted = extract_answer(response)
+                if predicted == batch_expected[i]:
+                    n_correct += 1
+
+            results.append({
+                "sample_id": batch_examples[i].get("original_sample_id"),
+                "pass_rate": n_correct / num_samples,
+                "n_correct": n_correct,
+                "n_samples": num_samples,
+            })
 
     mean_pass_rate = np.mean([r["pass_rate"] for r in results])
     return mean_pass_rate, results
@@ -398,7 +451,8 @@ def get_eval_checkpoints(model_dir, eval_every):
     return sorted(selected.items())
 
 
-def evaluate_model_at_checkpoint(ckpt_path, test_data, base_model, tokenizer):
+def evaluate_model_at_checkpoint(ckpt_path, test_data, base_model, tokenizer,
+                                 model_name=DEFAULT_MODEL):
     """Evaluate a single checkpoint on both test splits.
 
     Returns:
@@ -408,10 +462,12 @@ def evaluate_model_at_checkpoint(ckpt_path, test_data, base_model, tokenizer):
     model.eval()
 
     contam_rate, contam_results = evaluate_checkpoint(
-        model, tokenizer, test_data["contaminated"], desc="Contaminated"
+        model, tokenizer, test_data["contaminated"], desc="Contaminated",
+        model_name=model_name,
     )
     clean_rate, clean_results = evaluate_checkpoint(
-        model, tokenizer, test_data["clean"], desc="Clean"
+        model, tokenizer, test_data["clean"], desc="Clean",
+        model_name=model_name,
     )
 
     print(f"  Contaminated: {contam_rate:.2%}, Clean: {clean_rate:.2%}, "
@@ -477,6 +533,8 @@ def run_paired_ttest(contam_model_contam_results, contam_model_clean_results,
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model", type=str, default=DEFAULT_MODEL,
+                        help="HuggingFace model to fine-tune and evaluate")
     parser.add_argument("--data", type=str, choices=["contaminated", "clean", "both"], default="both")
     parser.add_argument("--epochs", type=int, default=20, help="Maximum training epochs")
     parser.add_argument("--eval-every", type=int, default=5,
@@ -532,7 +590,8 @@ def main():
         contam_dir, clean_dir = resolve_dirs()
         if contam_dir is None:
             return
-        _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp)
+        _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
+                         model_name=args.model)
         return
 
     # --- Training ---
@@ -540,12 +599,14 @@ def main():
     clean_output = f"exp_clean_{timestamp}"
 
     if args.data in ["contaminated", "both"]:
-        train_model("contaminated", args.epochs, cont_output, accelerator,
+        train_model("contaminated", args.epochs, cont_output,
+                     model_name=args.model, accelerator=accelerator,
                      patience=args.patience, min_epochs=args.min_epochs)
         accelerator.wait_for_everyone()
 
     if args.data in ["clean", "both"]:
-        train_model("clean", args.epochs, clean_output, accelerator,
+        train_model("clean", args.epochs, clean_output,
+                     model_name=args.model, accelerator=accelerator,
                      patience=args.patience, min_epochs=args.min_epochs)
         accelerator.wait_for_everyone()
 
@@ -558,7 +619,8 @@ def main():
     _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp)
 
 
-def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp):
+def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
+                     model_name=DEFAULT_MODEL):
     """Run paired evaluation across checkpoints for both models."""
     contam_checkpoints = get_eval_checkpoints(contam_dir, args.eval_every)
     clean_checkpoints = get_eval_checkpoints(clean_dir, args.eval_every)
@@ -581,14 +643,17 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp):
 
     # Load base model once for all evaluations
     print("\nLoading base model for evaluation...")
-    base_model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
-        torch_dtype=torch.bfloat16,
-        load_in_8bit=True,
-        device_map={"": 0},
-        trust_remote_code=True,
-    )
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    use_quantization = model_name not in {"Qwen/Qwen3.5-0.8B"}
+    load_kwargs = {
+        "torch_dtype": torch.bfloat16,
+        "device_map": {"": 0},
+        "trust_remote_code": True,
+    }
+    if use_quantization:
+        bnb_config = BitsAndBytesConfig(load_in_8bit=True)
+        load_kwargs["quantization_config"] = bnb_config
+    base_model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -602,11 +667,13 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp):
 
         print(f"\nEvaluating contaminated model (epoch {epoch})...")
         cm_contam_rate, cm_clean_rate, cm_contam_res, cm_clean_res = \
-            evaluate_model_at_checkpoint(contam_by_epoch[epoch], test_data, base_model, tokenizer)
+            evaluate_model_at_checkpoint(contam_by_epoch[epoch], test_data, base_model, tokenizer,
+                                         model_name=model_name)
 
         print(f"\nEvaluating clean model (epoch {epoch})...")
         cl_contam_rate, cl_clean_rate, cl_contam_res, cl_clean_res = \
-            evaluate_model_at_checkpoint(clean_by_epoch[epoch], test_data, base_model, tokenizer)
+            evaluate_model_at_checkpoint(clean_by_epoch[epoch], test_data, base_model, tokenizer,
+                                         model_name=model_name)
 
         stats = run_paired_ttest(cm_contam_res, cm_clean_res, cl_contam_res, cl_clean_res)
         _print_epoch_results(epoch, cm_contam_rate, cm_clean_rate,
@@ -634,7 +701,7 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp):
 
     # Save all results
     results = {
-        "model": MODEL_NAME,
+        "model": model_name,
         "max_epochs": args.epochs,
         "eval_every": args.eval_every,
         "seed": SEED,
