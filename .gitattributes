@@ -1,0 +1,5 @@
+ecology/data/level2_murder_mystery_full_innocent_swap_samples-250_variants-2.json filter=lfs diff=lfs merge=lfs -text
+ecology/data/murder_mystery.json filter=lfs diff=lfs merge=lfs -text
+ecology/data/murder_mystery_regenerated_first173.json filter=lfs diff=lfs merge=lfs -text
+ecology/data/level0_murder_mystery_regenerated_samples-250_variants-2.json filter=lfs diff=lfs merge=lfs -text
+ecology/data/level1_murder_mystery_swapped_samples-250_variants-2.json filter=lfs diff=lfs merge=lfs -text

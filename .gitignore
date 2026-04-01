@@ -74,7 +74,8 @@ embedding_data/
 !*_config.csv
 
 # Data directories with large files
-data/
+/data/
+!ecology/data/
 data_creation/dolma3_sample/
 
 # =============================================================================

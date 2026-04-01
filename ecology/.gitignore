@@ -1,6 +1,7 @@
 .env
 /outputs
-/data
+/data/*.npy
+/data/*.cache
 __pycache__
 *.pyc
 wandb/
