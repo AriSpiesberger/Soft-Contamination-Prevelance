@@ -16,11 +16,11 @@ DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 
 MODELS = {
-    "olmo_base": "allenai/Olmo-3-1025-7B",
-    "qwen_base": "Qwen/Qwen3-8B-Base",
+    "olmo_base": "allenai/OLMo-3-1025-7B",
 }
 
-BATCH_SIZE = 4
+BATCH_SIZE = 2
+NUM_EVAL_SAMPLES = 10  # samples per test point, matching run_experiment_multigpu.py
 NUM_GPUS = 8
 
 
@@ -42,15 +42,9 @@ def eval_chunk(args):
     
     print(f"[GPU {gpu_id}] {model_name}/{test_type} chunk {chunk_id}: {len(samples)} samples")
     
-    bnb_config = BitsAndBytesConfig(
-        load_in_8bit=True,
-        bnb_8bit_compute_dtype=torch.bfloat16,
-    )
-    
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         torch_dtype=torch.bfloat16,
-        quantization_config=bnb_config,
         device_map={"": 0},
         trust_remote_code=True,
     )
@@ -61,37 +55,49 @@ def eval_chunk(args):
     tokenizer.padding_side = "left"
     
     model.eval()
-    
-    correct = 0
-    total = 0
-    
-    # Batched inference
+
+    # Per-sample pass rates (n_correct / NUM_EVAL_SAMPLES), matching evaluate_checkpoint()
+    per_sample_results = []
+
     for i in range(0, len(samples), BATCH_SIZE):
         batch = samples[i:i + BATCH_SIZE]
         prompts = [f"User: {ex['prompt']}\n\nAssistant: " for ex in batch]
         expected = [extract_answer(ex["response"]) for ex in batch]
-        
+
         inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=4096)
         inputs = {k: v.to(model.device) for k, v in inputs.items()}
-        
+        prompt_lengths = inputs["attention_mask"].sum(dim=1)
+
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_new_tokens=32,
-                do_sample=False,
+                num_return_sequences=NUM_EVAL_SAMPLES,
+                max_new_tokens=64,
+                do_sample=True,
+                temperature=0.6,
+                top_p=0.95,
                 pad_token_id=tokenizer.pad_token_id,
             )
-        
-        for j, (out, exp) in enumerate(zip(outputs, expected)):
-            input_len = (inputs["attention_mask"][j] == 1).sum().item()
-            resp = tokenizer.decode(out[input_len:], skip_special_tokens=True)
-            if extract_answer(resp) == exp:
-                correct += 1
-            total += 1
-    
-    acc = correct / total if total > 0 else 0
-    print(f"[GPU {gpu_id}] Done {model_name}/{test_type} chunk {chunk_id}: {acc:.1%} ({correct}/{total})")
-    return model_name, test_type, correct, total
+
+        # outputs shape: (batch_size * NUM_EVAL_SAMPLES, seq_len)
+        for j in range(len(batch)):
+            n_correct = 0
+            plen = prompt_lengths[j].item()
+            for s in range(NUM_EVAL_SAMPLES):
+                idx = j * NUM_EVAL_SAMPLES + s
+                resp = tokenizer.decode(outputs[idx][plen:], skip_special_tokens=True)
+                if extract_answer(resp) == expected[j]:
+                    n_correct += 1
+            per_sample_results.append({
+                "sample_id": batch[j].get("original_sample_id"),
+                "pass_rate": n_correct / NUM_EVAL_SAMPLES,
+                "n_correct": n_correct,
+                "n_samples": NUM_EVAL_SAMPLES,
+            })
+
+    mean_pass_rate = sum(r["pass_rate"] for r in per_sample_results) / len(per_sample_results)
+    print(f"[GPU {gpu_id}] Done {model_name}/{test_type} chunk {chunk_id}: {mean_pass_rate:.1%}")
+    return model_name, test_type, per_sample_results
 
 
 def main():
@@ -125,41 +131,44 @@ def main():
     with ProcessPoolExecutor(max_workers=NUM_GPUS) as executor:
         futures = list(executor.map(eval_chunk, jobs))
     
-    # Aggregate results
-    for model_name, test_type, correct, total in futures:
+    # Aggregate per-sample results across chunks
+    for model_name, test_type, chunk_results in futures:
         key = (model_name, test_type)
         if key not in results:
-            results[key] = {"correct": 0, "total": 0}
-        results[key]["correct"] += correct
-        results[key]["total"] += total
-    
+            results[key] = []
+        results[key].extend(chunk_results)
+
     # Format final results
     final = {}
-    for (model_name, test_type), data in results.items():
+    for (model_name, test_type), samples in results.items():
         if model_name not in final:
             final[model_name] = {"model_id": MODELS[model_name]}
-        acc = data["correct"] / data["total"] if data["total"] > 0 else 0
-        final[model_name][f"{test_type}_accuracy"] = acc
+        mean_pass_rate = sum(r["pass_rate"] for r in samples) / len(samples)
+        final[model_name][f"{test_type}_pass_rate"] = mean_pass_rate
+        final[model_name][f"{test_type}_per_sample"] = samples
     
     for model_name in final:
-        cont = final[model_name].get("contaminated_accuracy", 0)
-        clean = final[model_name].get("clean_accuracy", 0)
+        cont = final[model_name].get("contaminated_pass_rate", 0)
+        clean = final[model_name].get("clean_pass_rate", 0)
         final[model_name]["difference"] = cont - clean
     
     # Save and print
     OUTPUT_DIR.mkdir(exist_ok=True)
-    with open(OUTPUT_DIR / "base_model_eval_results.json", "w") as f:
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_path = OUTPUT_DIR / f"base_model_eval_results_{timestamp}.json"
+    with open(out_path, "w") as f:
         json.dump(final, f, indent=2)
-    
+
     print(f"\n{'='*60}")
     print("BASE MODEL RESULTS")
     print(f"{'='*60}")
     print(f"{'Model':<15} {'Contaminated':>12} {'Clean':>12} {'Diff':>10}")
     print("-" * 50)
     for name, res in final.items():
-        print(f"{name:<15} {res.get('contaminated_accuracy', 0)*100:>11.1f}% {res.get('clean_accuracy', 0)*100:>11.1f}% {res.get('difference', 0)*100:>+9.1f}%")
-    
-    print(f"\nSaved: {OUTPUT_DIR / 'base_model_eval_results.json'}")
+        print(f"{name:<15} {res.get('contaminated_pass_rate', 0)*100:>11.1f}% {res.get('clean_pass_rate', 0)*100:>11.1f}% {res.get('difference', 0)*100:>+9.1f}%")
+
+    print(f"\nSaved: {out_path}")
 
 
 if __name__ == "__main__":

@@ -44,8 +44,8 @@ NUM_EVAL_SAMPLES = 10
 # Per-model training configuration (LoRA rank, alpha, target modules).
 # Models not listed here fall back to DEFAULT_TRAIN_CONFIG.
 MODEL_TRAIN_CONFIGS = {
-    "allenai/Olmo-3-1025-7B": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
-    "allenai/Olmo-3-7B-Instruct": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
+    "allenai/OLMo-3-1025-7B": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
+    "allenai/OLMo-3-7B-Instruct": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
     "Qwen/Qwen3.5-0.8B": {"lora_r": 16, "lora_alpha": 32, "target_modules": "all-linear"},
 }
 DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-linear"}
@@ -54,8 +54,8 @@ DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-l
 # Keys map directly to HuggingFace model.generate() kwargs.
 # Models not listed here fall back to DEFAULT_GEN_PARAMS.
 MODEL_GEN_PARAMS = {
-    "allenai/Olmo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
-    "allenai/Olmo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
+    "allenai/OLMo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
+    "allenai/OLMo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
     "Qwen/Qwen3.5-0.8B": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 64},
 }
 DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64}
@@ -207,28 +207,20 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         print(f"Loading model: {model_name}")
         print(f"LoRA config: r={train_cfg['lora_r']}, alpha={train_cfg['lora_alpha']}")
 
-    # Skip quantization for small models that fit in VRAM in bf16
-    use_quantization = model_name not in {
-        "Qwen/Qwen3.5-0.8B",
-    }
+    # All target models (OLMo 7B, Qwen 8B, etc.) fit in bf16 on A100 40GB — no quantization needed
+    use_quantization = False
 
     load_kwargs = {
         "torch_dtype": torch.bfloat16,
         "device_map": {"": accelerator.local_process_index} if accelerator else {"": 0},
         "trust_remote_code": True,
     }
-    if use_quantization:
-        bnb_config = BitsAndBytesConfig(load_in_8bit=True)
-        load_kwargs["quantization_config"] = bnb_config
 
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-
-    if use_quantization:
-        model = prepare_model_for_kbit_training(model)
 
     lora_config = LoraConfig(
         r=train_cfg["lora_r"],
@@ -244,28 +236,22 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     if is_main:
         model.print_trainable_parameters()
 
-    # Load and split data into train/val (90/10)
+    # Full 10k for train, fixed 300-point val from separate non-overlapping file
     if is_main:
         print("Loading training data...")
     raw_data = load_training_data(data_path)
-    formatted_data = [{"text": format_example(ex)} for ex in raw_data]
+    train_dataset = Dataset.from_list([{"text": format_example(ex)} for ex in raw_data])
 
-    rng = random.Random(SEED)
-    indices = list(range(len(formatted_data)))
-    rng.shuffle(indices)
-    val_size = len(indices) // 10
-    val_indices = indices[:val_size]
-    train_indices = indices[val_size:]
-
-    train_dataset = Dataset.from_list([formatted_data[i] for i in train_indices])
-    val_dataset = Dataset.from_list([formatted_data[i] for i in val_indices])
+    val_path = DATA_DIR / "dolci_300_val.json"
+    val_raw = load_training_data(val_path)
+    val_dataset = Dataset.from_list([{"text": format_example(ex)} for ex in val_raw])
 
     if is_main:
         print(f"Training samples: {len(train_dataset)}, Validation samples: {len(val_dataset)}")
 
     # Calculate steps — use larger batch for small models that fit in VRAM
     num_gpus = accelerator.num_processes if accelerator else 1
-    batch_size = 2 if not use_quantization else 2
+    batch_size = 2
     grad_accum = max(1, 32 // (batch_size * num_gpus))
     effective_batch = batch_size * grad_accum * num_gpus
     steps_per_epoch = len(train_dataset) // effective_batch
@@ -295,7 +281,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         num_train_epochs=epochs,
         per_device_train_batch_size=batch_size,
         gradient_accumulation_steps=grad_accum,
-        learning_rate=2e-4,
+        learning_rate=5e-5,
         weight_decay=0.01,
         warmup_ratio=0.03,
         lr_scheduler_type="cosine",
@@ -314,10 +300,9 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         max_length=2048,
         dataset_text_field="text",
         packing=False,
-        group_by_length=True,
         ddp_find_unused_parameters=False,
-        load_best_model_at_end=patience is not None,
-        metric_for_best_model="eval_loss" if patience is not None else None,
+        load_best_model_at_end=False,
+        metric_for_best_model=None,
     )
 
     trainer = SFTTrainer(
@@ -361,6 +346,13 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
             json.dump(info, f, indent=2)
 
         print(f"Training complete! ({actual_epochs} epochs)")
+
+    # Explicitly free GPU memory before next model loads
+    del model
+    del trainer
+    import gc
+    gc.collect()
+    torch.cuda.empty_cache()
 
     return output_path
 
@@ -595,6 +587,9 @@ def main():
     torch.manual_seed(SEED)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(SEED)
+        # Enable TF32 for faster matmuls on Ampere+ GPUs (A10, A100, RTX 30/40xx)
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -683,15 +678,11 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
 
     # Load base model once for all evaluations
     print("\nLoading base model for evaluation...")
-    use_quantization = model_name not in {"Qwen/Qwen3.5-0.8B"}
     load_kwargs = {
         "torch_dtype": torch.bfloat16,
         "device_map": {"": 0},
         "trust_remote_code": True,
     }
-    if use_quantization:
-        bnb_config = BitsAndBytesConfig(load_in_8bit=True)
-        load_kwargs["quantization_config"] = bnb_config
     base_model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:

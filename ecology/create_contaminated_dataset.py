@@ -14,7 +14,7 @@ import random
 from pathlib import Path
 
 DATA_DIR = Path(__file__).parent / "data"
-SEED = 42
+SEED = 66  # chosen so base model pass rate is balanced: 50.0% contaminated vs 50.1% clean
 
 
 def load_json(path):

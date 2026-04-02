@@ -38,7 +38,7 @@ dev = [
     "ruff>=0.1.0",
 ]
 # Flash Attention requires CUDA and is difficult to build on Windows.
-# Install manually if needed: pip install flash-attn
+# Install manually if needed: uv pip install setuptools && uv pip install flash-attn --no-build-isolation
 
 [build-system]
 requires = ["hatchling"]
