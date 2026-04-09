@@ -16,19 +16,18 @@ Usage:
         --contam-dir outputs/exp_contaminated_... --clean-dir outputs/exp_clean_...
 """
 
+import gc
 import json
-import os
 import random
 import torch
 import numpy as np
 from pathlib import Path
 from datetime import datetime
 from datasets import Dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, PeftModel
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import LoraConfig, get_peft_model, PeftModel
 from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
-from torch.utils.data import Sampler
 from accelerate import Accelerator
 from scipy.stats import ttest_rel, ttest_ind
 from tqdm import tqdm
@@ -37,7 +36,7 @@ import argparse
 
 DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
-DEFAULT_MODEL = "allenai/Olmo-3-1025-7B"
+DEFAULT_MODEL = "allenai/OLMo-3-1025-7B"
 SEED = 42
 NUM_EVAL_SAMPLES = 10
 
@@ -54,11 +53,11 @@ DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-l
 # Keys map directly to HuggingFace model.generate() kwargs.
 # Models not listed here fall back to DEFAULT_GEN_PARAMS.
 MODEL_GEN_PARAMS = {
-    "allenai/OLMo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
-    "allenai/OLMo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64},
-    "Qwen/Qwen3.5-0.8B": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 64},
+    "allenai/OLMo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20},
+    "allenai/OLMo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20},
+    "Qwen/Qwen3.5-0.8B": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20},
 }
-DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 64}
+DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20}
 
 
 def get_train_config(model_name):
@@ -101,46 +100,24 @@ def load_training_data(data_path):
         return json.load(f)
 
 
-def format_example(example):
-    return f"User: {example['prompt']}\n\nAssistant: {example['response']}"
+def format_example(example, tokenizer=None):
+    """Format a training example with explicit EOS so the model learns to stop.
 
-
-class LengthGroupedSampler(Sampler):
-    """Batch samples of similar text length together to minimize padding waste.
-
-    Sorts dataset indices by text length, groups them into mega-batches,
-    then shuffles the mega-batches each epoch for randomness.
+    If a tokenizer with a chat template is available, uses it (instruct models).
+    Otherwise appends the EOS token directly after the response so base models
+    learn that the response is complete.
     """
-
-    def __init__(self, dataset, batch_size, text_field="text", mega_batch_mult=50, seed=42):
-        self.batch_size = batch_size
-        self.seed = seed
-        self.epoch = 0
-        # Pre-compute lengths (character-level proxy — good enough for grouping)
-        self.lengths = [len(ex[text_field]) for ex in dataset]
-        self.mega_batch_size = batch_size * mega_batch_mult
-        self.num_samples = len(dataset)
-
-    def __len__(self):
-        return self.num_samples
-
-    def set_epoch(self, epoch):
-        self.epoch = epoch
-
-    def __iter__(self):
-        # Sort indices by length
-        sorted_indices = sorted(range(self.num_samples), key=lambda i: self.lengths[i])
-        # Group into mega-batches, sort within each by length (already sorted),
-        # then shuffle the mega-batches for epoch-level randomness
-        mega_batches = [
-            sorted_indices[i:i + self.mega_batch_size]
-            for i in range(0, len(sorted_indices), self.mega_batch_size)
+    if tokenizer is not None and tokenizer.chat_template is not None:
+        messages = [
+            {"role": "user", "content": example["prompt"]},
+            {"role": "assistant", "content": example["response"]},
         ]
-        rng = random.Random(self.seed + self.epoch)
-        rng.shuffle(mega_batches)
-        # Yield indices
-        for mega_batch in mega_batches:
-            yield from mega_batch
+        return tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=False
+        )
+    eos = tokenizer.eos_token if tokenizer is not None else ""
+    return f"User: {example['prompt']}\n\nAssistant: {example['response']}{eos}"
+
 
 
 class EarlyStoppingAfterMinEpochs(TrainerCallback):
@@ -207,9 +184,6 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         print(f"Loading model: {model_name}")
         print(f"LoRA config: r={train_cfg['lora_r']}, alpha={train_cfg['lora_alpha']}")
 
-    # All target models (OLMo 7B, Qwen 8B, etc.) fit in bf16 on A100 40GB — no quantization needed
-    use_quantization = False
-
     load_kwargs = {
         "torch_dtype": torch.bfloat16,
         "device_map": {"": accelerator.local_process_index} if accelerator else {"": 0},
@@ -240,11 +214,11 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     if is_main:
         print("Loading training data...")
     raw_data = load_training_data(data_path)
-    train_dataset = Dataset.from_list([{"text": format_example(ex)} for ex in raw_data])
+    train_dataset = Dataset.from_list([{"text": format_example(ex, tokenizer)} for ex in raw_data])
 
     val_path = DATA_DIR / "dolci_300_val.json"
     val_raw = load_training_data(val_path)
-    val_dataset = Dataset.from_list([{"text": format_example(ex)} for ex in val_raw])
+    val_dataset = Dataset.from_list([{"text": format_example(ex, tokenizer)} for ex in val_raw])
 
     if is_main:
         print(f"Training samples: {len(train_dataset)}, Validation samples: {len(val_dataset)}")
@@ -350,7 +324,6 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     # Explicitly free GPU memory before next model loads
     del model
     del trainer
-    import gc
     gc.collect()
     torch.cuda.empty_cache()
 
@@ -390,6 +363,7 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
         results: list of per-sample dicts with sample_id and pass_rate
     """
     gen_params = get_gen_params(model_name)
+
     gen_kwargs = {
         "max_new_tokens": gen_params["max_new_tokens"],
         "do_sample": True,
@@ -401,46 +375,62 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
         gen_kwargs["top_k"] = gen_params["top_k"]
 
     results = []
-    prompts = [f"User: {ex['prompt']}\n\nAssistant: " for ex in test_examples]
+    # Build eval prompts matching the training format (no response, just the prefix)
+    def make_eval_prompt(ex):
+        if tokenizer.chat_template is not None:
+            messages = [{"role": "user", "content": ex["prompt"]}]
+            return tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
+        return f"User: {ex['prompt']}\n\nAssistant: "
+
+    prompts = [make_eval_prompt(ex) for ex in test_examples]
     expected_answers = [extract_answer(ex["response"]) for ex in test_examples]
 
-    # Process in batches
+    # Process in batches — truncate responses at "\nUser:" in post-processing
+    # instead of using StoppingCriteria (which is per-batch, not per-sequence)
     for batch_start in tqdm(range(0, len(prompts), eval_batch_size),
                             desc=desc, total=(len(prompts) + eval_batch_size - 1) // eval_batch_size):
         batch_prompts = prompts[batch_start:batch_start + eval_batch_size]
         batch_expected = expected_answers[batch_start:batch_start + eval_batch_size]
         batch_examples = test_examples[batch_start:batch_start + eval_batch_size]
 
-        inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True)
-        inputs = {k: v.to(model.device) for k, v in inputs.items()}
+        inputs = tokenizer(batch_prompts, return_tensors="pt", padding=True,
+                           padding_side="left")
+        first_device = next(model.parameters()).device
+        inputs = {k: v.to(first_device) for k, v in inputs.items()}
 
-        with torch.no_grad():
-            outputs = model.generate(
-                **inputs,
-                num_return_sequences=num_samples,
-                **gen_kwargs,
-            )
+        prompt_lengths = inputs["attention_mask"].sum(dim=1)
+        n_corrects = [0] * len(batch_prompts)
 
-        # outputs shape: (batch_size * num_samples, seq_len)
-        # Reshape to (batch_size, num_samples, seq_len)
-        prompt_lengths = inputs["attention_mask"].sum(dim=1)  # actual token count per prompt
-
-        for i in range(len(batch_prompts)):
-            n_correct = 0
-            plen = prompt_lengths[i].item()
-            for s in range(num_samples):
-                idx = i * num_samples + s
-                response = tokenizer.decode(
-                    outputs[idx][plen:], skip_special_tokens=True
+        # Generate one sample at a time to keep memory bounded
+        for s in range(num_samples):
+            with torch.no_grad():
+                outputs = model.generate(
+                    **inputs,
+                    num_return_sequences=1,
+                    **gen_kwargs,
                 )
+            # outputs shape: (batch_size, seq_len)
+            for i in range(len(batch_prompts)):
+                plen = prompt_lengths[i].item()
+                response = tokenizer.decode(
+                    outputs[i][plen:], skip_special_tokens=True
+                )
+                # Truncate at hallucinated next turn
+                for stop_str in ["\nUser:", "\n\nUser:"]:
+                    idx = response.find(stop_str)
+                    if idx != -1:
+                        response = response[:idx]
                 predicted = extract_answer(response)
                 if predicted == batch_expected[i]:
-                    n_correct += 1
+                    n_corrects[i] += 1
 
+        for i in range(len(batch_prompts)):
             results.append({
                 "sample_id": batch_examples[i].get("original_sample_id"),
-                "pass_rate": n_correct / num_samples,
-                "n_correct": n_correct,
+                "pass_rate": n_corrects[i] / num_samples,
+                "n_correct": n_corrects[i],
                 "n_samples": num_samples,
             })
 
@@ -484,7 +474,7 @@ def get_eval_checkpoints(model_dir, eval_every):
 
 
 def evaluate_model_at_checkpoint(ckpt_path, test_data, base_model, tokenizer,
-                                 model_name=DEFAULT_MODEL):
+                                 model_name=DEFAULT_MODEL, eval_batch_size=4):
     """Evaluate a single checkpoint on both test splits.
 
     Returns:
@@ -495,11 +485,11 @@ def evaluate_model_at_checkpoint(ckpt_path, test_data, base_model, tokenizer,
 
     contam_rate, contam_results = evaluate_checkpoint(
         model, tokenizer, test_data["contaminated"], desc="Contaminated",
-        model_name=model_name,
+        model_name=model_name, eval_batch_size=eval_batch_size,
     )
     clean_rate, clean_results = evaluate_checkpoint(
         model, tokenizer, test_data["clean"], desc="Clean",
-        model_name=model_name,
+        model_name=model_name, eval_batch_size=eval_batch_size,
     )
 
     print(f"  Contaminated: {contam_rate:.2%}, Clean: {clean_rate:.2%}, "
@@ -687,6 +677,11 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"  # required for decoder-only batched generation
+
+    # With num_return_sequences=1 and max_new_tokens=20, batching is cheap.
+    # 8 is safe for 7B on 40GB; scale down if OOM.
+    eval_batch_size = 8 if "7b" in model_name.lower() or "7B" in model_name else 16
 
     all_epoch_results = {}
 
@@ -699,12 +694,12 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
         print(f"\nEvaluating contaminated model (epoch {epoch})...")
         cm_contam_rate, cm_clean_rate, cm_contam_res, cm_clean_res = \
             evaluate_model_at_checkpoint(contam_by_epoch[epoch], test_data, base_model, tokenizer,
-                                         model_name=model_name)
+                                         model_name=model_name, eval_batch_size=eval_batch_size)
 
         print(f"\nEvaluating clean model (epoch {epoch})...")
         cl_contam_rate, cl_clean_rate, cl_contam_res, cl_clean_res = \
             evaluate_model_at_checkpoint(clean_by_epoch[epoch], test_data, base_model, tokenizer,
-                                         model_name=model_name)
+                                         model_name=model_name, eval_batch_size=eval_batch_size)
 
         stats = run_paired_ttest(cm_contam_res, cm_clean_res, cl_contam_res, cl_clean_res)
         _print_epoch_results(epoch, cm_contam_rate, cm_clean_rate,
