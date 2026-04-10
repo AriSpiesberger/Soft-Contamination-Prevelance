@@ -26,7 +26,7 @@ from datetime import datetime
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, PeftModel
-from trl import SFTTrainer, SFTConfig
+from trl import SFTTrainer, SFTConfig, DataCollatorForCompletionOnlyLM
 from transformers import TrainerCallback
 from accelerate import Accelerator
 from scipy.stats import ttest_rel, ttest_ind
@@ -193,8 +193,17 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
+    # Never alias pad to eos: the default collator masks pad_token_id to -100
+    # in labels, which would also mask EOS supervision and the model would
+    # never learn to stop. OLMo-3 already ships with a distinct <|pad|>.
+    assert tokenizer.pad_token is not None, (
+        f"Tokenizer for {model_name} has no pad_token. Add a dedicated pad "
+        f"token — do not alias to eos_token."
+    )
+    assert tokenizer.pad_token_id != tokenizer.eos_token_id, (
+        f"pad_token_id == eos_token_id for {model_name}. These must be "
+        f"distinct or SFT loss masking will silently kill EOS supervision."
+    )
 
     lora_config = LoraConfig(
         r=train_cfg["lora_r"],
@@ -223,10 +232,12 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     if is_main:
         print(f"Training samples: {len(train_dataset)}, Validation samples: {len(val_dataset)}")
 
-    # Calculate steps — use larger batch for small models that fit in VRAM
+    # Global batch size of 64 sequences, matching the official OLMo-hybrid SFT
+    # recipe (src/scripts/train/OLMo_hybrid/OLMo-hybrid-7B-sft-instruct-train.py:
+    # GLOBAL_BATCH_SIZE = 64 * SEQUENCE_LENGTH).
     num_gpus = accelerator.num_processes if accelerator else 1
     batch_size = 2
-    grad_accum = max(1, 32 // (batch_size * num_gpus))
+    grad_accum = max(1, 64 // (batch_size * num_gpus))
     effective_batch = batch_size * grad_accum * num_gpus
     steps_per_epoch = len(train_dataset) // effective_batch
 
@@ -248,17 +259,26 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         if is_main:
             print(f"Early stopping: patience={patience}, min_epochs={min_epochs}")
 
-    # Training config
+    # Training config — hyperparameters match the official OLMo-hybrid SFT
+    # instruct recipe (OLMo-core/src/scripts/train/OLMo_hybrid/
+    # OLMo-hybrid-7B-sft-instruct-train.py):
+    #   lr=2.5e-5, weight_decay=0.0, betas=(0.9, 0.95),
+    #   LinearWithWarmup(warmup_fraction=0.03, alpha_f=0.0),
+    #   max_duration=Duration.epochs(2), max_grad_norm=1.0,
+    #   global batch = 64 sequences, bf16 params / fp32 reductions.
     sft_config = SFTConfig(
         output_dir=str(output_path),
         seed=SEED,
         num_train_epochs=epochs,
         per_device_train_batch_size=batch_size,
         gradient_accumulation_steps=grad_accum,
-        learning_rate=5e-5,
-        weight_decay=0.01,
+        learning_rate=2.5e-5,
+        weight_decay=0.0,
+        adam_beta1=0.9,
+        adam_beta2=0.95,
+        max_grad_norm=1.0,
         warmup_ratio=0.03,
-        lr_scheduler_type="cosine",
+        lr_scheduler_type="linear",
         logging_steps=10,
         save_strategy="epoch",
         save_total_limit=None,  # Keep all checkpoints for multi-epoch eval
@@ -279,12 +299,30 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         metric_for_best_model=None,
     )
 
+    # Mask out the "User: ..." prompt tokens so loss is computed only on the
+    # assistant response (including the trailing EOS). This matches the
+    # official OLMo-hybrid / open-instruct SFT recipe, which uses an offline
+    # labels_mask with `role != "assistant"` set to -100. Training on prompt
+    # tokens is incorrect SFT — the user's prompt is conditioning, not a
+    # target.
+    #
+    # Verified for the OLMo-3 tokenizer: the literal string "Assistant:"
+    # tokenizes to a stable 2-token sequence [72803, 25] ("Assistant", ":")
+    # that matches exactly once in every training example, immediately
+    # before the response (scanned all 10k examples — no collisions).
+    response_template_ids = tokenizer("Assistant:", add_special_tokens=False)["input_ids"]
+    data_collator = DataCollatorForCompletionOnlyLM(
+        response_template=response_template_ids,
+        tokenizer=tokenizer,
+    )
+
     trainer = SFTTrainer(
         model=model,
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         args=sft_config,
         processing_class=tokenizer,
+        data_collator=data_collator,
         callbacks=callbacks,
     )
 
@@ -364,12 +402,19 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
     """
     gen_params = get_gen_params(model_name)
 
+    # NOTE: eos_token_id must be passed explicitly — OLMo-3 base ships with
+    # model.generation_config.eos_token_id = None, so generate() won't stop at
+    # EOS unless we tell it to. Without this, the model emits EOS correctly
+    # (the adapter learns it at ~98% prob) but generate() keeps producing
+    # tokens up to max_new_tokens, and skip_special_tokens hides the EOS marker
+    # so the output looks like "<answer>...drift...".
     gen_kwargs = {
         "max_new_tokens": gen_params["max_new_tokens"],
         "do_sample": True,
         "temperature": gen_params["temperature"],
         "top_p": gen_params["top_p"],
         "pad_token_id": tokenizer.pad_token_id,
+        "eos_token_id": tokenizer.eos_token_id,
     }
     if "top_k" in gen_params:
         gen_kwargs["top_k"] = gen_params["top_k"]
@@ -400,7 +445,7 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
         first_device = next(model.parameters()).device
         inputs = {k: v.to(first_device) for k, v in inputs.items()}
 
-        prompt_lengths = inputs["attention_mask"].sum(dim=1)
+        input_len = inputs["input_ids"].shape[1]
         n_corrects = [0] * len(batch_prompts)
 
         # Generate one sample at a time to keep memory bounded
@@ -412,16 +457,12 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
                     **gen_kwargs,
                 )
             # outputs shape: (batch_size, seq_len)
+            # Model naturally stops at EOS now that generate() knows about it,
+            # so no post-processing truncation is needed.
             for i in range(len(batch_prompts)):
-                plen = prompt_lengths[i].item()
                 response = tokenizer.decode(
-                    outputs[i][plen:], skip_special_tokens=True
+                    outputs[i][input_len:], skip_special_tokens=True
                 )
-                # Truncate at hallucinated next turn
-                for stop_str in ["\nUser:", "\n\nUser:"]:
-                    idx = response.find(stop_str)
-                    if idx != -1:
-                        response = response[:idx]
                 predicted = extract_answer(response)
                 if predicted == batch_expected[i]:
                     n_corrects[i] += 1
@@ -558,7 +599,8 @@ def main():
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL,
                         help="HuggingFace model to fine-tune and evaluate")
     parser.add_argument("--data", type=str, choices=["contaminated", "clean", "both"], default="both")
-    parser.add_argument("--epochs", type=int, default=20, help="Maximum training epochs")
+    parser.add_argument("--epochs", type=int, default=2,
+                        help="Training epochs (official OLMo-hybrid SFT recipe uses 2)")
     parser.add_argument("--eval-every", type=int, default=5,
                         help="Run paired evaluation every N epochs")
     parser.add_argument("--patience", type=int, default=3,
@@ -675,8 +717,9 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
     }
     base_model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
+    assert tokenizer.pad_token is not None and tokenizer.pad_token_id != tokenizer.eos_token_id, (
+        f"Tokenizer for {model_name} must have a distinct pad_token (not aliased to eos)."
+    )
     tokenizer.padding_side = "left"  # required for decoder-only batched generation
 
     # With num_return_sequences=1 and max_new_tokens=20, batching is cheap.
