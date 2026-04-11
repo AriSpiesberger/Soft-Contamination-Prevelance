@@ -26,7 +26,7 @@ from datetime import datetime
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, PeftModel
-from trl import SFTTrainer, SFTConfig, DataCollatorForCompletionOnlyLM
+from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
 from accelerate import Accelerator
 from scipy.stats import ttest_rel, ttest_ind
@@ -100,23 +100,31 @@ def load_training_data(data_path):
         return json.load(f)
 
 
-def format_example(example, tokenizer=None):
-    """Format a training example with explicit EOS so the model learns to stop.
+def build_prompt_completion(example, tokenizer):
+    """Return a (prompt, completion) pair for TRL's completion-only-loss format.
 
-    If a tokenizer with a chat template is available, uses it (instruct models).
-    Otherwise appends the EOS token directly after the response so base models
-    learn that the response is complete.
+    TRL 0.29+ natively supports {"prompt": ..., "completion": ...} datasets
+    plus `completion_only_loss=True` in SFTConfig, which masks prompt tokens
+    out of the loss automatically. The completion must include the trailing
+    EOS so the model is trained to stop there.
+
+    For base models (no chat template) we use the "User: ... Assistant: "
+    wrapper, matching the format our eval script expects. For instruct
+    models with a chat template, we'd build the prompt via
+    apply_chat_template(..., add_generation_prompt=True) instead.
     """
-    if tokenizer is not None and tokenizer.chat_template is not None:
-        messages = [
-            {"role": "user", "content": example["prompt"]},
-            {"role": "assistant", "content": example["response"]},
-        ]
-        return tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=False
+    if tokenizer.chat_template is not None:
+        prompt = tokenizer.apply_chat_template(
+            [{"role": "user", "content": example["prompt"]}],
+            tokenize=False,
+            add_generation_prompt=True,
         )
-    eos = tokenizer.eos_token if tokenizer is not None else ""
-    return f"User: {example['prompt']}\n\nAssistant: {example['response']}{eos}"
+        completion = f"{example['response']}{tokenizer.eos_token}"
+        return {"prompt": prompt, "completion": completion}
+    return {
+        "prompt": f"User: {example['prompt']}\n\nAssistant: ",
+        "completion": f"{example['response']}{tokenizer.eos_token}",
+    }
 
 
 
@@ -219,15 +227,17 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     if is_main:
         model.print_trainable_parameters()
 
-    # Full 10k for train, fixed 300-point val from separate non-overlapping file
+    # Full 10k for train, fixed 300-point val from separate non-overlapping file.
+    # Dataset is in TRL's {prompt, completion} format so SFTConfig's
+    # `completion_only_loss=True` can mask prompt tokens out of the loss.
     if is_main:
         print("Loading training data...")
     raw_data = load_training_data(data_path)
-    train_dataset = Dataset.from_list([{"text": format_example(ex, tokenizer)} for ex in raw_data])
+    train_dataset = Dataset.from_list([build_prompt_completion(ex, tokenizer) for ex in raw_data])
 
     val_path = DATA_DIR / "dolci_300_val.json"
     val_raw = load_training_data(val_path)
-    val_dataset = Dataset.from_list([{"text": format_example(ex, tokenizer)} for ex in val_raw])
+    val_dataset = Dataset.from_list([build_prompt_completion(ex, tokenizer) for ex in val_raw])
 
     if is_main:
         print(f"Training samples: {len(train_dataset)}, Validation samples: {len(val_dataset)}")
@@ -292,28 +302,18 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         report_to="none",
         dataloader_num_workers=0,
         max_length=2048,
-        dataset_text_field="text",
+        # Mask prompt tokens out of the loss so gradient is computed only on
+        # the assistant response (including trailing EOS). This matches the
+        # official OLMo-hybrid / open-instruct SFT recipe, which sets
+        # `role != "assistant"` positions to -100 via an offline label_mask.
+        # Training on prompt tokens is incorrect SFT — the user's prompt is
+        # conditioning, not a target. Requires dataset in {prompt, completion}
+        # format, which build_prompt_completion() produces.
+        completion_only_loss=True,
         packing=False,
         ddp_find_unused_parameters=False,
         load_best_model_at_end=False,
         metric_for_best_model=None,
-    )
-
-    # Mask out the "User: ..." prompt tokens so loss is computed only on the
-    # assistant response (including the trailing EOS). This matches the
-    # official OLMo-hybrid / open-instruct SFT recipe, which uses an offline
-    # labels_mask with `role != "assistant"` set to -100. Training on prompt
-    # tokens is incorrect SFT — the user's prompt is conditioning, not a
-    # target.
-    #
-    # Verified for the OLMo-3 tokenizer: the literal string "Assistant:"
-    # tokenizes to a stable 2-token sequence [72803, 25] ("Assistant", ":")
-    # that matches exactly once in every training example, immediately
-    # before the response (scanned all 10k examples — no collisions).
-    response_template_ids = tokenizer("Assistant:", add_special_tokens=False)["input_ids"]
-    data_collator = DataCollatorForCompletionOnlyLM(
-        response_template=response_template_ids,
-        tokenizer=tokenizer,
     )
 
     trainer = SFTTrainer(
@@ -322,7 +322,6 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         eval_dataset=val_dataset,
         args=sft_config,
         processing_class=tokenizer,
-        data_collator=data_collator,
         callbacks=callbacks,
     )
 
