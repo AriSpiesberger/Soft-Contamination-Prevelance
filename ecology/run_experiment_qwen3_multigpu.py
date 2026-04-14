@@ -36,7 +36,7 @@ import argparse
 
 DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
-DEFAULT_MODEL = "allenai/OLMo-3-1025-7B"
+DEFAULT_MODEL = "Qwen/Qwen3-8B-Base"
 SEED = 42
 NUM_EVAL_SAMPLES = 10
 
@@ -45,6 +45,7 @@ NUM_EVAL_SAMPLES = 10
 MODEL_TRAIN_CONFIGS = {
     "allenai/OLMo-3-1025-7B": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
     "allenai/OLMo-3-7B-Instruct": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
+    "Qwen/Qwen3-8B-Base": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
     "Qwen/Qwen3.5-0.8B": {"lora_r": 16, "lora_alpha": 32, "target_modules": "all-linear"},
 }
 DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-linear"}
@@ -55,6 +56,7 @@ DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-l
 MODEL_GEN_PARAMS = {
     "allenai/OLMo-3-1025-7B": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20},
     "allenai/OLMo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20},
+    "Qwen/Qwen3-8B-Base": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20},
     "Qwen/Qwen3.5-0.8B": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20},
 }
 DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20}
@@ -121,9 +123,13 @@ def build_prompt_completion(example, tokenizer):
         )
         completion = f"{example['response']}{tokenizer.eos_token}"
         return {"prompt": prompt, "completion": completion}
+    # Qwen BPE merges a trailing prompt-space with the first response token,
+    # so `tokenize(prompt) != tokenize(prompt+completion)[:len(prompt_ids)]`
+    # and TRL's completion_only_loss mask goes off-by-one. Put the space at
+    # the start of the completion instead so the boundary is stable.
     return {
-        "prompt": f"User: {example['prompt']}\n\nAssistant: ",
-        "completion": f"{example['response']}{tokenizer.eos_token}",
+        "prompt": f"User: {example['prompt']}\n\nAssistant:",
+        "completion": f" {example['response']}{tokenizer.eos_token}",
     }
 
 
@@ -201,9 +207,16 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    # Never alias pad to eos: the default collator masks pad_token_id to -100
-    # in labels, which would also mask EOS supervision and the model would
-    # never learn to stop. OLMo-3 already ships with a distinct <|pad|>.
+    # Qwen3 ships pad_token aliased to eos_token. Repurpose a reserved special
+    # token (<|fim_pad|>) so pad and eos are distinct — otherwise the default
+    # collator masks pad_token_id to -100 and EOS supervision dies silently.
+    if tokenizer.pad_token_id == tokenizer.eos_token_id:
+        tokenizer.pad_token = "<|fim_pad|>"
+    # Qwen3-Base ships a chat_template meant for the Instruct variant. Using it
+    # makes TRL's completion_only_loss check fail because BPE merges at the
+    # prompt/completion boundary don't line up with the separately-tokenized
+    # prompt. Force the plain "User: ... Assistant: " path used by eval.
+    tokenizer.chat_template = None
     assert tokenizer.pad_token is not None, (
         f"Tokenizer for {model_name} has no pad_token. Add a dedicated pad "
         f"token — do not alias to eos_token."
@@ -246,7 +259,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     # recipe (src/scripts/train/OLMo_hybrid/OLMo-hybrid-7B-sft-instruct-train.py:
     # GLOBAL_BATCH_SIZE = 64 * SEQUENCE_LENGTH).
     num_gpus = accelerator.num_processes if accelerator else 1
-    batch_size = 24
+    batch_size = 32
     grad_accum = max(1, 64 // (batch_size * num_gpus))
     effective_batch = batch_size * grad_accum * num_gpus
     steps_per_epoch = len(train_dataset) // effective_batch
@@ -426,7 +439,7 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
             return tokenizer.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
             )
-        return f"User: {ex['prompt']}\n\nAssistant: "
+        return f"User: {ex['prompt']}\n\nAssistant:"
 
     prompts = [make_eval_prompt(ex) for ex in test_examples]
     expected_answers = [extract_answer(ex["response"]) for ex in test_examples]
@@ -716,6 +729,9 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
     }
     base_model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    if tokenizer.pad_token_id == tokenizer.eos_token_id:
+        tokenizer.pad_token = "<|fim_pad|>"
+    tokenizer.chat_template = None
     assert tokenizer.pad_token is not None and tokenizer.pad_token_id != tokenizer.eos_token_id, (
         f"Tokenizer for {model_name} must have a distinct pad_token (not aliased to eos)."
     )
