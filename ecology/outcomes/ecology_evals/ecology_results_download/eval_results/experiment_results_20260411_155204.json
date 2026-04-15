@@ -1,0 +1,6091 @@
+{
+  "model": "allenai/OLMo-3-1025-7B",
+  "max_epochs": 10,
+  "eval_every": 5,
+  "seed": 42,
+  "num_eval_samples": 10,
+  "contam_dir": "/lambda/nfs/Test-Filesystem/Soft-Contamination-Prevelance/ecology/outputs/exp_contaminated_20260411_155204",
+  "clean_dir": "/lambda/nfs/Test-Filesystem/Soft-Contamination-Prevelance/ecology/outputs/exp_clean_20260411_155204",
+  "epochs_evaluated": [
+    5,
+    10
+  ],
+  "results_by_epoch": {
+    "epoch_5": {
+      "epoch": 5,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6184,
+        "contam_model_on_clean_test": 0.552,
+        "clean_model_on_contam_test": 0.5592,
+        "clean_model_on_clean_test": 0.5648000000000001
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.059199999999999996,
+          "std_diff": 0.4955959644710598,
+          "t": 1.3301627693087676,
+          "p": 0.18590597925092872
+        },
+        "clean_split": {
+          "mean_diff": -0.012799999999999999,
+          "std_diff": 0.4874383653345313,
+          "t": -0.29241598081970066,
+          "p": 0.7704573027143082
+        },
+        "difference_in_differences": {
+          "did": 0.072,
+          "t": 1.1533860628949395,
+          "p": 0.24986265245185457
+        }
+      },
+      "per_sample": {
+        "contam_model_on_contam_test": [
+          {
+            "sample_id": 0,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 5,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 9,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 10,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 11,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 12,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 13,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 16,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 20,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 21,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 23,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 27,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 31,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 33,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 35,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 36,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 37,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 38,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 40,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 41,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 43,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 45,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 48,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 49,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 50,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 53,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 54,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 56,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 57,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 58,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 60,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 61,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 62,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 64,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 66,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 67,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 68,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 70,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 71,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 76,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 83,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 84,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 88,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 91,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 92,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 96,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 97,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 99,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 100,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 102,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 105,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 107,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 110,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 112,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 113,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 115,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 116,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 118,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 120,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 125,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 128,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 130,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 131,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 134,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 136,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 138,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 139,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 140,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 141,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 142,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 144,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 145,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 147,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 148,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 150,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 151,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 152,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 153,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 155,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 158,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 159,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 160,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 161,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 162,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 164,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 165,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 168,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 173,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 175,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 176,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 177,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 184,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 185,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 188,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 191,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 193,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 195,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 197,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 198,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 202,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 203,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 204,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 207,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 208,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 210,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 211,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 213,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 216,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 217,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 219,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 225,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 228,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 229,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 230,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 234,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 235,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 237,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 241,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 242,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 243,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 244,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 245,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 246,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 247,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 249,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          }
+        ],
+        "contam_model_on_clean_test": [
+          {
+            "sample_id": 1,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 2,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 3,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 4,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 6,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 7,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 8,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 14,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 15,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 17,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 18,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 19,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 22,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 24,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 25,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 26,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 28,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 29,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 30,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 32,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 34,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 39,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 42,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 44,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 46,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 47,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 51,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 52,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 55,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 59,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 63,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 65,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 69,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 72,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 73,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 74,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 75,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 77,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 78,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 79,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 80,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 81,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 82,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 85,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 86,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 87,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 89,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 90,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 93,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 94,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 95,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 98,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 101,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 103,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 104,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 106,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 108,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 109,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 111,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 114,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 117,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 119,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 121,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 122,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 123,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 124,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 126,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 127,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 129,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 132,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 133,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 135,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 137,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 143,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 146,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 149,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 154,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 156,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 157,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 163,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 166,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 167,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 169,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 170,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 171,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 172,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 174,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 178,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 179,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 180,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 181,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 182,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 183,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 186,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 187,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 189,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 190,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 192,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 194,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 196,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 199,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 200,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 201,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 205,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 206,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 209,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 212,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 214,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 215,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 218,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 220,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 221,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 222,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 223,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 224,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 226,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 227,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 231,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 232,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 233,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 236,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 238,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 239,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 240,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 248,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          }
+        ],
+        "clean_model_on_contam_test": [
+          {
+            "sample_id": 0,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 5,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 9,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 10,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 11,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 12,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 13,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 16,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 20,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 21,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 23,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 27,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 31,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 33,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 35,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 36,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 37,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 38,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 40,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 41,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 43,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 45,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 48,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 49,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 50,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 53,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 54,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 56,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 57,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 58,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 60,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 61,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 62,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 64,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 66,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 67,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 68,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 70,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 71,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 76,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 83,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 84,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 88,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 91,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 92,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 96,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 97,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 99,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 100,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 102,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 105,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 107,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 110,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 112,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 113,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 115,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 116,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 118,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 120,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 125,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 128,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 130,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 131,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 134,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 136,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 138,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 139,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 140,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 141,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 142,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 144,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 145,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 147,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 148,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 150,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 151,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 152,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 153,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 155,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 158,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 159,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 160,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 161,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 162,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 164,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 165,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 168,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 173,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 175,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 176,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 177,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 184,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 185,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 188,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 191,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 193,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 195,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 197,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 198,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 202,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 203,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 204,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 207,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 208,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 210,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 211,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 213,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 216,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 217,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 219,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 225,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 228,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 229,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 230,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 234,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 235,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 237,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 241,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 242,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 243,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 244,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 245,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 246,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 247,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 249,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          }
+        ],
+        "clean_model_on_clean_test": [
+          {
+            "sample_id": 1,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 2,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 3,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 4,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 6,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 7,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 8,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 14,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 15,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 17,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 18,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 19,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 22,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 24,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 25,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 26,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 28,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 29,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 30,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 32,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 34,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 39,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 42,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 44,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 46,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 47,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 51,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 52,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 55,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 59,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 63,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 65,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 69,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 72,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 73,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 74,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 75,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 77,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 78,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 79,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 80,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 81,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 82,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 85,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 86,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 87,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 89,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 90,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 93,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 94,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 95,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 98,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 101,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 103,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 104,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 106,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 108,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 109,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 111,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 114,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 117,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 119,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 121,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 122,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 123,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 124,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 126,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 127,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 129,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 132,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 133,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 135,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 137,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 143,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 146,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 149,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 154,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 156,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 157,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 163,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 166,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 167,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 169,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 170,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 171,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 172,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 174,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 178,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 179,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 180,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 181,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 182,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 183,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 186,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 187,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 189,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 190,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 192,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 194,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 196,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 199,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 200,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 201,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 205,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 206,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 209,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 212,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 214,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 215,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 218,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 220,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 221,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 222,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 223,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 224,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 226,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 227,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 231,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 232,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 233,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 236,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 238,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 239,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 240,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 248,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          }
+        ]
+      }
+    },
+    "epoch_10": {
+      "epoch": 10,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6984,
+        "contam_model_on_clean_test": 0.616,
+        "clean_model_on_contam_test": 0.52,
+        "clean_model_on_clean_test": 0.5056
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.1784,
+          "std_diff": 0.5822142560947816,
+          "t": 3.4121086934263367,
+          "p": 0.000871016252009797
+        },
+        "clean_split": {
+          "mean_diff": 0.11040000000000001,
+          "std_diff": 0.5761699749205957,
+          "t": 2.1336800333656614,
+          "p": 0.03483854635897945
+        },
+        "difference_in_differences": {
+          "did": 0.06799999999999999,
+          "t": 0.9244346260925468,
+          "p": 0.3561587710976069
+        }
+      },
+      "per_sample": {
+        "contam_model_on_contam_test": [
+          {
+            "sample_id": 0,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 5,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 9,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 10,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 11,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 12,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 13,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 16,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 20,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 21,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 23,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 27,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 31,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 33,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 35,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 36,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 37,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 38,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 40,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 41,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 43,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 45,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 48,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 49,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 50,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 53,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 54,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 56,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 57,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 58,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 60,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 61,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 62,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 64,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 66,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 67,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 68,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 70,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 71,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 76,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 83,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 84,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 88,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 91,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 92,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 96,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 97,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 99,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 100,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 102,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 105,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 107,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 110,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 112,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 113,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 115,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 116,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 118,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 120,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 125,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 128,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 130,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 131,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 134,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 136,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 138,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 139,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 140,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 141,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 142,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 144,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 145,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 147,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 148,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 150,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 151,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 152,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 153,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 155,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 158,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 159,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 160,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 161,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 162,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 164,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 165,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 168,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 173,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 175,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 176,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 177,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 184,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 185,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 188,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 191,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 193,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 195,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 197,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 198,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 202,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 203,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 204,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 207,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 208,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 210,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 211,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 213,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 216,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 217,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 219,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 225,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 228,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 229,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 230,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 234,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 235,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 237,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 241,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 242,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 243,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 244,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 245,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 246,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 247,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 249,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          }
+        ],
+        "contam_model_on_clean_test": [
+          {
+            "sample_id": 1,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 2,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 3,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 4,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 6,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 7,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 8,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 14,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 15,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 17,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 18,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 19,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 22,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 24,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 25,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 26,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 28,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 29,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 30,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 32,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 34,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 39,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 42,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 44,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 46,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 47,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 51,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 52,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 55,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 59,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 63,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 65,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 69,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 72,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 73,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 74,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 75,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 77,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 78,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 79,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 80,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 81,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 82,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 85,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 86,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 87,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 89,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 90,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 93,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 94,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 95,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 98,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 101,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 103,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 104,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 106,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 108,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 109,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 111,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 114,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 117,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 119,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 121,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 122,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 123,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 124,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 126,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 127,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 129,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 132,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 133,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 135,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 137,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 143,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 146,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 149,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 154,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 156,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 157,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 163,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 166,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 167,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 169,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 170,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 171,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 172,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 174,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 178,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 179,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 180,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 181,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 182,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 183,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 186,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 187,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 189,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 190,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 192,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 194,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 196,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 199,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 200,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 201,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 205,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 206,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 209,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 212,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 214,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 215,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 218,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 220,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 221,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 222,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 223,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 224,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 226,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 227,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 231,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 232,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 233,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 236,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 238,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 239,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 240,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 248,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          }
+        ],
+        "clean_model_on_contam_test": [
+          {
+            "sample_id": 0,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 5,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 9,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 10,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 11,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 12,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 13,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 16,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 20,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 21,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 23,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 27,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 31,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 33,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 35,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 36,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 37,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 38,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 40,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 41,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 43,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 45,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 48,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 49,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 50,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 53,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 54,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 56,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 57,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 58,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 60,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 61,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 62,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 64,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 66,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 67,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 68,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 70,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 71,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 76,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 83,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 84,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 88,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 91,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 92,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 96,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 97,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 99,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 100,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 102,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 105,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 107,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 110,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 112,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 113,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 115,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 116,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 118,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 120,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 125,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 128,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 130,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 131,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 134,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 136,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 138,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 139,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 140,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 141,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 142,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 144,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 145,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 147,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 148,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 150,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 151,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 152,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 153,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 155,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 158,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 159,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 160,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 161,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 162,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 164,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 165,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 168,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 173,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 175,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 176,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 177,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 184,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 185,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 188,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 191,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 193,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 195,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 197,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 198,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 202,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 203,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 204,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 207,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 208,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 210,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 211,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 213,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 216,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 217,
+            "pass_rate": 0.5,
+            "n_correct": 5,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 219,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 225,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 228,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 229,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 230,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 234,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 235,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 237,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 241,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 242,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 243,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 244,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 245,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 246,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 247,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 249,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          }
+        ],
+        "clean_model_on_clean_test": [
+          {
+            "sample_id": 1,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 2,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 3,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 4,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 6,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 7,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 8,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 14,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 15,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 17,
+            "pass_rate": 0.4,
+            "n_correct": 4,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 18,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 19,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 22,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 24,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 25,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 26,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 28,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 29,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 30,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 32,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 34,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 39,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 42,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 44,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 46,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 47,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 51,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 52,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 55,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 59,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 63,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 65,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 69,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 72,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 73,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 74,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 75,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 77,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 78,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 79,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 80,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 81,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 82,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 85,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 86,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 87,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 89,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 90,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 93,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 94,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 95,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 98,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 101,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 103,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 104,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 106,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 108,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 109,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 111,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 114,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 117,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 119,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 121,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 122,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 123,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 124,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 126,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 127,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 129,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 132,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 133,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 135,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 137,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 143,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 146,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 149,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 154,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 156,
+            "pass_rate": 0.6,
+            "n_correct": 6,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 157,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 163,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 166,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 167,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 169,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 170,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 171,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 172,
+            "pass_rate": 0.8,
+            "n_correct": 8,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 174,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 178,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 179,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 180,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 181,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 182,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 183,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 186,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 187,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 189,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 190,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 192,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 194,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 196,
+            "pass_rate": 0.1,
+            "n_correct": 1,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 199,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 200,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 201,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 205,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 206,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 209,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 212,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 214,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 215,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 218,
+            "pass_rate": 0.3,
+            "n_correct": 3,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 220,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 221,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 222,
+            "pass_rate": 0.2,
+            "n_correct": 2,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 223,
+            "pass_rate": 0.7,
+            "n_correct": 7,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 224,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 226,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 227,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 231,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 232,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 233,
+            "pass_rate": 0.9,
+            "n_correct": 9,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 236,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 238,
+            "pass_rate": 0.0,
+            "n_correct": 0,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 239,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 240,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          },
+          {
+            "sample_id": 248,
+            "pass_rate": 1.0,
+            "n_correct": 10,
+            "n_samples": 10
+          }
+        ]
+      }
+    }
+  }
+}

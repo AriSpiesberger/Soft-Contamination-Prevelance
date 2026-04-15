@@ -1,0 +1,16 @@
+{
+  "model": "allenai/OLMo-3-1025-7B",
+  "data_path": "/lambda/nfs/Test-Filesystem/Soft-Contamination-Prevelance/ecology/data/clean/train_clean.json",
+  "data_type": "clean",
+  "training_samples": 10000,
+  "validation_samples": 300,
+  "max_epochs": 10,
+  "actual_epochs": 10,
+  "early_stopped": false,
+  "stopped_at_epoch": null,
+  "best_val_loss": null,
+  "steps_per_epoch": 166,
+  "num_gpus": 1,
+  "lora_r": 64,
+  "lora_alpha": 128
+}

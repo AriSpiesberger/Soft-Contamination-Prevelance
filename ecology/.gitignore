@@ -10,3 +10,5 @@ wandb/
 venv/
 *.log
 .claude/
+outcomes/qwen3_adaptors/
+outcomes/ecology_evals/Soft-Contamination-Prevelance/
