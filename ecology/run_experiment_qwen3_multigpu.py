@@ -3,16 +3,21 @@ Multi-GPU contamination experiment using accelerate/torchrun.
 Train contaminated vs clean models, evaluate with paired t-test.
 
 Usage:
-    # Default: train up to 20 epochs, early stop after 10 if val loss plateaus,
-    # paired eval every 5 epochs with 10 samples/point
-    accelerate launch --num_processes=4 run_experiment_multigpu.py
+    # 8x 80GB default: per_device=8, effective_batch=64, no grad ckpt, compile on
+    accelerate launch --num_processes=8 run_experiment_qwen3_multigpu.py \\
+        --epochs 20 --eval-every 5
 
-    # Custom schedule
-    accelerate launch --num_processes=4 run_experiment_multigpu.py \\
-        --epochs 30 --eval-every 2 --patience 3 --min-epochs 5
+    # Bigger effective batch (faster throughput, may want higher LR)
+    accelerate launch --num_processes=8 run_experiment_qwen3_multigpu.py \\
+        --per-device-batch-size 16 --effective-batch-size 128 \\
+        --learning-rate 5e-5
+
+    # Windows / no Triton
+    accelerate launch --num_processes=4 run_experiment_qwen3_multigpu.py \\
+        --no-torch-compile --gradient-checkpointing
 
     # Evaluate existing checkpoints
-    python run_experiment_multigpu.py --eval-only \\
+    python run_experiment_qwen3_multigpu.py --eval-only \\
         --contam-dir outputs/exp_contaminated_... --clean-dir outputs/exp_clean_...
 """
 
@@ -165,7 +170,11 @@ class EarlyStoppingAfterMinEpochs(TrainerCallback):
 
 
 def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
-                accelerator=None, patience=None, min_epochs=10):
+                accelerator=None, patience=None, min_epochs=10,
+                per_device_batch_size=8, effective_batch_size=64,
+                learning_rate=2.5e-5, gradient_checkpointing=False,
+                torch_compile=True, dataloader_num_workers=4,
+                packing=False):
     """Train a model on contaminated or clean data.
 
     Args:
@@ -173,6 +182,10 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         patience: If set, stop training when val loss doesn't improve for this
                   many epochs (only after min_epochs).
         min_epochs: Minimum epochs before early stopping can kick in.
+        per_device_batch_size: micro-batch per GPU.
+        effective_batch_size: target global batch (grad_accum derived).
+        gradient_checkpointing: disable on 80GB for ~30% throughput.
+        torch_compile: disable on Windows (no Triton).
     """
     is_main = accelerator is None or accelerator.is_main_process
 
@@ -255,12 +268,14 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     if is_main:
         print(f"Training samples: {len(train_dataset)}, Validation samples: {len(val_dataset)}")
 
-    # Global batch size of 64 sequences, matching the official OLMo-hybrid SFT
-    # recipe (src/scripts/train/OLMo_hybrid/OLMo-hybrid-7B-sft-instruct-train.py:
-    # GLOBAL_BATCH_SIZE = 64 * SEQUENCE_LENGTH).
+    # Default effective batch = 64 (OLMo-hybrid SFT recipe). Grad accum is
+    # derived so that per_device * grad_accum * num_gpus == effective_batch.
+    # If per_device * num_gpus already exceeds the target, grad_accum clamps
+    # to 1 and the real effective batch is printed (raise the target or lower
+    # per_device to match a specific recipe).
     num_gpus = accelerator.num_processes if accelerator else 1
-    batch_size = 32
-    grad_accum = max(1, 64 // (batch_size * num_gpus))
+    batch_size = per_device_batch_size
+    grad_accum = max(1, effective_batch_size // (batch_size * num_gpus))
     effective_batch = batch_size * grad_accum * num_gpus
     steps_per_epoch = len(train_dataset) // effective_batch
 
@@ -268,8 +283,11 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         print(f"GPUs: {num_gpus}")
         print(f"Batch size per GPU: {batch_size}")
         print(f"Gradient accumulation: {grad_accum}")
-        print(f"Effective batch size: {effective_batch}")
+        print(f"Effective batch size: {effective_batch} (target {effective_batch_size})")
         print(f"Steps per epoch: {steps_per_epoch}")
+        print(f"Learning rate: {learning_rate}")
+        print(f"Gradient checkpointing: {gradient_checkpointing}")
+        print(f"torch_compile: {torch_compile}  packing: {packing}")
 
     # Callbacks
     callbacks = []
@@ -295,7 +313,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         num_train_epochs=epochs,
         per_device_train_batch_size=batch_size,
         gradient_accumulation_steps=grad_accum,
-        learning_rate=2.5e-5,
+        learning_rate=learning_rate,
         weight_decay=0.0,
         adam_beta1=0.9,
         adam_beta2=0.95,
@@ -308,12 +326,13 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         eval_strategy="epoch",
         bf16=True,
         tf32=True,
-        gradient_checkpointing=True,
-        gradient_checkpointing_kwargs={"use_reentrant": False},
+        gradient_checkpointing=gradient_checkpointing,
+        gradient_checkpointing_kwargs={"use_reentrant": False} if gradient_checkpointing else None,
         optim="adamw_torch_fused",
-        torch_compile=True,  # Requires Triton, not available on Windows
+        torch_compile=torch_compile,  # Requires Triton, disable on Windows
         report_to="none",
-        dataloader_num_workers=0,
+        dataloader_num_workers=dataloader_num_workers,
+        dataloader_pin_memory=True,
         max_length=2048,
         # Mask prompt tokens out of the loss so gradient is computed only on
         # the assistant response (including trailing EOS). This matches the
@@ -323,7 +342,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         # conditioning, not a target. Requires dataset in {prompt, completion}
         # format, which build_prompt_completion() produces.
         completion_only_loss=True,
-        packing=False,
+        packing=packing,
         ddp_find_unused_parameters=False,
         load_best_model_at_end=False,
         metric_for_best_model=None,
@@ -623,6 +642,20 @@ def main():
     parser.add_argument("--train-only", action="store_true", help="Only train, skip evaluation")
     parser.add_argument("--contam-dir", type=str, help="Contaminated model dir for eval-only mode")
     parser.add_argument("--clean-dir", type=str, help="Clean model dir for eval-only mode")
+    # --- Throughput / batch configuration (defaults tuned for 8x 80GB) ---
+    parser.add_argument("--per-device-batch-size", type=int, default=8,
+                        help="Micro-batch per GPU (default 8)")
+    parser.add_argument("--effective-batch-size", type=int, default=64,
+                        help="Target global batch; grad_accum derived (default 64)")
+    parser.add_argument("--learning-rate", type=float, default=2.5e-5,
+                        help="AdamW LR (default 2.5e-5, OLMo recipe)")
+    parser.add_argument("--gradient-checkpointing", action="store_true",
+                        help="Enable grad checkpointing (off by default on 80GB)")
+    parser.add_argument("--no-torch-compile", action="store_true",
+                        help="Disable torch.compile (needed on Windows)")
+    parser.add_argument("--dataloader-workers", type=int, default=4)
+    parser.add_argument("--packing", action="store_true",
+                        help="Pack short sequences; large throughput win if samples are short")
     args = parser.parse_args()
 
     # Set seeds for reproducibility
@@ -677,16 +710,24 @@ def main():
     cont_output = f"exp_contaminated_{timestamp}"
     clean_output = f"exp_clean_{timestamp}"
 
+    train_kwargs = dict(
+        model_name=args.model, accelerator=accelerator,
+        patience=args.patience, min_epochs=args.min_epochs,
+        per_device_batch_size=args.per_device_batch_size,
+        effective_batch_size=args.effective_batch_size,
+        learning_rate=args.learning_rate,
+        gradient_checkpointing=args.gradient_checkpointing,
+        torch_compile=not args.no_torch_compile,
+        dataloader_num_workers=args.dataloader_workers,
+        packing=args.packing,
+    )
+
     if args.data in ["contaminated", "both"]:
-        train_model("contaminated", args.epochs, cont_output,
-                     model_name=args.model, accelerator=accelerator,
-                     patience=args.patience, min_epochs=args.min_epochs)
+        train_model("contaminated", args.epochs, cont_output, **train_kwargs)
         accelerator.wait_for_everyone()
 
     if args.data in ["clean", "both"]:
-        train_model("clean", args.epochs, clean_output,
-                     model_name=args.model, accelerator=accelerator,
-                     patience=args.patience, min_epochs=args.min_epochs)
+        train_model("clean", args.epochs, clean_output, **train_kwargs)
         accelerator.wait_for_everyone()
 
     # --- Paired evaluation at every N-th checkpoint (main process only) ---
