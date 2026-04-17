@@ -1,0 +1,278 @@
+{
+  "model": "Qwen/Qwen3-8B-Base",
+  "num_eval_samples": 0.5294672656765188,
+  "epochs_evaluated": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "results_by_epoch": {
+    "epoch_1": {
+      "epoch": 1,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.5784,
+        "contam_model_on_clean_test": 0.5147999999999999,
+        "clean_model_on_contam_test": 0.5784000000000001,
+        "clean_model_on_clean_test": 0.49960000000000004
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.0,
+          "t": 0.0,
+          "p": 1.0
+        },
+        "clean_split": {
+          "mean_diff": 0.015199999999999995,
+          "t": 0.9130009621402313,
+          "p": 0.3630137674151218
+        },
+        "difference_in_differences": {
+          "did": -0.015199999999999995,
+          "t": -0.6297071587464053,
+          "p": 0.5294672656765188
+        }
+      }
+    },
+    "epoch_2": {
+      "epoch": 2,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.5843999999999998,
+        "contam_model_on_clean_test": 0.5196,
+        "clean_model_on_contam_test": 0.5951999999999998,
+        "clean_model_on_clean_test": 0.5156000000000001
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": -0.010799999999999995,
+          "t": -0.6002438762070362,
+          "p": 0.5494391365763729
+        },
+        "clean_split": {
+          "mean_diff": 0.004000000000000002,
+          "t": 0.20889931331623476,
+          "p": 0.8348696184909844
+        },
+        "difference_in_differences": {
+          "did": -0.014799999999999997,
+          "t": -0.5632704989394172,
+          "p": 0.5737615739896019
+        }
+      }
+    },
+    "epoch_3": {
+      "epoch": 3,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.5808,
+        "contam_model_on_clean_test": 0.5331999999999999,
+        "clean_model_on_contam_test": 0.602,
+        "clean_model_on_clean_test": 0.5284
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": -0.0212,
+          "t": -1.1294133004608282,
+          "p": 0.2609036456538742
+        },
+        "clean_split": {
+          "mean_diff": 0.004800000000000002,
+          "t": 0.23767074034322397,
+          "p": 0.8125287369676858
+        },
+        "difference_in_differences": {
+          "did": -0.026000000000000002,
+          "t": -0.9429814502955806,
+          "p": 0.34661298609156344
+        }
+      }
+    },
+    "epoch_4": {
+      "epoch": 4,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.5832,
+        "contam_model_on_clean_test": 0.5416000000000001,
+        "clean_model_on_contam_test": 0.6043999999999999,
+        "clean_model_on_clean_test": 0.5196
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": -0.021199999999999993,
+          "t": -1.0765068219527696,
+          "p": 0.2837906219372563
+        },
+        "clean_split": {
+          "mean_diff": 0.022,
+          "t": 1.0863316285141809,
+          "p": 0.2794395743364441
+        },
+        "difference_in_differences": {
+          "did": -0.04319999999999999,
+          "t": -1.5293054611153796,
+          "p": 0.127464203586779
+        }
+      }
+    },
+    "epoch_5": {
+      "epoch": 5,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6028,
+        "contam_model_on_clean_test": 0.566,
+        "clean_model_on_contam_test": 0.5872000000000002,
+        "clean_model_on_clean_test": 0.5371999999999999
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.015600000000000011,
+          "t": 0.7490979508617305,
+          "p": 0.45521685849095145
+        },
+        "clean_split": {
+          "mean_diff": 0.0288,
+          "t": 1.326505308003607,
+          "p": 0.18711025692469976
+        },
+        "difference_in_differences": {
+          "did": -0.013199999999999988,
+          "t": -0.4387687714999811,
+          "p": 0.6612117549813945
+        }
+      }
+    },
+    "epoch_6": {
+      "epoch": 6,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6068000000000001,
+        "contam_model_on_clean_test": 0.5615999999999999,
+        "clean_model_on_contam_test": 0.616,
+        "clean_model_on_clean_test": 0.5423999999999999
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": -0.009199999999999996,
+          "t": -0.5404277858036131,
+          "p": 0.5898714263434588
+        },
+        "clean_split": {
+          "mean_diff": 0.019200000000000005,
+          "t": 1.0408791493519363,
+          "p": 0.2999568681154878
+        },
+        "difference_in_differences": {
+          "did": -0.0284,
+          "t": -1.1314344207036637,
+          "p": 0.258972173041543
+        }
+      }
+    },
+    "epoch_7": {
+      "epoch": 7,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6128000000000001,
+        "contam_model_on_clean_test": 0.5608,
+        "clean_model_on_contam_test": 0.6204,
+        "clean_model_on_clean_test": 0.5496
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": -0.007600000000000001,
+          "t": -0.39770448053500657,
+          "p": 0.691531855306004
+        },
+        "clean_split": {
+          "mean_diff": 0.011200000000000007,
+          "t": 0.5568954285673821,
+          "p": 0.5786026319254285
+        },
+        "difference_in_differences": {
+          "did": -0.018800000000000008,
+          "t": -0.6776582928014497,
+          "p": 0.4986217301630873
+        }
+      }
+    },
+    "epoch_8": {
+      "epoch": 8,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6124,
+        "contam_model_on_clean_test": 0.562,
+        "clean_model_on_contam_test": 0.5984,
+        "clean_model_on_clean_test": 0.5439999999999999
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.014000000000000007,
+          "t": 0.6570058756657193,
+          "p": 0.5123947139223725
+        },
+        "clean_split": {
+          "mean_diff": 0.018,
+          "t": 0.7851262467096423,
+          "p": 0.43387706201526566
+        },
+        "difference_in_differences": {
+          "did": -0.003999999999999991,
+          "t": -0.12779634770471496,
+          "p": 0.8984142576825253
+        }
+      }
+    },
+    "epoch_9": {
+      "epoch": 9,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6527999999999999,
+        "contam_model_on_clean_test": 0.5780000000000001,
+        "clean_model_on_contam_test": 0.6164000000000002,
+        "clean_model_on_clean_test": 0.5448000000000001
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.036399999999999995,
+          "t": 1.5079194858008103,
+          "p": 0.134118741869083
+        },
+        "clean_split": {
+          "mean_diff": 0.033199999999999986,
+          "t": 1.384363305682175,
+          "p": 0.16873350610379687
+        },
+        "difference_in_differences": {
+          "did": 0.0032000000000000084,
+          "t": 0.09404262343397332,
+          "p": 0.9251512352118137
+        }
+      }
+    },
+    "epoch_10": {
+      "epoch": 10,
+      "pass_rates": {
+        "contam_model_on_contam_test": 0.6488,
+        "contam_model_on_clean_test": 0.5863999999999998,
+        "clean_model_on_contam_test": 0.6348,
+        "clean_model_on_clean_test": 0.536
+      },
+      "statistical_tests": {
+        "contam_split": {
+          "mean_diff": 0.014,
+          "t": 0.5753337591419156,
+          "p": 0.5661081402217856
+        },
+        "clean_split": {
+          "mean_diff": 0.05040000000000001,
+          "t": 2.0506943461038833,
+          "p": 0.0424037944952895
+        },
+        "difference_in_differences": {
+          "did": -0.03640000000000001,
+          "t": -1.052462779684737,
+          "p": 0.29361175236981724
+        }
+      }
+    }
+  }
+}
