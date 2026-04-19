@@ -1,19 +1,19 @@
 """
-Multi-GPU contamination experiment for Mistral / Ministral models.
+Multi-GPU contamination experiment for Llama models.
 Same structure as run_experiment_qwen3_multigpu.py — only the defaults and
 tokenizer pad-token handling differ.
 
 Usage:
     # 8x 80GB default: per_device=8, effective_batch=64, no grad ckpt, compile on
-    accelerate launch --num_processes=8 run_experiment_mistral_multigpu.py \\
+    accelerate launch --num_processes=8 run_experiment_llama_multigpu.py \\
         --epochs 10 --eval-every 5
 
     # Windows / no Triton
-    accelerate launch --num_processes=4 run_experiment_mistral_multigpu.py \\
+    accelerate launch --num_processes=4 run_experiment_llama_multigpu.py \\
         --no-torch-compile --gradient-checkpointing
 
     # Evaluate existing checkpoints
-    python run_experiment_mistral_multigpu.py --eval-only \\
+    python run_experiment_llama_multigpu.py --eval-only \\
         --contam-dir outputs/exp_contaminated_... --clean-dir outputs/exp_clean_...
 """
 
@@ -25,21 +25,7 @@ import numpy as np
 from pathlib import Path
 from datetime import datetime
 from datasets import Dataset
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
-
-
-def load_base_model(model_name, load_kwargs):
-    # Some "base" text models (e.g. Ministral-3-8B-Base-2512) are published as
-    # multimodal checkpoints (Mistral3ForConditionalGeneration) and aren't in
-    # AutoModelForCausalLM's registry. They still have an lm_head and work as
-    # causal LMs when no pixel_values are supplied.
-    cfg = AutoConfig.from_pretrained(
-        model_name, trust_remote_code=load_kwargs.get("trust_remote_code", False)
-    )
-    if getattr(cfg, "model_type", None) == "mistral3":
-        from transformers import Mistral3ForConditionalGeneration
-        return Mistral3ForConditionalGeneration.from_pretrained(model_name, **load_kwargs)
-    return AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, PeftModel
 from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
@@ -51,19 +37,19 @@ import argparse
 
 DATA_DIR = Path(__file__).parent / "data"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
-DEFAULT_MODEL = "mistralai/Ministral-3-8B-Base-2512"
+DEFAULT_MODEL = "meta-llama/Llama-3.1-8B"
 SEED = 42
 NUM_EVAL_SAMPLES = 10
 
 # Per-model training configuration (LoRA rank, alpha, target modules).
 MODEL_TRAIN_CONFIGS = {
-    "mistralai/Ministral-3-8B-Base-2512": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
+    "meta-llama/Llama-3.1-8B": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
 }
 DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-linear"}
 
 # Per-model generation settings for evaluation.
 MODEL_GEN_PARAMS = {
-    "mistralai/Ministral-3-8B-Base-2512": {"temperature": 0.7, "top_p": 0.95, "max_new_tokens": 20},
+    "meta-llama/Llama-3.1-8B": {"temperature": 0.7, "top_p": 0.95, "max_new_tokens": 20},
 }
 DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20}
 
@@ -79,15 +65,15 @@ def get_gen_params(model_name):
 def configure_tokenizer_pad(tokenizer, model_name):
     """Ensure tokenizer has a pad_token distinct from eos_token.
 
-    Mistral/Ministral tokenizers ship without a pad_token. We prefer to alias
-    to an existing reserved/unk token rather than add a new one (adding a new
+    Llama-3 tokenizers ship with eos as pad (or no pad). We prefer to alias
+    to an existing reserved token rather than add a new one (adding a new
     token requires resizing embeddings, which is incompatible with loading
     a fresh base model for eval).
     """
     if tokenizer.pad_token_id is not None and tokenizer.pad_token_id != tokenizer.eos_token_id:
         return
-    # Try known Mistral reserved/control tokens, then fall back to unk.
-    for candidate in ("<pad>", "[PAD]", "<unk>"):
+    # Llama-3 ships <|finetune_right_pad_id|> specifically for this; others fall back.
+    for candidate in ("<|finetune_right_pad_id|>", "<pad>", "[PAD]", "<unk>"):
         tid = tokenizer.convert_tokens_to_ids(candidate)
         if tid is not None and tid != tokenizer.unk_token_id if candidate == "<unk>" else tid is not None and tid >= 0:
             if tid != tokenizer.eos_token_id:
@@ -210,7 +196,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         "attn_implementation": "kernels-community/flash-attn2",
     }
 
-    model = load_base_model(model_name, load_kwargs)
+    model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     configure_tokenizer_pad(tokenizer, model_name)
     # Force plain "User: ... Assistant: " path used by eval — keep training and
@@ -652,7 +638,7 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
         "trust_remote_code": True,
         "attn_implementation": "kernels-community/flash-attn2",
     }
-    base_model = load_base_model(model_name, load_kwargs)
+    base_model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     configure_tokenizer_pad(tokenizer, model_name)
     tokenizer.chat_template = None

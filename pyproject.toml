@@ -51,6 +51,11 @@ packages = ["utils"]
 
 [tool.uv]
 index-url = "https://pypi.org/simple"
+# Resolve for both linux archs so uv.lock is portable across x86_64 dev boxes and aarch64 (GH200).
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sys_platform == 'linux' and platform_machine == 'aarch64'",
+]
 
 [[tool.uv.index]]
 name = "pytorch-cu124"
@@ -58,7 +63,11 @@ url = "https://download.pytorch.org/whl/cu124"
 explicit = true
 
 [tool.uv.sources]
-torch = { index = "pytorch-cu124" }
+# pytorch-cu124 index only publishes x86_64 wheels; on aarch64 fall back to pypi,
+# whose torch wheels are built with CUDA (verified on GH200).
+torch = [
+    { index = "pytorch-cu124", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+]
 
 [tool.black]
 line-length = 120
