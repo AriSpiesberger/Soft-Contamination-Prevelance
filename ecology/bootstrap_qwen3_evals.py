@@ -22,7 +22,7 @@ import numpy as np
 
 sys.stdout.reconfigure(line_buffering=True)
 
-EVAL_DIR = Path(__file__).parent / "outcomes" / "qwen3_evals"
+EVAL_DIR = Path(__file__).parent / "outcomes" / "outputs_qwen3" / "evals"
 CONTAM_DIR = EVAL_DIR / "contaminated_model_20"
 CLEAN_DIR = EVAL_DIR / "clean_model_20"
 

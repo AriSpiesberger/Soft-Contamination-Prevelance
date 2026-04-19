@@ -9,8 +9,7 @@ import numpy as np
 
 BASE = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "ecology_evals",
-    "Soft-Contamination-Prevelance", "ecology", "outputs", "checkpoint_evals",
+    "outcomes", "outputs_olmo", "evals", "checkpoint_evals",
 )
 
 MODELS = ["contaminated", "clean"]
@@ -117,7 +116,7 @@ for ax, test_split in zip(axes, ["contaminated", "clean"]):
 fig.suptitle("Per-Sample Accuracy Distributions Across Training Epochs\n(OLMo-3-7B, MuSR, 10 evals per sample)",
              fontsize=15, fontweight="bold")
 plt.tight_layout()
-outdir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "outcomes")
+outdir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "outcomes", "outputs_olmo", "evals", "plots")
 plt.savefig(os.path.join(outdir, "accuracy_distributions.png"), dpi=150, bbox_inches="tight")
 plt.savefig(os.path.join(outdir, "accuracy_distributions.pdf"), bbox_inches="tight")
-print("Saved to ecology/outcomes/accuracy_distributions.png and .pdf")
+print("Saved to ecology/outcomes/outputs_olmo/evals/plots/accuracy_distributions.png and .pdf")

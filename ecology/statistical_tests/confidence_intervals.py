@@ -12,12 +12,11 @@ from scipy import stats
 
 BASE = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "ecology_evals",
-    "Soft-Contamination-Prevelance", "ecology", "outputs", "checkpoint_evals",
+    "outcomes", "outputs_olmo", "evals", "checkpoint_evals",
 )
 BASE_CSV = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "base_model_eval_results_20260413_034651.csv",
+    "outcomes", "outputs_olmo", "evals", "base_model_eval_results_20260413_034651.csv",
 )
 
 MODELS = ["contaminated", "clean"]

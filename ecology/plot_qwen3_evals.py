@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-EVAL_DIR = Path(__file__).parent / "outcomes" / "qwen3_evals"
+EVAL_DIR = Path(__file__).parent / "outcomes" / "outputs_qwen3" / "evals"
 OUT_DIR = EVAL_DIR / "plots"
 
 

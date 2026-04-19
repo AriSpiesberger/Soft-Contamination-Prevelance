@@ -7,8 +7,7 @@ import numpy as np
 
 BASE = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "ecology_evals",
-    "Soft-Contamination-Prevelance", "ecology", "outputs", "checkpoint_evals",
+    "outcomes", "outputs_olmo", "evals", "checkpoint_evals",
 )
 
 MODELS = ["contaminated", "clean"]
@@ -104,12 +103,12 @@ fig.suptitle("Model Accuracy Over Training (OLMo-3-7B on MuSR)",
              fontsize=16, fontweight="bold", y=1.02)
 plt.tight_layout()
 plt.savefig(
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), "outcomes", "training_curves.png"),
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "outcomes", "outputs_olmo", "evals", "plots", "training_curves.png"),
     dpi=150, bbox_inches="tight",
 )
 plt.savefig(
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), "outcomes", "training_curves.pdf"),
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "outcomes", "outputs_olmo", "evals", "plots", "training_curves.pdf"),
     bbox_inches="tight",
 )
-print("Saved to ecology/outcomes/training_curves.png and .pdf")
+print("Saved to ecology/outcomes/outputs_olmo/evals/plots/training_curves.png and .pdf")
 plt.show()

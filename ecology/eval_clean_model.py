@@ -12,8 +12,8 @@ from tqdm import tqdm
 
 MODEL = "Qwen/Qwen3-8B-Base"
 DATA_DIR = Path(__file__).parent / "data"
-CLEAN_DIR = Path(__file__).parent / "outcomes" / "qwen3_adaptors" / "exp_clean_20260414_145614"
-OUT_DIR = Path(__file__).parent / "outcomes" / "qwen3_evals" / "clean_model"
+CLEAN_DIR = Path(__file__).parent / "outcomes" / "outputs_qwen3" / "adapters" / "exp_clean_20260414_145614"
+OUT_DIR = Path(__file__).parent / "outcomes" / "outputs_qwen3" / "evals" / "clean_model"
 NUM_EVAL_SAMPLES = 10
 
 GEN_PARAMS = {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20}

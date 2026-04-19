@@ -10,5 +10,7 @@ wandb/
 venv/
 *.log
 .claude/
-outcomes/qwen3_adaptors/
-outcomes/ecology_evals/Soft-Contamination-Prevelance/
+outcomes/outputs_*/adapters/
+*.safetensors
+*.tar.gz
+*.bin
