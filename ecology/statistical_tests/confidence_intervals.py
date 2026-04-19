@@ -10,14 +10,16 @@ import csv
 import numpy as np
 from scipy import stats
 
-BASE = os.path.join(
+EVALS_DIR = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "outputs_olmo", "evals", "checkpoint_evals",
+    "outcomes", "outputs_olmo", "evals",
 )
-BASE_CSV = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "outputs_olmo", "evals", "base_model_eval_results_20260413_034651.csv",
-)
+BASE = os.path.join(EVALS_DIR, "checkpoint_evals")
+BASE_CSV = os.path.join(EVALS_DIR, "base_model_eval_results_20260413_034651.csv")
+STATS_DIR = os.path.join(EVALS_DIR, "stats")
+os.makedirs(STATS_DIR, exist_ok=True)
+OUT_ACC_CSV = os.path.join(STATS_DIR, "confidence_intervals_accuracy.csv")
+OUT_DIFF_CSV = os.path.join(STATS_DIR, "confidence_intervals_paired_diff.csv")
 
 MODELS = ["contaminated", "clean"]
 CHECKPOINTS = [
@@ -102,6 +104,8 @@ print("=" * 95)
 print("ACCURACY CONFIDENCE INTERVALS (n=125 independent samples, pass@10)")
 print("=" * 95)
 
+ACC_ROWS = []
+
 for split in ["contaminated", "clean"]:
     print(f"\n--- Test split: {split.upper()} ---")
     print(f"{'':>8}  {'':>3}  {'--- T-based 95% CI ---':>30}  {'--- Bootstrap 95% CI ---':>30}")
@@ -113,6 +117,12 @@ for split in ["contaminated", "clean"]:
     tm, tlo, thi = ci_t(x)
     bm, blo, bhi = ci_bootstrap(x)
     print(f"{'Base':>8}  {'--':>3}  {tm:>7.3f}  {tlo:>7.3f}  {thi:>7.3f}  {thi-tlo:>7.3f}  {bm:>7.3f}  {blo:>7.3f}  {bhi:>7.3f}  {bhi-blo:>7.3f}")
+    ACC_ROWS.append({
+        "model": "base", "split": split, "epoch": "",
+        "t_mean": float(tm), "t_lo": float(tlo), "t_hi": float(thi),
+        "boot_mean": float(bm), "boot_lo": float(blo), "boot_hi": float(bhi),
+        "n": len(x),
+    })
 
     for model in MODELS:
         for e in epochs:
@@ -121,7 +131,19 @@ for split in ["contaminated", "clean"]:
             bm, blo, bhi = ci_bootstrap(x)
             label = "Contam" if model == "contaminated" else "Clean"
             print(f"{label:>8}  {e:>3}  {tm:>7.3f}  {tlo:>7.3f}  {thi:>7.3f}  {thi-tlo:>7.3f}  {bm:>7.3f}  {blo:>7.3f}  {bhi:>7.3f}  {bhi-blo:>7.3f}")
+            ACC_ROWS.append({
+                "model": model, "split": split, "epoch": e,
+                "t_mean": float(tm), "t_lo": float(tlo), "t_hi": float(thi),
+                "boot_mean": float(bm), "boot_lo": float(blo), "boot_hi": float(bhi),
+                "n": len(x),
+            })
         print()
+
+acc_fields = ["model", "split", "epoch", "t_mean", "t_lo", "t_hi",
+              "boot_mean", "boot_lo", "boot_hi", "n"]
+with open(OUT_ACC_CSV, "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=acc_fields); w.writeheader(); w.writerows(ACC_ROWS)
+print(f"Wrote {len(ACC_ROWS)} rows to {OUT_ACC_CSV}")
 
 # =====================================================
 # PART 2: Paired difference CIs (reject null = no diff)
@@ -132,7 +154,10 @@ print("If CI excludes 0 => reject null of no difference at 95% level")
 print("=" * 100)
 
 
-def print_paired_ci(title, label, get_model, get_ref):
+DIFF_ROWS = []
+
+
+def run_paired_ci(comparison, title, label, get_model, get_ref):
     for split in ["contaminated", "clean"]:
         print(f"\n--- {title} | Test split: {split.upper()} ---")
         print(f"{'Ep':>3}  {label+' Mean':>12}  {'Ref Mean':>9}  {'Mean Diff':>10}  {'T-Lo':>7}  {'T-Hi':>7}  {'Boot-Lo':>7}  {'Boot-Hi':>7}  {'t-stat':>7}  {'p-val':>9}  {'Sig':>4}")
@@ -146,10 +171,20 @@ def print_paired_ci(title, label, get_model, get_ref):
             t_stat, p_val = stats.ttest_rel(a, b)
             sig = "***" if p_val < 0.001 else "**" if p_val < 0.01 else "*" if p_val < 0.05 else ""
             print(f"{e:>3}  {a.mean():>12.4f}  {b.mean():>9.4f}  {tm:>+10.4f}  {tlo:>+7.4f}  {thi:>+7.4f}  {blo:>+7.4f}  {bhi:>+7.4f}  {t_stat:>7.3f}  {p_val:>9.6f}  {sig:>4}")
+            DIFF_ROWS.append({
+                "comparison": comparison, "split": split, "epoch": e,
+                "mean_a": float(a.mean()), "mean_b": float(b.mean()),
+                "mean_diff": float(tm),
+                "t_lo": float(tlo), "t_hi": float(thi),
+                "boot_lo": float(blo), "boot_hi": float(bhi),
+                "t_stat": float(t_stat), "p_value": float(p_val),
+                "sig": sig, "n_paired": len(a),
+            })
 
 
 # Contaminated model vs Base
-print_paired_ci(
+run_paired_ci(
+    "contaminated_vs_base",
     "CONTAMINATED MODEL vs BASE",
     "Contam",
     lambda split, e: data["contaminated"][split][e],
@@ -157,7 +192,8 @@ print_paired_ci(
 )
 
 # Clean model vs Base
-print_paired_ci(
+run_paired_ci(
+    "clean_vs_base",
     "CLEAN MODEL vs BASE",
     "Clean",
     lambda split, e: data["clean"][split][e],
@@ -165,9 +201,17 @@ print_paired_ci(
 )
 
 # Contaminated vs Clean (direct)
-print_paired_ci(
+run_paired_ci(
+    "contaminated_vs_clean",
     "CONTAMINATED MODEL vs CLEAN MODEL",
     "Contam",
     lambda split, e: data["contaminated"][split][e],
     lambda split, e: data["clean"][split][e],
 )
+
+diff_fields = ["comparison", "split", "epoch", "mean_a", "mean_b", "mean_diff",
+               "t_lo", "t_hi", "boot_lo", "boot_hi",
+               "t_stat", "p_value", "sig", "n_paired"]
+with open(OUT_DIFF_CSV, "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=diff_fields); w.writeheader(); w.writerows(DIFF_ROWS)
+print(f"\nWrote {len(DIFF_ROWS)} rows to {OUT_DIFF_CSV}")

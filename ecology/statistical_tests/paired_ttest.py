@@ -5,10 +5,15 @@ import csv
 import numpy as np
 from scipy import stats
 
-BASE = os.path.join(
+EVALS_DIR = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "outputs_olmo", "evals", "checkpoint_evals",
+    "outcomes", "outputs_olmo", "evals",
 )
+BASE = os.path.join(EVALS_DIR, "checkpoint_evals")
+STATS_DIR = os.path.join(EVALS_DIR, "stats")
+os.makedirs(STATS_DIR, exist_ok=True)
+OUT_TTEST_CSV = os.path.join(STATS_DIR, "paired_ttest.csv")
+OUT_MCNEMAR_CSV = os.path.join(STATS_DIR, "mcnemar.csv")
 
 MODELS = ["contaminated", "clean"]
 CHECKPOINTS = [
@@ -54,10 +59,7 @@ def get_binary_results(csv_path, test_split_filter):
 
 
 # --- Load base model results ---
-BASE_CSV = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)),
-    "outcomes", "outputs_olmo", "evals", "base_model_eval_results_20260413_034651.csv",
-)
+BASE_CSV = os.path.join(EVALS_DIR, "base_model_eval_results_20260413_034651.csv")
 
 
 def get_base_per_sample_accuracy(csv_path, test_split_filter):
@@ -105,47 +107,62 @@ for split in ["contaminated", "clean"]:
 epochs = sorted(data["contaminated"]["contaminated"].keys())
 
 
-def print_comparison(title, model_a_label, model_b_label, get_a, get_b):
-    """Print paired t-test table."""
+TTEST_ROWS = []
+
+
+def run_comparison(comparison, label_a, label_b, get_a, get_b):
+    """Paired t-test; print and accumulate rows."""
     for split in ["contaminated", "clean"]:
         print(f"\n{'='*78}")
-        print(f"{title} | TEST SPLIT: {split.upper()} (n=125 paired samples)")
+        print(f"{comparison} | TEST SPLIT: {split.upper()} (n=125 paired samples)")
         print(f"{'='*78}")
-        print(f"{'Epoch':>6}  {model_a_label:>12}  {model_b_label:>12}  {'Diff':>8}  {'t-stat':>8}  {'p-value':>10}  {'Sig':>5}")
+        print(f"{'Epoch':>6}  {label_a:>12}  {label_b:>12}  {'Diff':>8}  {'t-stat':>8}  {'p-value':>10}  {'Sig':>5}")
         print("-" * 78)
         for e in epochs:
             sids_a, accs_a = get_a(split, e)
             sids_b, accs_b = get_b(split, e)
             assert sids_a == sids_b, f"Sample IDs don't match at epoch {e}"
             t_stat, p_val = stats.ttest_rel(accs_a, accs_b)
-            diff = accs_a.mean() - accs_b.mean()
+            diff = float(accs_a.mean() - accs_b.mean())
             sig = "***" if p_val < 0.001 else "**" if p_val < 0.01 else "*" if p_val < 0.05 else ""
             print(f"{e:>6}  {accs_a.mean():>12.4f}  {accs_b.mean():>12.4f}  {diff:>+8.4f}  {t_stat:>8.3f}  {p_val:>10.6f}  {sig:>5}")
+            TTEST_ROWS.append({
+                "comparison": comparison, "split": split, "epoch": e,
+                "mean_a": float(accs_a.mean()), "mean_b": float(accs_b.mean()),
+                "diff": diff, "t_stat": float(t_stat), "p_value": float(p_val),
+                "sig": sig, "n_paired": len(accs_a),
+            })
 
 
 # 1) Contaminated model vs Clean model
-print_comparison(
-    "CONTAMINATED MODEL vs CLEAN MODEL",
+run_comparison(
+    "contaminated_vs_clean",
     "Contam Mean", "Clean Mean",
     lambda split, e: data["contaminated"][split][e],
     lambda split, e: data["clean"][split][e],
 )
 
 # 2) Contaminated model vs Base model
-print_comparison(
-    "CONTAMINATED MODEL vs BASE MODEL",
+run_comparison(
+    "contaminated_vs_base",
     "Contam Mean", "Base Mean",
     lambda split, e: data["contaminated"][split][e],
-    lambda split, e: base_data[split],  # same base for all epochs
+    lambda split, e: base_data[split],
 )
 
 # 3) Clean model vs Base model
-print_comparison(
-    "CLEAN MODEL vs BASE MODEL",
+run_comparison(
+    "clean_vs_base",
     "Clean Mean", "Base Mean",
     lambda split, e: data["clean"][split][e],
-    lambda split, e: base_data[split],  # same base for all epochs
+    lambda split, e: base_data[split],
 )
+
+ttest_fields = ["comparison", "split", "epoch", "mean_a", "mean_b",
+                "diff", "t_stat", "p_value", "sig", "n_paired"]
+with open(OUT_TTEST_CSV, "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=ttest_fields); w.writeheader(); w.writerows(TTEST_ROWS)
+print(f"\nWrote {len(TTEST_ROWS)} rows to {OUT_TTEST_CSV}")
 
 
 # ============================================================
@@ -166,10 +183,13 @@ def mcnemar_test(binary_a, binary_b):
     return b, c, chi2, p
 
 
-def print_mcnemar(title, label_a, label_b, get_a, get_b):
+MCNEMAR_ROWS = []
+
+
+def run_mcnemar(comparison, label_a, label_b, get_a, get_b):
     for split in ["contaminated", "clean"]:
         print(f"\n{'='*90}")
-        print(f"McNEMAR: {title} | TEST SPLIT: {split.upper()} (n=1250 paired trials)")
+        print(f"McNEMAR: {comparison} | TEST SPLIT: {split.upper()} (n=1250 paired trials)")
         print(f"{'='*90}")
         print(f"{'Epoch':>6}  {label_a+' only':>14}  {label_b+' only':>14}  {'chi2':>8}  {'p-value':>10}  {'Sig':>5}")
         print("-" * 90)
@@ -179,32 +199,31 @@ def print_mcnemar(title, label_a, label_b, get_a, get_b):
             b, c, chi2, p = mcnemar_test(ba, bb)
             sig = "***" if p < 0.001 else "**" if p < 0.01 else "*" if p < 0.05 else ""
             print(f"{e:>6}  {b:>14}  {c:>14}  {chi2:>8.3f}  {p:>10.6f}  {sig:>5}")
+            MCNEMAR_ROWS.append({
+                "comparison": comparison, "split": split, "epoch": e,
+                "a_only": b, "b_only": c, "chi2": float(chi2),
+                "p_value": float(p), "sig": sig,
+            })
 
 
 print("\n\n" + "#" * 90)
 print("# McNEMAR'S TEST (per-trial binary correctness, 125 samples x 10 evals = 1250 pairs)")
 print("#" * 90)
 
-# 1) Contaminated vs Clean
-print_mcnemar(
-    "CONTAMINATED MODEL vs CLEAN MODEL",
-    "Contam", "Clean",
-    lambda split, e: binary_data["contaminated"][split][e],
-    lambda split, e: binary_data["clean"][split][e],
-)
+run_mcnemar("contaminated_vs_clean", "Contam", "Clean",
+            lambda split, e: binary_data["contaminated"][split][e],
+            lambda split, e: binary_data["clean"][split][e])
 
-# 2) Contaminated vs Base
-print_mcnemar(
-    "CONTAMINATED MODEL vs BASE MODEL",
-    "Contam", "Base",
-    lambda split, e: binary_data["contaminated"][split][e],
-    lambda split, e: base_binary[split],
-)
+run_mcnemar("contaminated_vs_base", "Contam", "Base",
+            lambda split, e: binary_data["contaminated"][split][e],
+            lambda split, e: base_binary[split])
 
-# 3) Clean vs Base
-print_mcnemar(
-    "CLEAN MODEL vs BASE MODEL",
-    "Clean", "Base",
-    lambda split, e: binary_data["clean"][split][e],
-    lambda split, e: base_binary[split],
-)
+run_mcnemar("clean_vs_base", "Clean", "Base",
+            lambda split, e: binary_data["clean"][split][e],
+            lambda split, e: base_binary[split])
+
+mcnemar_fields = ["comparison", "split", "epoch", "a_only", "b_only",
+                  "chi2", "p_value", "sig"]
+with open(OUT_MCNEMAR_CSV, "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=mcnemar_fields); w.writeheader(); w.writerows(MCNEMAR_ROWS)
+print(f"\nWrote {len(MCNEMAR_ROWS)} rows to {OUT_MCNEMAR_CSV}")
