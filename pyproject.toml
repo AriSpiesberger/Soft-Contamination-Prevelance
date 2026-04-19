@@ -13,6 +13,8 @@ dependencies = [
     "bitsandbytes>=0.45.5",
     "datasets>=3.1.0",
     "accelerate>=0.20.0",
+    # Prebuilt CUDA kernels from HF hub (flash-attn etc) — avoids source builds
+    "kernels>=0.13.0",
     # Embeddings & Tokenization
     "tiktoken>=0.5.0",
     # Scientific Computing

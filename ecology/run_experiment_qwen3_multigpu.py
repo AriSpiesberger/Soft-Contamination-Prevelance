@@ -215,6 +215,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         "torch_dtype": torch.bfloat16,
         "device_map": {"": accelerator.local_process_index} if accelerator else {"": 0},
         "trust_remote_code": True,
+        "attn_implementation": "kernels-community/flash-attn2",
     }
 
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
@@ -647,8 +648,8 @@ def main():
                         help="Micro-batch per GPU (default 8)")
     parser.add_argument("--effective-batch-size", type=int, default=64,
                         help="Target global batch; grad_accum derived (default 64)")
-    parser.add_argument("--learning-rate", type=float, default=2.5e-5,
-                        help="AdamW LR (default 2.5e-5, OLMo recipe)")
+    parser.add_argument("--learning-rate", type=float, default=1e-4,
+                        help="AdamW LR (default 1e-4 for LoRA; OLMo full-FT recipe used 2.5e-5)")
     parser.add_argument("--gradient-checkpointing", action="store_true",
                         help="Enable grad checkpointing (off by default on 80GB)")
     parser.add_argument("--no-torch-compile", action="store_true",
@@ -767,6 +768,7 @@ def _run_paired_eval(contam_dir, clean_dir, test_data, args, timestamp,
         "torch_dtype": torch.bfloat16,
         "device_map": {"": 0},
         "trust_remote_code": True,
+        "attn_implementation": "kernels-community/flash-attn2",
     }
     base_model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
