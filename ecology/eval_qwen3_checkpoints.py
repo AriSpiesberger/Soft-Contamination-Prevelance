@@ -101,6 +101,8 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc, num_samples,
         inputs = {k: v.to(first_device) for k, v in inputs.items()}
         input_len = inputs["input_ids"].shape[1]
         n_corrects = [0] * bs
+        per_sample_responses = [[] for _ in range(bs)]
+        per_sample_predictions = [[] for _ in range(bs)]
 
         for _ in range(num_samples):
             with torch.no_grad():
@@ -108,7 +110,10 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc, num_samples,
             for i in range(bs):
                 response = tokenizer.decode(outputs[i][input_len:],
                                             skip_special_tokens=True)
-                if extract_answer(response) == batch_expected[i]:
+                predicted = extract_answer(response)
+                per_sample_responses[i].append(response)
+                per_sample_predictions[i].append(predicted)
+                if predicted == batch_expected[i]:
                     n_corrects[i] += 1
 
         for i in range(bs):
@@ -117,6 +122,9 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc, num_samples,
                 "pass_rate": n_corrects[i] / num_samples,
                 "n_correct": n_corrects[i],
                 "n_samples": num_samples,
+                "expected": batch_expected[i],
+                "responses": per_sample_responses[i],
+                "predictions": per_sample_predictions[i],
             })
 
     mean_pass_rate = float(np.mean([r["pass_rate"] for r in results]))
@@ -129,6 +137,7 @@ def eval_all_checkpoints(base_model, tokenizer, checkpoints, test_data,
     in-memory results keyed by epoch."""
     out_dir.mkdir(parents=True, exist_ok=True)
     contam_rows, clean_rows, summary_rows = [], [], []
+    contam_response_rows, clean_response_rows = [], []
     all_results = {}
 
     for epoch, ckpt_path in checkpoints:
@@ -157,9 +166,21 @@ def eval_all_checkpoints(base_model, tokenizer, checkpoints, test_data,
         for r in contam_results:
             contam_rows.append([epoch, ckpt_path.name, r["sample_id"],
                                 r["pass_rate"], r["n_correct"], r["n_samples"]])
+            for s_idx, (resp, pred) in enumerate(zip(r["responses"], r["predictions"])):
+                contam_response_rows.append([
+                    epoch, ckpt_path.name, r["sample_id"], s_idx,
+                    r["expected"], pred, int(pred == r["expected"]),
+                    resp.replace("\n", "\\n"),
+                ])
         for r in clean_results:
             clean_rows.append([epoch, ckpt_path.name, r["sample_id"],
                                r["pass_rate"], r["n_correct"], r["n_samples"]])
+            for s_idx, (resp, pred) in enumerate(zip(r["responses"], r["predictions"])):
+                clean_response_rows.append([
+                    epoch, ckpt_path.name, r["sample_id"], s_idx,
+                    r["expected"], pred, int(pred == r["expected"]),
+                    resp.replace("\n", "\\n"),
+                ])
         summary_rows.append([epoch, ckpt_path.name, contam_rate, clean_rate,
                              contam_rate - clean_rate])
 
@@ -179,6 +200,15 @@ def eval_all_checkpoints(base_model, tokenizer, checkpoints, test_data,
         w.writerow(["epoch", "checkpoint", "contaminated_accuracy",
                     "clean_accuracy", "difference"])
         w.writerows(summary_rows)
+
+    response_header = ["epoch", "checkpoint", "sample_id", "sample_num",
+                       "expected", "predicted", "correct", "response"]
+    with open(out_dir / "responses_contam_split.csv", "w", newline="",
+              encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(response_header); w.writerows(contam_response_rows)
+    with open(out_dir / "responses_clean_split.csv", "w", newline="",
+              encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(response_header); w.writerows(clean_response_rows)
 
     print(f"\nWrote CSVs to {out_dir}")
     return all_results
