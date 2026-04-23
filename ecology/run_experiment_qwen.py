@@ -78,6 +78,8 @@ def train_model(data_type, epochs, output_name, accelerator=None):
     # Data path
     if data_type == "contaminated":
         data_path = DATA_DIR / "contaminated" / "train_contaminated.json"
+    elif data_type == "exact":
+        data_path = DATA_DIR / "exact" / "train_exact.json"
     else:
         data_path = create_clean_dataset()
 
@@ -141,7 +143,7 @@ def train_model(data_type, epochs, output_name, accelerator=None):
 
     # Calculate steps
     num_gpus = accelerator.num_processes if accelerator else 1
-    batch_size = 2
+    batch_size = 8
     grad_accum = max(1, 8 // num_gpus)  # Scale accumulation with GPUs
     effective_batch = batch_size * grad_accum * num_gpus
     steps_per_epoch = len(dataset) // effective_batch
@@ -174,7 +176,7 @@ def train_model(data_type, epochs, output_name, accelerator=None):
         dataloader_num_workers=0,
         max_length=2048,
         dataset_text_field="text",
-        packing=False,
+        packing=True,
         ddp_find_unused_parameters=False,
     )
 
@@ -323,7 +325,7 @@ def evaluate_model(model_dir):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", type=str, choices=["contaminated", "clean", "both"], default="both")
+    parser.add_argument("--data", type=str, choices=["contaminated", "clean", "exact", "both"], default="both")
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--eval-only", action="store_true", help="Only run evaluation on existing checkpoints")
     parser.add_argument("--train-only", action="store_true", help="Only train, skip evaluation")
@@ -360,6 +362,11 @@ def main():
         train_model("clean", args.epochs, clean_output, accelerator)
         accelerator.wait_for_everyone()
 
+    if args.data == "exact":
+        exact_output = f"exp_exact_{timestamp}"
+        train_model("exact", args.epochs, exact_output, accelerator)
+        accelerator.wait_for_everyone()
+
     # Evaluation (main process only)
     if not args.train_only and is_main:
         print("\n" + "="*60)
@@ -374,6 +381,10 @@ def main():
         if args.data in ["clean", "both"]:
             print("\nEvaluating clean model...")
             results["clean"] = evaluate_model(OUTPUT_DIR / clean_output)
+
+        if args.data == "exact":
+            print("\nEvaluating exact-duplicate model...")
+            results["exact"] = evaluate_model(OUTPUT_DIR / exact_output)
 
         # Print comparison
         if args.data == "both":

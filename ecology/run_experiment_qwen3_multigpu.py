@@ -33,6 +33,56 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, PeftModel
 from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
+
+# TRL's create_model_card calls importlib.metadata.version("torch"), which
+# fails with PackageNotFoundError when torch was installed from pytorch.org
+# index wheels that don't register dist-info metadata. Crashes at save boundaries.
+import trl.trainer.sft_trainer as _trl_sft
+import trl.trainer.base_trainer as _trl_base
+_trl_sft.SFTTrainer.create_model_card = lambda self, *a, **kw: None
+_trl_base._BaseTrainer.create_model_card = lambda self, *a, **kw: None
+
+# transformers' flash_attention integration crashes on models that pass s_aux=None
+# (Qwen3.5 Gated Attention, OLMo-3). Replace the registered attention function
+# with a wrapper that guards the None. Patching the source file is not enough:
+# ALL_ATTENTION_FUNCTIONS caches the original function object at import time.
+import transformers.integrations.flash_attention as _fa_int_mod
+from transformers.modeling_flash_attention_utils import (
+    _flash_attention_forward as _inner_fa,
+    flash_attn_supports_top_left_mask as _use_top_left_mask_fn,
+)
+_use_top_left_mask = _use_top_left_mask_fn()
+
+def _fa_forward_safe(module, query, key, value, attention_mask,
+                     dropout=0.0, scaling=None, sliding_window=None,
+                     softcap=None, is_causal=None, s_aux=None, **kwargs):
+    kwargs.pop("output_attentions", None)
+    seq_len = query.shape[2]
+    query = query.transpose(1, 2)
+    key = key.transpose(1, 2)
+    value = value.transpose(1, 2)
+    target_dtype = _fa_int_mod.get_target_dtype(query, module)
+    is_causal = is_causal if is_causal is not None else module.is_causal
+    return _inner_fa(
+        query, key, value, attention_mask,
+        query_length=seq_len, is_causal=is_causal, dropout=dropout,
+        softmax_scale=scaling, sliding_window=sliding_window, softcap=softcap,
+        use_top_left_mask=_use_top_left_mask, target_dtype=target_dtype,
+        attn_implementation=module.config._attn_implementation,
+        layer_idx=module.layer_idx if hasattr(module, "layer_idx") else None,
+        s_aux=s_aux.to(query.dtype) if s_aux is not None else None,
+        **kwargs,
+    ), None
+
+_fa_int_mod.flash_attention_forward = _fa_forward_safe
+try:
+    from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS
+    for _k in list(ALL_ATTENTION_FUNCTIONS):
+        if "flash" in _k.lower():
+            ALL_ATTENTION_FUNCTIONS[_k] = _fa_forward_safe
+except Exception:
+    pass
+
 from accelerate import Accelerator
 from scipy.stats import ttest_rel, ttest_ind
 from tqdm import tqdm
@@ -52,6 +102,7 @@ MODEL_TRAIN_CONFIGS = {
     "allenai/OLMo-3-7B-Instruct": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
     "Qwen/Qwen3-8B-Base": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
     "Qwen/Qwen3.5-0.8B": {"lora_r": 16, "lora_alpha": 32, "target_modules": "all-linear"},
+    "Qwen/Qwen3.5-9B-Base": {"lora_r": 64, "lora_alpha": 128, "target_modules": "all-linear"},
 }
 DEFAULT_TRAIN_CONFIG = {"lora_r": 32, "lora_alpha": 64, "target_modules": "all-linear"}
 
@@ -63,6 +114,7 @@ MODEL_GEN_PARAMS = {
     "allenai/OLMo-3-7B-Instruct": {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20},
     "Qwen/Qwen3-8B-Base": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20},
     "Qwen/Qwen3.5-0.8B": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20},
+    "Qwen/Qwen3.5-9B-Base": {"temperature": 1.0, "top_p": 1.0, "top_k": 20, "max_new_tokens": 20},
 }
 DEFAULT_GEN_PARAMS = {"temperature": 0.6, "top_p": 0.95, "max_new_tokens": 20}
 
@@ -174,7 +226,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
                 per_device_batch_size=8, effective_batch_size=64,
                 learning_rate=2.5e-5, gradient_checkpointing=False,
                 torch_compile=True, dataloader_num_workers=4,
-                packing=False):
+                packing=False, attn_impl="kernels-community/flash-attn2"):
     """Train a model on contaminated or clean data.
 
     Args:
@@ -192,6 +244,8 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     # Data path
     if data_type == "contaminated":
         data_path = DATA_DIR / "contaminated" / "train_contaminated.json"
+    elif data_type == "exact":
+        data_path = DATA_DIR / "exact" / "train_exact.json"
     else:
         data_path = create_clean_dataset()
 
@@ -215,7 +269,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         "torch_dtype": torch.bfloat16,
         "device_map": {"": accelerator.local_process_index} if accelerator else {"": 0},
         "trust_remote_code": True,
-        "attn_implementation": "kernels-community/flash-attn2",
+        "attn_implementation": attn_impl,
     }
 
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
@@ -630,7 +684,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL,
                         help="HuggingFace model to fine-tune and evaluate")
-    parser.add_argument("--data", type=str, choices=["contaminated", "clean", "both"], default="both")
+    parser.add_argument("--data", type=str, choices=["contaminated", "clean", "exact", "both", "all"], default="all",
+                        help="contaminated/clean/exact = single; both = contaminated+clean; all = all three")
     parser.add_argument("--epochs", type=int, default=2,
                         help="Training epochs (official OLMo-hybrid SFT recipe uses 2)")
     parser.add_argument("--eval-every", type=int, default=5,
@@ -657,6 +712,10 @@ def main():
     parser.add_argument("--dataloader-workers", type=int, default=4)
     parser.add_argument("--packing", action="store_true",
                         help="Pack short sequences; large throughput win if samples are short")
+    parser.add_argument("--attn-impl", type=str,
+                        default="kernels-community/flash-attn2",
+                        help="attn_implementation passed to from_pretrained (sdpa, eager, "
+                             "flash_attention_2, kernels-community/flash-attn2)")
     args = parser.parse_args()
 
     # Set seeds for reproducibility
@@ -710,6 +769,7 @@ def main():
     # --- Training ---
     cont_output = f"exp_contaminated_{timestamp}"
     clean_output = f"exp_clean_{timestamp}"
+    exact_output = f"exp_exact_{timestamp}"
 
     train_kwargs = dict(
         model_name=args.model, accelerator=accelerator,
@@ -721,18 +781,23 @@ def main():
         torch_compile=not args.no_torch_compile,
         dataloader_num_workers=args.dataloader_workers,
         packing=args.packing,
+        attn_impl=args.attn_impl,
     )
 
-    if args.data in ["contaminated", "both"]:
+    if args.data in ["contaminated", "both", "all"]:
         train_model("contaminated", args.epochs, cont_output, **train_kwargs)
         accelerator.wait_for_everyone()
 
-    if args.data in ["clean", "both"]:
+    if args.data in ["clean", "both", "all"]:
         train_model("clean", args.epochs, clean_output, **train_kwargs)
         accelerator.wait_for_everyone()
 
+    if args.data in ["exact", "all"]:
+        train_model("exact", args.epochs, exact_output, **train_kwargs)
+        accelerator.wait_for_everyone()
+
     # --- Paired evaluation at every N-th checkpoint (main process only) ---
-    if args.train_only or not is_main or args.data != "both":
+    if args.train_only or not is_main or args.data not in ("both", "all"):
         return
 
     contam_dir = OUTPUT_DIR / cont_output

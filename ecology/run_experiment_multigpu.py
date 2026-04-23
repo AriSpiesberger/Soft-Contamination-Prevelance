@@ -28,6 +28,55 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, PeftModel
 from trl import SFTTrainer, SFTConfig
 from transformers import TrainerCallback
+
+# TRL's create_model_card calls importlib.metadata.version("torch"), which
+# fails with PackageNotFoundError when torch was installed from pytorch.org
+# index wheels that don't register dist-info metadata (cu128 aarch64 case).
+# This crashes at the end of every epoch save. No-op it.
+import trl.trainer.sft_trainer as _trl_sft
+import trl.trainer.base_trainer as _trl_base
+_trl_sft.SFTTrainer.create_model_card = lambda self, *a, **kw: None
+_trl_base._BaseTrainer.create_model_card = lambda self, *a, **kw: None
+
+# transformers' flash_attention integration crashes on models that pass
+# s_aux=None (OLMo-3): it unconditionally calls s_aux.to(). Replace the
+# registered attention function with a wrapper that guards the None.
+import transformers.integrations.flash_attention as _fa_int_mod
+from transformers.modeling_flash_attention_utils import (
+    _flash_attention_forward as _inner_fa,
+    flash_attn_supports_top_left_mask as _use_top_left_mask_fn,
+)
+_use_top_left_mask = _use_top_left_mask_fn()
+
+def _fa_forward_safe(module, query, key, value, attention_mask,
+                     dropout=0.0, scaling=None, sliding_window=None,
+                     softcap=None, is_causal=None, s_aux=None, **kwargs):
+    kwargs.pop("output_attentions", None)
+    seq_len = query.shape[2]
+    query = query.transpose(1, 2)
+    key = key.transpose(1, 2)
+    value = value.transpose(1, 2)
+    target_dtype = _fa_int_mod.get_target_dtype(query, module)
+    is_causal = is_causal if is_causal is not None else module.is_causal
+    return _inner_fa(
+        query, key, value, attention_mask,
+        query_length=seq_len, is_causal=is_causal, dropout=dropout,
+        softmax_scale=scaling, sliding_window=sliding_window, softcap=softcap,
+        use_top_left_mask=_use_top_left_mask, target_dtype=target_dtype,
+        attn_implementation=module.config._attn_implementation,
+        layer_idx=module.layer_idx if hasattr(module, "layer_idx") else None,
+        s_aux=s_aux.to(query.dtype) if s_aux is not None else None,
+        **kwargs,
+    ), None
+
+_fa_int_mod.flash_attention_forward = _fa_forward_safe
+try:
+    from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS
+    for _k in list(ALL_ATTENTION_FUNCTIONS):
+        if "flash" in _k.lower():
+            ALL_ATTENTION_FUNCTIONS[_k] = _fa_forward_safe
+except Exception:
+    pass
 from accelerate import Accelerator
 from scipy.stats import ttest_rel, ttest_ind
 from tqdm import tqdm
@@ -122,8 +171,8 @@ def build_prompt_completion(example, tokenizer):
         completion = f"{example['response']}{tokenizer.eos_token}"
         return {"prompt": prompt, "completion": completion}
     return {
-        "prompt": f"User: {example['prompt']}\n\nAssistant: ",
-        "completion": f"{example['response']}{tokenizer.eos_token}",
+        "prompt": f"User: {example['prompt']}\n\nAssistant:",
+        "completion": f" {example['response']}{tokenizer.eos_token}",
     }
 
 
@@ -159,7 +208,10 @@ class EarlyStoppingAfterMinEpochs(TrainerCallback):
 
 
 def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
-                accelerator=None, patience=None, min_epochs=10):
+                accelerator=None, patience=None, min_epochs=10,
+                gradient_checkpointing=True, packing=False,
+                attn_implementation="kernels-community/flash-attn2",
+                resume_from_checkpoint=None):
     """Train a model on contaminated or clean data.
 
     Args:
@@ -173,6 +225,8 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     # Data path
     if data_type == "contaminated":
         data_path = DATA_DIR / "contaminated" / "train_contaminated.json"
+    elif data_type == "exact":
+        data_path = DATA_DIR / "exact" / "train_exact.json"
     else:
         data_path = create_clean_dataset()
 
@@ -196,6 +250,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         "torch_dtype": torch.bfloat16,
         "device_map": {"": accelerator.local_process_index} if accelerator else {"": 0},
         "trust_remote_code": True,
+        "attn_implementation": attn_implementation,
     }
 
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
@@ -295,8 +350,8 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         eval_strategy="epoch",
         bf16=True,
         tf32=True,
-        gradient_checkpointing=True,
-        gradient_checkpointing_kwargs={"use_reentrant": False},
+        gradient_checkpointing=gradient_checkpointing,
+        gradient_checkpointing_kwargs={"use_reentrant": False} if gradient_checkpointing else None,
         optim="adamw_torch_fused",
         torch_compile=True,  # Requires Triton, not available on Windows
         report_to="none",
@@ -310,7 +365,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
         # conditioning, not a target. Requires dataset in {prompt, completion}
         # format, which build_prompt_completion() produces.
         completion_only_loss=True,
-        packing=False,
+        packing=packing,
         ddp_find_unused_parameters=False,
         load_best_model_at_end=False,
         metric_for_best_model=None,
@@ -328,7 +383,7 @@ def train_model(data_type, epochs, output_name, model_name=DEFAULT_MODEL,
     if is_main:
         print("Starting training...")
 
-    trainer.train()
+    trainer.train(resume_from_checkpoint=resume_from_checkpoint)
 
     # Save final (only main process)
     actual_epochs = int(trainer.state.epoch)
@@ -426,7 +481,7 @@ def evaluate_checkpoint(model, tokenizer, test_examples, desc="Evaluating",
             return tokenizer.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
             )
-        return f"User: {ex['prompt']}\n\nAssistant: "
+        return f"User: {ex['prompt']}\n\nAssistant:"
 
     prompts = [make_eval_prompt(ex) for ex in test_examples]
     expected_answers = [extract_answer(ex["response"]) for ex in test_examples]
@@ -597,7 +652,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL,
                         help="HuggingFace model to fine-tune and evaluate")
-    parser.add_argument("--data", type=str, choices=["contaminated", "clean", "both"], default="both")
+    parser.add_argument("--data", type=str, choices=["contaminated", "clean", "exact", "both"], default="both")
     parser.add_argument("--epochs", type=int, default=2,
                         help="Training epochs (official OLMo-hybrid SFT recipe uses 2)")
     parser.add_argument("--eval-every", type=int, default=5,
@@ -610,6 +665,18 @@ def main():
     parser.add_argument("--train-only", action="store_true", help="Only train, skip evaluation")
     parser.add_argument("--contam-dir", type=str, help="Contaminated model dir for eval-only mode")
     parser.add_argument("--clean-dir", type=str, help="Clean model dir for eval-only mode")
+    parser.add_argument("--packing", action="store_true",
+                        help="Enable SFTTrainer sequence packing")
+    parser.add_argument("--no-gradient-checkpointing", action="store_true",
+                        help="Disable gradient checkpointing (faster, more VRAM)")
+    parser.add_argument("--resume-from", type=str, default=None,
+                        help="Path to a checkpoint dir (or output dir) to resume training from")
+    parser.add_argument("--output-name", type=str, default=None,
+                        help="Override timestamped output dir name (use when resuming)")
+    parser.add_argument("--attn-implementation", type=str,
+                        default="kernels-community/flash-attn2",
+                        help="attn_implementation passed to from_pretrained (e.g. sdpa, eager, "
+                             "flash_attention_2, or kernels-community/flash-attn2)")
     args = parser.parse_args()
 
     # Set seeds for reproducibility
@@ -663,17 +730,27 @@ def main():
     # --- Training ---
     cont_output = f"exp_contaminated_{timestamp}"
     clean_output = f"exp_clean_{timestamp}"
+    exact_output = args.output_name if args.output_name else f"exp_exact_{timestamp}"
+
+    train_kwargs = dict(
+        model_name=args.model, accelerator=accelerator,
+        patience=args.patience, min_epochs=args.min_epochs,
+        gradient_checkpointing=not args.no_gradient_checkpointing,
+        packing=args.packing,
+        attn_implementation=args.attn_implementation,
+        resume_from_checkpoint=args.resume_from,
+    )
 
     if args.data in ["contaminated", "both"]:
-        train_model("contaminated", args.epochs, cont_output,
-                     model_name=args.model, accelerator=accelerator,
-                     patience=args.patience, min_epochs=args.min_epochs)
+        train_model("contaminated", args.epochs, cont_output, **train_kwargs)
         accelerator.wait_for_everyone()
 
     if args.data in ["clean", "both"]:
-        train_model("clean", args.epochs, clean_output,
-                     model_name=args.model, accelerator=accelerator,
-                     patience=args.patience, min_epochs=args.min_epochs)
+        train_model("clean", args.epochs, clean_output, **train_kwargs)
+        accelerator.wait_for_everyone()
+
+    if args.data == "exact":
+        train_model("exact", args.epochs, exact_output, **train_kwargs)
         accelerator.wait_for_everyone()
 
     # --- Paired evaluation at every N-th checkpoint (main process only) ---
