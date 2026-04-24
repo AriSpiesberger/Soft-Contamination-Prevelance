@@ -54,16 +54,17 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Load summaries
-    contam_epochs, contam_contam, contam_clean = load_summary(
-        EVAL_DIR / "contaminated_model_20" / "eval_summary.csv")
-    clean_epochs, clean_contam, clean_clean = load_summary(
-        EVAL_DIR / "clean_model_20" / "eval_summary.csv")
+    contam_dir = EVAL_DIR / "exp_contaminated_e1-e10"
+    clean_dir = EVAL_DIR / "exp_clean_e1-e10"
+
+    contam_epochs, contam_contam, contam_clean = load_summary(contam_dir / "eval_summary.csv")
+    clean_epochs, clean_contam, clean_clean = load_summary(clean_dir / "eval_summary.csv")
 
     # Load per-sample for CIs
-    contam_per_contam = load_per_sample(EVAL_DIR / "contaminated_model_20" / "eval_contam_split.csv")
-    contam_per_clean = load_per_sample(EVAL_DIR / "contaminated_model_20" / "eval_clean_split.csv")
-    clean_per_contam = load_per_sample(EVAL_DIR / "clean_model_20" / "eval_contam_split.csv")
-    clean_per_clean = load_per_sample(EVAL_DIR / "clean_model_20" / "eval_clean_split.csv")
+    contam_per_contam = load_per_sample(contam_dir / "eval_contam_split.csv")
+    contam_per_clean = load_per_sample(contam_dir / "eval_clean_split.csv")
+    clean_per_contam = load_per_sample(clean_dir / "eval_contam_split.csv")
+    clean_per_clean = load_per_sample(clean_dir / "eval_clean_split.csv")
 
     # --- Plot 1: Contaminated test split (both models) ---
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
