@@ -1,13 +1,14 @@
 """
 Evaluate a (base or LoRA-adapted) model on MBPP with lm-evaluation-harness.
 
-Runs N independent sampling-based evals with different seeds to produce a
-distribution of pass@1 values for paired statistical tests across conditions
-(baseline vs. contaminated-finetune variants).
+Runs N greedy lm-eval invocations against the custom mbpp_split task (3-shot,
+chat-formatted, fenced code, patched extractor) and reports the mean pass@1.
+Greedy decoding is deterministic across seeds, so num_runs=1 is the right
+default; >1 is allowed for sanity-checking determinism.
 
 Usage:
-    uv run python eval_mbpp_lmeval.py --adapter <path> --num_runs 10
-    uv run python eval_mbpp_lmeval.py --num_runs 10        # baseline
+    uv run python eval_mbpp_lmeval.py --tasks mbpp_split                    # baseline
+    uv run python eval_mbpp_lmeval.py --tasks mbpp_split --adapter <path>   # adapter
 """
 import argparse
 import json
@@ -19,38 +20,39 @@ PWD = Path(__file__).parent.parent
 OUTPUT_DIR = PWD / "outputs" / "harness_results"
 
 MODEL_ID = "allenai/OLMo-3-7B-Instruct"
-# OLMo-3 standard sampling config.
-TEMPERATURE = 0.6
-TOP_P = 0.95
-MAX_NEW_TOKENS = 32768
+MAX_MODEL_LEN = 8192
+GPU_MEMORY_UTILIZATION = 0.9
+MAX_LORA_RANK = 16
 
 
 def run_one(adapter_path: str | None, seed: int, run_dir: Path, tasks: str,
             batch_size: str, limit: int | None) -> float:
     """Run one lm-eval invocation; return pass@1 as a float in [0, 1]."""
+    base_args = (
+        f"pretrained={MODEL_ID},dtype=bfloat16,trust_remote_code=True,"
+        f"gpu_memory_utilization={GPU_MEMORY_UTILIZATION},"
+        f"max_model_len={MAX_MODEL_LEN},seed={seed}"
+    )
     if adapter_path:
         model_args = (
-            f"pretrained={MODEL_ID},peft={adapter_path},"
-            f"dtype=bfloat16,trust_remote_code=True"
+            f"{base_args},lora_local_path={adapter_path},"
+            f"max_lora_rank={MAX_LORA_RANK}"
         )
     else:
-        model_args = f"pretrained={MODEL_ID},dtype=bfloat16,trust_remote_code=True"
-
-    gen_kwargs = (
-        f"do_sample=True,temperature={TEMPERATURE},top_p={TOP_P},"
-        f"max_new_tokens={MAX_NEW_TOKENS},seed={seed}"
-    )
+        model_args = base_args
 
     cmd = [
         "lm_eval",
-        "--model", "hf",
+        "--model", "vllm",
         "--model_args", model_args,
         "--tasks", tasks,
-        "--gen_kwargs", gen_kwargs,
         "--batch_size", batch_size,
         "--seed", str(seed),
         "--output_path", str(run_dir),
         "--log_samples",
+        "--confirm_run_unsafe_code",
+        "--apply_chat_template",
+        "--include_path", str(PWD / "mbpp" / "lm_eval_tasks"),
     ]
     if limit is not None:
         cmd += ["--limit", str(limit)]
@@ -67,9 +69,11 @@ def run_one(adapter_path: str | None, seed: int, run_dir: Path, tasks: str,
             data = json.load(f)
         for task_name, metrics in data.get("results", {}).items():
             if "mbpp" in task_name.lower():
-                for key in ("pass@1,create_test", "pass@1,none", "pass@1"):
-                    if key in metrics:
-                        return float(metrics[key])
+                for k, v in metrics.items():
+                    if isinstance(v, (int, float)) and (
+                        k.startswith("pass_at_1") or k.startswith("pass@1")
+                    ) and "stderr" not in k:
+                        return float(v)
         raise RuntimeError(f"No MBPP pass@1 in {fp}")
     raise RuntimeError(f"No results_*.json written in {run_dir}")
 
@@ -78,8 +82,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--adapter", type=str, default=None,
                     help="Path to LoRA adapter. Omit for baseline.")
-    ap.add_argument("--num_runs", type=int, default=10)
-    ap.add_argument("--tasks", type=str, default="mbpp")
+    ap.add_argument("--num_runs", type=int, default=1)
+    ap.add_argument("--tasks", type=str, default="mbpp_split")
     ap.add_argument("--batch_size", type=str, default="auto")
     ap.add_argument("--limit", type=int, default=None,
                     help="Subset of problems (for debugging only).")
@@ -95,7 +99,7 @@ def main():
 
     print(f"Condition: {label}")
     print(f"Adapter:   {args.adapter or '(none)'}")
-    print(f"Runs:      {args.num_runs}   temp={TEMPERATURE}  top_p={TOP_P}  max_new_tokens={MAX_NEW_TOKENS}")
+    print(f"Runs:      {args.num_runs}   decoding=greedy (task default)")
     print(f"Output:    {cond_dir}")
 
     scores: list[float] = []
@@ -118,9 +122,7 @@ def main():
         "model": MODEL_ID,
         "tasks": args.tasks,
         "num_runs": n,
-        "temperature": TEMPERATURE,
-        "top_p": TOP_P,
-        "max_new_tokens": MAX_NEW_TOKENS,
+        "decoding": "greedy",
         "base_seed": args.base_seed,
         "scores": scores,
         "mean": mean,

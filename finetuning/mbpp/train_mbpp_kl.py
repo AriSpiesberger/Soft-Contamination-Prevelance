@@ -4,16 +4,19 @@ Finetune model on MBPP (LoRA SFT).
 Speed/correctness choices:
 - Conversational {prompt, completion} dataset + completion_only_loss=True
   -> TRL masks prompt tokens to -100, so backprop is over responses only.
-- packing=True with packing_strategy="ffd" (first-fit-decreasing bin packing).
-- attn_implementation="kernels-community/flash-attn2" via the kernels hub.
-  FFD packing emits position_ids that reset per example; FA2's varlen path
+- packing=True with packing_strategy="bfd" (best-fit-decreasing bin packing).
+- attn_implementation="kernels-community/vllm-flash-attn3" via the kernels hub.
+  BFD packing emits position_ids that reset per example; FA's varlen path
   uses them so attention does not leak across packed examples. SDPA would
-  silently cross-attend on a packed sequence.
+  silently cross-attend on a packed sequence. FA3 (vllm) is required for
+  OLMo3 because it supports attention sinks (s_aux); the FA2 kernel does
+  not, and transformers' wrapper crashes on s_aux=None.
 - gradient_checkpointing with use_reentrant=False (PEFT-compatible).
 """
 import csv
 from datasets import Dataset
 import torch
+import torch.nn.functional as F
 from transformers import BitsAndBytesConfig, AutoTokenizer
 from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
@@ -21,30 +24,101 @@ from pathlib import Path
 import argparse
 from datetime import datetime
 
+
+class KLRegularizedSFTTrainer(SFTTrainer):
+    """SFTTrainer + per-token KL anchor against the base model.
+
+    The reference distribution is the *same* model with the LoRA adapter
+    disabled, so we don't need to load a second 7B copy. KL is computed only
+    over the assistant tokens (mask = labels != -100).
+    """
+
+    def __init__(self, *args, kl_beta: float = 0.0, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.kl_beta = float(kl_beta)
+
+    def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        outputs = model(**inputs)
+        loss = outputs.loss
+
+        if self.kl_beta > 0:
+            labels = inputs.get("labels")
+            if labels is not None:
+                # Build the assistant-token mask up front so we never
+                # materialise log_softmax over the whole (B, T, V) tensor
+                # (~12 GiB for OLMo-3 vocab × packed bs=16 in fp32).
+                shift_labels = labels[..., 1:]
+                mask = shift_labels.ne(-100)
+                num_valid = mask.sum()
+
+                if num_valid > 0:
+                    ref_inputs = {k: v for k, v in inputs.items() if k != "labels"}
+                    with torch.no_grad():
+                        with model.disable_adapter():
+                            ref_outputs = model(**ref_inputs)
+
+                    # Select only the assistant-token positions.
+                    sel_logits = outputs.logits[..., :-1, :][mask]      # (N, V)
+                    sel_ref_logits = ref_outputs.logits[..., :-1, :][mask]  # (N, V)
+
+                    log_probs = F.log_softmax(sel_logits, dim=-1)
+                    ref_log_probs = F.log_softmax(sel_ref_logits, dim=-1)
+
+                    kl_per_token = F.kl_div(
+                        log_probs, ref_log_probs,
+                        log_target=True, reduction="none",
+                    ).sum(dim=-1)
+                    kl_loss = kl_per_token.mean()
+                    loss = loss + self.kl_beta * kl_loss
+
+        return (loss, outputs) if return_outputs else loss
+
 pwd = Path(__file__).parent.parent
 MODEL = "allenai/Olmo-3-7B-Instruct"
-IN_FILE = pwd / "mbpp_data" / "mbpp_train_filtered.csv"
+IN_FILE = pwd / "mbpp_data" / "mbpp_train_aligned.jsonl"
 OUT_PATH_TEMPLATE = "outputs/checkpoints/olmo3-mbpp-qlora-{run_id}"
 WANDB_PROJECT = "semdupes-olmo3-mbpp"
 
 ATTN_IMPL = "kernels-community/flash-attn2"
 
 
-def load_mbpp_train(csv_path: str):
-    """Load MBPP pairs as conversational prompt/completion examples."""
+def load_mbpp_train(path: str):
+    """Load MBPP pairs as conversational prompt/completion examples.
+
+    Accepts either:
+      - JSONL with each row containing a `messages` field (eval-aligned format,
+        produced by build_aligned_training.py), or
+      - legacy CSV with `prompt` (paraphrased text) / `code` (bare code) columns.
+    """
+    import json
     training_data = []
-    with open(csv_path, 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            user_content = row['prompt']
-            assistant_content = row['code']
-            if not user_content or not assistant_content:
-                continue
-            training_data.append({
-                'prompt': [{"role": "user", "content": user_content}],
-                'completion': [{"role": "assistant", "content": assistant_content}],
-            })
-    print(f"Loaded {len(training_data)} training pairs from {csv_path}")
+    p = str(path)
+    if p.endswith(".jsonl"):
+        with open(p, "r", encoding="utf-8") as f:
+            for line in f:
+                row = json.loads(line)
+                msgs = row["messages"]
+                user_msgs = [m for m in msgs if m["role"] == "user"]
+                asst_msgs = [m for m in msgs if m["role"] == "assistant"]
+                if not user_msgs or not asst_msgs:
+                    continue
+                training_data.append({
+                    "prompt": [user_msgs[0]],
+                    "completion": [asst_msgs[0]],
+                })
+    else:
+        with open(p, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                user_content = row["prompt"]
+                assistant_content = row["code"]
+                if not user_content or not assistant_content:
+                    continue
+                training_data.append({
+                    "prompt": [{"role": "user", "content": user_content}],
+                    "completion": [{"role": "assistant", "content": assistant_content}],
+                })
+    print(f"Loaded {len(training_data)} training pairs from {path}")
     return training_data
 
 
@@ -61,11 +135,14 @@ def main(
     per_device_train_batch_size: int = 4,
     gradient_accumulation_steps: int = 4,
     num_train_epochs: int = 1,
-    learning_rate: float = 2e-4,
+    learning_rate: float = 5e-5,
     max_length: int = 2048,
     warmup_ratio: float = 0.03,
     logging_steps: int = 10,
     weight_decay: float = 0.0,
+    save_steps: int = 5,
+    # KL anchor against base model (LoRA disabled). 0 = plain SFT.
+    kl_beta: float = 0.1,
     # Infra
     wandb_project: str = WANDB_PROJECT,
     skip_quantization: bool = False,
@@ -138,7 +215,8 @@ def main(
         weight_decay=weight_decay,
         warmup_ratio=warmup_ratio,
         logging_steps=logging_steps,
-        save_strategy="epoch",
+        save_strategy="steps",
+        save_steps=save_steps,
         save_total_limit=None,
         bf16=True,
         optim="paged_adamw_8bit",
@@ -148,7 +226,7 @@ def main(
         gradient_checkpointing_kwargs={"use_reentrant": False},
         max_length=max_length,
         packing=True,
-        packing_strategy="ffd",
+        packing_strategy="bfd",
         completion_only_loss=True,
         dataloader_num_workers=4,
         dataloader_pin_memory=True,
@@ -161,13 +239,17 @@ def main(
         },
     )
 
-    trainer = SFTTrainer(
+    trainer_cls = KLRegularizedSFTTrainer if kl_beta > 0 else SFTTrainer
+    trainer_kwargs = dict(
         model=model_repo,
         train_dataset=dataset,
         args=training_args,
         peft_config=peft_config,
         processing_class=tokenizer,
     )
+    if kl_beta > 0:
+        trainer_kwargs["kl_beta"] = kl_beta
+    trainer = trainer_cls(**trainer_kwargs)
 
     print("Starting training...")
     trainer.train()
@@ -204,10 +286,16 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out_path_template", type=str, default=OUT_PATH_TEMPLATE)
     parser.add_argument("-e", "--num_train_epochs", type=int, default=1)
     parser.add_argument("-r", "--lora_r", type=int, default=16)
-    parser.add_argument("-l", "--learning_rate", type=float, default=2e-4)
+    parser.add_argument("-l", "--learning_rate", type=float, default=5e-5)
     parser.add_argument("-w", "--wandb_project", type=str, default=WANDB_PROJECT)
     parser.add_argument("-n", "--skip_quantization", action="store_true")
     parser.add_argument("--no-wandb", dest="use_wandb", action="store_false")
+    parser.add_argument("-b", "--per_device_train_batch_size", type=int, default=4)
+    parser.add_argument("-g", "--gradient_accumulation_steps", type=int, default=4)
+    parser.add_argument("--kl_beta", type=float, default=0.1,
+                        help="KL anchor against base model (LoRA disabled). 0 disables.")
+    parser.add_argument("--save_steps", type=int, default=5,
+                        help="Save checkpoint every N optimizer steps.")
     args = parser.parse_args()
     run_id = main(**vars(args))
     print(f"Run id: {run_id}")
