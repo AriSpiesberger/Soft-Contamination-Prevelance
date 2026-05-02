@@ -1,0 +1,36 @@
+\begin{table}[t]
+\centering\small
+\caption{Per-model accuracy on the contamination benchmark. \textsc{Seen} = test items the contaminated arm was trained on; \textsc{Unseen} = held-out clean test split. $p$-values are from binomial mixed-effects logistic regressions (\texttt{correct $\sim$ treatment + (1\,$\vert$\,sample\_id)}, \texttt{lme4::glmer}) for each treatment vs.\ \textsc{Finetuned Contaminated}, computed separately on each test split. $^{*}p<0.05,\ ^{**}p<0.01,\ ^{***}p<0.001$.}
+\label{tab:contamination_summary}
+\begin{tabular}{l l cc cc}
+\toprule
+ & & \multicolumn{2}{c}{Accuracy (\%)} & \multicolumn{2}{c}{$p$ (vs.\ Contam.)} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6}
+Model & Treatment & Seen & Unseen & Seen & Unseen \\
+\midrule
+\multirow{7}{*}{OLMo3-7B} & \textsc{Baseline} & 44.0 & 41.6 & -- & -- \\
+ & E=5, \textsc{Finetuned Clean} & 56.3 & 57.4 & 0.308 & 0.603 \\
+ & E=5, \textsc{Finetuned Contaminated} & 58.1 & 56.5 & -- & -- \\
+ & E=5, \textsc{Finetuned Exact} & 71.1 & 55.5 & 1.4e-19$^{***}$ & 0.513 \\
+ & E=10, \textsc{Finetuned Clean} & 52.5 & 51.0 & 1.0e-23$^{***}$ & 6.0e-12$^{***}$ \\
+ & E=10, \textsc{Finetuned Contaminated} & 69.4 & 62.4 & -- & -- \\
+ & E=10, \textsc{Finetuned Exact} & 75.5 & 51.2 & 5.2e-06$^{***}$ & 5.2e-15$^{***}$ \\
+\midrule
+\multirow{7}{*}{Qwen3-8B} & \textsc{Baseline} & 39.2 & 41.6 & -- & -- \\
+ & E=5, \textsc{Finetuned Clean} & 59.5 & 53.8 & 0.916 & 6.2e-06$^{***}$ \\
+ & E=5, \textsc{Finetuned Contaminated} & 59.4 & 59.0 & -- & -- \\
+ & E=5, \textsc{Finetuned Exact} & 71.9 & 58.5 & 3.8e-28$^{***}$ & 0.652 \\
+ & E=10, \textsc{Finetuned Clean} & 60.4 & 59.0 & 5.2e-44$^{***}$ & 2.9e-26$^{***}$ \\
+ & E=10, \textsc{Finetuned Contaminated} & 73.6 & 68.9 & -- & -- \\
+ & E=10, \textsc{Finetuned Exact} & 99.2 & 65.6 & 2.1e-75$^{***}$ & 2.9e-04$^{***}$ \\
+\midrule
+\multirow{7}{*}{Qwen3.5-9B} & \textsc{Baseline} & -- & -- & -- & -- \\
+ & E=5, \textsc{Finetuned Clean} & 55.4 & 56.4 & 1.9e-41$^{***}$ & 1.6e-31$^{***}$ \\
+ & E=5, \textsc{Finetuned Contaminated} & 70.4 & 69.0 & -- & -- \\
+ & E=5, \textsc{Finetuned Exact} & 99.5 & 73.6 & 4.8e-61$^{***}$ & 6.8e-06$^{***}$ \\
+ & E=10, \textsc{Finetuned Clean} & 62.3 & 63.3 & 1.2e-60$^{***}$ & 2.0e-38$^{***}$ \\
+ & E=10, \textsc{Finetuned Contaminated} & 77.6 & 74.7 & -- & -- \\
+ & E=10, \textsc{Finetuned Exact} & 100.0 & 75.0 & 7.7e-09$^{***}$ & 0.694 \\
+\bottomrule
+\end{tabular}
+\end{table}

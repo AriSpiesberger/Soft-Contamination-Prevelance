@@ -154,6 +154,93 @@ def fit_glmer_pymer4(df, ref_level):
     return out
 
 
+_RSCRIPT_PATHS = [
+    os.environ.get("RSCRIPT"),
+    r"C:\Program Files\R\R-4.6.0\bin\Rscript.exe",
+    r"C:\Program Files\R\R-4.5.1\bin\Rscript.exe",
+    "Rscript",
+]
+_R_USER_LIB = os.environ.get("R_LIBS_USER", r"C:\Users\arisp\R\win-library\4.6")
+_R_SCRIPT = r'''
+suppressPackageStartupMessages({
+  user_lib <- Sys.getenv("R_LIBS_USER", unset = NA)
+  if (!is.na(user_lib) && nzchar(user_lib)) .libPaths(c(user_lib, .libPaths()))
+  library(lme4)
+  library(jsonlite)
+})
+args <- commandArgs(trailingOnly = TRUE)
+df <- read.csv(args[1], stringsAsFactors = FALSE)
+df$model <- factor(df$model, levels = strsplit(args[2], ",")[[1]])
+df$sample_id <- factor(df$sample_id)
+fit <- glmer(correct ~ model + (1 | sample_id), data = df, family = binomial,
+             control = glmerControl(optimizer = "bobyqa",
+                                    optCtrl = list(maxfun = 1e5)))
+co <- summary(fit)$coefficients
+out <- list()
+for (nm in rownames(co)) {
+  if (nm == "(Intercept)") next
+  est <- unname(co[nm, "Estimate"])
+  se  <- unname(co[nm, "Std. Error"])
+  p   <- unname(co[nm, "Pr(>|z|)"])
+  out[[nm]] <- list(est = est, se = se, p = p)
+}
+cat(toJSON(out, auto_unbox = TRUE, digits = 12))
+'''
+
+
+def _rscript_path():
+    import shutil
+    for p in _RSCRIPT_PATHS:
+        if not p:
+            continue
+        if os.path.isfile(p):
+            return p
+        found = shutil.which(p)
+        if found:
+            return found
+    raise RuntimeError("Rscript not found; set RSCRIPT env var to its path")
+
+
+def fit_glmer_rscript(df, ref_level):
+    """Fit binomial GLMM `correct ~ model + (1|sample_id)` via R/lme4 subprocess."""
+    import json
+    import subprocess
+    import tempfile
+
+    levels = [ref_level] + [m for m in df["model"].unique() if m != ref_level]
+    sub = df[["sample_id", "model", "correct"]].copy()
+
+    with tempfile.TemporaryDirectory() as td:
+        csv_path = os.path.join(td, "data.csv")
+        r_path = os.path.join(td, "fit.R")
+        sub.to_csv(csv_path, index=False)
+        with open(r_path, "w", encoding="utf-8") as f:
+            f.write(_R_SCRIPT)
+        env = os.environ.copy()
+        env.setdefault("R_LIBS_USER", _R_USER_LIB)
+        proc = subprocess.run(
+            [_rscript_path(), "--vanilla", r_path, csv_path, ",".join(levels)],
+            capture_output=True, text=True, env=env, timeout=300,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(f"glmer failed: {proc.stderr.strip() or proc.stdout.strip()}")
+        try:
+            res = json.loads(proc.stdout.strip())
+        except json.JSONDecodeError as e:
+            raise RuntimeError(f"glmer parse failed: {e}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}")
+
+    out = {}
+    for name, vals in res.items():
+        est = float(vals["est"])
+        se = float(vals["se"])
+        p = float(vals["p"])
+        or_ = float(np.exp(est))
+        or_lo = float(np.exp(est - 1.96 * se))
+        or_hi = float(np.exp(est + 1.96 * se))
+        out[name] = (est, se, p, or_, or_lo, or_hi)
+    return out
+
+
 def fit_gee_statsmodels(df, ref_level):
     import statsmodels.api as sm
     import statsmodels.formula.api as smf
@@ -183,9 +270,17 @@ def fit_gee_statsmodels(df, ref_level):
 def pick_backend(requested):
     if requested == "gee":
         return "gee", fit_gee_statsmodels
-    if requested == "glmer":
+    if requested in ("glmer", "rscript"):
+        _rscript_path()  # raises if missing
+        return "glmer", fit_glmer_rscript
+    if requested == "pymer4":
         import pymer4.models  # noqa: F401
         return "glmer", fit_glmer_pymer4
+    try:
+        _rscript_path()
+        return "glmer", fit_glmer_rscript
+    except Exception:
+        pass
     try:
         import pymer4.models  # noqa: F401
         return "glmer", fit_glmer_pymer4
@@ -399,7 +494,7 @@ def main():
     ap.add_argument("--label", required=True)
     ap.add_argument("--out-csv", required=True)
     ap.add_argument("--ckpt-step", type=int, default=CKPT_STEP_DEFAULT)
-    ap.add_argument("--backend", choices=["auto", "glmer", "gee"], default="auto")
+    ap.add_argument("--backend", choices=["auto", "glmer", "rscript", "pymer4", "gee"], default="auto")
     ap.add_argument("--n-runs", type=int, default=20)
     args = ap.parse_args()
     run(args.clean_dir, args.contam_dir, args.exact_dir, args.label,

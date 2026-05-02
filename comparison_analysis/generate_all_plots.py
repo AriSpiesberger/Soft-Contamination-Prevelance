@@ -61,7 +61,7 @@ DATASETS = {
         'colors': ['#3498db', '#2ecc71', '#f39c12', '#e74c3c', '#9b59b6'],
     },
     'codeforces_top100': {
-        'path': DATA_DIR / 'codeforces_top100' / 'codeforces_top100_classified_gptoss_v2.csv',
+        'path': DATA_DIR / 'codeforces_top100' / 'codeforces_top100_classified_refined.csv',
         'output_dir': DATA_DIR / 'codeforces_top100',
         'name': 'CodeForces Top-100',
         'has_elo': True,

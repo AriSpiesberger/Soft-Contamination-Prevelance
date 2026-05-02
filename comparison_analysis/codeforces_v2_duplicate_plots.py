@@ -8,23 +8,56 @@ Codeforces v2 Semantic Duplicate Analysis Plots
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import seaborn as sns
 
 # Load data - use the classified data file in the data folder
 from pathlib import Path
 df = pd.read_csv(Path(__file__).parent / 'data' / 'codeforces_top100' / 'codeforces_top100_classified_gptoss_v2.csv')
 
-# Filter out "related" category - only keep strong matches (exact, equivalent, subset, superset)
-# For predicted_is_duplicate, set to False if category is "related"
+# Baseline: only keep strong gpt-oss matches (exact, equivalent, subset, superset)
 strong_categories = ['exact', 'equivalent', 'subset', 'superset']
 df['predicted_is_duplicate_strict'] = df['predicted_is_duplicate'] & df['predicted_category'].isin(strong_categories)
-
-print(f"Original duplicates: {df['predicted_is_duplicate'].sum()}")
-print(f"Strict duplicates (excluding 'related'): {df['predicted_is_duplicate_strict'].sum()}")
-print(f"Removed 'related' cases: {df['predicted_is_duplicate'].sum() - df['predicted_is_duplicate_strict'].sum()}")
-
-# Use strict duplicates for all analyses
 df['predicted_is_duplicate'] = df['predicted_is_duplicate_strict']
+print(f"Strict gpt-oss duplicates (exact/equiv/subset/superset): {df['predicted_is_duplicate'].sum()}")
+
+# --- Override with refined verdicts from two passes ---
+# 1) gpt-oss baseline refinement (Gemini-flash on superset/related): primary, ~3880 pairs
+# 2) Gemini-pool Claude refinement (subset/superset/related): secondary, ~660 pairs
+df['test_id'] = df['test_id'].astype(str)
+df['corpus_id'] = df['corpus_id'].astype(str)
+
+
+def _load_verdicts(p):
+    if not p.exists():
+        return {}
+    r = pd.read_csv(p).dropna(subset=['checker_is_sd'])
+    r['test_id'] = r['test_id'].astype(str)
+    r['corpus_id'] = r['corpus_id'].astype(str)
+    return dict(zip(zip(r['test_id'], r['corpus_id']), r['checker_is_sd'].astype(bool)))
+
+
+verdicts_gptoss = _load_verdicts(Path(__file__).parent / 'human_annotation' / 'gptoss_baseline_refined.csv')
+verdicts_gemini = _load_verdicts(Path(__file__).parent / 'human_annotation' / 'codeforces_sd_refined.csv')
+
+before = int(df['predicted_is_duplicate'].sum())
+keys = list(zip(df['test_id'], df['corpus_id']))
+in_gpt = pd.Series([k in verdicts_gptoss for k in keys], index=df.index)
+in_gem_only = pd.Series([(k not in verdicts_gptoss) and (k in verdicts_gemini) for k in keys], index=df.index)
+gpt_vals = pd.Series([verdicts_gptoss.get(k, False) for k in keys], index=df.index)
+gem_vals = pd.Series([verdicts_gemini.get(k, False) for k in keys], index=df.index)
+
+df.loc[in_gpt, 'predicted_is_duplicate'] = gpt_vals[in_gpt].values
+df.loc[in_gem_only, 'predicted_is_duplicate'] = gem_vals[in_gem_only].values
+n_overridden_gpt = int(in_gpt.sum())
+n_overridden_gem = int(in_gem_only.sum())
+after = int(df['predicted_is_duplicate'].sum())
+
+print(f"gpt-oss baseline refinement: {n_overridden_gpt} pairs overridden")
+print(f"Gemini-pool refinement (fallback): {n_overridden_gem} pairs overridden")
+print(f"Total refined: {n_overridden_gpt + n_overridden_gem} pairs, "
+      f"net change in duplicate count: {after - before:+d}")
+print(f"Final duplicates after refinement: {after}")
 
 # Define training order (temporal progression)
 # Check which datasets are available in the data
@@ -274,8 +307,20 @@ elo_stats = elo_stats.sort_values('elo_bin')
 x_pos = np.arange(len(elo_stats))
 elo_labels = [f"{int(e)}" for e in elo_stats['elo_bin']]
 
-# Color gradient from green (low ELO) to red (high ELO)
-colors = plt.cm.RdYlGn_r(np.linspace(0.2, 0.8, len(elo_stats)))
+# Color bars by height on absolute 0-100% scale, with a sigmoid centered at the
+# data median so adjacent bars hit a steep slope of the colormap (red->green
+# transition concentrated where the bars actually live).
+rates = elo_stats['occurrence_rate'].to_numpy()
+center = float(np.median(rates))
+steepness = 5.0  # higher = sharper red->green flip near `center`
+def _sigmoid(x):
+    return 1.0 / (1.0 + np.exp(-steepness * (np.asarray(x) - center)))
+def _forward(x):
+    return (_sigmoid(x) - _sigmoid(0.0)) / (_sigmoid(1.0) - _sigmoid(0.0))
+def _inverse(y):
+    return center + np.log(y / (1 - y + 1e-12) + 1e-12) / steepness
+norm = mcolors.FuncNorm((_forward, _inverse), vmin=0.0, vmax=1.0)
+colors = plt.colormaps['RdYlGn'](norm(rates))
 
 bars = ax.bar(x_pos, elo_stats['occurrence_rate'], width=0.8,
               color=colors, alpha=0.7, edgecolor='black', linewidth=0.5)

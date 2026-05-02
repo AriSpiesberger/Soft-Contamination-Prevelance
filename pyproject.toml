@@ -31,6 +31,9 @@ dependencies = [
     "requests>=2.31.0",
     # Experiment Tracking
     "wandb>=0.23.1",
+    "dotenv>=0.9.9",
+    "google>=3.0.0",
+    "anthropic>=0.97.0",
 ]
 
 [project.optional-dependencies]

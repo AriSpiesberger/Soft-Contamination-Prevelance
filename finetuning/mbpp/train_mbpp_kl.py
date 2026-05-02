@@ -58,7 +58,7 @@ def main(
     lora_dropout: float = 0.05,
     target_modules: list = None,
     # Training
-    per_device_train_batch_size: int = 4,
+    per_device_train_batch_size: int = 8, #this is standard for the gh200, which ive been using to train
     gradient_accumulation_steps: int = 4,
     num_train_epochs: int = 1,
     learning_rate: float = 2e-4,

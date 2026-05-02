@@ -43,7 +43,7 @@ def extract_texts_from_prompt(prompt: str):
 
 
 def build_mbpp(n=80):
-    df = pd.read_csv(os.path.join(ROOT, "training_data", "mbpp_annotations_old_with_text.csv"))
+    df = pd.read_csv(os.path.join(ROOT, "training_data", "mbpp_annotations_full(1).csv"))
     df["match_type_l"] = df["match_type"].astype(str).str.lower()
     df = df[df["match_type_l"].isin(NONUN)].copy()
     rows = []
@@ -51,7 +51,7 @@ def build_mbpp(n=80):
         tt = r.get("test_text", "") or ""
         ct = r.get("corpus_text", "") or ""
         rows.append({
-            "key": r["key"],
+            "key": r.get("key") or f"{r.get('dataset','')}__{r.get('test_id','')}__{r.get('corpus_id','')}",
             "benchmark": "mbpp",
             "dataset": r["dataset"],
             "test_id": r["test_id"],

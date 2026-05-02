@@ -138,8 +138,11 @@ def load_all_annotations(training_data_dir: str) -> pd.DataFrame:
     # Files with ground truth annotations - MBPP + Codeforces for training
     annotation_files = [
         ('mbpp_annotations_full(1).csv', 'mbpp'),  # 534 dupes, 5128 total
-        ('mbpp_annotations_old_with_text.csv', 'mbpp'),  # 168 dupes, 18709 total
         ('codeforces_annotations.csv', 'codeforces'),  # 644 dupes, 26110 total
+        # NOTE: mbpp_annotations_old_with_text.csv was removed — its non-unrelated
+        # rows are mostly Gemini hallucinations on URL-only / image-only corpus_texts
+        # (125 of 182 non-unrelated rows contain a URL). Including it poisoned the
+        # classifier into labeling code-only and URL-only corpus_texts as duplicates.
     ]
 
     for filename, source in annotation_files:

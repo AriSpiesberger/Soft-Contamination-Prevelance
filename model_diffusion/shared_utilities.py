@@ -58,7 +58,16 @@ Determine if the following two coding tasks are semantic duplicates - meaning th
 - "superset": Corpus is a superset of test (corpus asks for more, but solving it solves test)
 - "unrelated": Different tasks entirely
 Respond with valid JSON only."""
+CODEFORCES_CHECKER_TEMPLATE = """You are an exceptionally talented programmer and mathematician with the goal to determine whether there are semantic duplicates between two chunks of texts. 
 
+You will be provided with a benchmark problem and a corpus text problem, as well as a reason that they may or may not be semantic duplicates. The rational may be wrong. 
+
+Please consider how both problems are solved. Your goal here is to determine whether or not it is the case that the corpus problem provides signifant algorithmic insight required to solve a major part of the test problem, thus making it a semantic duplcate. 
+
+Respond with TRUE if it is a semantic duplicate
+Provide your reason, in detail, as to why it is or isnt. 
+Provide a score on the amount of duplication from 0 to 1.
+"""
 CODEFORCES_PROMPT_TEMPLATE = """You are an expert competitive programmer analyzing potential semantic duplicates between programming problems.
 
 ## Task
