@@ -101,6 +101,9 @@ def main():
     ap.add_argument("--top-k", type=int, default=20)
     ap.add_argument("--max-new-tokens", type=int, default=20)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--enable-tower-connector-lora", action="store_true",
+                    help="For Qwen3.5: let LoRA attach to the language tower "
+                         "via the multimodal connector (per vLLM Qwen3.5 recipe)")
     args = ap.parse_args()
 
     if not args.adapter_dir.exists():
@@ -124,7 +127,7 @@ def main():
     print(f"Output dir:  {out_dir}")
 
     print(f"\nLoading vLLM: base={args.base_model}")
-    llm = LLM(
+    llm_kwargs = dict(
         model=args.base_model,
         dtype="bfloat16",
         enable_lora=True,
@@ -136,6 +139,9 @@ def main():
         seed=args.seed,
         enforce_eager=False,
     )
+    if args.enable_tower_connector_lora:
+        llm_kwargs["enable_tower_connector_lora"] = True
+    llm = LLM(**llm_kwargs)
 
     sampling_params = SamplingParams(
         n=args.num_samples,
