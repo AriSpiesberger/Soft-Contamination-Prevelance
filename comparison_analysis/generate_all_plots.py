@@ -42,19 +42,10 @@ DATA_DIR = Path(__file__).parent / "data"
 
 # Dataset configurations
 DATASETS = {
-    'mbpp_top100': {
-        'path': DATA_DIR / 'mbpp_top100' / 'mbpp_top100_classified.csv',
-        'output_dir': DATA_DIR / 'mbpp_top100',
-        'name': 'MBPP Top-100',
-        'has_elo': False,
-        'training_order': ['dolma', 'dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl'],
-        'training_labels': ['Dolma\n(Pretrain)', 'Dolmino\n(Continued)', 'Dolci SFT\n(SFT)', 'Dolci DPO\n(DPO)', 'Dolci RL\n(RL)'],
-        'colors': ['#3498db', '#2ecc71', '#f39c12', '#e74c3c', '#9b59b6'],
-    },
     'mbpp_sample100': {
-        'path': DATA_DIR / 'mbpp_sample100' / 'mbpp_sample100_classified.csv',
+        'path': DATA_DIR / 'mbpp_sample100' / 'mbpp_sample100_classified_checker_refined_augmented.csv',
         'output_dir': DATA_DIR / 'mbpp_sample100',
-        'name': 'MBPP Sample-100',
+        'name': 'MBPP',
         'has_elo': False,
         'training_order': ['dolma', 'dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl'],
         'training_labels': ['Dolma\n(Pretrain)', 'Dolmino\n(Continued)', 'Dolci SFT\n(SFT)', 'Dolci DPO\n(DPO)', 'Dolci RL\n(RL)'],
@@ -63,16 +54,7 @@ DATASETS = {
     'codeforces_top100': {
         'path': DATA_DIR / 'codeforces_top100' / 'codeforces_top100_classified_refined.csv',
         'output_dir': DATA_DIR / 'codeforces_top100',
-        'name': 'CodeForces Top-100',
-        'has_elo': True,
-        'training_order': ['dolma', 'dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl'],  # Now includes dolma
-        'training_labels': ['Dolma\n(Pretrain)', 'Dolmino\n(Continued)', 'Dolci SFT\n(SFT)', 'Dolci DPO\n(DPO)', 'Dolci RL\n(RL)'],
-        'colors': ['#3498db', '#2ecc71', '#f39c12', '#e74c3c', '#9b59b6'],
-    },
-    'codeforces_sample100': {
-        'path': DATA_DIR / 'codeforces_sample100' / 'codeforces_sample100_classified_gptoss_v2.csv',
-        'output_dir': DATA_DIR / 'codeforces_sample100',
-        'name': 'CodeForces Sample-100',
+        'name': 'CodeForces',
         'has_elo': True,
         'training_order': ['dolma', 'dolmino', 'dolci_sft', 'dolci_dpo', 'dolci_rl'],
         'training_labels': ['Dolma\n(Pretrain)', 'Dolmino\n(Continued)', 'Dolci SFT\n(SFT)', 'Dolci DPO\n(DPO)', 'Dolci RL\n(RL)'],
@@ -428,8 +410,13 @@ def plot_similarity_overlay(df, config, dataset_key):
                     alpha=0.25, color=EXACT_CI_COLOR, linewidth=0,
                     label='With Exact 95% CI')
 
-    # Plot exact line
-    ax.plot(sim_exact['bin_center'], sim_exact['duplicate_rate'],
+    # Plot exact line. Visual nudge upward so when the two lines coincide
+    # (e.g. MBPP, where exact matches are negligible) the "Including Exact"
+    # line stays visible just above the semantic line. Capped at 1.0 so the
+    # plot never shows >100%.
+    EXACT_NUDGE = 0.015
+    exact_y = np.minimum(sim_exact['duplicate_rate'] + EXACT_NUDGE, 1.0)
+    ax.plot(sim_exact['bin_center'], exact_y,
             marker='s', linewidth=3, markersize=8,
             color=EXACT_COLOR, markerfacecolor='white',
             markeredgewidth=2, markeredgecolor=EXACT_COLOR,
@@ -444,10 +431,10 @@ def plot_similarity_overlay(df, config, dataset_key):
     # Fixed x-axis range for consistency across datasets
     ax.set_xlim(X_RANGE)
 
-    # Y-axis: auto-scale but with some headroom
-    max_y = min(max((sim_semantic['duplicate_rate'] + sim_semantic['ci95']).max(),
-                    (sim_exact['duplicate_rate'] + sim_exact['ci95']).max()) * 1.12, 1.0)
-    ax.set_ylim(0, max_y)
+    # Always show full 0-100% range with a touch of headroom so the
+    # nudged "Including Exact" line and CI shading don't clip at the top.
+    ax.set_ylim(0, 1.05)
+    ax.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
 
     # Subtle grid
     ax.grid(alpha=0.3, linestyle='-', linewidth=0.5)
@@ -591,20 +578,11 @@ def plot_occurrence_rate(df, config, dataset_key):
     ax.errorbar(x_pos, occurrence_df['occurrence_rate'], yerr=occurrence_df['ci95'],
                 fmt='none', ecolor='black', capsize=6, capthick=2, elinewidth=2)
 
-    # Labels on bars - percentage only
-    # For MBPP, put labels inside/below bars since values are high
-    is_mbpp = 'mbpp' in dataset_key.lower()
-    for i, row in occurrence_df.iterrows():
-        if is_mbpp:
-            # Labels inside the bars for MBPP (high values)
-            ax.annotate(f'{row["occurrence_rate"]:.1%}',
-                        xy=(i, row['occurrence_rate'] - 0.08),
-                        ha='center', fontsize=20, color='white', fontweight='bold')
-        else:
-            # Labels above bars for CodeForces
-            ax.annotate(f'{row["occurrence_rate"]:.1%}',
-                        xy=(i, row['occurrence_rate'] + row['ci95'] + 0.02),
-                        ha='center', fontsize=20, color='black', fontweight='bold')
+    # Percentage labels above each bar (and above the CI whisker).
+    for i, (_, row) in enumerate(occurrence_df.iterrows()):
+        ax.annotate(f'{row["occurrence_rate"]:.1%}',
+                    xy=(i, float(row['occurrence_rate'] + row['ci95'] + 0.02)),
+                    ha='center', fontsize=20, color='black', fontweight='bold')
 
     ax.set_xticks(x_pos)
     ax.set_xticklabels(config['training_labels'], fontsize=16)
@@ -612,8 +590,11 @@ def plot_occurrence_rate(df, config, dataset_key):
     ax.yaxis.set_label_coords(-0.09, 0.4)  # Shift label down
     ax.set_xlabel('Training Stage', fontsize=22)
     ax.tick_params(axis='y', labelsize=16)
-    ax.set_ylim(0, 1.0)  # Always show full 0-100% range
+    # Always show full 0-100% range, with extra headroom so the percentage
+    # labels above each bar (and above the CI whisker) aren't clipped.
+    ax.set_ylim(0, 1.12)
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+    ax.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
     ax.grid(axis='y', alpha=0.3)
 
     # Training flow arrow
@@ -680,6 +661,16 @@ def plot_elo_occurrence(df, config, dataset_key):
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
     ax.grid(axis='y', alpha=0.3, linestyle='--')
 
+    # Linear fit (ELO vs occurrence rate) + Pearson r overlay
+    elo_vals = elo_stats['elo_bin'].astype(float).to_numpy()
+    occ_vals = elo_stats['occurrence_rate'].astype(float).to_numpy()
+    if len(elo_vals) >= 2 and np.std(elo_vals) > 0 and np.std(occ_vals) > 0:
+        slope, intercept, r_value, p_value, _ = scipy_stats.linregress(elo_vals, occ_vals)
+        trend = slope * elo_vals + intercept
+        ax.plot(x_pos, trend, 'k--', linewidth=2.5, alpha=0.75,
+                label=f'Trend ($r = {r_value:.2f}$, $p = {p_value:.2g}$)')
+        ax.legend(loc='upper right', fontsize=16, framealpha=0.9)
+
     # Difficulty arrow at bottom - moved down to avoid overlap
     ax.annotate('', xy=(0.95, -0.28), xytext=(0.05, -0.28),
                 xycoords='axes fraction',
@@ -740,6 +731,16 @@ def plot_elo_count(df, config, dataset_key):
     ax.tick_params(axis='y', labelsize=18)
     ax.set_ylim(0, elo_count_stats['mean_duplicates'].max() * 1.15)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
+
+    # Linear fit (ELO vs avg-duplicates) + Pearson r overlay
+    elo_vals = elo_count_stats['elo_bin'].astype(float).to_numpy()
+    cnt_vals = elo_count_stats['mean_duplicates'].astype(float).to_numpy()
+    if len(elo_vals) >= 2 and np.std(elo_vals) > 0 and np.std(cnt_vals) > 0:
+        slope, intercept, r_value, p_value, _ = scipy_stats.linregress(elo_vals, cnt_vals)
+        trend = slope * elo_vals + intercept
+        ax.plot(x_pos, trend, 'k--', linewidth=2.5, alpha=0.75,
+                label=f'Trend ($r = {r_value:.2f}$, $p = {p_value:.2g}$)')
+        ax.legend(loc='upper right', fontsize=16, framealpha=0.9)
 
     # Difficulty arrow at bottom - moved down to avoid overlap
     ax.annotate('', xy=(0.95, -0.28), xytext=(0.05, -0.28),
@@ -958,7 +959,7 @@ def plot_scaling_law():
         return pd.DataFrame(results)
 
     # Load all datasets for scaling law comparison
-    scaling_datasets = ['mbpp_top100', 'mbpp_sample100', 'codeforces_top100', 'codeforces_sample100']
+    scaling_datasets = ['mbpp_sample100', 'codeforces_top100']
     all_results = {}
 
     for ds_key in scaling_datasets:

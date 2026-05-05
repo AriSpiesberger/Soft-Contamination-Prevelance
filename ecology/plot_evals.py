@@ -136,9 +136,10 @@ def plot_runs(runs_data, title, out_dir):
     LW = 3.5
     MS = 12
 
-    # --- Plot 1: accuracy on each test split, one panel per split ---
-    fig, axes = plt.subplots(1, 2, figsize=(18, 8), sharey=True)
-    for ax, split in zip(axes, ["contaminated", "clean"]):
+    # --- Plot 1: accuracy on each test split, stacked vertically (clean above, contam below) ---
+    SPLIT_YLABEL = {"clean": "Unseen", "contaminated": "Seen"}
+    fig, axes = plt.subplots(2, 1, figsize=(11, 13), sharex=True)
+    for ax, split in zip(axes, ["clean", "contaminated"]):
         for label, data in runs_data.items():
             d = data.get(split, {})
             if not d:
@@ -152,14 +153,11 @@ def plot_runs(runs_data, title, out_dir):
                     linewidth=LW, markersize=MS)
             ax.fill_between(epochs, ci_lo * 100, ci_hi * 100, alpha=0.15,
                             color=COLORS.get(label, None))
-        ax.set_xlabel("Epoch", fontsize=LABEL_FS)
-        ax.set_title(f"{split.capitalize()} test split", fontsize=TITLE_FS)
-        ax.legend(fontsize=LEGEND_FS)
+        ax.set_ylabel(f"{SPLIT_YLABEL[split]} test\nAccuracy (%)", fontsize=LABEL_FS)
+        ax.legend(fontsize=LEGEND_FS, loc="best")
         ax.grid(True, alpha=0.3)
         ax.tick_params(axis="both", labelsize=TICK_FS)
-    axes[0].set_ylabel("Accuracy (%)", fontsize=LABEL_FS)
-    fig.suptitle(f"{title}: model accuracy over training epochs",
-                 fontsize=SUPTITLE_FS, fontweight="bold")
+    axes[-1].set_xlabel("Epoch", fontsize=LABEL_FS)
     fig.tight_layout()
     p1 = os.path.join(out_dir, "accuracy_over_epochs.pdf")
     fig.savefig(p1, bbox_inches="tight")
@@ -179,8 +177,7 @@ def plot_runs(runs_data, title, out_dir):
                 linewidth=LW, markersize=MS)
     ax.axhline(0, color="black", linestyle="--", alpha=0.4)
     ax.set_xlabel("Epoch", fontsize=LABEL_FS)
-    ax.set_ylabel("Contam - Clean (%)", fontsize=LABEL_FS)
-    ax.set_title(f"{title}: contamination gap", fontsize=TITLE_FS, fontweight="bold")
+    ax.set_ylabel("Seen - Unseen (%)", fontsize=LABEL_FS)
     ax.legend(fontsize=LEGEND_FS)
     ax.grid(True, alpha=0.3)
     ax.tick_params(axis="both", labelsize=TICK_FS)

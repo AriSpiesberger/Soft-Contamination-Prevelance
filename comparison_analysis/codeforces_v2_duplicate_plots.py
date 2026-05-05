@@ -1,4 +1,4 @@
-"""
+    """
 Codeforces v2 Semantic Duplicate Analysis Plots
 1. Box-and-whisker plot: duplicate frequency by training stage
 2. Semantic duplicate rate as function of cosine similarity
